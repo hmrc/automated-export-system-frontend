@@ -28,9 +28,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
   "text" - {
 
     val testForm: Form[String] =
-      Form(
-        "value" -> text()
-      )
+      Form("value" -> text())
 
     "must bind a valid string" in {
       val result = testForm.bind(Map("value" -> "foobar"))
@@ -44,7 +42,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
     "must not bind a string of whitespace only" in {
       val result = testForm.bind(Map("value" -> " \t"))
-      result.errors must contain (FormError("value", "error.required"))
+      result.errors must contain(FormError("value", "error.required"))
     }
 
     "must not bind an empty map" in {
@@ -67,9 +65,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
   "boolean" - {
 
     val testForm: Form[Boolean] =
-      Form(
-        "value" -> boolean()
-      )
+      Form("value" -> boolean())
 
     "must bind true" in {
       val result = testForm.bind(Map("value" -> "true"))
@@ -105,9 +101,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
   "int" - {
 
     val testForm: Form[Int] =
-      Form(
-        "value" -> int()
-      )
+      Form("value" -> int())
 
     "must bind a valid integer" in {
       val result = testForm.bind(Map("value" -> "1"))
@@ -132,9 +126,7 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
 
   "enumerable" - {
 
-    val testForm = Form(
-      "value" -> enumerable[Foo]()
-    )
+    val testForm = Form("value" -> enumerable[Foo]())
 
     "must bind a valid option" in {
       val result = testForm.bind(Map("value" -> "Bar"))
@@ -152,13 +144,10 @@ class MappingsSpec extends AnyFreeSpec with Matchers with OptionValues with Mapp
     }
   }
 
-
   "currency" - {
 
     val testForm: Form[BigDecimal] =
-      Form(
-        "value" -> currency()
-      )
+      Form("value" -> currency())
 
     "must bind a valid integer" in {
       val result = testForm.bind(Map("value" -> "1"))
