@@ -2,20 +2,20 @@
 
 ->          /hmrc-frontend                               hmrcfrontend.Routes
 
-GET         /                                            controllers.IndexController.onPageLoad()
-
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /language/:lang                              controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /                                            uk.gov.hmrc.automatedexportsystem.controllers.IndexController.onPageLoad()
 
-GET         /refresh-session                             controllers.KeepAliveController.keepAlive()
+GET         /language/:lang                              uk.gov.hmrc.automatedexportsystem.controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /refresh-session                             uk.gov.hmrc.automatedexportsystem.controllers.KeepAliveController.keepAlive()
 
-GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad()
+GET         /there-is-a-problem                          uk.gov.hmrc.automatedexportsystem.controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /account/sign-out-survey                     controllers.auth.AuthController.signOut()
-GET         /account/sign-out                            controllers.auth.AuthController.signOutNoSurvey()
-GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad()
+GET         /check-your-answers                          uk.gov.hmrc.automatedexportsystem.controllers.CheckYourAnswersController.onPageLoad()
 
-GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
+GET         /account/sign-out-survey                     uk.gov.hmrc.automatedexportsystem.controllers.auth.AuthController.signOut()
+GET         /account/sign-out                            uk.gov.hmrc.automatedexportsystem.controllers.auth.AuthController.signOutNoSurvey()
+GET         /account/signed-out                          uk.gov.hmrc.automatedexportsystem.controllers.auth.SignedOutController.onPageLoad()
+
+GET         /unauthorised                                uk.gov.hmrc.automatedexportsystem.controllers.UnauthorisedController.onPageLoad()

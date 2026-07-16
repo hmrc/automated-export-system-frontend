@@ -1,6 +1,6 @@
 package pages
 
-import models.$className$
+import uk.gov.hmrc.automatedexportsystem.models.$className$
 import play.api.libs.json.JsPath
 
 case object $className$Page extends QuestionPage[Set[$className$]] {

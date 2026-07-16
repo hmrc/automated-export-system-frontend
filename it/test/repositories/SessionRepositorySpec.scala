@@ -16,8 +16,6 @@
 
 package repositories
 
-import config.FrontendAppConfig
-import models.UserAnswers
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalactic.source.Position
@@ -29,11 +27,14 @@ import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.MDC
 import uk.gov.hmrc.mdc.MdcExecutionContext
 import play.api.libs.json.Json
+import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
+import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
+import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.{Clock, Instant, ZoneId}
 import java.time.temporal.ChronoUnit
-import scala.concurrent.{ExecutionContext, Future, ExecutionContextExecutorService}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
 
 class SessionRepositorySpec
   extends AnyFreeSpec

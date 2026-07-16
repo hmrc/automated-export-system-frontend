@@ -16,7 +16,7 @@
 
 package generators
 
-import models._
+import uk.gov.hmrc.automatedexportsystem.models._
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 
