@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystem.views.html.IndexView
 
 class IndexControllerSpec extends SpecBase {
 
-  "Index Controller" - {
+  "Index Controller" should {
 
     "must return OK and the correct view for a GET" in {
 
@@ -36,9 +36,9 @@ class IndexControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[IndexView]
 
-        status(result) mustEqual OK
+        status(result) shouldBe OK
 
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        contentAsString(result) shouldBe view()(request, messages(application)).toString
       }
     }
   }

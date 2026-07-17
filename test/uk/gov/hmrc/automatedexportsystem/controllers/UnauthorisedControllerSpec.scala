@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystem.views.html.UnauthorisedView
 
 class UnauthorisedControllerSpec extends SpecBase {
 
-  "Unauthorised Controller" - {
+  "Unauthorised Controller" should {
 
     "must return OK and the correct view for a GET" in {
 
@@ -36,8 +36,8 @@ class UnauthorisedControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[UnauthorisedView]
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        status(result) shouldBe OK
+        contentAsString(result) shouldBe view()(request, messages(application)).toString
       }
     }
   }

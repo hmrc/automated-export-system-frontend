@@ -32,7 +32,7 @@ import scala.concurrent.Future
 
 class AuthControllerSpec extends SpecBase with MockitoSugar {
 
-  "signOut" - {
+  "signOut" should {
 
     "must clear user answers and redirect to sign out, specifying the exit survey as the continue URL" in {
 
@@ -54,14 +54,14 @@ class AuthControllerSpec extends SpecBase with MockitoSugar {
         val encodedContinueUrl = URLEncoder.encode(appConfig.exitSurveyUrl, "UTF-8")
         val expectedRedirectUrl = s"${appConfig.ggSignOutUrl}?continue=$encodedContinueUrl"
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual expectedRedirectUrl
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe expectedRedirectUrl
         verify(mockSessionRepository, times(1)).clear(eqTo(userAnswersId))
       }
     }
   }
 
-  "signOutNoSurvey" - {
+  "signOutNoSurvey" should {
 
     "must clear users answers and redirect to sign out, specifying SignedOut as the continue URL" in {
 
@@ -83,8 +83,8 @@ class AuthControllerSpec extends SpecBase with MockitoSugar {
         val encodedContinueUrl = URLEncoder.encode(routes.SignedOutController.onPageLoad().url, "UTF-8")
         val expectedRedirectUrl = s"${appConfig.ggSignOutUrl}?continue=$encodedContinueUrl"
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual expectedRedirectUrl
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe expectedRedirectUrl
         verify(mockSessionRepository, times(1)).clear(eqTo(userAnswersId))
       }
     }

@@ -16,11 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystem.helpers
 
+import org.scalatest.wordspec.AnyWordSpec
+import org.scalatest.matchers.should.Matchers
+import org.apache.pekko.actor.ActorSystem
+import org.apache.pekko.stream.Materializer
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import org.scalatest.{OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Application
@@ -29,14 +31,24 @@ import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.FakeRequest
 import uk.gov.hmrc.play.audit.http.HttpAuditing
+import uk.gov.hmrc.http.HeaderCarrier
 
-trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience {
+import scala.concurrent.ExecutionContext
+
+trait SpecBase
+    extends AnyWordSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience with AllMocks with Configs
+    with BaseSpec:
+
+  implicit lazy val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
+  implicit lazy val hc: HeaderCarrier = HeaderCarrier()
+  implicit lazy val system: ActorSystem = ActorSystem()
+  implicit lazy val materializer: Materializer = Materializer(system)
 
   val userAnswersId: String = "id"
-  val mockHttpAuditing = mock[HttpAuditing]
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
-  def messages(app: Application): Messages = app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
+  def messages(app: Application): Messages =
+    app.injector.instanceOf[MessagesApi].preferred(FakeRequest())
 
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
@@ -46,4 +58,3 @@ trait SpecBase extends AnyFreeSpec with Matchers with TryValues with OptionValue
         bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[HttpAuditing].toInstance(mockHttpAuditing)
       )
-}

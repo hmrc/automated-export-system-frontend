@@ -29,9 +29,9 @@ import scala.concurrent.Future
 
 class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
 
-  "keepAlive" - {
+  "keepAlive" should {
 
-    "when the user has answered some questions" - {
+    "when the user has answered some questions" should {
 
       "must keep the answers alive and return OK" in {
 
@@ -49,13 +49,13 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
 
           val result = route(application, request).value
 
-          status(result) mustEqual OK
+          status(result) shouldBe OK
           verify(mockSessionRepository, times(1)).keepAlive(emptyUserAnswers.id)
         }
       }
     }
 
-    "when the user has not answered any questions" - {
+    "when the user has not answered any questions" should {
 
       "must return OK" in {
 
@@ -73,7 +73,7 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
 
           val result = route(application, request).value
 
-          status(result) mustEqual OK
+          status(result) shouldBe OK
           verify(mockSessionRepository, never()).keepAlive(any())
         }
       }

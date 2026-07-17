@@ -36,9 +36,9 @@ class AuthActionSpec extends SpecBase {
     def onPageLoad(): Action[AnyContent] = authAction(_ => Results.Ok)
   }
 
-  "Auth Action" - {
+  "Auth Action" should {
 
-    "when the user hasn't logged in" - {
+    "when the user hasn't logged in" should {
 
       "must redirect the user to log in " in {
 
@@ -52,13 +52,13 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value must startWith(appConfig.ggSignInUrl)
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value should startWith(appConfig.ggSignInUrl)
         }
       }
     }
 
-    "the user's session has expired" - {
+    "the user's session has expired" should {
 
       "must redirect the user to log in " in {
 
@@ -72,13 +72,13 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value must startWith(appConfig.ggSignInUrl)
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value should startWith(appConfig.ggSignInUrl)
         }
       }
     }
 
-    "the user doesn't have sufficient enrolments" - {
+    "the user doesn't have sufficient enrolments" should {
 
       "must redirect the user to the unauthorised page" in {
 
@@ -92,13 +92,13 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe authRoutes.UnauthorisedController.onPageLoad().url
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe authRoutes.UnauthorisedController.onPageLoad().url
         }
       }
     }
 
-    "the user doesn't have sufficient confidence level" - {
+    "the user doesn't have sufficient confidence level" should {
 
       "must redirect the user to the unauthorised page" in {
 
@@ -112,13 +112,13 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe authRoutes.UnauthorisedController.onPageLoad().url
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe authRoutes.UnauthorisedController.onPageLoad().url
         }
       }
     }
 
-    "the user used an unaccepted auth provider" - {
+    "the user used an unaccepted auth provider" should {
 
       "must redirect the user to the unauthorised page" in {
 
@@ -132,13 +132,13 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value mustBe authRoutes.UnauthorisedController.onPageLoad().url
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe authRoutes.UnauthorisedController.onPageLoad().url
         }
       }
     }
 
-    "the user has an unsupported affinity group" - {
+    "the user has an unsupported affinity group" should {
 
       "must redirect the user to the unauthorised page" in {
 
@@ -152,13 +152,13 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(authRoutes.UnauthorisedController.onPageLoad().url)
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(authRoutes.UnauthorisedController.onPageLoad().url)
         }
       }
     }
 
-    "the user has an unsupported credential role" - {
+    "the user has an unsupported credential role" should {
 
       "must redirect the user to the unauthorised page" in {
 
@@ -172,8 +172,8 @@ class AuthActionSpec extends SpecBase {
           val controller = new Harness(authAction)
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result) mustBe Some(authRoutes.UnauthorisedController.onPageLoad().url)
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result) shouldBe Some(authRoutes.UnauthorisedController.onPageLoad().url)
         }
       }
     }

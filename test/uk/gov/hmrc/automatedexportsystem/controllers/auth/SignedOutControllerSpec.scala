@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystem.views.html.auth.SignedOutView
 
 class SignedOutControllerSpec extends SpecBase {
 
-  "SignedOut Controller" - {
+  "SignedOut Controller" should {
 
     "must return OK and the correct view for a GET" in {
 
@@ -36,8 +36,8 @@ class SignedOutControllerSpec extends SpecBase {
 
         val view = application.injector.instanceOf[SignedOutView]
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view()(request, messages(application)).toString
+        status(result) shouldBe OK
+        contentAsString(result) shouldBe view()(request, messages(application)).toString
       }
     }
   }

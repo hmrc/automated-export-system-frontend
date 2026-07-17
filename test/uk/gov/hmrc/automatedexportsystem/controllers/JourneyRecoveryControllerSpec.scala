@@ -24,9 +24,9 @@ import uk.gov.hmrc.automatedexportsystem.views.html.{JourneyRecoveryContinueView
 
 class JourneyRecoveryControllerSpec extends SpecBase {
 
-  "JourneyRecovery Controller" - {
+  "JourneyRecovery Controller" should {
 
-    "when a relative continue Url is supplied" - {
+    "when a relative continue Url is supplied" should {
 
       "must return OK and the continue view" in {
 
@@ -40,13 +40,13 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
           val continueView = application.injector.instanceOf[JourneyRecoveryContinueView]
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual continueView(continueUrl.unsafeValue)(request, messages(application)).toString
+          status(result) shouldBe OK
+          contentAsString(result) shouldBe continueView(continueUrl.unsafeValue)(request, messages(application)).toString
         }
       }
     }
 
-    "when an absolute continue Url is supplied" - {
+    "when an absolute continue Url is supplied" should {
 
       "must return OK and the start again view" in {
 
@@ -60,13 +60,13 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
           val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          status(result) shouldBe OK
+          contentAsString(result) shouldBe startAgainView()(request, messages(application)).toString
         }
       }
     }
 
-    "when no continue Url is supplied" - {
+    "when no continue Url is supplied" should {
 
       "must return OK and the start again view" in {
 
@@ -79,8 +79,8 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
           val startAgainView = application.injector.instanceOf[JourneyRecoveryStartAgainView]
 
-          status(result) mustEqual OK
-          contentAsString(result) mustEqual startAgainView()(request, messages(application)).toString
+          status(result) shouldBe OK
+          contentAsString(result) shouldBe startAgainView()(request, messages(application)).toString
         }
       }
     }

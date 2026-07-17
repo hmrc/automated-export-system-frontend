@@ -30,9 +30,9 @@ class SessionActionSpec extends SpecBase {
     def onPageLoad(): Action[AnyContent] = action(_ => Results.Ok)
   }
 
-  "Session Action" - {
+  "Session Action" should {
 
-    "when there is no active session" - {
+    "when there is no active session" should {
 
       "must redirect to the session expired page" in {
 
@@ -47,13 +47,13 @@ class SessionActionSpec extends SpecBase {
 
           val result = controller.onPageLoad()(FakeRequest())
 
-          status(result) mustBe SEE_OTHER
-          redirectLocation(result).value must startWith(appRoutes.JourneyRecoveryController.onPageLoad().url)
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value should startWith(appRoutes.JourneyRecoveryController.onPageLoad().url)
         }
       }
     }
 
-    "when there is an active session" - {
+    "when there is an active session" should {
 
       "must perform the action" in {
 
@@ -69,7 +69,7 @@ class SessionActionSpec extends SpecBase {
           val request = FakeRequest().withSession(SessionKeys.sessionId -> "foo")
 
           val result = controller.onPageLoad()(request)
-          status(result) mustBe OK
+          status(result) shouldBe OK
         }
       }
     }

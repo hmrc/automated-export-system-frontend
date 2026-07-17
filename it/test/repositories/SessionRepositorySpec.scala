@@ -37,12 +37,7 @@ import java.time.temporal.ChronoUnit
 import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
 
 class SessionRepositorySpec
-  extends AnyFreeSpec
-    with Matchers
-    with DefaultPlayMongoRepositorySupport[UserAnswers]
-    with ScalaFutures
-    with IntegrationPatience
-    with OptionValues
+    extends AnyFreeSpec with Matchers with DefaultPlayMongoRepositorySupport[UserAnswers] with ScalaFutures with IntegrationPatience with OptionValues
     with MockitoSugar {
 
   private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
@@ -55,11 +50,8 @@ class SessionRepositorySpec
 
   implicit val productionLikeTestMdcExecutionContext: ExecutionContext = MdcExecutionContext()
 
-  protected override val repository: SessionRepository = new SessionRepository(
-    mongoComponent = mongoComponent,
-    appConfig      = mockAppConfig,
-    clock          = stubClock
-  )
+  protected override val repository: SessionRepository =
+    new SessionRepository(mongoComponent = mongoComponent, appConfig = mockAppConfig, clock = stubClock)
 
   ".set" - {
 
@@ -67,7 +59,7 @@ class SessionRepositorySpec
 
       val expectedResult = userAnswers copy (lastUpdated = instant)
 
-      val setResult     = repository.set(userAnswers).futureValue
+      val setResult = repository.set(userAnswers).futureValue
       val updatedRecord = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
 
       updatedRecord mustEqual expectedResult
@@ -84,7 +76,7 @@ class SessionRepositorySpec
 
         insert(userAnswers).futureValue
 
-        val result         = repository.get(userAnswers.id).futureValue
+        val result = repository.get(userAnswers.id).futureValue
         val expectedResult = userAnswers copy (lastUpdated = instant)
 
         result.value mustEqual expectedResult

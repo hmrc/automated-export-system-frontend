@@ -25,7 +25,7 @@ import uk.gov.hmrc.automatedexportsystem.views.html.CheckYourAnswersView
 
 class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
-  "Check Your Answers Controller" - {
+  "Check Your Answers Controller" should {
 
     "must return OK and the correct view for a GET" in {
 
@@ -39,8 +39,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         val view = application.injector.instanceOf[CheckYourAnswersView]
         val list = SummaryListViewModel(Seq.empty)
 
-        status(result) mustEqual OK
-        contentAsString(result) mustEqual view(list)(request, messages(application)).toString
+        status(result) shouldBe OK
+        contentAsString(result) shouldBe view(list)(request, messages(application)).toString
       }
     }
 
@@ -53,8 +53,8 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
 
         val result = route(application, request).value
 
-        status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
