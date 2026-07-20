@@ -47,3 +47,10 @@ signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+enterMrn.title = enterMrn
+enterMrn.heading = enterMrn
+enterMrn.checkYourAnswersLabel = enterMrn
+enterMrn.error.required = Enter enterMrn
+enterMrn.error.length = EnterMrn must be 100 characters or less
+enterMrn.change.hidden = EnterMrn
