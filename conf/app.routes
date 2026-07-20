@@ -20,12 +20,12 @@ GET         /account/signed-out                          controllers.auth.Signed
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
 
-GET        /mrn                        controllers.EnterMrnController.onPageLoad(mode: Mode = NormalMode)
-POST       /mrn                        controllers.EnterMrnController.onSubmit(mode: Mode = NormalMode)
-GET        /changeMrn                  controllers.EnterMrnController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeMrn                  controllers.EnterMrnController.onSubmit(mode: Mode = CheckMode)
+GET        /mrn                        controllers.happyPath.EnterMrnController.onPageLoad(mode: Mode = NormalMode)
+POST       /mrn                        controllers.happyPath.EnterMrnController.onSubmit(mode: Mode = NormalMode)
+GET        /changeMrn                  controllers.happyPath.EnterMrnController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeMrn                  controllers.happyPath.EnterMrnController.onSubmit(mode: Mode = CheckMode)
 
-GET        /ducr                        controllers.EnterDucrController.onPageLoad(mode: Mode = NormalMode)
-POST       /ducr                        controllers.EnterDucrController.onSubmit(mode: Mode = NormalMode)
-GET        /changeDucr                  controllers.EnterDucrController.onPageLoad(mode: Mode = CheckMode)
-POST       /changeDucr                  controllers.EnterDucrController.onSubmit(mode: Mode = CheckMode)
+GET        /ducr                        controllers.happyPath.EnterDucrController.onPageLoad(mode: Mode = NormalMode)
+POST       /ducr                        controllers.happyPath.EnterDucrController.onSubmit(mode: Mode = NormalMode)
+GET        /changeDucr                  controllers.happyPath.EnterDucrController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDucr                  controllers.happyPath.EnterDucrController.onSubmit(mode: Mode = CheckMode)

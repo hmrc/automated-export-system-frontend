@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("enterMrn.title"))) {
 
-    @formHelper(action = routes.EnterMrnController.onSubmit(mode)) {
+    @formHelper(action = controllers.happyPath.routes.EnterMrnController.onSubmit(mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
