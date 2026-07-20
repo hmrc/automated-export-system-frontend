@@ -17,7 +17,7 @@
 package controllers.happyPath
 
 import controllers.actions.*
-import forms.EnterMrnFormProvider
+import forms.happyPath.EnterMrnFormProvider
 import models.{Mode, UserAnswers}
 import navigation.HappyPathNavigator
 import pages.happyPath.EnterMrnPage
