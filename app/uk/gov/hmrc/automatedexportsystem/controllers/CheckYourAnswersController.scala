@@ -20,21 +20,21 @@ import com.google.inject.Inject
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
-import uk.gov.hmrc.automatedexportsystem.controllers.actions.{DataRequiredAction, DataRetrievalAction, IdentifierAction}
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystem.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystem.views.html.CheckYourAnswersView
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
-  identify: IdentifierAction,
-  getData: DataRetrievalAction,
-  requireData: DataRequiredAction,
+  val actionBuilder: AesAuthRequestActionBuilder,
+  getData: AesDataRetrievalAction,
+  requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   view: CheckYourAnswersView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = (identify andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     implicit val messages: Messages = messagesApi.preferred(request)
     val list = SummaryListViewModel(rows = Seq.empty)
 

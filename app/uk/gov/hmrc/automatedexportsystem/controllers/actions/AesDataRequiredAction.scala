@@ -24,15 +24,15 @@ import uk.gov.hmrc.automatedexportsystem.models.requests.{DataRequest, OptionalD
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends DataRequiredAction {
+class AesDataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends AesDataRequiredAction {
 
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
       case None =>
         Future.successful(Left(Redirect(routes.JourneyRecoveryController.onPageLoad())))
       case Some(data) =>
-        Future.successful(Right(DataRequest(request.request, request.userId, data)))
+        Future.successful(Right(DataRequest(request.request, request.eori, data)))
     }
 }
 
-trait DataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]
+trait AesDataRequiredAction extends ActionRefiner[OptionalDataRequest, DataRequest]

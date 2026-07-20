@@ -18,12 +18,11 @@ package uk.gov.hmrc.automatedexportsystem.config
 
 import com.google.inject.AbstractModule
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.{
-  AuthenticatedIdentifierAction,
-  DataRequiredAction,
-  DataRequiredActionImpl,
-  DataRetrievalAction,
-  DataRetrievalActionImpl,
-  IdentifierAction
+  AesAuthRequestActionBuilder,
+  AesDataRequiredAction,
+  AesDataRequiredActionImpl,
+  AesDataRetrievalAction,
+  AesDataRetrievalActionImpl
 }
 
 import java.time.{Clock, ZoneOffset}
@@ -31,13 +30,8 @@ import java.time.{Clock, ZoneOffset}
 class Module extends AbstractModule {
 
   override def configure(): Unit = {
-
-    bind(classOf[DataRetrievalAction]).to(classOf[DataRetrievalActionImpl]).asEagerSingleton()
-    bind(classOf[DataRequiredAction]).to(classOf[DataRequiredActionImpl]).asEagerSingleton()
-
-    // For session based storage instead of cred based, change to SessionIdentifierAction
-    bind(classOf[IdentifierAction]).to(classOf[AuthenticatedIdentifierAction]).asEagerSingleton()
-
+    bind(classOf[AesDataRetrievalAction]).to(classOf[AesDataRetrievalActionImpl])
+    bind(classOf[AesDataRequiredAction]).to(classOf[AesDataRequiredActionImpl])
     bind(classOf[Clock]).toInstance(Clock.systemDefaultZone.withZone(ZoneOffset.UTC))
   }
 }

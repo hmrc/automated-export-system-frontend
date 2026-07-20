@@ -17,9 +17,10 @@
 package uk.gov.hmrc.automatedexportsystem.controllers.actions
 
 import uk.gov.hmrc.automatedexportsystem.models.requests.IdentifierRequest
-import org.mockito.Mockito._
+import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystem.models.requests.OptionalDataRequest
@@ -30,8 +31,8 @@ import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
 
-  class Harness(sessionRepository: SessionRepository) extends DataRetrievalActionImpl(sessionRepository) {
-    def callTransform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
+  class Harness(sessionRepository: SessionRepository) extends AesDataRetrievalActionImpl(sessionRepository) {
+    def callTransform[A](request: AesAuthRequest[A]): Future[OptionalDataRequest[A]] = transform(request)
   }
 
   "Data Retrieval Action" should {
@@ -41,10 +42,11 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
       "must set userAnswers to 'None' in the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(None)
+        when(sessionRepository.get("some-eori")) thenReturn Future(None)
         val action = new Harness(sessionRepository)
+        val request = AesAuthRequest(authorityId = "auth-id", groupId = "group-id", eori = "some-eori", request = FakeRequest())
 
-        val result = action.callTransform(IdentifierRequest(FakeRequest(), "id")).futureValue
+        val result = action.callTransform(request).futureValue
 
         result.userAnswers should not be defined
       }
@@ -55,10 +57,11 @@ class DataRetrievalActionSpec extends SpecBase with MockitoSugar {
       "must build a userAnswers object and add it to the request" in {
 
         val sessionRepository = mock[SessionRepository]
-        when(sessionRepository.get("id")) thenReturn Future(Some(UserAnswers("id")))
+        when(sessionRepository.get("some-eori")) thenReturn Future(Some(UserAnswers("some-eori")))
         val action = new Harness(sessionRepository)
+        val request = AesAuthRequest(authorityId = "auth-id", groupId = "group-id", eori = "some-eori", request = FakeRequest())
 
-        val result = action.callTransform(new IdentifierRequest(FakeRequest(), "id")).futureValue
+        val result = action.callTransform(request).futureValue
 
         result.userAnswers shouldBe defined
       }

@@ -18,4 +18,4 @@ package uk.gov.hmrc.automatedexportsystem.controllers.actions.requests
 
 import play.api.mvc.{Request, WrappedRequest}
 
-case class AesAuthRequest[A](authorityId: String, groupId: String, request: Request[A]) extends WrappedRequest[A](request)
+case class AesAuthRequest[A](authorityId: String, groupId: String, eori: String, request: Request[A]) extends WrappedRequest[A](request)

@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystem.controllers.auth
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
-import uk.gov.hmrc.automatedexportsystem.controllers.actions.IdentifierAction
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
 import uk.gov.hmrc.hmrcfrontend.controllers.routes.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,21 +31,21 @@ class AuthController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   config: FrontendAppConfig,
   sessionRepository: SessionRepository,
-  identify: IdentifierAction
+  authActionBuilder: AesAuthRequestActionBuilder
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  def signOut(): Action[AnyContent] = identify.async { implicit request =>
+  def signOut(): Action[AnyContent] = authActionBuilder.async { implicit request =>
     sessionRepository
-      .clear(request.userId)
+      .clear(request.eori)
       .map { _ =>
         Redirect(config.ggSignOutUrl, Map("continue" -> Seq(config.exitSurveyUrl)))
       }
   }
 
-  def signOutNoSurvey(): Action[AnyContent] = identify.async { implicit request =>
+  def signOutNoSurvey(): Action[AnyContent] = authActionBuilder.async { implicit request =>
     sessionRepository
-      .clear(request.userId)
+      .clear(request.eori)
       .map { _ =>
         Redirect(config.ggSignOutUrl, Map("continue" -> Seq(routes.SignedOutController.onPageLoad().url)))
       }

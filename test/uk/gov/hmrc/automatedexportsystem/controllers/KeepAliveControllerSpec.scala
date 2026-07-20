@@ -21,8 +21,11 @@ import org.mockito.Mockito.{never, times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystem.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
 
 import scala.concurrent.Future
@@ -37,15 +40,22 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
 
         val mockSessionRepository = mock[SessionRepository]
         when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
+        val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+        val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+        val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
+
+        when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
         val application =
           applicationBuilder(Some(emptyUserAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 
         running(application) {
 
-          val request = FakeRequest(GET, s"/automated-export-system${routes.KeepAliveController.keepAlive().url}")
+          val request = FakeRequest(GET, s"${routes.KeepAliveController.keepAlive().url}")
 
           val result = route(application, request).value
 
@@ -61,9 +71,16 @@ class KeepAliveControllerSpec extends SpecBase with MockitoSugar {
 
         val mockSessionRepository = mock[SessionRepository]
         when(mockSessionRepository.keepAlive(any())) thenReturn Future.successful(true)
+        val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+        val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+        val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
+
+        when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
         val application =
           applicationBuilder(None)
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
             .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
             .build()
 

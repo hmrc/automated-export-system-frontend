@@ -20,7 +20,7 @@ import play.api.Logging
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
-import uk.gov.hmrc.automatedexportsystem.controllers.actions.IdentifierAction
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl.*
 import uk.gov.hmrc.play.bootstrap.binders.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -30,12 +30,12 @@ import javax.inject.Inject
 
 class JourneyRecoveryController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  identify: IdentifierAction,
+  val actionBuilder: AesAuthRequestActionBuilder,
   continueView: JourneyRecoveryContinueView,
   startAgainView: JourneyRecoveryStartAgainView
 ) extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = identify { implicit request =>
+  def onPageLoad(continueUrl: Option[RedirectUrl] = None): Action[AnyContent] = actionBuilder { implicit request =>
 
     val safeUrl: Option[String] = continueUrl.flatMap { unsafeUrl =>
       unsafeUrl.getEither(OnlyRelative) match {

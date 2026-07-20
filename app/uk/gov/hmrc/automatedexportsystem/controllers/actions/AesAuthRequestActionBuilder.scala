@@ -18,10 +18,10 @@ package uk.gov.hmrc.automatedexportsystem.controllers.actions
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
-import play.api.{Configuration, Environment, Logger}
+import play.api.{Environment, Logger}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.*
-import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
+import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
 import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider
@@ -30,7 +30,7 @@ import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
 
 @Singleton
-class RequestActionBuilder @Inject() (
+class AesAuthRequestActionBuilder @Inject() (
   val config: FrontendAppConfig,
   val env: Environment,
   val authConnector: AuthConnector,
@@ -49,8 +49,18 @@ class RequestActionBuilder @Inject() (
         Retrievals.credentials and Retrievals.groupIdentifier and Retrievals.allEnrolments
       ) {
         case Some(information) ~ Some(groupId) ~ enrolments =>
-          block(AesAuthRequest(information.providerId, groupId, request))
-        case _ ~ _ => Future.failed(throw InternalError())
+          enrolments
+            .getEnrolment("HMRC-CUS-ORG")
+            .flatMap(_.getIdentifier("EORINumber"))
+            .map(_.value) match {
+            case Some(eori) =>
+              block(AesAuthRequest(information.providerId, groupId, eori, request))
+            case None =>
+              Future.failed(InternalError())
+          }
+
+        case _ =>
+          Future.failed(InternalError())
       }(hc(request), executionContext)
       .recover(handleFailure(request))
 

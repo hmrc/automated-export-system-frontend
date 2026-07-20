@@ -16,16 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystem.controllers.actions
 
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystem.models.requests.IdentifierRequest
 import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystem.models.requests.OptionalDataRequest
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends DataRetrievalAction {
+class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends AesDataRetrievalAction {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, request.userId, dataToReturn))
+  override protected def transform[A](request: AesAuthRequest[A]): Future[OptionalDataRequest[A]] =
+    Future(OptionalDataRequest(request.request, request.eori, dataToReturn))
 
   override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

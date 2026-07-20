@@ -16,11 +16,19 @@
 
 package uk.gov.hmrc.automatedexportsystem.controllers
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystem.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.play.bootstrap.binders.RedirectUrl
 import uk.gov.hmrc.automatedexportsystem.views.html.{JourneyRecoveryContinueView, JourneyRecoveryStartAgainView}
+
+import scala.concurrent.Future
 
 class JourneyRecoveryControllerSpec extends SpecBase {
 
@@ -29,8 +37,16 @@ class JourneyRecoveryControllerSpec extends SpecBase {
     "when a relative continue Url is supplied" should {
 
       "must return OK and the continue view" in {
+        val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+        val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+        val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
 
-        val application = applicationBuilder(userAnswers = None).build()
+        when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
         running(application) {
           val continueUrl = RedirectUrl("/foo")
@@ -50,7 +66,16 @@ class JourneyRecoveryControllerSpec extends SpecBase {
 
       "must return OK and the start again view" in {
 
-        val application = applicationBuilder(userAnswers = None).build()
+        val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+        val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+        val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
+
+        when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
         running(application) {
           val continueUrl = RedirectUrl("https://foo.com")
@@ -69,8 +94,16 @@ class JourneyRecoveryControllerSpec extends SpecBase {
     "when no continue Url is supplied" should {
 
       "must return OK and the start again view" in {
+        val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+        val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+        val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
 
-        val application = applicationBuilder(userAnswers = None).build()
+        when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+          .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+        val application = applicationBuilder(userAnswers = None)
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
         running(application) {
           val request = FakeRequest(GET, routes.JourneyRecoveryController.onPageLoad().url)

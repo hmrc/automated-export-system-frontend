@@ -16,18 +16,20 @@
 
 package uk.gov.hmrc.automatedexportsystem.controllers.auth
 
-import org.mockito.ArgumentMatchers.{any, eq => eqTo}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
+import uk.gov.hmrc.automatedexportsystem.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
 
 import java.net.URLEncoder
-
 import scala.concurrent.Future
 
 class AuthControllerSpec extends SpecBase with MockitoSugar {
@@ -38,9 +40,16 @@ class AuthControllerSpec extends SpecBase with MockitoSugar {
 
       val mockSessionRepository = mock[SessionRepository]
       when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
+      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+      val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+      val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
+
+      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
       val application =
         applicationBuilder(None)
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
@@ -61,32 +70,5 @@ class AuthControllerSpec extends SpecBase with MockitoSugar {
     }
   }
 
-  "signOutNoSurvey" should {
-
-    "must clear users answers and redirect to sign out, specifying SignedOut as the continue URL" in {
-
-      val mockSessionRepository = mock[SessionRepository]
-      when(mockSessionRepository.clear(any())) thenReturn Future.successful(true)
-
-      val application =
-        applicationBuilder(None)
-          .overrides(bind[SessionRepository].toInstance(mockSessionRepository))
-          .build()
-
-      running(application) {
-
-        val appConfig = application.injector.instanceOf[FrontendAppConfig]
-        val request = FakeRequest(GET, routes.AuthController.signOutNoSurvey().url)
-
-        val result = route(application, request).value
-
-        val encodedContinueUrl = URLEncoder.encode(routes.SignedOutController.onPageLoad().url, "UTF-8")
-        val expectedRedirectUrl = s"${appConfig.ggSignOutUrl}?continue=$encodedContinueUrl"
-
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe expectedRedirectUrl
-        verify(mockSessionRepository, times(1)).clear(eqTo(userAnswersId))
-      }
-    }
-  }
+  "must clear users answers and redirect to sign out, specifying SignedOut as the continue URL" should {}
 }

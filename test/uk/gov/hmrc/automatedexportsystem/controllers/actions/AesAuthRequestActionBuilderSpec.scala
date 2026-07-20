@@ -33,12 +33,12 @@ import uk.gov.hmrc.automatedexportsystem.helpers.TestFixture.*
 
 import java.net.URLDecoder
 import scala.concurrent.Future
-class RequestActionBuilderSpec extends SpecBase with Status with Results with ScalaFutures {
+class AesAuthRequestActionBuilderSpec extends SpecBase with Status with Results with ScalaFutures {
 
   trait Setup {
     implicit val mockAppConfig: FrontendAppConfig = mockFrontEndAppconfig
     val authenticatedAction =
-      new RequestActionBuilder(config = mockAppConfig, env = environment, authConnector = mockAuthConnector, cc = stubControllerComponents())
+      new AesAuthRequestActionBuilder(config = mockAppConfig, env = environment, authConnector = mockAuthConnector, cc = stubControllerComponents())
   }
 
   "authorising the request" should {

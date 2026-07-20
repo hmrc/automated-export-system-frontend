@@ -17,20 +17,20 @@
 package uk.gov.hmrc.automatedexportsystem.controllers.actions
 
 import javax.inject.Inject
-import uk.gov.hmrc.automatedexportsystem.models.requests.IdentifierRequest
 import play.api.mvc.ActionTransformer
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystem.models.requests.OptionalDataRequest
 import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class DataRetrievalActionImpl @Inject() (val sessionRepository: SessionRepository)(implicit val executionContext: ExecutionContext)
-    extends DataRetrievalAction {
+class AesDataRetrievalActionImpl @Inject() (val sessionRepository: SessionRepository)(implicit val executionContext: ExecutionContext)
+    extends AesDataRetrievalAction {
 
-  override protected def transform[A](request: IdentifierRequest[A]): Future[OptionalDataRequest[A]] =
-    sessionRepository.get(request.userId).map {
-      OptionalDataRequest(request.request, request.userId, _)
+  override protected def transform[A](request: AesAuthRequest[A]): Future[OptionalDataRequest[A]] =
+    sessionRepository.get(request.eori).map { answers =>
+      OptionalDataRequest(request, request.eori, answers)
     }
 }
 
-trait DataRetrievalAction extends ActionTransformer[IdentifierRequest, OptionalDataRequest]
+trait AesDataRetrievalAction extends ActionTransformer[AesAuthRequest, OptionalDataRequest]

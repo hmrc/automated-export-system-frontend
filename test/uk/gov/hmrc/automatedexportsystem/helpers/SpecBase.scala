@@ -23,28 +23,29 @@ import org.apache.pekko.stream.Materializer
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
-import org.scalatest.{OptionValues, TryValues}
+import org.scalatest.{BeforeAndAfterEach, Inside, OptionValues, TryValues}
 import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Application
+import play.api.http.{HeaderNames, Status}
 import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
-import play.api.test.FakeRequest
+import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits, ResultExtractors}
 import uk.gov.hmrc.play.audit.http.HttpAuditing
 import uk.gov.hmrc.http.HeaderCarrier
 
 import scala.concurrent.ExecutionContext
 
 trait SpecBase
-    extends AnyWordSpec with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience with AllMocks with Configs
-    with BaseSpec:
+    extends AnyWordSpec with Inside with Matchers with TryValues with OptionValues with ScalaFutures with IntegrationPatience with AllMocks
+    with BeforeAndAfterEach with DefaultAwaitTimeout with FutureAwaits with Configs with Status with HeaderNames with ResultExtractors:
 
   implicit lazy val ec: ExecutionContext = scala.concurrent.ExecutionContext.Implicits.global
   implicit lazy val hc: HeaderCarrier = HeaderCarrier()
   implicit lazy val system: ActorSystem = ActorSystem()
   implicit lazy val materializer: Materializer = Materializer(system)
 
-  val userAnswersId: String = "id"
+  val userAnswersId: String = "some-eori"
   def emptyUserAnswers: UserAnswers = UserAnswers(userAnswersId)
 
   def messages(app: Application): Messages =
@@ -53,8 +54,7 @@ trait SpecBase
   protected def applicationBuilder(userAnswers: Option[UserAnswers] = None): GuiceApplicationBuilder =
     new GuiceApplicationBuilder()
       .overrides(
-        bind[DataRequiredAction].to[DataRequiredActionImpl],
-        bind[IdentifierAction].to[FakeIdentifierAction],
-        bind[DataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
+        bind[AesDataRequiredAction].to[AesDataRequiredActionImpl],
+        bind[AesDataRetrievalAction].toInstance(new FakeDataRetrievalAction(userAnswers)),
         bind[HttpAuditing].toInstance(mockHttpAuditing)
       )

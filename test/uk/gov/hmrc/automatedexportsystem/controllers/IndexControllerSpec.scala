@@ -17,17 +17,33 @@
 package uk.gov.hmrc.automatedexportsystem.controllers
 
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import play.api.inject.bind
+import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystem.views.html.IndexView
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import uk.gov.hmrc.automatedexportsystem.helpers.TestFixture.{testAuthorityId, testGroupId}
+
+import scala.concurrent.Future
 
 class IndexControllerSpec extends SpecBase {
 
   "Index Controller" should {
 
     "must return OK and the correct view for a GET" in {
+      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+      val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+      val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
 
-      val application = applicationBuilder(userAnswers = None).build()
+      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, routes.IndexController.onPageLoad().url)

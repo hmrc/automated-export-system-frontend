@@ -21,17 +21,17 @@ import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.mvc.Security.AuthenticatedAction
 import play.twirl.api.Html
-import uk.gov.hmrc.automatedexportsystem.controllers.actions.{IdentifierAction, RequestActionBuilder}
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystem.views.html.IndexView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  val authenticatedAction: RequestActionBuilder,
+  val actionBuilder: AesAuthRequestActionBuilder,
   view: IndexView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(): Action[AnyContent] = authenticatedAction { implicit request =>
+  def onPageLoad(): Action[AnyContent] = actionBuilder { implicit request =>
     Ok(view(): Html)
   }
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystem.controllers
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.automatedexportsystem.controllers.actions.{DataRetrievalAction, IdentifierAction}
+import uk.gov.hmrc.automatedexportsystem.controllers.actions.{AesAuthRequestActionBuilder, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -26,13 +26,13 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class KeepAliveController @Inject() (
   val controllerComponents: MessagesControllerComponents,
-  identify: IdentifierAction,
-  getData: DataRetrievalAction,
+  val actionBuilder: AesAuthRequestActionBuilder,
+  getData: AesDataRetrievalAction,
   sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController {
 
-  def keepAlive(): Action[AnyContent] = (identify andThen getData).async { implicit request =>
+  def keepAlive(): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     request.userAnswers.map { answers =>
       sessionRepository.keepAlive(answers.id).map(_ => Ok)
     }
