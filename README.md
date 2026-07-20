@@ -11,7 +11,8 @@ The following sm2 command starts the service along with all its dependencies
 
 `sm2 --start AUTOMATED_EXPORT_SYSTEM_ALL`
 
-The system will redirect to the stubs. See details here
+The system will redirect to the stubs. See details [here](https://confluence.tools.tax.service.gov.uk/spaces/AES/pages/1344340004/Testing+using+the+auth+stubs).
+
 
 ### Live examples
 

@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.automatedexportsystem.controllers
 
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.mvc.Security.AuthenticatedAction
 import play.twirl.api.Html
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystem.views.html.IndexView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import javax.inject.Inject
 
 class IndexController @Inject() (
   val controllerComponents: MessagesControllerComponents,

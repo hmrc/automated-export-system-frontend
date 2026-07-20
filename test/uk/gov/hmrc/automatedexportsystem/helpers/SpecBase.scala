@@ -24,7 +24,6 @@ import uk.gov.hmrc.automatedexportsystem.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.{BeforeAndAfterEach, Inside, OptionValues, TryValues}
-import org.scalatestplus.mockito.MockitoSugar.mock
 import play.api.Application
 import play.api.http.{HeaderNames, Status}
 import play.api.i18n.{Messages, MessagesApi}

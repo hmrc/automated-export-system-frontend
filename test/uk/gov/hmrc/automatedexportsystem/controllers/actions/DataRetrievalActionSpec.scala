@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystem.controllers.actions
 
-import uk.gov.hmrc.automatedexportsystem.models.requests.IdentifierRequest
 import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
@@ -26,7 +25,6 @@ import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystem.models.requests.OptionalDataRequest
 import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
 
-import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.Future
 
 class DataRetrievalActionSpec extends SpecBase with MockitoSugar {

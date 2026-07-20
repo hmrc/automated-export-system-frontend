@@ -17,7 +17,6 @@
 package uk.gov.hmrc.automatedexportsystem.forms.behaviours
 
 import play.api.data.Form
-import uk.gov.hmrc.automatedexportsystem.models.*
 import uk.gov.hmrc.automatedexportsystem.forms.FormSpec
 import uk.gov.hmrc.automatedexportsystem.models.{Field, Invalid, Required}
 

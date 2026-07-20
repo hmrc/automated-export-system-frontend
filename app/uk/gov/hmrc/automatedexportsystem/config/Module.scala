@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystem.config
 
 import com.google.inject.AbstractModule
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.{
-  AesAuthRequestActionBuilder,
   AesDataRequiredAction,
   AesDataRequiredActionImpl,
   AesDataRetrievalAction,

@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystem.controllers
 import com.google.inject.Inject
 import play.api.i18n.Lang
 import play.api.mvc.*
-import play.api.routing.Router.empty.routes
 import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
 import uk.gov.hmrc.play.language.{LanguageController, LanguageUtils}
 import uk.gov.hmrc.automatedexportsystem.controllers.{routes => appRoutes}

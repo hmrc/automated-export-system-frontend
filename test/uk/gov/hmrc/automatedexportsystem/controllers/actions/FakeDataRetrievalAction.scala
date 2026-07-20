@@ -17,7 +17,6 @@
 package uk.gov.hmrc.automatedexportsystem.controllers.actions
 
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.requests.AesAuthRequest
-import uk.gov.hmrc.automatedexportsystem.models.requests.IdentifierRequest
 import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystem.models.requests.OptionalDataRequest
 

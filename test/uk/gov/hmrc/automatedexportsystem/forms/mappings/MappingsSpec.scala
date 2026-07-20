@@ -17,8 +17,6 @@
 package uk.gov.hmrc.automatedexportsystem.forms.mappings
 
 import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
 import play.api.data.{Form, FormError}
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystem.mappings.Mappings
@@ -41,7 +39,7 @@ object MappingsSpec {
 
 class MappingsSpec extends SpecBase with OptionValues with Mappings {
 
-  import MappingsSpec._
+  import MappingsSpec.*
 
   "text" should {
 

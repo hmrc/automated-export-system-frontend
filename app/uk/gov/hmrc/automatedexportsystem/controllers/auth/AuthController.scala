@@ -21,7 +21,6 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
-import uk.gov.hmrc.hmrcfrontend.controllers.routes.*
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject

@@ -16,17 +16,15 @@
 
 package uk.gov.hmrc.automatedexportsystem.forms.mappings
 
-import java.time.LocalDate
 import generators.Generators
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.must.Matchers
-import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.data.validation.{Invalid, Valid}
 import uk.gov.hmrc.automatedexportsystem.config.CurrencyFormatter
-import uk.gov.hmrc.automatedexportsystem.mappings.Constraints
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystem.mappings.Constraints
+
+import java.time.LocalDate
 
 class ConstraintsSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with Constraints {
 

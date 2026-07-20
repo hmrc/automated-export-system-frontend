@@ -16,22 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystem
 
-/*
- * Copyright 2026 HM Revenue & Customs
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 import play.api.libs.json._
 
 package object models {
@@ -131,10 +115,12 @@ package object models {
     def remove(path: JsPath): JsResult[JsValue] =
       (path.path, jsValue) match {
         case (Nil, _)                                                                  => JsError("path cannot be empty")
+        case ((_: RecursiveSearch) :: _, _)                                            => JsError("recursive search not supported")
         case ((n: KeyPathNode) :: Nil, value: JsObject) if value.keys.contains(n.key)  => JsSuccess(value - n.key)
         case ((n: KeyPathNode) :: Nil, value: JsObject) if !value.keys.contains(n.key) => JsError("cannot find value at path")
         case ((n: IdxPathNode) :: Nil, value: JsArray)                                 => removeIndexNode(n, value)
         case ((_: KeyPathNode) :: Nil, _)                                              => JsError(s"cannot remove a key on $jsValue")
+        case ((_: IdxPathNode) :: Nil, _)                                              => JsError(s"cannot remove an index on $jsValue")
         case (first :: second :: rest, oldValue) =>
           Reads
             .optionNoError(Reads.at[JsValue](JsPath(first :: Nil)))

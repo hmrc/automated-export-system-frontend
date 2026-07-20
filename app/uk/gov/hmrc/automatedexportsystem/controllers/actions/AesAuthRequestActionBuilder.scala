@@ -21,7 +21,7 @@ import play.api.mvc.*
 import play.api.{Environment, Logger}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.*
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystem.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendHeaderCarrierProvider

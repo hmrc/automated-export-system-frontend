@@ -12,7 +12,7 @@ ThisBuild / scalacOptions ++= Seq(
   "-feature",
   "-unchecked",
   "-language:implicitConversions"
-)
+).distinct
 ThisBuild / scalafmtOnCompile := true
 
 lazy val microservice = (project in file("."))
@@ -22,10 +22,10 @@ lazy val microservice = (project in file("."))
   .settings(ThisBuild / useSuperShell := false)
   .settings(
     name := appName,
-    RoutesKeys.routesImport ++= Seq(
-      "models._",
+    RoutesKeys.routesImport := Seq(
+      "controllers.Assets.Asset",
       "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
-    ),
+    ).distinct,
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
@@ -34,10 +34,8 @@ lazy val microservice = (project in file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "uk.gov.hmrc.hmrcfrontend.views.config._",
       "uk.gov.hmrc.automatedexportsystem.views.ViewUtils._",
-      "uk.gov.hmrc.automatedexportsystem.models.Mode",
-      "uk.gov.hmrc.automatedexportsystem.controllers.routes._",
-      "uk.gov.hmrc.automatedexportsystem.viewmodels._"
-    ),
+      "uk.gov.hmrc.automatedexportsystem.controllers.routes._"
+    ).distinct,
     PlayKeys.playDefaultPort := 9000,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +
       ".*Routes.*;.*viewmodels.govuk.*;",

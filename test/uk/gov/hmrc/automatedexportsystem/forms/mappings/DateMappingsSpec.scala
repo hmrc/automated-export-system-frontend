@@ -16,18 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystem.forms.mappings
 
-import java.time.LocalDate
 import generators.Generators
 import org.scalacheck.Gen
 import org.scalatest.OptionValues
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.should.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.{Form, FormError}
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
 import uk.gov.hmrc.automatedexportsystem.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystem.mappings.Mappings
+
+import java.time.LocalDate
 
 class DateMappingsSpec extends SpecBase with ScalaCheckPropertyChecks with Generators with OptionValues with Mappings {
 
