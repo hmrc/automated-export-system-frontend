@@ -54,3 +54,10 @@ enterMrn.checkYourAnswersLabel = enterMrn
 enterMrn.error.required = Enter enterMrn
 enterMrn.error.length = EnterMrn must be 100 characters or less
 enterMrn.change.hidden = EnterMrn
+
+enterDucr.title = enterDucr
+enterDucr.heading = enterDucr
+enterDucr.checkYourAnswersLabel = enterDucr
+enterDucr.error.required = Enter enterDucr
+enterDucr.error.length = EnterDucr must be 100 characters or less
+enterDucr.change.hidden = EnterDucr

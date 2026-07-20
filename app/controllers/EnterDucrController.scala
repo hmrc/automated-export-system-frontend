@@ -17,40 +17,42 @@
 package controllers
 
 import controllers.actions.*
-import forms.EnterMrnFormProvider
+import forms.EnterDucrFormProvider
 
 import javax.inject.Inject
 import models.{Mode, UserAnswers}
-import navigation.HappyPathNavigator
-import pages.EnterMrnPage
+import navigation.Navigator
+import pages.EnterDucrPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.EnterMrnView
+import views.html.EnterDucrView
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnterMrnController @Inject()(
+class EnterDucrController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
-                                        happyPathNavigator: HappyPathNavigator,
+                                        navigator: Navigator,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
-                                        formProvider: EnterMrnFormProvider,
+                                        formProvider: EnterDucrFormProvider,
                                         val controllerComponents: MessagesControllerComponents,
-                                        view: EnterMrnView
+                                        view: EnterDucrView
                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
+  //def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
   def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
-      val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REPLACED WITH
+      val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
 
-      val preparedForm =  answers.get(EnterMrnPage) match {
+//      val preparedForm = request.userAnswers.get(EnterDucrPage) match {
+      val preparedForm = answers.get(EnterDucrPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -58,10 +60,9 @@ class EnterMrnController @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  //TO BE REPLACED WITH
-  //def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
-    implicit request =>
+//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+    def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  implicit request =>
 
       val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
 
@@ -71,10 +72,10 @@ class EnterMrnController @Inject()(
 
         value =>
           for {
-            updatedAnswers <- Future.fromTry(answers.set(EnterMrnPage, value))
-            //updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
+//            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(EnterDucrPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(EnterMrnPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(EnterDucrPage, mode, updatedAnswers))
       )
   }
 }
