@@ -14,13 +14,14 @@
  * limitations under the License.
  */
 
-package pages
+package pages.happyPath
 
+import pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object EnterDucrPage extends QuestionPage[String] {
+case object EnterMrnPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "enterDucr"
+  override def toString: String = "mrn"
 }

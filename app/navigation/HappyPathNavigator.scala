@@ -16,15 +16,16 @@
 
 package navigation
 
-import controllers.EnterDucrController
+import controllers.happyPath.EnterDucrController
 import models.{NormalMode, UserAnswers}
-import pages.{EnterMrnPage, Page}
+import pages.Page
+import pages.happyPath.EnterMrnPage
 import play.api.mvc.Call
 
 class HappyPathNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case EnterMrnPage => _ => controllers.routes.EnterDucrController.onPageLoad(NormalMode)
+    case EnterMrnPage => _ => controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
 
   }
 

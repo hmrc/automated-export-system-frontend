@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package viewmodels.checkAnswers
+package viewmodels.checkAnswers.happyPath
 
 import controllers.routes
 import models.{CheckMode, UserAnswers}
-import pages.EnterDucrPage
+import pages.happyPath.EnterMrnPage
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import viewmodels.govuk.summarylist._
-import viewmodels.implicits._
+import viewmodels.govuk.summarylist.*
+import viewmodels.implicits.*
 
-object EnterDucrSummary  {
+object EnterMrnSummary  {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EnterDucrPage).map {
+    answers.get(EnterMrnPage).map {
       answer =>
 
         SummaryListRowViewModel(
-          key     = "enterDucr.checkYourAnswersLabel",
+          key     = "enterMrn.checkYourAnswersLabel",
           value   = ValueViewModel(HtmlFormat.escape(answer).toString),
           actions = Seq(
-            ActionItemViewModel("site.change", routes.EnterDucrController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("enterDucr.change.hidden"))
+            ActionItemViewModel("site.change", controllers.happyPath.routes.EnterMrnController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("enterMrn.change.hidden"))
           )
         )
     }
