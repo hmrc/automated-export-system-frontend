@@ -26,9 +26,11 @@ import models._
 @Singleton
 class Navigator @Inject() () {
 
-  private val normalRoutes: Page => UserAnswers => Call = { case _ =>
-    _ => routes.IndexController.onPageLoad()
-  }
+  val normalRoutes: Page => UserAnswers => Call =
+    _ => _ => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
+
+  val checkRoutes: Page => UserAnswers => Call =
+    _ => _ => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
 
   private val checkRouteMap: Page => UserAnswers => Call = { case _ =>
     _ => routes.CheckYourAnswersController.onPageLoad()

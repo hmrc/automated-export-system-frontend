@@ -10,7 +10,7 @@ GET         /language/:lang                              controllers.LanguageSwi
 
 GET         /refresh-session                             controllers.KeepAliveController.keepAlive()
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem                          controllers.problem.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
 GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad()
 
@@ -24,3 +24,8 @@ GET        /mrn                        controllers.EnterMrnController.onPageLoad
 POST       /mrn                        controllers.EnterMrnController.onSubmit(mode: Mode = NormalMode)
 GET        /changeMrn                  controllers.EnterMrnController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeMrn                  controllers.EnterMrnController.onSubmit(mode: Mode = CheckMode)
+
+GET        /ducr                        controllers.EnterDucrController.onPageLoad(mode: Mode = NormalMode)
+POST       /ducr                        controllers.EnterDucrController.onSubmit(mode: Mode = NormalMode)
+GET        /changeDucr                  controllers.EnterDucrController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDucr                  controllers.EnterDucrController.onSubmit(mode: Mode = CheckMode)
