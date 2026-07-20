@@ -14,16 +14,27 @@
  * limitations under the License.
  */
 
-package models
+package navigation
 
-case class Field(name: String, errorKeys: Map[ErrorType, String])
+import base.SpecBase
+import models.NormalMode
+import pages.happyPath.EnterMrnPage
 
-object Field {
+class HappyPathNavigatorSpec extends SpecBase {
 
-  def apply(name: String, errors: (ErrorType, String)*): Field =
-    Field(name, errors.toMap)
+  val navigator = new HappyPathNavigator
+
+  "ThirdPartyNavigator" - {
+
+    "in Normal mode" - {
+
+      "navigate from EnterMrnPage" - {
+        "to EnterDucrPage" in {
+          val userAnswers = emptyUserAnswers.set(EnterMrnPage, "TEST").success.value
+          navigator.nextPage(EnterMrnPage, NormalMode, userAnswers) mustBe
+            controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
+        }
+      }
+    }
+  }
 }
-
-sealed trait ErrorType
-case object Required extends ErrorType
-case object Invalid extends ErrorType
