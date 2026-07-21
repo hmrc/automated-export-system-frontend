@@ -2,19 +2,19 @@ package controllers.happyPath
 
 import base.SpecBase
 import controllers.routes
-import forms.IsSplitExitFormProvider
+import forms.happyPath.IsSplitExitFormProvider
 import models.{NormalMode, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.IsSplitExitPage
+import pages.happyPath.IsSplitExitPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
-import views.html.IsSplitExitView
+import views.html.happyPath.IsSplitExitView
 
 import scala.concurrent.Future
 
@@ -25,7 +25,7 @@ class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new IsSplitExitFormProvider()
   val form = formProvider()
 
-  lazy val isSplitExitRoute = routes.IsSplitExitController.onPageLoad(NormalMode).url
+  lazy val isSplitExitRoute = controllers.happyPath.routes.IsSplitExitController.onPageLoad(NormalMode).url
 
   "IsSplitExit Controller" - {
 
@@ -119,7 +119,7 @@ class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -135,7 +135,7 @@ class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

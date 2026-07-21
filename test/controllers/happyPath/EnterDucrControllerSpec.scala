@@ -30,7 +30,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
-import views.html.EnterDucrView
+import views.html.happyPath.EnterDucrView
 
 import scala.concurrent.Future
 

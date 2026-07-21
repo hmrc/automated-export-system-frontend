@@ -14,7 +14,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
-import views.html.PartOfConsolidationView
+import views.html.happyPath.PartOfConsolidationView
 
 import scala.concurrent.Future
 
@@ -25,7 +25,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new PartOfConsolidationFormProvider()
   val form = formProvider()
 
-  lazy val partOfConsolidationRoute = routes.PartOfConsolidationController.onPageLoad(NormalMode).url
+  lazy val partOfConsolidationRoute = controllers.happyPath.routes.PartOfConsolidationController.onPageLoad(NormalMode).url
 
   "PartOfConsolidation Controller" - {
 
@@ -119,7 +119,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -135,7 +135,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

@@ -18,7 +18,7 @@ package navigation
 
 import base.SpecBase
 import models.NormalMode
-import pages.happyPath.EnterMrnPage
+import pages.happyPath.{EnterMrnPage, PartOfConsolidationPage}
 
 class HappyPathNavigatorSpec extends SpecBase {
 
@@ -33,6 +33,19 @@ class HappyPathNavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(EnterMrnPage, "TEST").success.value
           navigator.nextPage(EnterMrnPage, NormalMode, userAnswers) mustBe
             controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from PartOfConsolidationPage" - {
+        "to IsSplitExitStore when true" in {
+          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, true).success.value
+          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) mustBe
+            controllers.happyPath.routes.IsSplitExitController.onPageLoad(NormalMode)
+        }
+        "to JourneyRecovery TEMPORARY when false" in {
+          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, false).success.value
+          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) mustBe
+            controllers.problem.routes.JourneyRecoveryController.onPageLoad()
         }
       }
     }

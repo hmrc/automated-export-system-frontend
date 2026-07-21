@@ -19,7 +19,7 @@ package controllers.happyPath
 import controllers.actions.*
 import forms.happyPath.PartOfConsolidationFormProvider
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.HappyPathNavigator
 import pages.happyPath.PartOfConsolidationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PartOfConsolidationController @Inject()(
                                          override val messagesApi: MessagesApi,
                                          sessionRepository: SessionRepository,
-                                         navigator: Navigator,
+                                         happyPathNavigator: HappyPathNavigator,
                                          identify: IdentifierAction,
                                          getData: DataRetrievalAction,
                                          requireData: DataRequiredAction,
@@ -75,7 +75,7 @@ class PartOfConsolidationController @Inject()(
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartOfConsolidationPage, value))
             updatedAnswers <- Future.fromTry(answers.set(PartOfConsolidationPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
       )
   }
 }
