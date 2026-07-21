@@ -34,3 +34,8 @@ GET        /part-of-consolidation                        controllers.happyPath.P
 POST       /part-of-consolidation                        controllers.happyPath.PartOfConsolidationController.onSubmit(mode: Mode = NormalMode)
 GET        /change-part-of-consolidation                  controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: Mode = CheckMode)
 POST       /change-part-of-consolidation                  controllers.happyPath.PartOfConsolidationController.onSubmit(mode: Mode = CheckMode)
+
+GET        /split-exit                        controllers.happyPath.IsSplitExitController.onPageLoad(mode: Mode = NormalMode)
+POST       /split-exit                        controllers.happyPath.IsSplitExitController.onSubmit(mode: Mode = NormalMode)
+GET        /change-split-exit                  controllers.happyPath.IsSplitExitController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-split-exit                  controllers.happyPath.IsSplitExitController.onSubmit(mode: Mode = CheckMode)

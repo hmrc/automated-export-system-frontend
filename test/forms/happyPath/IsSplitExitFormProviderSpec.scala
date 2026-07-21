@@ -1,15 +1,14 @@
-package forms
+package forms.happyPath
 
 import forms.behaviours.BooleanFieldBehaviours
-import forms.happyPath.PartOfConsolidationFormProvider
 import play.api.data.FormError
 
-class PartOfConsolidationFormProviderSpec extends BooleanFieldBehaviours {
+class IsSplitExitFormProviderSpec extends BooleanFieldBehaviours {
 
-  val requiredKey = "partOfConsolidation.error.required"
+  val requiredKey = "isSplitExit.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new PartOfConsolidationFormProvider()()
+  val form = new IsSplitExitFormProvider()()
 
   ".value" - {
 
