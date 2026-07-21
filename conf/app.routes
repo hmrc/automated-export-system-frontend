@@ -29,3 +29,8 @@ GET        /ducr                        controllers.happyPath.EnterDucrControlle
 POST       /ducr                        controllers.happyPath.EnterDucrController.onSubmit(mode: Mode = NormalMode)
 GET        /changeDucr                  controllers.happyPath.EnterDucrController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeDucr                  controllers.happyPath.EnterDucrController.onSubmit(mode: Mode = CheckMode)
+
+GET        /part-of-consolidation                        controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: Mode = NormalMode)
+POST       /part-of-consolidation                        controllers.happyPath.PartOfConsolidationController.onSubmit(mode: Mode = NormalMode)
+GET        /change-part-of-consolidation                  controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-part-of-consolidation                  controllers.happyPath.PartOfConsolidationController.onSubmit(mode: Mode = CheckMode)

@@ -17,41 +17,42 @@
 package controllers.happyPath
 
 import controllers.actions.*
-import forms.happyPath.EnterDucrFormProvider
+import forms.happyPath.PartOfConsolidationFormProvider
 import models.{Mode, UserAnswers}
 import navigation.Navigator
-import pages.happyPath.EnterDucrPage
+import pages.happyPath.PartOfConsolidationPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.happyPath.EnterDucrView
+import views.html.happyPath.PartOfConsolidationView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnterDucrController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        navigator: Navigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: EnterDucrFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: EnterDucrView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class PartOfConsolidationController @Inject()(
+                                         override val messagesApi: MessagesApi,
+                                         sessionRepository: SessionRepository,
+                                         navigator: Navigator,
+                                         identify: IdentifierAction,
+                                         getData: DataRetrievalAction,
+                                         requireData: DataRequiredAction,
+                                         formProvider: PartOfConsolidationFormProvider,
+                                         val controllerComponents: MessagesControllerComponents,
+                                         view: PartOfConsolidationView
+                                 )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  //def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
+//  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+    def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
     implicit request =>
 
       val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
 
-//      val preparedForm = request.userAnswers.get(EnterDucrPage) match {
-      val preparedForm = answers.get(EnterDucrPage) match {
+
+//      val preparedForm = request.userAnswers.get(PartOfConsolidationPage) match {
+        val preparedForm = answers.get(PartOfConsolidationPage) match {
         case None => form
         case Some(value) => form.fill(value)
       }
@@ -61,7 +62,7 @@ class EnterDucrController @Inject()(
 
 //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
-  implicit request =>
+    implicit request =>
 
       val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
 
@@ -71,10 +72,10 @@ class EnterDucrController @Inject()(
 
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(EnterDucrPage, value))
+//            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartOfConsolidationPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(PartOfConsolidationPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(EnterDucrPage, mode, updatedAnswers))
+          } yield Redirect(navigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
       )
   }
 }
