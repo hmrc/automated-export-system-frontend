@@ -61,3 +61,9 @@ enterDucr.checkYourAnswersLabel = enterDucr
 enterDucr.error.required = Enter enterDucr
 enterDucr.error.length = EnterDucr must be 100 characters or less
 enterDucr.change.hidden = EnterDucr
+
+partOfConsolidation.title = partOfConsolidation
+partOfConsolidation.heading = partOfConsolidation
+partOfConsolidation.checkYourAnswersLabel = partOfConsolidation
+partOfConsolidation.error.required = Select yes if partOfConsolidation
+partOfConsolidation.change.hidden = PartOfConsolidation
