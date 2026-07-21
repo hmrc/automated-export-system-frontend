@@ -73,3 +73,9 @@ isSplitExit.heading = isSplitExit
 isSplitExit.checkYourAnswersLabel = isSplitExit
 isSplitExit.error.required = Select yes if isSplitExit
 isSplitExit.change.hidden = IsSplitExit
+
+anyDiscrepancies.title = anyDiscrepancies
+anyDiscrepancies.heading = anyDiscrepancies
+anyDiscrepancies.checkYourAnswersLabel = anyDiscrepancies
+anyDiscrepancies.error.required = Select yes if anyDiscrepancies
+anyDiscrepancies.change.hidden = AnyDiscrepancies
