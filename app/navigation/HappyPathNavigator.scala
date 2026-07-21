@@ -16,17 +16,24 @@
 
 package navigation
 
-import controllers.happyPath.EnterDucrController
 import models.{NormalMode, UserAnswers}
 import pages.Page
-import pages.happyPath.EnterMrnPage
+import pages.happyPath.{EnterMrnPage, PartOfConsolidationPage}
 import play.api.mvc.Call
 
 class HappyPathNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
     case EnterMrnPage => _ => controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
+    case PartOfConsolidationPage => partOfConsolidationRoute
+  }
 
+  private def partOfConsolidationRoute(answers: UserAnswers): Call = {
+    answers.get(PartOfConsolidationPage) match {
+      case Some(true) => controllers.happyPath.routes.IsSplitExitController.onPageLoad(NormalMode)
+      case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() //temporary reroute
+      case _ => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
+    }
   }
 
 }
