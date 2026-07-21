@@ -14,7 +14,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import repositories.SessionRepository
-import views.html.AnyDiscrepanciesView
+import views.html.happyPath.AnyDiscrepanciesView
 
 import scala.concurrent.Future
 
@@ -25,7 +25,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new AnyDiscrepanciesFormProvider()
   val form = formProvider()
 
-  lazy val anyDiscrepanciesRoute = routes.AnyDiscrepanciesController.onPageLoad(NormalMode).url
+  lazy val anyDiscrepanciesRoute = controllers.happyPath.routes.AnyDiscrepanciesController.onPageLoad(NormalMode).url
 
   "AnyDiscrepancies Controller" - {
 
@@ -119,7 +119,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -135,7 +135,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
