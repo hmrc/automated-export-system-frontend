@@ -67,3 +67,9 @@ partOfConsolidation.heading = partOfConsolidation
 partOfConsolidation.checkYourAnswersLabel = partOfConsolidation
 partOfConsolidation.error.required = Select yes if partOfConsolidation
 partOfConsolidation.change.hidden = PartOfConsolidation
+
+isSplitExit.title = isSplitExit
+isSplitExit.heading = isSplitExit
+isSplitExit.checkYourAnswersLabel = isSplitExit
+isSplitExit.error.required = Select yes if isSplitExit
+isSplitExit.change.hidden = IsSplitExit
