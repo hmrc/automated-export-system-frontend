@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package generators
+package pages
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import models.OfficeOfExit
+import play.api.libs.json.JsPath
 
-trait ModelGenerators {}
+case object OfficeOfExitPage extends QuestionPage[OfficeOfExit] {
 
-  implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
-    Arbitrary {
-      Gen.oneOf(OfficeOfExit.values.toSeq)
-    }
+  override def path: JsPath = JsPath \ toString
+
+  override def toString: String = "officeOfExit"
+}

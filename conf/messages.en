@@ -82,3 +82,11 @@ anyDiscrepancies.change.hidden = AnyDiscrepancies
 
 cYASubmission.title = cYASubmission
 cYASubmission.heading = cYASubmission
+
+officeOfExit.title = Where do you expect the goods to exit the UK?
+officeOfExit.heading = Where do you expect the goods to exit the UK?
+officeOfExit.belfast = Test
+officeOfExit.larne = Test
+officeOfExit.checkYourAnswersLabel = Where do you expect the goods to exit the UK?
+officeOfExit.error.required = Select officeOfExit
+officeOfExit.change.hidden = OfficeOfExit
