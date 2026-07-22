@@ -79,3 +79,6 @@ anyDiscrepancies.heading = anyDiscrepancies
 anyDiscrepancies.checkYourAnswersLabel = anyDiscrepancies
 anyDiscrepancies.error.required = Select yes if anyDiscrepancies
 anyDiscrepancies.change.hidden = AnyDiscrepancies
+
+cYASubmission.title = cYASubmission
+cYASubmission.heading = cYASubmission
