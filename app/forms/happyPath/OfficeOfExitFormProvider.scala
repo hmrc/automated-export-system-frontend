@@ -14,15 +14,18 @@
  * limitations under the License.
  */
 
-package generators
+package forms.happyPath
 
-import models._
-import org.scalacheck.Arbitrary.arbitrary
-import org.scalacheck.{Arbitrary, Gen}
+import forms.mappings.Mappings
+import models.OfficeOfExit
+import play.api.data.Form
 
-trait ModelGenerators {}
+import javax.inject.Inject
 
-  implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
-    Arbitrary {
-      Gen.oneOf(OfficeOfExit.values.toSeq)
-    }
+class OfficeOfExitFormProvider @Inject() extends Mappings {
+
+  def apply(): Form[OfficeOfExit] =
+    Form(
+      "value" -> enumerable[OfficeOfExit]("officeOfExit.error.required")
+    )
+}
