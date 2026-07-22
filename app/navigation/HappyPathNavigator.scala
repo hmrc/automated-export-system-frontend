@@ -18,13 +18,14 @@ package navigation
 
 import models.{NormalMode, UserAnswers}
 import pages.Page
-import pages.happyPath.{AnyDiscrepanciesPage, EnterMrnPage, IsSplitExitPage, PartOfConsolidationPage}
+import pages.happyPath.{AnyDiscrepanciesPage, EnterDucrPage, EnterMrnPage, IsSplitExitPage, PartOfConsolidationPage}
 import play.api.mvc.Call
 
 class HappyPathNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
     case EnterMrnPage => _ => controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
+    case EnterDucrPage => _ => controllers.happyPath.routes.OfficeOfExitController.onPageLoad(NormalMode)
     case PartOfConsolidationPage => partOfConsolidationRoute
     case IsSplitExitPage => isSplitExitRoute
     case AnyDiscrepanciesPage => anyDiscrepanciesRoute

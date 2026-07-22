@@ -18,7 +18,7 @@ package navigation
 
 import base.SpecBase
 import models.NormalMode
-import pages.happyPath.{EnterMrnPage, IsSplitExitPage, PartOfConsolidationPage}
+import pages.happyPath.{EnterDucrPage, EnterMrnPage, IsSplitExitPage, PartOfConsolidationPage}
 
 class HappyPathNavigatorSpec extends SpecBase {
 
@@ -33,6 +33,14 @@ class HappyPathNavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers.set(EnterMrnPage, "TEST").success.value
           navigator.nextPage(EnterMrnPage, NormalMode, userAnswers) mustBe
             controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from EnterDucrPage" - {
+        "to OfficeOfExitPage" in {
+          val userAnswers = emptyUserAnswers.set(EnterDucrPage, "TEST").success.value
+          navigator.nextPage(EnterDucrPage, NormalMode, userAnswers) mustBe
+            controllers.happyPath.routes.OfficeOfExitController.onPageLoad(NormalMode)
         }
       }
 

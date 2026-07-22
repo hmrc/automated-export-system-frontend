@@ -50,14 +50,15 @@ class OfficeOfExitController @Inject()(
 
         val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
 
-//        val preparedForm = request.userAnswers.get(OfficeOfExitPage) match {
+        //      val preparedForm = request.userAnswers.get(OfficeOfExitPage) match {
         val preparedForm = answers.get(OfficeOfExitPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
 
-      Ok(view(preparedForm, mode))
-  }
+          case None => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, mode))
+    }
 
 //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
     def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {

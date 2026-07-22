@@ -19,7 +19,7 @@ package controllers.happyPath
 import controllers.actions.*
 import forms.happyPath.EnterDucrFormProvider
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.HappyPathNavigator
 import pages.happyPath.EnterDucrPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EnterDucrController @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
-                                        navigator: Navigator,
+                                        happyPathNavigator: HappyPathNavigator,
                                         identify: IdentifierAction,
                                         getData: DataRetrievalAction,
                                         requireData: DataRequiredAction,
@@ -74,7 +74,7 @@ class EnterDucrController @Inject()(
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
             updatedAnswers <- Future.fromTry(answers.set(EnterDucrPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(EnterDucrPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(EnterDucrPage, mode, updatedAnswers))
       )
   }
 }
