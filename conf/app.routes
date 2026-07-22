@@ -44,3 +44,5 @@ GET        /anyDiscrepancies                        controllers.happyPath.AnyDis
 POST       /anyDiscrepancies                        controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: Mode = NormalMode)
 GET        /changeAnyDiscrepancies                  controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: Mode = CheckMode)
 POST       /changeAnyDiscrepancies                  controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /check-answers                       controllers.CYASubmissionController.onPageLoad()
