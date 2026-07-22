@@ -49,7 +49,7 @@ class HappyPathNavigator extends Navigator {
   }
   private def anyDiscrepanciesRoute(answers: UserAnswers): Call = {
     answers.get(AnyDiscrepanciesPage) match {
-      case Some(true) => controllers.happyPath.routes.IsSplitExitController.onPageLoad(NormalMode)
+      case Some(true) => controllers.routes.CYASubmissionController.onPageLoad()
       case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() //temporary reroute
       case None => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
     }
