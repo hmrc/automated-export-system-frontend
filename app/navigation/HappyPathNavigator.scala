@@ -17,7 +17,7 @@
 package navigation
 
 import models.{NormalMode, UserAnswers}
-import pages.Page
+import pages.{OfficeOfExitPage, Page}
 import pages.happyPath.{AnyDiscrepanciesPage, EnterDucrPage, EnterMrnPage, IsSplitExitPage, PartOfConsolidationPage}
 import play.api.mvc.Call
 
@@ -27,6 +27,7 @@ class HappyPathNavigator extends Navigator {
     case EnterMrnPage => _ => controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
     case EnterDucrPage => _ => controllers.happyPath.routes.OfficeOfExitController.onPageLoad(NormalMode)
     case PartOfConsolidationPage => partOfConsolidationRoute
+    case OfficeOfExitPage => _ => controllers.happyPath.routes.PartOfConsolidationController.onPageLoad(NormalMode)
     case IsSplitExitPage => isSplitExitRoute
     case AnyDiscrepanciesPage => anyDiscrepanciesRoute
   }

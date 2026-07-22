@@ -19,7 +19,7 @@ package controllers.happyPath
 import controllers.actions.*
 import forms.happyPath.OfficeOfExitFormProvider
 import models.{Mode, UserAnswers}
-import navigation.Navigator
+import navigation.HappyPathNavigator
 import pages.OfficeOfExitPage
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
@@ -33,7 +33,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OfficeOfExitController @Inject()(
                                        override val messagesApi: MessagesApi,
                                        sessionRepository: SessionRepository,
-                                       navigator: Navigator,
+                                       happyPathNavigator: HappyPathNavigator,
                                        identify: IdentifierAction,
                                        getData: DataRetrievalAction,
                                        requireData: DataRequiredAction,
@@ -76,7 +76,7 @@ class OfficeOfExitController @Inject()(
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfExitPage, value))
             updatedAnswers <- Future.fromTry(answers.set(OfficeOfExitPage, value))
             _              <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(navigator.nextPage(OfficeOfExitPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(OfficeOfExitPage, mode, updatedAnswers))
       )
   }
 }
