@@ -13,7 +13,7 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import repositories.SessionRepository
-import views.html.OfficeOfExitView
+import views.html.happyPath.OfficeOfExitView
 
 import scala.concurrent.Future
 
@@ -21,7 +21,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val officeOfExitRoute = routes.OfficeOfExitController.onPageLoad(NormalMode).url
+  lazy val officeOfExitRoute = controllers.happyPath.routes.OfficeOfExitController.onPageLoad(NormalMode).url
 
   val formProvider = new OfficeOfExitFormProvider()
   val form = formProvider()
@@ -118,7 +118,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -135,7 +135,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual SEE_OTHER
 
-        redirectLocation(result).value mustEqual routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
