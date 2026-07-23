@@ -10,7 +10,7 @@ GET         /language/:lang                              controllers.LanguageSwi
 
 GET         /refresh-session                             controllers.KeepAliveController.keepAlive()
 
-GET         /there-is-a-problem                          controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem                          controllers.problem.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
 GET         /check-your-answers                          controllers.CheckYourAnswersController.onPageLoad()
 
@@ -19,3 +19,35 @@ GET         /account/sign-out                            controllers.auth.AuthCo
 GET         /account/signed-out                          controllers.auth.SignedOutController.onPageLoad()
 
 GET         /unauthorised                                controllers.UnauthorisedController.onPageLoad()
+
+GET        /mrn                        controllers.happyPath.EnterMrnController.onPageLoad(mode: Mode = NormalMode)
+POST       /mrn                        controllers.happyPath.EnterMrnController.onSubmit(mode: Mode = NormalMode)
+GET        /changeMrn                  controllers.happyPath.EnterMrnController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeMrn                  controllers.happyPath.EnterMrnController.onSubmit(mode: Mode = CheckMode)
+
+GET        /ducr                        controllers.happyPath.EnterDucrController.onPageLoad(mode: Mode = NormalMode)
+POST       /ducr                        controllers.happyPath.EnterDucrController.onSubmit(mode: Mode = NormalMode)
+GET        /changeDucr                  controllers.happyPath.EnterDucrController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeDucr                  controllers.happyPath.EnterDucrController.onSubmit(mode: Mode = CheckMode)
+
+GET        /part-of-consolidation                        controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: Mode = NormalMode)
+POST       /part-of-consolidation                        controllers.happyPath.PartOfConsolidationController.onSubmit(mode: Mode = NormalMode)
+GET        /change-part-of-consolidation                  controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-part-of-consolidation                  controllers.happyPath.PartOfConsolidationController.onSubmit(mode: Mode = CheckMode)
+
+GET        /split-exit                        controllers.happyPath.IsSplitExitController.onPageLoad(mode: Mode = NormalMode)
+POST       /split-exit                        controllers.happyPath.IsSplitExitController.onSubmit(mode: Mode = NormalMode)
+GET        /change-split-exit                  controllers.happyPath.IsSplitExitController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-split-exit                  controllers.happyPath.IsSplitExitController.onSubmit(mode: Mode = CheckMode)
+
+GET        /anyDiscrepancies                        controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: Mode = NormalMode)
+POST       /anyDiscrepancies                        controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: Mode = NormalMode)
+GET        /changeAnyDiscrepancies                  controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeAnyDiscrepancies                  controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: Mode = CheckMode)
+
+GET        /check-answers                       controllers.CYASubmissionController.onPageLoad()
+
+GET        /office-of-exit                        controllers.happyPath.OfficeOfExitController.onPageLoad(mode: Mode = NormalMode)
+POST       /office-of-exit                        controllers.happyPath.OfficeOfExitController.onSubmit(mode: Mode = NormalMode)
+GET        /change-office-of-exit                  controllers.happyPath.OfficeOfExitController.onPageLoad(mode: Mode = CheckMode)
+POST       /change-office-of-exit                  controllers.happyPath.OfficeOfExitController.onSubmit(mode: Mode = CheckMode)

@@ -47,3 +47,46 @@ signedOut.guidance = We did not save your answers.
 
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
+
+enterMrn.title = enterMrn
+enterMrn.heading = enterMrn
+enterMrn.checkYourAnswersLabel = enterMrn
+enterMrn.error.required = Enter enterMrn
+enterMrn.error.length = EnterMrn must be 100 characters or less
+enterMrn.change.hidden = EnterMrn
+
+enterDucr.title = enterDucr
+enterDucr.heading = enterDucr
+enterDucr.checkYourAnswersLabel = enterDucr
+enterDucr.error.required = Enter enterDucr
+enterDucr.error.length = EnterDucr must be 100 characters or less
+enterDucr.change.hidden = EnterDucr
+
+partOfConsolidation.title = partOfConsolidation
+partOfConsolidation.heading = partOfConsolidation
+partOfConsolidation.checkYourAnswersLabel = partOfConsolidation
+partOfConsolidation.error.required = Select yes if partOfConsolidation
+partOfConsolidation.change.hidden = PartOfConsolidation
+
+isSplitExit.title = isSplitExit
+isSplitExit.heading = isSplitExit
+isSplitExit.checkYourAnswersLabel = isSplitExit
+isSplitExit.error.required = Select yes if isSplitExit
+isSplitExit.change.hidden = IsSplitExit
+
+anyDiscrepancies.title = anyDiscrepancies
+anyDiscrepancies.heading = anyDiscrepancies
+anyDiscrepancies.checkYourAnswersLabel = anyDiscrepancies
+anyDiscrepancies.error.required = Select yes if anyDiscrepancies
+anyDiscrepancies.change.hidden = AnyDiscrepancies
+
+cYASubmission.title = cYASubmission
+cYASubmission.heading = cYASubmission
+
+officeOfExit.title = Where do you expect the goods to exit the UK?
+officeOfExit.heading = Where do you expect the goods to exit the UK?
+officeOfExit.belfast = Test
+officeOfExit.larne = Test
+officeOfExit.checkYourAnswersLabel = Where do you expect the goods to exit the UK?
+officeOfExit.error.required = Select officeOfExit
+officeOfExit.change.hidden = OfficeOfExit

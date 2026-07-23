@@ -62,7 +62,7 @@ class SessionIdentifierAction @Inject() (val parser: BodyParsers.Default)(implic
       case Some(session) =>
         block(IdentifierRequest(request, session.value))
       case None =>
-        Future.successful(Redirect(routes.JourneyRecoveryController.onPageLoad()))
+        Future.successful(Redirect(controllers.problem.routes.JourneyRecoveryController.onPageLoad()))
     }
   }
 }
