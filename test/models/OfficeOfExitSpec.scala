@@ -32,10 +32,8 @@ class OfficeOfExitSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val gen = Gen.oneOf(OfficeOfExit.values.toSeq)
 
-      forAll(gen) {
-        officeOfExit =>
-
-          JsString(officeOfExit.toString).validate[OfficeOfExit].asOpt.value mustEqual officeOfExit
+      forAll(gen) { officeOfExit =>
+        JsString(officeOfExit.toString).validate[OfficeOfExit].asOpt.value mustEqual officeOfExit
       }
     }
 
@@ -43,10 +41,8 @@ class OfficeOfExitSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val gen = arbitrary[String] suchThat (!OfficeOfExit.values.map(_.toString).contains(_))
 
-      forAll(gen) {
-        invalidValue =>
-
-          JsString(invalidValue).validate[OfficeOfExit] mustEqual JsError("error.invalid")
+      forAll(gen) { invalidValue =>
+        JsString(invalidValue).validate[OfficeOfExit] mustEqual JsError("error.invalid")
       }
     }
 
@@ -54,10 +50,8 @@ class OfficeOfExitSpec extends AnyFreeSpec with Matchers with ScalaCheckProperty
 
       val gen = Gen.oneOf(OfficeOfExit.values.toSeq)
 
-      forAll(gen) {
-        officeOfExit =>
-
-          Json.toJson(officeOfExit) mustEqual JsString(officeOfExit.toString)
+      forAll(gen) { officeOfExit =>
+        Json.toJson(officeOfExit) mustEqual JsString(officeOfExit.toString)
       }
     }
   }

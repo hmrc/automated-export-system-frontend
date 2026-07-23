@@ -30,17 +30,8 @@ class OfficeOfExitFormProviderSpec extends OptionFieldBehaviours {
     val fieldName = "value"
     val requiredKey = "officeOfExit.error.required"
 
-    behave like optionsField[OfficeOfExit](
-      form,
-      fieldName,
-      validValues  = OfficeOfExit.values,
-      invalidError = FormError(fieldName, "error.invalid")
-    )
+    behave like optionsField[OfficeOfExit](form, fieldName, validValues = OfficeOfExit.values, invalidError = FormError(fieldName, "error.invalid"))
 
-    behave like mandatoryField(
-      form,
-      fieldName,
-      requiredError = FormError(fieldName, requiredKey)
-    )
+    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
   }
 }

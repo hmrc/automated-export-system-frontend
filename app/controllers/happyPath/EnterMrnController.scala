@@ -30,49 +30,48 @@ import views.html.happyPath.EnterMrnView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnterMrnController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        happyPathNavigator: HappyPathNavigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: EnterMrnFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: EnterMrnView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class EnterMrnController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  happyPathNavigator: HappyPathNavigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: EnterMrnFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: EnterMrnView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
 
-      val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REPLACED WITH
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) // TO BE REPLACED WITH
 
-      val preparedForm =  answers.get(EnterMrnPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+    val preparedForm = answers.get(EnterMrnPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
-  //TO BE REPLACED WITH
-  //def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
-    implicit request =>
+  // TO BE REPLACED WITH
+  // def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
 
-      val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) // TO BE REMOVED
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(answers.set(EnterMrnPage, value))
-            //updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            // updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(happyPathNavigator.nextPage(EnterMrnPage, mode, updatedAnswers))
       )
   }

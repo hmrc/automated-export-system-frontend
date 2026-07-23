@@ -24,7 +24,5 @@ import javax.inject.Inject
 class IsSplitExitFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("isSplitExit.error.required")
-    )
+    Form("value" -> boolean("isSplitExit.error.required"))
 }

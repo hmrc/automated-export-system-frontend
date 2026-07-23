@@ -26,25 +26,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist.*
 import viewmodels.implicits.*
 
-object OfficeOfExitSummary  {
+object OfficeOfExitSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OfficeOfExitPage).map {
-      answer =>
+    answers.get(OfficeOfExitPage).map { answer =>
 
-        val value = ValueViewModel(
-          HtmlContent(
-            HtmlFormat.escape(messages(s"officeOfExit.$answer"))
-          )
-        )
+      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answer"))))
 
-        SummaryListRowViewModel(
-          key     = "officeOfExit.checkYourAnswersLabel",
-          value   = value,
-          actions = Seq(
-            ActionItemViewModel("site.change", controllers.happyPath.routes.OfficeOfExitController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("officeOfExit.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "officeOfExit.checkYourAnswersLabel",
+        value = value,
+        actions = Seq(
+          ActionItemViewModel("site.change", controllers.happyPath.routes.OfficeOfExitController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("officeOfExit.change.hidden"))
         )
+      )
     }
 }

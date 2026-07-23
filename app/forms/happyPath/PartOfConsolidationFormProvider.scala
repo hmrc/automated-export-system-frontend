@@ -24,7 +24,5 @@ import javax.inject.Inject
 class PartOfConsolidationFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("partOfConsolidation.error.required")
-    )
+    Form("value" -> boolean("partOfConsolidation.error.required"))
 }

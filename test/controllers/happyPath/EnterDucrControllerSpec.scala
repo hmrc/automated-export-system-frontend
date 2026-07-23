@@ -87,10 +87,7 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
+          .overrides(bind[Navigator].toInstance(new FakeNavigator(onwardRoute)), bind[SessionRepository].toInstance(mockSessionRepository))
           .build()
 
       running(application) {
@@ -124,8 +121,8 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    //TODO readd when mongo set up
-    
+    // TODO readd when mongo set up
+
     //    "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
 //      val application = applicationBuilder(userAnswers = None).build()

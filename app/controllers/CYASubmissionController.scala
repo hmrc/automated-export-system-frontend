@@ -28,28 +28,26 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import viewmodels.checkAnswers.happyPath.{EnterDucrSummary, EnterMrnSummary}
 import views.html.CYASubmissionView
 
-class CYASubmissionController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: CYASubmissionView
-                                     ) extends FrontendBaseController with I18nSupport {
+class CYASubmissionController @Inject() (
+  override val messagesApi: MessagesApi,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: CYASubmissionView
+) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
+  def onPageLoad: Action[AnyContent] = (identify andThen getData) { implicit request =>
 
-      val userAnswers      = request.userAnswers.get
+    val userAnswers = request.userAnswers.get
 
-      val rows = rowGenerator(userAnswers)
+    val rows = rowGenerator(userAnswers)
 
-      val list = SummaryListViewModel(rows = rows.flatten)
-      Ok(view(list))
+    val list = SummaryListViewModel(rows = rows.flatten)
+    Ok(view(list))
   }
 
-  private def rowGenerator(answers: UserAnswers)(implicit messages: Messages
-  ): Seq[Option[SummaryListRow]] =
+  private def rowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     Seq(
       EnterMrnSummary.row(answers)
 //      EnterDucrSummary.row(answers)

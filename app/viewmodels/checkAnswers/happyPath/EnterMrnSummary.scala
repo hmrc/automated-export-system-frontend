@@ -25,19 +25,17 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist.*
 import viewmodels.implicits.*
 
-object EnterMrnSummary  {
+object EnterMrnSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EnterMrnPage).map {
-      answer =>
-
-        SummaryListRowViewModel(
-          key     = "enterMrn.checkYourAnswersLabel",
-          value   = ValueViewModel(HtmlFormat.escape(answer).toString),
-          actions = Seq(
-            ActionItemViewModel("site.change", controllers.happyPath.routes.EnterMrnController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("enterMrn.change.hidden"))
-          )
+    answers.get(EnterMrnPage).map { answer =>
+      SummaryListRowViewModel(
+        key = "enterMrn.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        actions = Seq(
+          ActionItemViewModel("site.change", controllers.happyPath.routes.EnterMrnController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("enterMrn.change.hidden"))
         )
+      )
     }
 }

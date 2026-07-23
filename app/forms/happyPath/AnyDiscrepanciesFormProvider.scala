@@ -24,7 +24,5 @@ import javax.inject.Inject
 class AnyDiscrepanciesFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
-    Form(
-      "value" -> boolean("anyDiscrepancies.error.required")
-    )
+    Form("value" -> boolean("anyDiscrepancies.error.required"))
 }

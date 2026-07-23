@@ -22,7 +22,7 @@ import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {}
 
-  implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
-    Arbitrary {
-      Gen.oneOf(OfficeOfExit.values.toSeq)
-    }
+implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
+  Arbitrary {
+    Gen.oneOf(OfficeOfExit.values.toSeq)
+  }

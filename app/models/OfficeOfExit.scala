@@ -27,17 +27,10 @@ object OfficeOfExit extends Enumerable.Implicits {
   case object Belfast extends WithName("belfast") with OfficeOfExit
   case object Larne extends WithName("larne") with OfficeOfExit
 
-  val values: Seq[OfficeOfExit] = Seq(
-    Belfast, Larne
-  )
+  val values: Seq[OfficeOfExit] = Seq(Belfast, Larne)
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map {
-    case (value, index) =>
-      RadioItem(
-        content = Text(messages(s"officeOfExit.${value.toString}")),
-        value   = Some(value.toString),
-        id      = Some(s"value_$index")
-      )
+  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
+    RadioItem(content = Text(messages(s"officeOfExit.${value.toString}")), value = Some(value.toString), id = Some(s"value_$index"))
   }
 
   implicit val enumerable: Enumerable[OfficeOfExit] =

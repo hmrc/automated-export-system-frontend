@@ -29,7 +29,7 @@ class NavigatorSpec extends SpecBase {
 
     "in Normal mode" - {
 
-      //TODO readd when mongo set up
+      // TODO readd when mongo set up
 
       //      "must go from a page that doesn't exist in the route map to Index" in {
 //

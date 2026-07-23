@@ -25,7 +25,5 @@ import javax.inject.Inject
 class OfficeOfExitFormProvider @Inject() extends Mappings {
 
   def apply(): Form[OfficeOfExit] =
-    Form(
-      "value" -> enumerable[OfficeOfExit]("officeOfExit.error.required")
-    )
+    Form("value" -> enumerable[OfficeOfExit]("officeOfExit.error.required"))
 }

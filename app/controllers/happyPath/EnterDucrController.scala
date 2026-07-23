@@ -30,50 +30,49 @@ import views.html.happyPath.EnterDucrView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnterDucrController @Inject()(
-                                        override val messagesApi: MessagesApi,
-                                        sessionRepository: SessionRepository,
-                                        happyPathNavigator: HappyPathNavigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
-                                        formProvider: EnterDucrFormProvider,
-                                        val controllerComponents: MessagesControllerComponents,
-                                        view: EnterDucrView
-                                    )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class EnterDucrController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  happyPathNavigator: HappyPathNavigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: EnterDucrFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: EnterDucrView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
-  //def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
-    implicit request =>
+  // def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
 
-      val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) // TO BE REMOVED
 
 //      val preparedForm = request.userAnswers.get(EnterDucrPage) match {
-      val preparedForm = answers.get(EnterDucrPage) match {
-        case None => form
-        case Some(value) => form.fill(value)
-      }
+    val preparedForm = answers.get(EnterDucrPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
 
-      Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode))
   }
 
 //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
-  implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
 
-      val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) // TO BE REMOVED
 
-      form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
             updatedAnswers <- Future.fromTry(answers.set(EnterDucrPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(happyPathNavigator.nextPage(EnterDucrPage, mode, updatedAnswers))
       )
   }

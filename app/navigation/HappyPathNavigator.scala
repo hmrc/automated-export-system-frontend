@@ -24,35 +24,32 @@ import play.api.mvc.Call
 class HappyPathNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case EnterMrnPage => _ => controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
-    case EnterDucrPage => _ => controllers.happyPath.routes.OfficeOfExitController.onPageLoad(NormalMode)
+    case EnterMrnPage            => _ => controllers.happyPath.routes.EnterDucrController.onPageLoad(NormalMode)
+    case EnterDucrPage           => _ => controllers.happyPath.routes.OfficeOfExitController.onPageLoad(NormalMode)
     case PartOfConsolidationPage => partOfConsolidationRoute
-    case OfficeOfExitPage => _ => controllers.happyPath.routes.PartOfConsolidationController.onPageLoad(NormalMode)
-    case IsSplitExitPage => isSplitExitRoute
-    case AnyDiscrepanciesPage => anyDiscrepanciesRoute
+    case OfficeOfExitPage        => _ => controllers.happyPath.routes.PartOfConsolidationController.onPageLoad(NormalMode)
+    case IsSplitExitPage         => isSplitExitRoute
+    case AnyDiscrepanciesPage    => anyDiscrepanciesRoute
   }
 
-  private def partOfConsolidationRoute(answers: UserAnswers): Call = {
+  private def partOfConsolidationRoute(answers: UserAnswers): Call =
     answers.get(PartOfConsolidationPage) match {
-      case Some(true) => controllers.happyPath.routes.IsSplitExitController.onPageLoad(NormalMode)
-      case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() //temporary reroute
-      case None => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
+      case Some(true)  => controllers.happyPath.routes.IsSplitExitController.onPageLoad(NormalMode)
+      case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() // temporary reroute
+      case None        => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
     }
-  }
 
-  private def isSplitExitRoute(answers: UserAnswers): Call = {
+  private def isSplitExitRoute(answers: UserAnswers): Call =
     answers.get(IsSplitExitPage) match {
-      case Some(true) => controllers.happyPath.routes.AnyDiscrepanciesController.onPageLoad(NormalMode)
-      case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() //temporary reroute
-      case None => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
+      case Some(true)  => controllers.happyPath.routes.AnyDiscrepanciesController.onPageLoad(NormalMode)
+      case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() // temporary reroute
+      case None        => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
     }
-  }
-  private def anyDiscrepanciesRoute(answers: UserAnswers): Call = {
+  private def anyDiscrepanciesRoute(answers: UserAnswers): Call =
     answers.get(AnyDiscrepanciesPage) match {
-      case Some(true) => controllers.routes.CYASubmissionController.onPageLoad()
-      case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() //temporary reroute
-      case None => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
+      case Some(true)  => controllers.routes.CYASubmissionController.onPageLoad()
+      case Some(false) => controllers.problem.routes.JourneyRecoveryController.onPageLoad() // temporary reroute
+      case None        => controllers.problem.routes.JourneyRecoveryController.onPageLoad()
     }
-  }
 
 }

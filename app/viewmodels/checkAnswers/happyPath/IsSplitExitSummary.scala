@@ -24,21 +24,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import viewmodels.govuk.summarylist.*
 import viewmodels.implicits.*
 
-object IsSplitExitSummary  {
+object IsSplitExitSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(IsSplitExitPage).map {
-      answer =>
+    answers.get(IsSplitExitPage).map { answer =>
 
-        val value = if (answer) "site.yes" else "site.no"
+      val value = if (answer) "site.yes" else "site.no"
 
-        SummaryListRowViewModel(
-          key     = "isSplitExit.checkYourAnswersLabel",
-          value   = ValueViewModel(value),
-          actions = Seq(
-            ActionItemViewModel("site.change", controllers.happyPath.routes.IsSplitExitController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
-          )
+      SummaryListRowViewModel(
+        key = "isSplitExit.checkYourAnswersLabel",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel("site.change", controllers.happyPath.routes.IsSplitExitController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
         )
+      )
     }
 }

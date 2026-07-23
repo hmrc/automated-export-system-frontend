@@ -30,52 +30,50 @@ import views.html.happyPath.OfficeOfExitView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class OfficeOfExitController @Inject()(
-                                       override val messagesApi: MessagesApi,
-                                       sessionRepository: SessionRepository,
-                                       happyPathNavigator: HappyPathNavigator,
-                                       identify: IdentifierAction,
-                                       getData: DataRetrievalAction,
-                                       requireData: DataRequiredAction,
-                                       formProvider: OfficeOfExitFormProvider,
-                                       val controllerComponents: MessagesControllerComponents,
-                                       view: OfficeOfExitView
-                                     )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
+class OfficeOfExitController @Inject() (
+  override val messagesApi: MessagesApi,
+  sessionRepository: SessionRepository,
+  happyPathNavigator: HappyPathNavigator,
+  identify: IdentifierAction,
+  getData: DataRetrievalAction,
+  requireData: DataRequiredAction,
+  formProvider: OfficeOfExitFormProvider,
+  val controllerComponents: MessagesControllerComponents,
+  view: OfficeOfExitView
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
 
 //  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-    def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) {
-      implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData) { implicit request =>
 
-        val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) // TO BE REMOVED
 
-        //      val preparedForm = request.userAnswers.get(OfficeOfExitPage) match {
-        val preparedForm = answers.get(OfficeOfExitPage) match {
+    //      val preparedForm = request.userAnswers.get(OfficeOfExitPage) match {
+    val preparedForm = answers.get(OfficeOfExitPage) match {
 
-          case None => form
-          case Some(value) => form.fill(value)
-        }
-
-        Ok(view(preparedForm, mode))
+      case None        => form
+      case Some(value) => form.fill(value)
     }
 
+    Ok(view(preparedForm, mode))
+  }
+
 //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-    def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData).async { implicit request =>
 
-      implicit request =>
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) // TO BE REMOVED
 
-        val answers = request.userAnswers.getOrElse(UserAnswers(request.userId)) //TO BE REMOVED
-
-        form.bindFromRequest().fold(
-        formWithErrors =>
-          Future.successful(BadRequest(view(formWithErrors, mode))),
-
+    form
+      .bindFromRequest()
+      .fold(
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfExitPage, value))
             updatedAnswers <- Future.fromTry(answers.set(OfficeOfExitPage, value))
-            _              <- sessionRepository.set(updatedAnswers)
+            _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(happyPathNavigator.nextPage(OfficeOfExitPage, mode, updatedAnswers))
       )
   }
