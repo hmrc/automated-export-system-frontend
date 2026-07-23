@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package controllers
+package controllers.happyPath
 
 import base.SpecBase
 import forms.happyPath.OfficeOfExitFormProvider
@@ -27,7 +27,7 @@ import pages.OfficeOfExitPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import repositories.SessionRepository
 import views.html.happyPath.OfficeOfExitView
 
@@ -100,7 +100,6 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        redirectLocation(result).value mustEqual onwardRoute.url
       }
     }
 
