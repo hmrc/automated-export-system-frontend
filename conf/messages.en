@@ -48,22 +48,28 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-enterMrn.title = enterMrn
-enterMrn.heading = enterMrn
+cosignmentDetails.caption = Export Operation
+
+enterMrn.title = What is the Movement Reference Number (MRN)?
+enterMrn.heading = What is the Movement Reference Number (MRN)?
+enterMrn.hint = This is the 18-character reference from the EU export declaration. For example, 24DE9876AB0012345T.
 enterMrn.checkYourAnswersLabel = enterMrn
 enterMrn.error.required = Enter enterMrn
 enterMrn.error.length = EnterMrn must be 100 characters or less
 enterMrn.change.hidden = EnterMrn
 
-enterDucr.title = enterDucr
-enterDucr.heading = enterDucr
+enterDucr.title = What is the Declaration Unique Consignment Reference (DUCR)?
+enterDucr.heading = What is the Declaration Unique Consignment Reference (DUCR)?
+enterDucr.hint = This links the movement to the underlying export declaration in CDS. It must match the DUCR used on the original declaration. The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected.
+enterDucr.summary.title = Where to find the DUCR
+enterDucr.summary.message = The DUCR was assigned when the export declaration was submitted to CDS. You can find it on the declaration confirmation or by checking with the declarant.
 enterDucr.checkYourAnswersLabel = enterDucr
 enterDucr.error.required = Enter enterDucr
 enterDucr.error.length = EnterDucr must be 100 characters or less
 enterDucr.change.hidden = EnterDucr
 
-partOfConsolidation.title = partOfConsolidation
-partOfConsolidation.heading = partOfConsolidation
+partOfConsolidation.title = Is this part of a consolidation?
+partOfConsolidation.heading = Is this part of a consolidation?
 partOfConsolidation.checkYourAnswersLabel = partOfConsolidation
 partOfConsolidation.error.required = Select yes if partOfConsolidation
 partOfConsolidation.change.hidden = PartOfConsolidation
@@ -90,3 +96,6 @@ officeOfExit.larne = Test
 officeOfExit.checkYourAnswersLabel = Where do you expect the goods to exit the UK?
 officeOfExit.error.required = Select officeOfExit
 officeOfExit.change.hidden = OfficeOfExit
+
+startSubmission.title = startSubmission
+startSubmission.heading = startSubmission

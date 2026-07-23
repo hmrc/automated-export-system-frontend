@@ -27,6 +27,12 @@
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
+@content = {
+    <div id="mrnHint" class="govuk-hint">
+        @messages("enterMrn.hint")
+    </div>
+}
+
 @layout(pageTitle = title(form, messages("enterMrn.title"))) {
 
     @formHelper(action = happyRoute.EnterMrnController.onSubmit(mode)) {
@@ -41,6 +47,8 @@
                 label = LabelViewModel(messages("enterMrn.heading")).asPageHeading()
             )
             .withWidth(Full)
+            .withHint(HintViewModel(HtmlContent(content)))
+
         )
 
         @govukButton(

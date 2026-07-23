@@ -28,6 +28,8 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.Future
+import viewmodels.checkAnswers.happyPath.{AnyDiscrepanciesSummary, EnterDucrSummary, EnterMrnSummary, IsSplitExitSummary, OfficeOfExitSummary, PartOfConsolidationSummary}
+import views.html.CYASubmissionView
 
 class CYASubmissionController @Inject() (
   override val messagesApi: MessagesApi,
@@ -52,7 +54,11 @@ class CYASubmissionController @Inject() (
 
   private def rowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     Seq(
-      EnterMrnSummary.row(answers)
-//      EnterDucrSummary.row(answers)
+      EnterMrnSummary.row(answers),
+      EnterDucrSummary.row(answers),
+      OfficeOfExitSummary.row(answers),
+      PartOfConsolidationSummary.row(answers),
+      IsSplitExitSummary.row(answers),
+      AnyDiscrepanciesSummary.row(answers)
     )
 }
