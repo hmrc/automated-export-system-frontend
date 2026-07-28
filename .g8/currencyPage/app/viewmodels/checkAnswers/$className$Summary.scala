@@ -1,8 +1,8 @@
 package viewmodels.checkAnswers
 
-import uk.gov.hmrc.automatedexportsystem.config.CurrencyFormatter.currencyFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.config.CurrencyFormatter.currencyFormat
 import controllers.routes
-import uk.gov.hmrc.automatedexportsystem.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import pages.$className$Page
 import play.api.i18n.Messages
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow

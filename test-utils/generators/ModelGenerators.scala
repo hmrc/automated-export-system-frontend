@@ -15,5 +15,12 @@
  */
 
 package generators
+import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
+import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {}
+
+implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
+  Arbitrary {
+    Gen.oneOf(OfficeOfExit.values.toSeq)
+  }

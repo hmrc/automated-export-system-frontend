@@ -1,11 +1,11 @@
 package viewmodels.checkAnswers
 
 import controllers.routes
-import uk.gov.hmrc.automatedexportsystem.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import pages.$className$Page
 import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.automatedexportsystem.DateTimeFormats.dateTimeFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.DateTimeFormats.dateTimeFormat
 
 object $className$Summary  {
 

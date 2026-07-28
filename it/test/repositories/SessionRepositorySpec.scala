@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package repositories
+package uk.gov.hmrc.automatedexportsystemfrontend.repositories
 
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
@@ -23,13 +23,14 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.should.Matchers.{should, shouldEqual}
 import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.MDC
 import uk.gov.hmrc.mdc.MdcExecutionContext
 import play.api.libs.json.Json
-import uk.gov.hmrc.automatedexportsystem.config.FrontendAppConfig
-import uk.gov.hmrc.automatedexportsystem.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystem.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.{Clock, Instant, ZoneId}
@@ -62,7 +63,7 @@ class SessionRepositorySpec
       val setResult = repository.set(userAnswers).futureValue
       val updatedRecord = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
 
-      updatedRecord mustEqual expectedResult
+      updatedRecord shouldEqual expectedResult
     }
 
     mustPreserveMdc(repository.set(userAnswers))
@@ -79,7 +80,7 @@ class SessionRepositorySpec
         val result = repository.get(userAnswers.id).futureValue
         val expectedResult = userAnswers copy (lastUpdated = instant)
 
-        result.value mustEqual expectedResult
+        result.value shouldEqual expectedResult
       }
     }
 
@@ -87,7 +88,7 @@ class SessionRepositorySpec
 
       "must return None" in {
 
-        repository.get("id that does not exist").futureValue must not be defined
+        repository.get("id that does not exist").futureValue should not be defined
       }
     }
 
@@ -102,13 +103,13 @@ class SessionRepositorySpec
 
       val result = repository.clear(userAnswers.id).futureValue
 
-      repository.get(userAnswers.id).futureValue must not be defined
+      repository.get(userAnswers.id).futureValue should not be defined
     }
 
     "must return true when there is no record to remove" in {
       val result = repository.clear("id that does not exist").futureValue
 
-      result mustEqual true
+      result shouldEqual true
     }
 
     mustPreserveMdc(repository.clear(userAnswers.id))
@@ -135,7 +136,7 @@ class SessionRepositorySpec
 
       "must return true" in {
 
-        repository.keepAlive("id that does not exist").futureValue mustEqual true
+        repository.keepAlive("id that does not exist").futureValue shouldEqual true
       }
     }
 
@@ -149,6 +150,6 @@ class SessionRepositorySpec
 
       (f.map { _ =>
         Option(MDC.get("test"))
-      }.futureValue) mustEqual Some("foo")
+      }.futureValue) shouldEqual Some("foo")
     }
 }

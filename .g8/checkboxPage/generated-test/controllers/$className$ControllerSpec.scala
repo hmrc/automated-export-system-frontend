@@ -2,7 +2,7 @@ package controllers
 
 import base.SpecBase
 import forms.$className$FormProvider
-import uk.gov.hmrc.automatedexportsystem.models.{NormalMode, $className$, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, $className$, UserAnswers}
 import navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when

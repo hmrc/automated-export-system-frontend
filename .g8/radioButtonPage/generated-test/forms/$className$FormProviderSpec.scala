@@ -1,7 +1,7 @@
 package forms
 
 import forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.automatedexportsystem.models.$className$
+import uk.gov.hmrc.automatedexportsystemfrontend.models.$className$
 import play.api.data.FormError
 
 class $className$FormProviderSpec extends OptionFieldBehaviours {

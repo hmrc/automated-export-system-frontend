@@ -33,10 +33,13 @@ lazy val microservice = (project in file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "uk.gov.hmrc.hmrcfrontend.views.config._",
-      "uk.gov.hmrc.automatedexportsystem.views.ViewUtils._",
-      "uk.gov.hmrc.automatedexportsystem.controllers.routes._"
-    ).distinct,
-    PlayKeys.playDefaultPort := 9000,
+      "uk.gov.hmrc.automatedexportsystemfrontend.views.html.templates._",
+      "uk.gov.hmrc.automatedexportsystemfrontend.views.ViewUtils._",
+      "uk.gov.hmrc.automatedexportsystemfrontend.models.Mode",
+      "uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes._",
+      "uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all._"
+    ),
+    PlayKeys.playDefaultPort := 5002,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +
       ".*Routes.*;.*viewmodels.govuk.*;",
     ScoverageKeys.coverageMinimumStmtTotal := 78,

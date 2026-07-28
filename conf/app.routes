@@ -4,18 +4,54 @@
 
 GET         /assets/*file                                controllers.Assets.versioned(path="/public", file: Asset)
 
-GET         /                                            uk.gov.hmrc.automatedexportsystem.controllers.IndexController.onPageLoad()
+GET         /                                            uk.gov.hmrc.automatedexportsystemfrontend.controllers.IndexController.onPageLoad()
 
-GET         /language/:lang                              uk.gov.hmrc.automatedexportsystem.controllers.LanguageSwitchController.switchToLanguage(lang: String)
+GET         /language/:lang                              uk.gov.hmrc.automatedexportsystemfrontend.controllers.LanguageSwitchController.switchToLanguage(lang: String)
 
-GET         /refresh-session                             uk.gov.hmrc.automatedexportsystem.controllers.KeepAliveController.keepAlive()
+GET         /refresh-session                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.KeepAliveController.keepAlive()
 
-GET         /there-is-a-problem                          uk.gov.hmrc.automatedexportsystem.controllers.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
+GET         /there-is-a-problem                          uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                          uk.gov.hmrc.automatedexportsystem.controllers.CheckYourAnswersController.onPageLoad()
+GET         /there-is-a-problem                          uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /account/sign-out-survey                     uk.gov.hmrc.automatedexportsystem.controllers.auth.AuthController.signOut()
-GET         /account/sign-out                            uk.gov.hmrc.automatedexportsystem.controllers.auth.AuthController.signOutNoSurvey()
-GET         /account/signed-out                          uk.gov.hmrc.automatedexportsystem.controllers.auth.SignedOutController.onPageLoad()
+GET         /check-your-answers                          uk.gov.hmrc.automatedexportsystemfrontend.controllers.CheckYourAnswersController.onPageLoad()
 
-GET         /unauthorised                                uk.gov.hmrc.automatedexportsystem.controllers.UnauthorisedController.onPageLoad()
+
+GET         /account/sign-out-survey                     uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth.AuthController.signOut()
+GET         /account/sign-out                            uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth.AuthController.signOutNoSurvey()
+GET         /account/signed-out                          uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth.SignedOutController.onPageLoad()
+
+
+GET         /unauthorised                                uk.gov.hmrc.automatedexportsystemfrontend.controllers.UnauthorisedController.onPageLoad()
+
+GET        /mrn                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterMrnController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+POST       /mrn                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterMrnController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+GET        /changeMrn                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterMrnController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+POST       /changeMrn                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterMrnController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /ducr                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterDucrController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+POST       /ducr                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterDucrController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+GET        /changeDucr                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterDucrController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+POST       /changeDucr                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.EnterDucrController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /part-of-consolidation                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+POST       /part-of-consolidation                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.PartOfConsolidationController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+GET        /change-part-of-consolidation                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+POST       /change-part-of-consolidation                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.PartOfConsolidationController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /split-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+POST       /split-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+GET        /change-split-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+POST       /change-split-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /anyDiscrepancies                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+POST       /anyDiscrepancies                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+GET        /changeAnyDiscrepancies                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+POST       /changeAnyDiscrepancies                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /check-answers                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.CYASubmissionController.onPageLoad()
+
+GET        /office-of-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+POST       /office-of-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+GET        /change-office-of-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+POST       /change-office-of-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
