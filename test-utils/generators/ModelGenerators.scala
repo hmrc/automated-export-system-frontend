@@ -15,9 +15,7 @@
  */
 
 package generators
-
-import models._
-import org.scalacheck.Arbitrary.arbitrary
+import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
 import org.scalacheck.{Arbitrary, Gen}
 
 trait ModelGenerators {}

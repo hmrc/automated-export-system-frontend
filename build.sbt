@@ -6,7 +6,14 @@ import uk.gov.hmrc.versioning.SbtGitVersioning.autoImport.majorVersion
 lazy val appName: String = "automated-export-system-frontend"
 
 ThisBuild / majorVersion := 0
-ThisBuild / scalaVersion := "3.3.7"
+ThisBuild / scalaVersion := "3.3.8"
+ThisBuild / scalacOptions ++= Seq(
+  "-deprecation",
+  "-feature",
+  "-unchecked",
+  "-language:implicitConversions"
+).distinct
+ThisBuild / scalafmtOnCompile := true
 
 lazy val microservice = (project in file("."))
   .enablePlugins(PlayScala, SbtDistributablesPlugin)
@@ -15,10 +22,10 @@ lazy val microservice = (project in file("."))
   .settings(ThisBuild / useSuperShell := false)
   .settings(
     name := appName,
-    RoutesKeys.routesImport ++= Seq(
-      "models._",
+    RoutesKeys.routesImport := Seq(
+      "controllers.Assets.Asset",
       "uk.gov.hmrc.play.bootstrap.binders.RedirectUrl"
-    ),
+    ).distinct,
     TwirlKeys.templateImports ++= Seq(
       "play.twirl.api.HtmlFormat",
       "play.twirl.api.HtmlFormat._",
@@ -26,10 +33,11 @@ lazy val microservice = (project in file("."))
       "uk.gov.hmrc.hmrcfrontend.views.html.components._",
       "uk.gov.hmrc.hmrcfrontend.views.html.helpers._",
       "uk.gov.hmrc.hmrcfrontend.views.config._",
-      "views.ViewUtils._",
-      "models.Mode",
-      "controllers.routes._",
-      "viewmodels.govuk.all._"
+      "uk.gov.hmrc.automatedexportsystemfrontend.views.html.templates._",
+      "uk.gov.hmrc.automatedexportsystemfrontend.views.ViewUtils._",
+      "uk.gov.hmrc.automatedexportsystemfrontend.models.Mode",
+      "uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes._",
+      "uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all._"
     ),
     PlayKeys.playDefaultPort := 5002,
     ScoverageKeys.coverageExcludedFiles := "<empty>;Reverse.*;.*handlers.*;.*components.*;" +
@@ -37,10 +45,6 @@ lazy val microservice = (project in file("."))
     ScoverageKeys.coverageMinimumStmtTotal := 78,
     ScoverageKeys.coverageFailOnMinimum := true,
     ScoverageKeys.coverageHighlighting := true,
-    scalacOptions ++= Seq(
-      "-feature",
-      "-Wconf:cat=deprecation:ws,cat=feature:ws,cat=optimizer:ws,src=target/.*:s"
-    ),
     libraryDependencies ++= AppDependencies(),
     retrieveManaged := true,
     pipelineStages := Seq(digest),

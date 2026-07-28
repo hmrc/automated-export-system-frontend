@@ -1,6 +1,6 @@
 package forms
 
-import config.CurrencyFormatter.currencyFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.config.CurrencyFormatter.currencyFormat
 import forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError

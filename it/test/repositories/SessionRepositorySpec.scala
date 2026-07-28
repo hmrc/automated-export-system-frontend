@@ -1,7 +1,21 @@
-package repositories
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import config.FrontendAppConfig
-import models.UserAnswers
+package uk.gov.hmrc.automatedexportsystemfrontend.repositories
+
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
 import org.scalactic.source.Position
@@ -9,40 +23,36 @@ import org.scalatest.OptionValues
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.scalatest.matchers.should.Matchers.{should, shouldEqual}
 import org.scalatestplus.mockito.MockitoSugar
 import org.slf4j.MDC
 import uk.gov.hmrc.mdc.MdcExecutionContext
 import play.api.libs.json.Json
+import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.{Clock, Instant, ZoneId}
 import java.time.temporal.ChronoUnit
-import scala.concurrent.{ExecutionContext, Future, ExecutionContextExecutorService}
+import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
 
 class SessionRepositorySpec
-  extends AnyFreeSpec
-    with Matchers
-    with DefaultPlayMongoRepositorySupport[UserAnswers]
-    with ScalaFutures
-    with IntegrationPatience
-    with OptionValues
+    extends AnyFreeSpec with Matchers with DefaultPlayMongoRepositorySupport[UserAnswers] with ScalaFutures with IntegrationPatience with OptionValues
     with MockitoSugar {
 
   private val instant = Instant.now.truncatedTo(ChronoUnit.MILLIS)
   private val stubClock: Clock = Clock.fixed(instant, ZoneId.systemDefault)
 
-  private val userAnswers = UserAnswers("id", Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
+  private val userAnswers = UserAnswers("some-eori", Json.obj("foo" -> "bar"), Instant.ofEpochSecond(1))
 
   private val mockAppConfig = mock[FrontendAppConfig]
   when(mockAppConfig.cacheTtl) thenReturn 1L
 
   implicit val productionLikeTestMdcExecutionContext: ExecutionContext = MdcExecutionContext()
 
-  protected override val repository: SessionRepository = new SessionRepository(
-    mongoComponent = mongoComponent,
-    appConfig      = mockAppConfig,
-    clock          = stubClock
-  )
+  protected override val repository: SessionRepository =
+    new SessionRepository(mongoComponent = mongoComponent, appConfig = mockAppConfig, clock = stubClock)
 
   ".set" - {
 
@@ -50,10 +60,10 @@ class SessionRepositorySpec
 
       val expectedResult = userAnswers copy (lastUpdated = instant)
 
-      val setResult     = repository.set(userAnswers).futureValue
+      val setResult = repository.set(userAnswers).futureValue
       val updatedRecord = find(Filters.equal("_id", userAnswers.id)).futureValue.headOption.value
 
-      updatedRecord mustEqual expectedResult
+      updatedRecord shouldEqual expectedResult
     }
 
     mustPreserveMdc(repository.set(userAnswers))
@@ -67,10 +77,10 @@ class SessionRepositorySpec
 
         insert(userAnswers).futureValue
 
-        val result         = repository.get(userAnswers.id).futureValue
+        val result = repository.get(userAnswers.id).futureValue
         val expectedResult = userAnswers copy (lastUpdated = instant)
 
-        result.value mustEqual expectedResult
+        result.value shouldEqual expectedResult
       }
     }
 
@@ -78,7 +88,7 @@ class SessionRepositorySpec
 
       "must return None" in {
 
-        repository.get("id that does not exist").futureValue must not be defined
+        repository.get("id that does not exist").futureValue should not be defined
       }
     }
 
@@ -93,13 +103,13 @@ class SessionRepositorySpec
 
       val result = repository.clear(userAnswers.id).futureValue
 
-      repository.get(userAnswers.id).futureValue must not be defined
+      repository.get(userAnswers.id).futureValue should not be defined
     }
 
     "must return true when there is no record to remove" in {
       val result = repository.clear("id that does not exist").futureValue
 
-      result mustEqual true
+      result shouldEqual true
     }
 
     mustPreserveMdc(repository.clear(userAnswers.id))
@@ -126,7 +136,7 @@ class SessionRepositorySpec
 
       "must return true" in {
 
-        repository.keepAlive("id that does not exist").futureValue mustEqual true
+        repository.keepAlive("id that does not exist").futureValue shouldEqual true
       }
     }
 
@@ -140,6 +150,6 @@ class SessionRepositorySpec
 
       (f.map { _ =>
         Option(MDC.get("test"))
-      }.futureValue) mustEqual Some("foo")
+      }.futureValue) shouldEqual Some("foo")
     }
 }
