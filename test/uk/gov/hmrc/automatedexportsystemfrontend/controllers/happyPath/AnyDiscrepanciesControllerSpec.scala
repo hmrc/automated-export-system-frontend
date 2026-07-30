@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -24,14 +23,14 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath.AnyDiscrepanciesFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.FakeNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.AnyDiscrepanciesPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.AnyDiscrepanciesView
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
@@ -64,7 +63,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldEqual OK
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-        body should include("anyDiscrepancies")
+        body should include("Are there any discrepancies with this consignment?")
       }
     }
 

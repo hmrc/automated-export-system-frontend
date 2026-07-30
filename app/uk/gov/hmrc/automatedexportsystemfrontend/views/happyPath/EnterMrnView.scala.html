@@ -41,15 +41,19 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("enterMrn.heading")).asPageHeading()
+                label = HmrcPageHeadingLabel(
+                    content = messages("enterMrn.heading"),
+                    classes = "govuk-label--l",
+                    caption = HmrcSectionCaption(messages("site.caption.exportOperation")),
+                )
             )
-            .withWidth(Full)
+            .withWidth(OneHalf)
             .withHint(HintViewModel(HtmlContent(content)))
-
-        )
+)
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))

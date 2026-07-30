@@ -15,17 +15,73 @@
  *@
 
 @this(
-    layout: Layout
+layout: templates.Layout,
+govukButton: GovukButton,
+govukInsetText: GovukInsetText
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
-@layout(
-    pageTitle    = titleNoForm(messages("index.title")),
-    showBackLink = false
-) {
+@layout(pageTitle = titleNoForm(messages("startSubmission.title")), showBackLink = false) {
 
-    <h1 class="govuk-heading-xl">@messages("index.heading")</h1>
+    <h1 class="govuk-heading-xl">@messages("startSubmission.heading")</h1>
 
-    <p class="govuk-body">@messages("index.guidance")</p>
+    <p class="govuk-body">@messages("startSubmission.message1")</p>
+
+    <p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head1")</p>
+
+    <ul class="govuk-list--bullet">
+        <li>
+            <a class="govuk-body govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes.EnterMrnController.onPageLoad(uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode).url">@messages("startSubmission.bullet1")</a>
+        </li>
+        <li>
+            <a class="govuk-body govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController.onPageLoad()">@messages("startSubmission.bullet2")</a>
+        </li>
+    </ul>
+
+    <p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head2")</p>
+
+    <ul class="govuk-list--bullet">
+        <li class="govuk-body">
+            @messages("startSubmission.bullet3")
+        </li>
+        <li class="govuk-body">
+            @messages("startSubmission.bullet4")
+        </li>
+        <li class="govuk-body">
+            @messages("startSubmission.bullet5")
+        </li>
+    </ul>
+
+    <p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head3")</p>
+
+    <ul class="govuk-list--bullet">
+        <li class="govuk-body">
+            @messages("startSubmission.bullet6")
+        </li>
+        <li class="govuk-body">
+            @messages("startSubmission.bullet7")
+        </li>
+        <li class="govuk-body">
+            @messages("startSubmission.bullet8")
+        </li>
+        <li class="govuk-body">
+            @messages("startSubmission.bullet9")
+        </li>
+        <li class="govuk-body">
+            @messages("startSubmission.bullet10")
+        </li>
+    </ul>
+
+    @govukInsetText(InsetText(
+    content = messages("startSubmission.inset")
+    ))
+
+    <div>
+        @govukButton(
+        ButtonViewModel(messages("site.start"))
+        .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes.EnterMrnController.onPageLoad(uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode).url)
+        )
+    </div>
+
 }

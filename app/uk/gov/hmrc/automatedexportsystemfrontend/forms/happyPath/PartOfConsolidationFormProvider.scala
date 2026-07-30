@@ -18,11 +18,27 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
+import play.api.data.Forms.{boolean, mapping, optional, text}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
 
 import javax.inject.Inject
 
 class PartOfConsolidationFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[Boolean] =
-    Form("value" -> boolean("partOfConsolidation.error.required"))
+  def apply(): Form[PartOfConsolidationAnswer] =
+    Form(
+      mapping("boolean" -> boolean("partOfConsolidation.error.required"), "mucr" -> optional(text()))(PartOfConsolidationAnswer.apply)(answer =>
+        Some((answer.boolean, answer.mucr))
+      )
+    )
+
+  def validateAnswer(answer: PartOfConsolidationAnswer): Form[PartOfConsolidationAnswer] = {
+    val emptyForm = apply()
+    if (answer.boolean && answer.mucr.forall(_.trim.isEmpty)) {
+      emptyForm.fill(answer).withError("mucr", "partOfConsolidation.mucr.required")
+    } else {
+      emptyForm.fill(answer)
+    }
+  }
+
 }

@@ -16,9 +16,10 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath
 
+import controllers.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.{routes => happyRoute}
 import play.api.i18n.Messages
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.PartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
@@ -29,7 +30,10 @@ object PartOfConsolidationSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(PartOfConsolidationPage).map { answer =>
 
-      val value = if (answer) "site.yes" else "site.no"
+      val value = answer match {
+        case PartOfConsolidationAnswer(true, Some(mucr)) => messages("site.yes") + " - " + messages("site.mucr") + ": " + mucr
+        case _                                           => "site.no"
+      }
 
       SummaryListRowViewModel(
         key = "partOfConsolidation.checkYourAnswersLabel",

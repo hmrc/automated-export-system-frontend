@@ -16,11 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.{routes => happyRoute}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
+import controllers.routes
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.OfficeOfExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.stringToText
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.stringToKey
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*

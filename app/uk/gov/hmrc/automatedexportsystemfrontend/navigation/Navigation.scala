@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.{routes => appRoute}
+import play.api.mvc.Call
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes as appRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
-import play.api.mvc.Call
 
 import javax.inject.{Inject, Singleton}
 
@@ -27,6 +28,6 @@ import javax.inject.{Inject, Singleton}
 class Navigation @Inject() extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = _ => _ => appRoute.IndexController.onPageLoad()
-  override val checkRoutes: Page => UserAnswers => Call = _ => _ => appRoute.CheckYourAnswersController.onPageLoad()
+  override val checkRoutes: Page => UserAnswers => Call = _ => _ => happyRoute.CYASubmissionController.onPageLoad()
 
 }

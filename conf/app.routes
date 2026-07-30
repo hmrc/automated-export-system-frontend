@@ -14,9 +14,6 @@ GET         /there-is-a-problem                          uk.gov.hmrc.automatedex
 
 GET         /there-is-a-problem                          uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.JourneyRecoveryController.onPageLoad(continueUrl: Option[RedirectUrl] ?= None)
 
-GET         /check-your-answers                          uk.gov.hmrc.automatedexportsystemfrontend.controllers.CheckYourAnswersController.onPageLoad()
-
-
 GET         /account/sign-out-survey                     uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth.AuthController.signOut()
 GET         /account/sign-out                            uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth.AuthController.signOutNoSurvey()
 GET         /account/signed-out                          uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth.SignedOutController.onPageLoad()
@@ -39,21 +36,19 @@ POST       /part-of-consolidation                        uk.gov.hmrc.automatedex
 GET        /change-part-of-consolidation                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.PartOfConsolidationController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-part-of-consolidation                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.PartOfConsolidationController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 
-GET        /any-discrepancies                        controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: Mode = NormalMode)
-POST       /any-discrepancies                        controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: Mode = NormalMode)
-GET        /change-any-discrepancies                  controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: Mode = CheckMode)
-POST       /change-any-discrepancies                  controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: Mode = CheckMode)
-
 GET        /split-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 POST       /split-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 GET        /change-split-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-split-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.IsSplitExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 
-GET        /check-answers                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.CYASubmissionController.onPageLoad()
+GET        /any-discrepancies                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+POST       /any-discrepancies                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
+GET        /change-any-discrepancies                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+POST       /change-any-discrepancies                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.AnyDiscrepanciesController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /check-answers                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.CYASubmissionController.onPageLoad()
 
 GET        /office-of-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 POST       /office-of-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 GET        /change-office-of-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-office-of-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
-
-GET        /start                       controllers.StartSubmissionController.onPageLoad(mode: Mode = CheckMode)

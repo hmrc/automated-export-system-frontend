@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes as appRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 
 class NavigatorSpec extends SpecBase {
@@ -43,7 +43,7 @@ class NavigatorSpec extends SpecBase {
       "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) shouldBe appRoute.CheckYourAnswersController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) shouldBe happyRoute.CYASubmissionController.onPageLoad()
       }
     }
   }

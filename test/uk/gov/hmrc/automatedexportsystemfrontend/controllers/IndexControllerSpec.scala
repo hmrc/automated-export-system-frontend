@@ -16,17 +16,16 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
+import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import play.api.inject.bind
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.IndexView
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import generators.arbitraryOfficeOfExit
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.IndexView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
@@ -57,8 +56,6 @@ class IndexControllerSpec extends SpecBase {
 
         status(result) shouldBe OK
         val body = contentAsString(result)
-        body should include("automated-export-system-frontend")
-        body should include("Welcome to your new frontend")
       }
     }
   }

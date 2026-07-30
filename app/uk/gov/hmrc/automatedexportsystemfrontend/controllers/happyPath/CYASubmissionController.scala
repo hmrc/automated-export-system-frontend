@@ -14,22 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath
 
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath.{EnterDucrSummary, EnterMrnSummary}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.CYASubmissionView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.CYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.Future
-import viewmodels.checkAnswers.happyPath.{AnyDiscrepanciesSummary, EnterDucrSummary, EnterMrnSummary, IsSplitExitSummary, OfficeOfExitSummary, PartOfConsolidationSummary}
-import views.html.CYASubmissionView
 
 class CYASubmissionController @Inject() (
   override val messagesApi: MessagesApi,
@@ -40,25 +38,32 @@ class CYASubmissionController @Inject() (
   view: CYASubmissionView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
 
-    val userAnswers = request.userAnswers.get
+    val userAnswers = request.userAnswers
 
-    val rows = rowGenerator(userAnswers)
-
-    val list = SummaryListViewModel(rows = rows.flatten)
-
-    val page: play.twirl.api.HtmlFormat.Appendable = view(list)
-    Future.successful(Ok(page))
+    Future.successful(
+      Ok(
+        view(
+          SummaryListViewModel(exportOperationRowsGenerator(userAnswers).flatten),
+          SummaryListViewModel(consignmentRowsGenerator(userAnswers).flatten),
+          SummaryListViewModel(customsOfficeExitRowGenerator(userAnswers).flatten),
+          SummaryListViewModel(extraRowsGenerator(userAnswers).flatten)
+        )
+      )
+    )
   }
 
-  private def rowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(
-      EnterMrnSummary.row(answers),
-      EnterDucrSummary.row(answers),
-      OfficeOfExitSummary.row(answers),
-      PartOfConsolidationSummary.row(answers),
-      IsSplitExitSummary.row(answers),
-      AnyDiscrepanciesSummary.row(answers)
-    )
+  private def exportOperationRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+    Seq(EnterMrnSummary.row(answers), IsSplitExitSummary.row(answers))
+
+  private def consignmentRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+    Seq(EnterDucrSummary.row(answers), PartOfConsolidationSummary.row(answers))
+
+  private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+    Seq(OfficeOfExitSummary.row(answers))
+
+  private def extraRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+    Seq(AnyDiscrepanciesSummary.row(answers))
+
 }

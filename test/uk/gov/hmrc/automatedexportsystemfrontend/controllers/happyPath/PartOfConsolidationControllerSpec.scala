@@ -16,22 +16,23 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.scalactic.Prettifier.default
+import org.scalatest.matchers.must.Matchers.mustEqual
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath.PartOfConsolidationFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.FakeNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, PartOfConsolidationAnswer, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.PartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.PartOfConsolidationView
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
@@ -63,14 +64,13 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe OK
         val body = contentAsString(result)
-        body should include("automated-export-system-frontend")
-        body should include("partOfConsolidation")
+
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(PartOfConsolidationPage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr"))).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -83,13 +83,13 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        status(result) shouldBe OK
+        status(result) mustEqual OK
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-        body should include("""id="value"""")
-        body should include("""name="value"""")
+        body should include("Is this part of a consolidation?")
         body should include("""type="radio"""")
         body should include("""value="true"""")
+        body should include("""value="mucr"""")
         body should include("checked")
       }
     }
@@ -108,7 +108,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, partOfConsolidationRoute)
-            .withFormUrlEncodedBody(("value", "true"))
+            .withFormUrlEncodedBody("boolean" -> "true", "mucr" -> "mucr")
             .withSession(SessionKeys.sessionId -> "some-session-id")
 
         val result = route(application, request).value

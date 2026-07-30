@@ -1,4 +1,4 @@
-@*
+/*
  * Copyright 2026 HM Revenue & Customs
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,22 +12,14 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *@
+ */
 
-@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+package uk.gov.hmrc.automatedexportsystemfrontend.models
 
-@this(
-        layout: Layout,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
-)
+import play.api.libs.json.{Format, Json}
 
-@(list: SummaryList)(implicit request: Request[_], messages: Messages)
+case class PartOfConsolidationAnswer(boolean: Boolean, mucr: Option[String])
 
-@layout(pageTitle = titleNoForm(messages("cYASubmission.title"))) {
-
-    <h1 class="govuk-heading-xl">@messages("cYASubmission.heading")</h1>
-
-    @govukSummaryList(list)
-
+object PartOfConsolidationAnswer {
+  implicit val format: Format[PartOfConsolidationAnswer] = Json.format[PartOfConsolidationAnswer]
 }

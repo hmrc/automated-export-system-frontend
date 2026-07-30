@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -23,18 +23,22 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.CheckYourAnswersView
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.SummaryListFluency
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{OfficeOfExit, PartOfConsolidationAnswer}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.CYASubmissionView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
+class CYASubmissionControllerSpec extends SpecBase {
 
-  "Check Your Answers Controller" - {
+  "CYASubmissionController" - {
 
     "must return OK and the correct view for a GET" in {
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
@@ -44,22 +48,50 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+      val userAnswers = emptyUserAnswers
+        .set(EnterMrnPage, "MRN")
+        .get
+        .set(IsSplitExitPage, false)
+        .get
+        .set(EnterDucrPage, "DUCR")
+        .get
+        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("123")))
+        .get
+        .set(OfficeOfExitPage, OfficeOfExit.Belfast)
+        .get
+        .set(AnyDiscrepanciesPage, false)
+        .get
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
+      val exportOperationList = SummaryListViewModel(
+        Seq(EnterMrnSummary.row(userAnswers)(messages(application)), IsSplitExitSummary.row(userAnswers)(messages(application))).flatten
+      )
+
+      val consignmentList = SummaryListViewModel(
+        Seq(EnterDucrSummary.row(userAnswers)(messages(application)), PartOfConsolidationSummary.row(userAnswers)(messages(application))).flatten
+      )
+
+      val customsOfficeExitList = SummaryListViewModel(Seq(OfficeOfExitSummary.row(userAnswers)(messages(application))).flatten)
+
+      val extraRowsList = SummaryListViewModel(Seq(AnyDiscrepanciesSummary.row(userAnswers)(messages(application))).flatten)
+
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, happyRoute.CYASubmissionController.onPageLoad().url)
           .withSession(SessionKeys.sessionId -> "some-session-id")
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CheckYourAnswersView]
-        val list = SummaryListViewModel(Seq.empty)
-
+        val view = application.injector.instanceOf[CYASubmissionView]
         status(result) shouldBe OK
         val body = contentAsString(result)
-        body should include("automated-export-system-frontend")
-        body should include("Check your answers")
+        body should include("MRN")
+        body should include("Is this a split exit?")
+        body should include("DUCR")
+        body should include("Yes - MUCR: 123")
+        body should include("Belfast")
+        body should include("Are there any discrepancies with this consignment?")
       }
     }
 
@@ -76,7 +108,7 @@ class CheckYourAnswersControllerSpec extends SpecBase with SummaryListFluency {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad().url)
+        val request = FakeRequest(GET, happyRoute.CYASubmissionController.onPageLoad().url)
 
         val result = route(application, request).value
 

@@ -16,9 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -26,13 +23,14 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath.OfficeOfExitFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.FakeNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.OfficeOfExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.OfficeOfExitView
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
@@ -71,7 +69,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(OfficeOfExitPage, OfficeOfExit.values.head).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(OfficeOfExitPage, OfficeOfExit.Larne).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -88,12 +86,8 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-
-        body should include("""id="value_0"""")
-        body should include("""name="value"""")
-        body should include("""type="radio"""")
-        body should include("""value="belfast"""")
-        body should include("checked")
+        body should include("Where do you expect the goods to exit the UK?")
+        body should include("""value="larne"""")
       }
     }
 

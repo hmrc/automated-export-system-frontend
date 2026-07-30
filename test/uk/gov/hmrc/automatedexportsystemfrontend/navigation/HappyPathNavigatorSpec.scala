@@ -16,20 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes as appRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.{
-  AnyDiscrepanciesPage,
-  EnterDucrPage,
-  EnterMrnPage,
-  IsSplitExitPage,
-  PartOfConsolidationPage
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.*
 
 class HappyPathNavigatorSpec extends SpecBase {
 
@@ -48,55 +40,70 @@ class HappyPathNavigatorSpec extends SpecBase {
       }
 
       "navigate from EnterDucrPage" - {
-        "to OfficeOfExitPage" in {
+        "to PartOfConsolidationpage" in {
           val userAnswers = emptyUserAnswers.set(EnterDucrPage, "TEST").success.value
           navigator.nextPage(EnterDucrPage, NormalMode, userAnswers) shouldBe
-            happyRoute.OfficeOfExitController.onPageLoad(NormalMode)
-        }
-      }
-
-      "navigate from OfficeOfExitPage" - {
-        "to AnyDiscrepancies" in {
-          val userAnswers = emptyUserAnswers.set(OfficeOfExitPage, OfficeOfExit.Belfast).success.value
-          navigator.nextPage(OfficeOfExitPage, NormalMode, userAnswers) shouldBe
             happyRoute.PartOfConsolidationController.onPageLoad(NormalMode)
         }
       }
 
-      "navigate from PartOfConsolidationPage" - {
-        "to IsSplitExitPage when true" in {
-          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, true).success.value
-          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
+      "navigate from OfficeOfExitPage" - {
+        "to IsSplitExitPage" in {
+          val userAnswers = emptyUserAnswers.set(OfficeOfExitPage, OfficeOfExit.Belfast).success.value
+          navigator.nextPage(OfficeOfExitPage, NormalMode, userAnswers) shouldBe
             happyRoute.IsSplitExitController.onPageLoad(NormalMode)
         }
-        "to JourneyRecovery TEMPORARY when false" in {
-          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, false).success.value
+      }
+
+      "navigate from PartOfConsolidationPage" - {
+        "to OfficeOfExitPage when true" in {
+          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr"))).success.value
+          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
+            happyRoute.OfficeOfExitController.onPageLoad(NormalMode)
+        }
+        "to OfficeOfExitPage when false" in {
+          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None)).success.value
+          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
+            happyRoute.OfficeOfExitController.onPageLoad(NormalMode)
+        }
+        "to JourneyRecovery when None" in {
+          val userAnswers = emptyUserAnswers
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
             problemRoute.JourneyRecoveryController.onPageLoad()
         }
       }
 
       "navigate from IsSplitExitPage" - {
-        "to AnyDiscrepanciesPage when true" in {
-          val userAnswers = emptyUserAnswers.set(IsSplitExitPage, true).success.value
+        "to AnyDiscrepanciesPage when false" in {
+          val userAnswers = emptyUserAnswers.set(IsSplitExitPage, false).success.value
           navigator.nextPage(IsSplitExitPage, NormalMode, userAnswers) shouldBe
             happyRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
         }
-        "to JourneyRecovery TEMPORARY when false" in {
-          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, false).success.value
+        "to JourneyRecovery TEMPORARY when true" in {
+          val userAnswers = emptyUserAnswers.set(IsSplitExitPage, true).success.value
+          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
+            problemRoute.JourneyRecoveryController.onPageLoad()
+        }
+        "to JourneyRecovery TEMPORARY when None" in {
+          val userAnswers = emptyUserAnswers
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
             problemRoute.JourneyRecoveryController.onPageLoad()
         }
       }
 
       "navigate from AnyDiscrepanciesPage" - {
-        "to CYASubmissionController when true" in {
-          val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, true).success.value
+        "to CYASubmissionController when false" in {
+          val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, false).success.value
           navigator.nextPage(AnyDiscrepanciesPage, NormalMode, userAnswers) shouldBe
-            appRoute.CYASubmissionController.onPageLoad()
+            happyRoute.CYASubmissionController.onPageLoad()
         }
-        "to JourneyRecovery TEMPORARY when false" in {
-          val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, false).success.value
+        "to JourneyRecovery TEMPORARY when true" in {
+          val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, false).success.value
+          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
+            problemRoute.JourneyRecoveryController.onPageLoad()
+        }
+        "to JourneyRecovery TEMPORARY when None" in {
+          val userAnswers = emptyUserAnswers
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
             problemRoute.JourneyRecoveryController.onPageLoad()
         }
