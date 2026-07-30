@@ -36,9 +36,8 @@ class AesAuthRequestActionBuilder @Inject() (
   val authConnector: AuthConnector,
   cc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: FrontendAppConfig)
-    extends ActionBuilder[AesAuthRequest, AnyContent] with FrontendHeaderCarrierProvider with Results with AuthorisedFunctions with I18nSupport
-    with Logging {
-  private val logger = Logger(this.getClass)
+    extends ActionBuilder[AesAuthRequest, AnyContent] with FrontendHeaderCarrierProvider with Results with AuthorisedFunctions with I18nSupport {
+  val logger: Logger = Logger(this.getClass.getName)
 
   val messagesApi: MessagesApi = cc.messagesApi
 
