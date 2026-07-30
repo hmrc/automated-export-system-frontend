@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
-import play.api.{Environment, Logger}
+import play.api.{Environment, Logger, Logging}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.*
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
@@ -36,8 +36,9 @@ class AesAuthRequestActionBuilder @Inject() (
   val authConnector: AuthConnector,
   cc: ControllerComponents
 )(implicit val executionContext: ExecutionContext, appConfig: FrontendAppConfig)
-    extends ActionBuilder[AesAuthRequest, AnyContent] with FrontendHeaderCarrierProvider with Results with AuthorisedFunctions with I18nSupport {
-  val logger: Logger = Logger(this.getClass.getName)
+    extends ActionBuilder[AesAuthRequest, AnyContent] with FrontendHeaderCarrierProvider with Results with AuthorisedFunctions with I18nSupport
+    with Logging {
+  private val logger = Logger(this.getClass)
 
   val messagesApi: MessagesApi = cc.messagesApi
 
@@ -62,6 +63,10 @@ class AesAuthRequestActionBuilder @Inject() (
                   block(AesAuthRequest(information.providerId, groupId, eori, sessionId, request))
 
                 case None =>
+                  logger.warn(
+                    s"[AesAuthRequestActionBuilder] Missing sessionId after successful auth. " +
+                      s"path=${request.path}, groupId=$groupId, providerId=${information.providerId}"
+                  )
                   Future.successful(
                     Redirect(
                       appConfig.ggSignInUrl,
@@ -71,6 +76,10 @@ class AesAuthRequestActionBuilder @Inject() (
               }
 
             case None =>
+              logger.warn(
+                s"[AesAuthRequestActionBuilder] Missing EORI after successful auth. " +
+                  s"path=${request.path}, groupId=$groupId, providerId=${information.providerId}"
+              )
               Future.failed(InternalError())
           }
 
