@@ -61,9 +61,7 @@ class PartOfConsolidationController @Inject() (
 
 //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
   def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
     form
       .bindFromRequest()
       .fold(

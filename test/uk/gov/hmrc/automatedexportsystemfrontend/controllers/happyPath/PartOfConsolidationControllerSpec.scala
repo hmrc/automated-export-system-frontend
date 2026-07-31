@@ -141,6 +141,31 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
         body should include("partOfConsolidation")
       }
     }
+
+    "must return an error when yes selected but no mucr entered" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, partOfConsolidationRoute)
+            .withFormUrlEncodedBody("boolean" -> "true", "mucr" -> "")
+            .withSession(SessionKeys.sessionId -> "some-session-id")
+
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[PartOfConsolidationView]
+
+        val result = route(application, request).value
+
+        status(result) shouldBe BAD_REQUEST
+        val body = contentAsString(result)
+        body should include("automated-export-system-frontend")
+        body should include("MUCR required")
+      }
+    }
     // TODO readd when mongo set up
 
 //    "must redirect to Journey Recovery for a GET if no existing data is found" in {

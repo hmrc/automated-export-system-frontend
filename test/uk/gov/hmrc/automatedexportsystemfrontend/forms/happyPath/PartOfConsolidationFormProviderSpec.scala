@@ -49,18 +49,6 @@ class PartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers {
       result.errors must contain(FormError("boolean", "partOfConsolidation.error.required"))
     }
 
-    "return an error when yes selected but MUCR missing" in {
-      val result = form.bind(Map("boolean" -> "true"))
-
-      result.errors must contain(FormError("", "partOfConsolidation.mucr.required"))
-    }
-
-    "return an error when yes selected but MUCR blank" in {
-      val result = form.bind(Map("boolean" -> "true", "mucr" -> ""))
-
-      result.errors must contain(FormError("", "partOfConsolidation.mucr.required"))
-    }
-
     "allow no selected with MUCR omitted" in {
       val result = form.bind(Map("boolean" -> "false"))
 

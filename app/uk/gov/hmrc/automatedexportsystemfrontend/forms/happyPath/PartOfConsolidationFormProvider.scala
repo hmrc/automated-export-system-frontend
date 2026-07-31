@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
-import play.api.data.Forms.{boolean, mapping, optional, text}
+import play.api.data.Forms.{mapping, optional}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
 
 import javax.inject.Inject
