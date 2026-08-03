@@ -16,17 +16,18 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath.PartOfConsolidationFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PartOfConsolidationAnswer, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.PartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.PartOfConsolidationView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +45,7 @@ class PartOfConsolidationController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[PartOfConsolidationAnswer] = formProvider()
 
 //  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
   def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
@@ -60,9 +61,7 @@ class PartOfConsolidationController @Inject() (
 
 //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
   def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
     form
       .bindFromRequest()
       .fold(
@@ -70,12 +69,19 @@ class PartOfConsolidationController @Inject() (
           val errorPage: play.twirl.api.HtmlFormat.Appendable = view(formWithErrors, mode)
           Future.successful(BadRequest(errorPage))
         },
-        value =>
-          for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(PartOfConsolidationPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(PartOfConsolidationPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
+        value => {
+          val validatedForm = formProvider.validateAnswer(value)
+          if (validatedForm.hasErrors) {
+            val errorPage: play.twirl.api.HtmlFormat.Appendable = view(validatedForm, mode)
+            Future.successful(BadRequest(errorPage))
+          } else {
+            val cleanedValue = if (!value.boolean) value.copy(mucr = None) else value
+            for {
+              updatedAnswers <- Future.fromTry(answers.set(PartOfConsolidationPage, cleanedValue))
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(happyPathNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
+          }
+        }
       )
   }
 }

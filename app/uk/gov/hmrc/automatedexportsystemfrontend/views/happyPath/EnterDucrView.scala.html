@@ -27,6 +27,23 @@
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
+@content = {
+    <div id="ducr-hint" class = "govuk-hint">
+        @messages("enterDucr.hint")
+    </div>
+
+    <details class="govuk-details">
+        <summary class="govuk-details__summary">
+            <span class="govuk-details__summary-text">
+                @messages("enterDucr.summary.title")
+            </span>
+        </summary>
+        <div class="govuk-details__text">
+        @messages("enterDucr.summary.message")
+        </div>
+    </details>
+}
+
 @layout(pageTitle = title(form, messages("enterDucr.title"))) {
 
     @formHelper(action = happyRoute.EnterDucrController.onSubmit(mode)) {
@@ -38,9 +55,14 @@
         @govukInput(
             InputViewModel(
                 field = form("value"),
-                label = LabelViewModel(messages("enterDucr.heading")).asPageHeading()
+                label = HmrcPageHeadingLabel(
+                    content = messages("enterDucr.heading"),
+                    classes = "govuk-label--l",
+                    caption = messages("enterDucr.caption")
+                )
             )
             .withWidth(Full)
+            .withHint(HintViewModel(HtmlContent(content)))
         )
 
         @govukButton(

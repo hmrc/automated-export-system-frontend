@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.forms
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
 import play.api.data.FormError
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath.OfficeOfExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
 

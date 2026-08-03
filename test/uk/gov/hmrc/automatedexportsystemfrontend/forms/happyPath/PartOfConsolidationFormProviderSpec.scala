@@ -16,23 +16,43 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
+import org.scalatest.OptionValues.convertOptionToValuable
+import org.scalatest.freespec.AnyFreeSpec
+import org.scalatest.matchers.must.Matchers
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath.PartOfConsolidationFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
 
-class PartOfConsolidationFormProviderSpec extends BooleanFieldBehaviours {
+class PartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers {
 
-  val requiredKey = "partOfConsolidation.error.required"
-  val invalidKey = "error.boolean"
+  private val form = new PartOfConsolidationFormProvider()()
 
-  val form = new PartOfConsolidationFormProvider()()
+  "PartOfConsolidationFormProvider" - {
 
-  ".value" - {
+    "bind when false and no MUCR supplied" in {
+      val result = form.bind(Map("boolean" -> "false"))
 
-    val fieldName = "value"
+      result.value.value mustEqual
+        PartOfConsolidationAnswer(false, None)
+    }
 
-    behave like booleanField(form, fieldName, invalidError = FormError(fieldName, invalidKey))
+    "bind when true and MUCR supplied" in {
+      val result = form.bind(Map("boolean" -> "true", "mucr" -> "123456"))
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+      result.value.value mustEqual
+        PartOfConsolidationAnswer(true, Some("123456"))
+    }
+
+    "return an error when no boolean selected" in {
+      val result = form.bind(Map.empty)
+
+      result.errors must contain(FormError("boolean", "partOfConsolidation.error.required"))
+    }
+
+    "allow no selected with MUCR omitted" in {
+      val result = form.bind(Map("boolean" -> "false"))
+
+      result.errors mustBe empty
+    }
   }
 }

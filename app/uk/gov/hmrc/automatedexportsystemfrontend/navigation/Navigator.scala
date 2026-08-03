@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import javax.inject.{Inject, Singleton}
 import play.api.mvc.Call
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.{routes => problemRoute}
+
+import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Navigator @Inject() () {
@@ -33,7 +34,7 @@ class Navigator @Inject() () {
     _ => _ => problemRoute.JourneyRecoveryController.onPageLoad()
 
   private val checkRouteMap: Page => UserAnswers => Call = { case _ =>
-    _ => routes.CheckYourAnswersController.onPageLoad()
+    _ => happyRoute.CYASubmissionController.onPageLoad()
   }
 
   def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call = mode match {

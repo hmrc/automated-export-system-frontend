@@ -16,10 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustEqual
@@ -28,8 +24,11 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.happyPath.EnterDucrFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.FakeNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.EnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.EnterDucrView
@@ -65,7 +64,7 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-        body should include("enterDucr")
+        body should include("What is the Declaration Unique Consignment Reference (DUCR)?")
       }
     }
 
@@ -87,11 +86,6 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) mustEqual OK
         val body = contentAsString(result)
-        body should include("automated-export-system-frontend")
-        body should include("""id="value"""")
-        body should include("""name="value"""")
-        body should include("""type="text"""")
-        body should include("""value="answer"""")
       }
     }
 

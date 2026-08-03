@@ -17,8 +17,8 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
+import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 sealed trait OfficeOfExit
 
@@ -26,12 +26,16 @@ object OfficeOfExit extends Enumerable.Implicits {
 
   case object Belfast extends WithName("belfast") with OfficeOfExit
   case object Larne extends WithName("larne") with OfficeOfExit
+  case object Warrenpoint extends WithName("warrenpoint") with OfficeOfExit
+  case object Foyle extends WithName("foyle") with OfficeOfExit
 
-  val values: Seq[OfficeOfExit] = Seq(Belfast, Larne)
+  val values: Seq[OfficeOfExit] = Seq(Belfast, Larne, Warrenpoint, Foyle)
 
-  def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
-    RadioItem(content = Text(messages(s"officeOfExit.${value.toString}")), value = Some(value.toString), id = Some(s"value_$index"))
-  }
+  def options(implicit messages: Messages): Seq[SelectItem] =
+    SelectItem(text = messages(s"officeOfExit.placeholder"), value = None, disabled = true, selected = false)
+      +: values.zipWithIndex.map { case (value, index) =>
+        SelectItem(text = messages(s"officeOfExit.${value.toString}"), value = Some(value.toString))
+      }
 
   implicit val enumerable: Enumerable[OfficeOfExit] =
     Enumerable(values.map(v => v.toString -> v): _*)

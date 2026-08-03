@@ -34,12 +34,34 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(messages("isSplitExit.heading")).asPageHeading()
+        @{
+
+            val valueField = form("value")
+
+            val yesItem = RadioItem(
+                id = Some(valueField.id),
+                value = Some("true"),
+                content = Text(messages("isSplitExit.yes"))
             )
-        )
+
+            val noItem = RadioItem(
+                id = Some(s"${valueField.id}-no"),
+                value = Some("false"),
+                content = Text(messages("isSplitExit.no"))
+            )
+
+            govukRadios(
+                RadiosViewModel(
+                    field = valueField,
+                    items = Seq(noItem, yesItem),
+                    legend = HmrcPageHeadingLegend(
+                        content = messages("isSplitExit.heading"),
+                        classes = "govuk-fieldset__legend--l",
+                        caption = messages("site.caption.exportOperation")
+                    )
+                ).withHint(HintViewModel("isSplitExit.hint"))
+            )
+        }
 
         @govukButton(
             ButtonViewModel(messages("site.continue"))
