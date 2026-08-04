@@ -1,0 +1,94 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@this(
+        layout: Layout,
+        govukPanel: GovukPanel,
+        govukInsetText: GovukInsetText
+)
+
+@()(implicit request: Request[_], messages: Messages)
+
+
+@insetContent = {
+    <p class="govuk-body">
+        <span class="govuk-!-font-weight-bold">
+            @messages("standardSubmissionConfirmation.inset.heading")
+        </span>
+        @messages("standardSubmissionConfirmation.inset.message")
+    </p>
+}
+
+@layout(pageTitle = titleNoForm(messages("standardSubmissionConfirmation.title")), showBackLink = false) {
+
+     @govukPanel(Panel(
+      title = Text(messages("standardSubmissionConfirmation.title"))))
+
+    <h2 class="govuk-heading-m">@messages("standardSubmissionConfirmation.subHeading1")</h2>
+
+    <p class="govuk-body">@messages("standardSubmissionConfirmation.message1")</p>
+
+    <p class="govuk-body">@messages("standardSubmissionConfirmation.message2")</p>
+
+    <ul class="govuk-list--bullet">
+        <li>
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">
+                    @messages("standardSubmissionConfirmation.bullet1.heading")
+                </span>
+                @messages("standardSubmissionConfirmation.bullet1.message")
+            </p>
+        </li>
+        <li>
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">
+                    @messages("standardSubmissionConfirmation.bullet2.heading")
+                </span>
+                @messages("standardSubmissionConfirmation.bullet2.message")
+            </p>
+        </li>
+        <li>
+            <p class="govuk-body">
+                <span class="govuk-!-font-weight-bold">
+                    @messages("standardSubmissionConfirmation.bullet3.heading")
+                </span>
+                @messages("standardSubmissionConfirmation.bullet3.message")
+            </p>
+        </li>
+    </ul>
+
+    <p class="govuk-body">@messages("standardSubmissionConfirmation.message3")</p>
+
+    @govukInsetText(InsetText(
+        content = HtmlContent(insetContent)
+    ))
+
+    <h2 class="govuk-heading-m">@messages("standardSubmissionConfirmation.subHeading2")</h2>
+
+    <p class="govuk-body">@messages("standardSubmissionConfirmation.message4")</p>
+
+    <p class="govuk-body">
+        <a class="govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController.onPageLoad().url">
+            @messages("standardSubmissionConfirmation.link1")
+        </a>
+    </p>
+
+    <p class="govuk-body">
+        <a class="govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes.IndexController.onPageLoad().url">
+            @messages("standardSubmissionConfirmation.link2")
+        </a>
+    </p>
+}

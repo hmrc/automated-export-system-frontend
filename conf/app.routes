@@ -52,3 +52,5 @@ GET        /office-of-exit                        uk.gov.hmrc.automatedexportsys
 POST       /office-of-exit                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 GET        /change-office-of-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-office-of-exit                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.OfficeOfExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()
