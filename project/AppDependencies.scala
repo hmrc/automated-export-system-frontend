@@ -2,8 +2,8 @@ import sbt._
 
 object AppDependencies {
 
-  private val bootstrapVersion = "10.7.1"
-  private val hmrcMongoVersion = "2.7.0"
+  private val bootstrapVersion = "10.8.0"
+  private val hmrcMongoVersion = "2.13.0"
 
   val compile = Seq(
     play.sbt.PlayImport.ws,
@@ -16,7 +16,7 @@ object AppDependencies {
   val test = Seq(
     "uk.gov.hmrc"             %% "bootstrap-test-play-30"  % bootstrapVersion,
     "uk.gov.hmrc.mongo"       %% "hmrc-mongo-test-play-30" % hmrcMongoVersion,
-    "org.scalatestplus"       %% "scalacheck-1-17"         % "3.2.17.0"
+    "org.scalatestplus"       %% "scalacheck-1-17"         % "3.2.18.0"
   ).map(_ % Test)
 
   def apply(): Seq[ModuleID] = compile ++ test
