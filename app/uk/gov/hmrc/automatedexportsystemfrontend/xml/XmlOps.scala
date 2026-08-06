@@ -16,9 +16,35 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.xml
 
-import scala.xml.NodeSeq
+import scala.xml._
 
-@FunctionalInterface
-trait XmlWrites[-A] {
-  def writes(a: A): NodeSeq
+trait XmlWrites[T] {
+  def writes(value: T): NodeSeq
+}
+
+object XmlWrites {
+  def apply[T](implicit w: XmlWrites[T]): XmlWrites[T] = w
+  def instance[T](f: T => NodeSeq): XmlWrites[T] = (value: T) => f(value)
+
+  private val aesNamespace =
+    new NamespaceBinding("aes", "http://ecs.dgtaxud.ec", TopScope)
+
+  def rootElem(tag: String, children: NodeSeq*): Elem =
+    Elem("aes", tag, Null, aesNamespace, minimizeEmpty = true, children.flatten: _*)
+
+  def elem(tag: String, children: NodeSeq*): Elem =
+    Elem(null, tag, Null, TopScope, minimizeEmpty = true, children.flatten: _*)
+
+  def textElem[A](tag: String, value: A): Elem =
+    elem(tag, Text(value.toString))
+
+  def optElem[A](tag: String, value: Option[A]): NodeSeq =
+    value.fold(NodeSeq.Empty: NodeSeq)(v => textElem(tag, v))
+
+  implicit def optionWrites[T](implicit w: XmlWrites[T]): XmlWrites[Option[T]] =
+    instance(_.fold(NodeSeq.Empty: NodeSeq)(w.writes))
+}
+
+implicit class XmlOps[T](private val value: T) extends AnyVal {
+  def toXml(implicit w: XmlWrites[T]): NodeSeq = w.writes(value)
 }

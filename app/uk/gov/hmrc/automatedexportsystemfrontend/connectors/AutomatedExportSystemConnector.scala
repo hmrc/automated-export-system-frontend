@@ -33,10 +33,11 @@ import scala.xml.NodeSeq
 class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2)(implicit ec: ExecutionContext)
     extends Logging {
 
-  def submitIE507a(submission: NodeSeq)(implicit hc: HeaderCarrier): Future[Done] =
+  def submitIE507a(submission: String)(implicit hc: HeaderCarrier): Future[Done] =
     httpClient
       .post(url"${frontendAppConfig.automatedExportSystemApi}/message")
-      .withBody(submission.toString)
+      .setHeader("Content-Type" -> "application/xml; charset=UTF-8")
+      .withBody(submission)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {

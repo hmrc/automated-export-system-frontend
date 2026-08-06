@@ -17,6 +17,8 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
 import play.api.libs.json.*
+import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
+import scala.xml.Text
 
 enum ExportOperationType(val status: Int):
   case Standard extends ExportOperationType(1)
@@ -34,4 +36,7 @@ object ExportOperationType {
     },
     Writes(t => JsString(t.toString))
   )
+
+  implicit val xmlWrites: XmlWrites[ExportOperationType] =
+    XmlWrites.instance(t => Text(t.status.toString))
 }
