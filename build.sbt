@@ -11,7 +11,8 @@ ThisBuild / scalacOptions ++= Seq(
   "-deprecation",
   "-feature",
   "-unchecked",
-  "-language:implicitConversions"
+  "-language:implicitConversions",
+  "-Wconf:src=target/.*:s,msg=Flag.*repeatedly:s"
 ).distinct
 ThisBuild / scalafmtOnCompile := true
 
