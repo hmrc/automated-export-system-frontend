@@ -31,5 +31,5 @@ trait Configs {
 
   def servicesConfig = new ServicesConfig(configuration)
 
-  implicit def applicationConfig: FrontendAppConfig = new FrontendAppConfig(configuration)
+  implicit def applicationConfig: FrontendAppConfig = new FrontendAppConfig(configuration, servicesConfig)
 }

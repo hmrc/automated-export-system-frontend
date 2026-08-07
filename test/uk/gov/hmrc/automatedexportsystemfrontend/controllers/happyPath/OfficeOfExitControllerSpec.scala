@@ -87,7 +87,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
         body should include("Where do you expect the goods to exit the UK?")
-        body should include("""value="larne"""")
+        body should include("""value="GB000142"""")
       }
     }
 
