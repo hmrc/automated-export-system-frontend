@@ -21,7 +21,7 @@ import play.api.libs.json.JsPath
 
 case object EnterMrnPage extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "standard" \ toString
 
   override def toString: String = "mrn"
 }

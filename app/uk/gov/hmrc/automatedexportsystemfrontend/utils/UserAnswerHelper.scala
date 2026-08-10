@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath
+package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 
-case object IsSplitExitPage extends QuestionPage[Boolean] {
+class UserAnswerHelper {
 
-  override def path: JsPath = JsPath \ "standard" \ toString
+  def removeStandardSubmissionAnswers(answers: UserAnswers): UserAnswers =
+    answers.removePath(JsPath \ "standard").get
 
-  override def toString: String = "isSplitExit"
 }

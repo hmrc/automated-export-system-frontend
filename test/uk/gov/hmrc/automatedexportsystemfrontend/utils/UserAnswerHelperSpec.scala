@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath
+package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
-import play.api.libs.json.JsPath
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.{IsSplitExitPage, PartOfConsolidationPage}
 
-case object IsSplitExitPage extends QuestionPage[Boolean] {
+class UserAnswerHelperSpec extends SpecBase {
 
-  override def path: JsPath = JsPath \ "standard" \ toString
+  "removeStandardSubmissionAnswers" - {
 
-  override def toString: String = "isSplitExit"
+    val util = new UserAnswerHelper
+
+    "must remove standard answers" in {
+
+      val answers = emptyUserAnswers.set(IsSplitExitPage, true).get
+
+      val cleanedAnswers = util.removeStandardSubmissionAnswers(answers)
+
+      cleanedAnswers.get(IsSplitExitPage) shouldBe None
+    }
+  }
 }
