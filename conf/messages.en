@@ -1,4 +1,4 @@
-service.name = automated-export-system-frontend
+service.name = IE507(a) Arrival at Exit pre-notification
 
 site.back = Back
 site.remove = Remove
@@ -115,10 +115,10 @@ officeOfExit.title = Where do you expect the goods to exit the UK?
 officeOfExit.heading = Where do you expect the goods to exit the UK?
 officeOfExit.caption = Customs office
 officeOfExit.placeholder = Select a customs office
-officeOfExit.belfast = Belfast (GB000051)
-officeOfExit.larne = Larne (GB000142)
-officeOfExit.warrenpoint = Warrenpoint (GB000244)
-officeOfExit.foyle = Foyle (GB000411)
+officeOfExit.GB000051 = Belfast (GB000051)
+officeOfExit.GB000142 = Larne (GB000142)
+officeOfExit.GB000244 = Warrenpoint (GB000244)
+officeOfExit.GB000411 = Foyle (GB000411)
 officeOfExit.checkYourAnswersLabel = Where do you expect the goods to exit the UK?
 officeOfExit.error.required = Select officeOfExit
 officeOfExit.change.hidden = OfficeOfExit
@@ -140,6 +140,25 @@ startSubmission.bullet8 = the Master Unique Consignment Reference (MUCR) if requ
 startSubmission.bullet9 = details of where the goods will leave the UK, and if they'll leave together or separately
 startSubmission.bullet10 = details of anything that doesn't match the export declaration, including goods, weight, packaging or transportation
 startSubmission.inset = The full IE507 will be completed when the arrival (EAL) message is submitted at the point of exit.
+
+standardSubmissionConfirmation.title = IE507(a) pre-notification received
+standardSubmissionConfirmation.heading = IE507(a) pre-notification received
+standardSubmissionConfirmation.subHeading1 = What happens next
+standardSubmissionConfirmation.message1 = We have sent your pre-notification to the Customs Declaration Service for validation. This usually takes a few minutes but can take up to 15 minutes in some cases.
+standardSubmissionConfirmation.message2 = You will receive one of the following outcomes:
+standardSubmissionConfirmation.bullet1.heading = Accepted
+standardSubmissionConfirmation.bullet1.message = - your pre-notification has passed validation and the movement can proceed
+standardSubmissionConfirmation.bullet2.heading = Rejected
+standardSubmissionConfirmation.bullet2.message = - there is a problem with your submission and you will need to correct and resubmit
+standardSubmissionConfirmation.bullet3.heading = Awaiting decision
+standardSubmissionConfirmation.bullet3.message = - we are checking with the EU member state of export (this may take longer)
+standardSubmissionConfirmation.message3 = Once the goods arrive at the port of exit and the arrival (EAL) message is submitted, CDS will combine both to create the full IE507 Arrival at Exit notification.
+standardSubmissionConfirmation.inset.heading = Important:
+standardSubmissionConfirmation.inset.message = Keep your reference number. You can return to check the status of this submission or make amendments within 28 days.
+standardSubmissionConfirmation.subHeading2 = If you need to make changes
+standardSubmissionConfirmation.message4 = You can amend most details of this pre-notification before the goods arrive at the port of exit. However, the MRN and DUCR cannot be amended - you would need to cancel and resubmit.
+standardSubmissionConfirmation.link1 = View your submissions
+standardSubmissionConfirmation.link2 = Submit another IE507(a) notification
 
 discrepancyConsignment.title = How will the goods cross the border?
 discrepancyConsignment.heading = How will the goods cross the border?

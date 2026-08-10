@@ -20,8 +20,7 @@
         layout: Layout,
         govukButton: GovukButton,
         govukSummaryList: GovukSummaryList,
-        govukWarningText: GovukWarningText
-)
+        govukWarningText: GovukWarningText)
 
 @(
     exportOperationList: SummaryList,
@@ -54,9 +53,11 @@
         )
     )
 
+
     <div>
         @govukButton(
-            ButtonViewModel(messages("site.acceptAndSubmit"))
+        ButtonViewModel(messages("site.acceptAndSubmit"))
+        .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.SubmissionController.standardSubmit.url)
         )
     </div>
-}
+    }

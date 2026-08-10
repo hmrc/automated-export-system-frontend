@@ -46,7 +46,7 @@ class OfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
       OfficeOfExitSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("officeOfExit.belfast")),
+          value = ValueViewModel(HtmlContent("officeOfExit.GB000051")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",

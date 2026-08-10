@@ -20,9 +20,10 @@ import com.google.inject.{Inject, Singleton}
 import play.api.Configuration
 import play.api.i18n.Lang
 import play.api.mvc.RequestHeader
+import uk.gov.hmrc.play.bootstrap.config.ServicesConfig
 
 @Singleton
-class FrontendAppConfig @Inject() (configuration: Configuration) {
+class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig: ServicesConfig) {
 
   val host: String = configuration.get[String]("host")
   val appName: String = configuration.get[String]("appName")
@@ -30,8 +31,11 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   private val contactHost = configuration.get[String]("contact-frontend.host")
   private val contactFormServiceIdentifier = "automated-export-system-frontend"
 
+  val automatedExportSystemApi: String = servicesConfig.baseUrl("automated-export-system") +
+    configuration.get[String]("microservice.services.automated-export-system.context")
+
   def feedbackUrl(implicit request: RequestHeader): String =
-    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${host + request.uri}"
+    s"$contactHost/contact/beta-feedback?service=$contactFormServiceIdentifier&backUrl=${host + request.uri}&useServiceNavigation"
 
   val ggSignInUrl: String = configuration.get[String](s"urls.ggSignInUrl")
   val signOutUrl: String = configuration.get[String](s"urls.ggSignOutUrl")
@@ -39,7 +43,7 @@ class FrontendAppConfig @Inject() (configuration: Configuration) {
   val authContinueBaseUrl: String = configuration.get[String]("urls.authContinueBaseUrl")
 
   private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
-  val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/automated-export-system-frontend"
+  val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/automated-export-system-frontend?useServiceNavigation"
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")
