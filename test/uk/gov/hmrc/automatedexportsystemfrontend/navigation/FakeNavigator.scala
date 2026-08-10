@@ -25,3 +25,15 @@ class FakeNavigator(desiredRoute: Call) extends Navigator {
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     desiredRoute
 }
+
+class FakeHappyPathNavigator(desiredRoute: Call) extends HappyPathNavigator {
+
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    desiredRoute
+}
+
+class FakeUnhappyPathNavigator(desiredRoute: Call) extends UnhappyPathNavigator {
+
+  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
+    desiredRoute
+}

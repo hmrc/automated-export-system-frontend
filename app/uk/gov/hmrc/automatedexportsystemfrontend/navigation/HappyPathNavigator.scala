@@ -19,6 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
@@ -43,13 +44,13 @@ class HappyPathNavigator extends Navigator {
 
   private def isSplitExitRoute(answers: UserAnswers): Call =
     answers.get(IsSplitExitPage) match {
-      case Some(true)  => problemRoute.JourneyRecoveryController.onPageLoad() // temporary reroute
+      case Some(true)  => unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
       case Some(false) => happyRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
   private def anyDiscrepanciesRoute(answers: UserAnswers): Call =
     answers.get(AnyDiscrepanciesPage) match {
-      case Some(true)  => problemRoute.JourneyRecoveryController.onPageLoad() // temporary reroute
+      case Some(true)  => unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
       case Some(false) => happyRoute.CYASubmissionController.onPageLoad()
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
