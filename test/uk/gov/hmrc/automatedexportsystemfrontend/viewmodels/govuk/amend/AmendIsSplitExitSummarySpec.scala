@@ -21,8 +21,8 @@ import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.EnterMrnSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.IsSplitExitSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -32,26 +32,46 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   ValueViewModel
 }
 
-class EnterMrnSummarySpec extends AnyFreeSpec with Matchers {
+class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answered, return the summary row" in {
+    "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(EnterMrnPage, "Mrn")
+        .set(IsSplitExitPage, true)
         .get
 
-      EnterMrnSummary.row(userAnswers) shouldBe Some(
+      IsSplitExitSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "enterMrn.checkYourAnswersLabel",
-          value = ValueViewModel("Mrn"),
+          key = "isSplitExit.checkYourAnswersLabel",
+          value = ValueViewModel("site.yes"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.IsSplitExitController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("enterMrn.change.hidden")
+              .withVisuallyHiddenText("isSplitExit.change.hidden")
+          )
+        )
+      )
+    }
+
+    "when No is selected, return the summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(IsSplitExitPage, false)
+        .get
+
+      IsSplitExitSummary.row(userAnswers) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "isSplitExit.checkYourAnswersLabel",
+          value = ValueViewModel("site.no"),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.IsSplitExitController.onPageLoad(CheckMode).url
+            )
+              .withVisuallyHiddenText("isSplitExit.change.hidden")
           )
         )
       )
@@ -59,7 +79,7 @@ class EnterMrnSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      EnterMrnSummary.row(userAnswers) shouldBe None
+      IsSplitExitSummary.row(userAnswers) shouldBe None
     }
   }
 }

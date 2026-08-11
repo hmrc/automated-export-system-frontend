@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
@@ -28,20 +28,20 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterMrnFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterMrnFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.FakeNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterMrnPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.EnterMrnView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendEnterMrnView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
+class AmendEnterMrnControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new EnterMrnFormProvider()
+  val formProvider = new AmendEnterMrnFormProvider()
   val form = formProvider()
 
   lazy val enterMrnRoute = happyRoute.EnterMrnController.onPageLoad(NormalMode).url
@@ -59,7 +59,7 @@ class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[EnterMrnView]
+        val view = application.injector.instanceOf[AmendEnterMrnView]
 
         status(result) mustEqual OK
         val body = contentAsString(result)
@@ -70,7 +70,7 @@ class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(EnterMrnPage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendEnterMrnPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -80,7 +80,7 @@ class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, enterMrnRoute)
           .withSession(SessionKeys.sessionId -> "some-session-id")
 
-        val view = application.injector.instanceOf[EnterMrnView]
+        val view = application.injector.instanceOf[AmendEnterMrnView]
 
         val result = route(application, request).value
 
@@ -131,7 +131,7 @@ class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[EnterMrnView]
+        val view = application.injector.instanceOf[AmendEnterMrnView]
 
         val result = route(application, request).value
 

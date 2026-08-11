@@ -33,7 +33,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
 }
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class OfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
+class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 

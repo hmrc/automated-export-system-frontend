@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form

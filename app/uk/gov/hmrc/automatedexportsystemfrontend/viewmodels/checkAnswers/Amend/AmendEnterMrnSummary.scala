@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => happyRoute}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterMrnPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -28,7 +28,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 object AmendEnterMrnSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(EnterMrnPage).map { answer =>
+    answers.get(AmendEnterMrnPage).map { answer =>
       SummaryListRowViewModel(
         key = "enterMrn.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),

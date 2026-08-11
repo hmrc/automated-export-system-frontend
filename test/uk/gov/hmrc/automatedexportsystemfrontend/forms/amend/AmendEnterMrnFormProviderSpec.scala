@@ -18,9 +18,9 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterMrnFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterMrnFormProvider
 
-class EnterMrnFormProviderSpec extends StringFieldBehaviours {
+class AmendEnterMrnFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "enterMrn.error.required"
   val lengthKey = "enterMrn.error.length"

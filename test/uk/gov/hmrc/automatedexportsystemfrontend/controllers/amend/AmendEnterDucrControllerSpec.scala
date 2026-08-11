@@ -25,22 +25,22 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterDucrFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterDucrFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterDucrPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.EnterDucrView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendEnterDucrView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
+class AmendEnterDucrControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new EnterDucrFormProvider()
+  val formProvider = new AmendEnterDucrFormProvider()
   val form = formProvider()
 
   lazy val enterDucrRoute = happyRoute.EnterDucrController.onPageLoad(NormalMode).url
@@ -59,7 +59,7 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[EnterDucrView]
+        val view = application.injector.instanceOf[AmendEnterDucrView]
 
         status(result) mustEqual OK
         val body = contentAsString(result)
@@ -70,7 +70,7 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(EnterDucrPage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendEnterDucrPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -80,7 +80,7 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, enterDucrRoute)
           .withSession(SessionKeys.sessionId -> "some-session-id")
 
-        val view = application.injector.instanceOf[EnterDucrView]
+        val view = application.injector.instanceOf[AmendEnterDucrView]
 
         val result = route(application, request).value
 
@@ -126,7 +126,7 @@ class EnterDucrControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[EnterDucrView]
+        val view = application.injector.instanceOf[AmendEnterDucrView]
 
         val result = route(application, request).value
 

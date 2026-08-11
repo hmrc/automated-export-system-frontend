@@ -26,22 +26,22 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.PartOfConsolidationFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendPartOfConsolidationFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, PartOfConsolidationAnswer, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.PartOfConsolidationPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.PartOfConsolidationView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendPartOfConsolidationView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
+class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new PartOfConsolidationFormProvider()
+  val formProvider = new AmendPartOfConsolidationFormProvider()
   val form = formProvider()
 
   lazy val partOfConsolidationRoute = happyRoute.PartOfConsolidationController.onPageLoad(NormalMode).url
@@ -60,7 +60,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[PartOfConsolidationView]
+        val view = application.injector.instanceOf[AmendPartOfConsolidationView]
 
         status(result) shouldBe OK
         val body = contentAsString(result)
@@ -70,7 +70,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr"))).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendPartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr"))).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -79,7 +79,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request = FakeRequest(GET, partOfConsolidationRoute)
           .withSession(SessionKeys.sessionId -> "some-session-id")
-        val view = application.injector.instanceOf[PartOfConsolidationView]
+        val view = application.injector.instanceOf[AmendPartOfConsolidationView]
 
         val result = route(application, request).value
 
@@ -131,7 +131,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[PartOfConsolidationView]
+        val view = application.injector.instanceOf[AmendPartOfConsolidationView]
 
         val result = route(application, request).value
 
@@ -156,7 +156,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[PartOfConsolidationView]
+        val view = application.injector.instanceOf[AmendPartOfConsolidationView]
 
         val result = route(application, request).value
 

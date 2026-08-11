@@ -14,19 +14,19 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterDucrFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterDucrFormProvider
 
-class EnterDucrFormProviderSpec extends StringFieldBehaviours {
+class AmendEnterDucrFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "enterDucr.error.required"
   val lengthKey = "enterDucr.error.length"
   val maxLength = 100
 
-  val form = new EnterDucrFormProvider()()
+  val form = new AmendEnterDucrFormProvider()()
 
   ".value" - {
 

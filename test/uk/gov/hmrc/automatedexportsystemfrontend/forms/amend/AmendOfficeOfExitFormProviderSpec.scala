@@ -18,10 +18,10 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.OfficeOfExitFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendOfficeOfExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
 
-class OfficeOfExitFormProviderSpec extends OptionFieldBehaviours {
+class AmendOfficeOfExitFormProviderSpec extends OptionFieldBehaviours {
 
   val form = new OfficeOfExitFormProvider()()
 

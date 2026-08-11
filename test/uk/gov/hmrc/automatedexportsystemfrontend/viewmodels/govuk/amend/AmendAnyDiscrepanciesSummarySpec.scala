@@ -32,7 +32,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   ValueViewModel
 }
 
-class AnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
+class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 

@@ -29,14 +29,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{OfficeOfExit, PartOfConsolidationAnswer}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.CYASubmissionView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class CYASubmissionControllerSpec extends SpecBase {
+class AmendCYASubmissionControllerSpec extends SpecBase {
 
   "CYASubmissionController" - {
 
@@ -67,23 +67,26 @@ class CYASubmissionControllerSpec extends SpecBase {
         .build()
 
       val exportOperationList = SummaryListViewModel(
-        Seq(EnterMrnSummary.row(userAnswers)(messages(application)), IsSplitExitSummary.row(userAnswers)(messages(application))).flatten
+        Seq(AmendEnterMrnSummary.row(userAnswers)(messages(application)), AmendIsSplitExitSummary.row(userAnswers)(messages(application))).flatten
       )
 
       val consignmentList = SummaryListViewModel(
-        Seq(EnterDucrSummary.row(userAnswers)(messages(application)), PartOfConsolidationSummary.row(userAnswers)(messages(application))).flatten
+        Seq(
+          AmendEnterDucrSummary.row(userAnswers)(messages(application)),
+          AmendPartOfConsolidationSummary.row(userAnswers)(messages(application))
+        ).flatten
       )
 
-      val customsOfficeExitList = SummaryListViewModel(Seq(OfficeOfExitSummary.row(userAnswers)(messages(application))).flatten)
+      val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(userAnswers)(messages(application))).flatten)
 
-      val extraRowsList = SummaryListViewModel(Seq(AnyDiscrepanciesSummary.row(userAnswers)(messages(application))).flatten)
+      val extraRowsList = SummaryListViewModel(Seq(AmendAnyDiscrepanciesSummary.row(userAnswers)(messages(application))).flatten)
 
       running(application) {
         val request = FakeRequest(GET, happyRoute.CYASubmissionController.onPageLoad().url)
           .withSession(SessionKeys.sessionId -> "some-session-id")
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CYASubmissionView]
+        val view = application.injector.instanceOf[AmendCYASubmissionView]
         status(result) shouldBe OK
         val body = contentAsString(result)
         body should include("MRN")

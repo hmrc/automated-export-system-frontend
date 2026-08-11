@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
 import controllers.routes
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendOfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.stringToText
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.stringToKey
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
@@ -31,7 +31,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 object AmendOfficeOfExitSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(OfficeOfExitPage).map { answer =>
+    answers.get(AmendOfficeOfExitPage).map { answer =>
 
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answer"))))
 

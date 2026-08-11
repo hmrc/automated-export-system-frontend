@@ -20,9 +20,9 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.IsSplitExitSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.PartOfConsolidationPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.PartOfConsolidationSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -32,26 +32,26 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   ValueViewModel
 }
 
-class IsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
+class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
     "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(IsSplitExitPage, true)
+        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr")))
         .get
 
-      IsSplitExitSummary.row(userAnswers) shouldBe Some(
+      PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "isSplitExit.checkYourAnswersLabel",
-          value = ValueViewModel("site.yes"),
+          key = "partOfConsolidation.checkYourAnswersLabel",
+          value = ValueViewModel("site.yes - site.mucr: mucr"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.IsSplitExitController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("isSplitExit.change.hidden")
+              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )
         )
       )
@@ -59,19 +59,19 @@ class IsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
 
     "when No is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(IsSplitExitPage, false)
+        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None))
         .get
 
-      IsSplitExitSummary.row(userAnswers) shouldBe Some(
+      PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "isSplitExit.checkYourAnswersLabel",
+          key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.IsSplitExitController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("isSplitExit.change.hidden")
+              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )
         )
       )
@@ -79,7 +79,7 @@ class IsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      IsSplitExitSummary.row(userAnswers) shouldBe None
+      PartOfConsolidationSummary.row(userAnswers) shouldBe None
     }
   }
 }

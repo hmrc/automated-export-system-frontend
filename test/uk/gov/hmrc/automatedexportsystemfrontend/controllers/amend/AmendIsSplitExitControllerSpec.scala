@@ -25,22 +25,22 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.IsSplitExitFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendIsSplitExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.IsSplitExitView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendIsSplitExitView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
+class AmendIsSplitExitControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new IsSplitExitFormProvider()
+  val formProvider = new AmendIsSplitExitFormProvider()
   val form = formProvider()
 
   lazy val isSplitExitRoute = happyRoute.IsSplitExitController.onPageLoad(NormalMode).url
@@ -59,7 +59,7 @@ class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[IsSplitExitView]
+        val view = application.injector.instanceOf[AmendIsSplitExitView]
 
         status(result) mustEqual OK
         val body = contentAsString(result)
@@ -70,7 +70,7 @@ class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(IsSplitExitPage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendIsSplitExitPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -80,7 +80,7 @@ class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, isSplitExitRoute)
           .withSession(SessionKeys.sessionId -> "some-session-id")
 
-        val view = application.injector.instanceOf[IsSplitExitView]
+        val view = application.injector.instanceOf[AmendIsSplitExitView]
 
         val result = route(application, request).value
 
@@ -131,7 +131,7 @@ class IsSplitExitControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[IsSplitExitView]
+        val view = application.injector.instanceOf[AmendIsSplitExitView]
 
         val result = route(application, request).value
 

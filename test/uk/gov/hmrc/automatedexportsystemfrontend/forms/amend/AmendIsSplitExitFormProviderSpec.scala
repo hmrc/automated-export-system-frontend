@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.IsSplitExitFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendIsSplitExitFormProvider
 
-class IsSplitExitFormProviderSpec extends BooleanFieldBehaviours {
+class AmendIsSplitExitFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "isSplitExit.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new IsSplitExitFormProvider()()
+  val form = new AmendIsSplitExitFormProvider()()
 
   ".value" - {
 

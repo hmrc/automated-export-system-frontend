@@ -24,22 +24,22 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AnyDiscrepanciesFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendAnyDiscrepanciesFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.AnyDiscrepanciesPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendAnyDiscrepanciesPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AnyDiscrepanciesView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendAnyDiscrepanciesView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
+class AmmendAnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new AnyDiscrepanciesFormProvider()
+  val formProvider = new AmendAnyDiscrepanciesFormProvider()
   val form = formProvider()
 
   lazy val anyDiscrepanciesRoute = happyRoute.AnyDiscrepanciesController.onPageLoad(NormalMode).url
@@ -58,7 +58,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AnyDiscrepanciesView]
+        val view = application.injector.instanceOf[AmendAnyDiscrepanciesView]
 
         status(result) shouldEqual OK
         val body = contentAsString(result)
@@ -69,7 +69,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(AnyDiscrepanciesPage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendAnyDiscrepanciesPage, true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -81,7 +81,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[AnyDiscrepanciesView]
+        val view = application.injector.instanceOf[AmendAnyDiscrepanciesView]
 
         status(result) shouldEqual OK
         val body = contentAsString(result)
@@ -130,7 +130,7 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> ""))
 
-        val view = application.injector.instanceOf[AnyDiscrepanciesView]
+        val view = application.injector.instanceOf[AmendAnyDiscrepanciesView]
 
         val result = route(application, request).value
 

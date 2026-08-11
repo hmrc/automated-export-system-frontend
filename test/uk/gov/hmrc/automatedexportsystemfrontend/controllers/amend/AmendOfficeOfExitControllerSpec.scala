@@ -24,24 +24,24 @@ import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.OfficeOfExitFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendOfficeOfExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendOfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.OfficeOfExitView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendOfficeOfExitView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
+class AmendOfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
   lazy val officeOfExitRoute = happyRoute.OfficeOfExitController.onPageLoad(NormalMode).url
 
-  val formProvider = new OfficeOfExitFormProvider()
+  val formProvider = new AmendOfficeOfExitFormProvider()
   val form = formProvider()
 
   "OfficeOfExit Controller" - {
@@ -58,7 +58,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[OfficeOfExitView]
+        val view = application.injector.instanceOf[AmendOfficeOfExitView]
 
         status(result) shouldBe OK
         val body = contentAsString(result)
@@ -69,7 +69,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(OfficeOfExitPage, OfficeOfExit.Larne).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendOfficeOfExitPage, OfficeOfExit.Larne).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -79,7 +79,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
         val request = FakeRequest(GET, officeOfExitRoute)
           .withSession(SessionKeys.sessionId -> "some-session-id")
 
-        val view = application.injector.instanceOf[OfficeOfExitView]
+        val view = application.injector.instanceOf[AmendOfficeOfExitView]
 
         val result = route(application, request).value
 
@@ -127,7 +127,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[OfficeOfExitView]
+        val view = application.injector.instanceOf[AmendOfficeOfExitView]
 
         val result = route(application, request).value
 

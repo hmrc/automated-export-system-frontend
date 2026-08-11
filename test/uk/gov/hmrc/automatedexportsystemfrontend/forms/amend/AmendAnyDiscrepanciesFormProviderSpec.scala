@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AnyDiscrepanciesFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendAnyDiscrepanciesFormProvider
 
-class AnyDiscrepanciesFormProviderSpec extends BooleanFieldBehaviours {
+class AmendAnyDiscrepanciesFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "anyDiscrepancies.error.required"
   val invalidKey = "error.boolean"
 
-  val form = new AnyDiscrepanciesFormProvider()()
+  val form = new AmendAnyDiscrepanciesFormProvider()()
 
   ".value" - {
 
