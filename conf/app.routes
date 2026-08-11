@@ -57,6 +57,6 @@ GET        /confirmation                       uk.gov.hmrc.automatedexportsystem
 
 GET        /submit                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SubmissionController.standardSubmit
 
+GET  /submission/:mrn                   uk.gov.hmrc.automatedexportsystemfrontend.controllers.cancel.ViewSubmissionController.onPageLoad(mrn: String)
 GET  /cancel-submission/:mrn                   uk.gov.hmrc.automatedexportsystemfrontend.controllers.cancel.CancelSubmissionController.onPageLoad(mrn: String)
-
 GET  /submission-cancelled/:mrn                uk.gov.hmrc.automatedexportsystemfrontend.controllers.cancel.CancellationCompleteController.onPageLoad(mrn: String)
