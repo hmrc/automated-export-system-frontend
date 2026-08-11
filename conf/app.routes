@@ -151,4 +151,8 @@ GET        /confirmation                       uk.gov.hmrc.automatedexportsystem
 
 GET        /submit                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SubmissionController.standardSubmit
 
+GET  /cancel-submission/:mrn                   uk.gov.hmrc.automatedexportsystemfrontend.controllers.cancel.CancelSubmissionController.onPageLoad(mrn: String)
+
+GET  /submission-cancelled/:mrn                uk.gov.hmrc.automatedexportsystemfrontend.controllers.cancel.CancellationCompleteController.onPageLoad(mrn: String)
+
 GET        /dashboard                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSubmissionsController.onPageLoad()
