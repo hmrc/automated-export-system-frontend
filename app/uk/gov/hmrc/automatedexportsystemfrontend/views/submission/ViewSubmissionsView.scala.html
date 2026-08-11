@@ -1,0 +1,71 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.automatedexportsystemfrontend.models._
+@this(
+        layout: Layout,
+        govukButton: GovukButton,
+        govukTable: GovukTable
+)
+
+@(viewSubmissionsViewModel: Option[ViewSubmissionsViewModel])(implicit request: Request[_], messages: Messages)
+
+@layout(
+ pageTitle = titleNoForm(messages("viewSubmissions.title")),
+ isFullWidth = viewSubmissionsViewModel.isDefined
+) {
+
+@if(viewSubmissionsViewModel.isDefined){
+  <div>
+      <h1 class="govuk-heading-l">@messages("viewSubmissions.heading")</h1>
+      <p class="govuk-body">@messages("viewSubmissions.message")</p>
+
+      @govukTable(Table(
+      head = Some(Seq(
+        HeadCell(content = Text(messages("viewSubmissions.reference"))),
+        HeadCell(content = Text(messages("viewSubmissions.mrn"))),
+        HeadCell(content = Text(messages("viewSubmissions.ducr"))),
+        HeadCell(content = Text(messages("viewSubmissions.officeOfExit"))),
+        HeadCell(content = Text(messages("viewSubmissions.submitted"))),
+        HeadCell(content = Text(messages("viewSubmissions.status")))
+      )),
+      rows = viewSubmissionsViewModel.map(_.summaries.map { summary =>
+        Seq(
+          TableRow(content = HtmlContent{
+      s"""<a href="" class="govuk-body govuk-link">${messages(summary.reference)}</a>"""
+      }),
+          TableRow(content = Text(summary.mrn)),
+          TableRow(content = Text(summary.ducr)),
+          TableRow(content = Text(summary.submittedDate)),
+          TableRow(content = Text(messages(s"officeOfExit.${summary.officeOfExit.toString}"))),
+            TableRow(content = HtmlContent {s"""<span class="govuk-tag ${summary.submissionStatus.cssClass} ">${messages(summary.submissionStatus.key)}</span>"""})
+        )
+      }).getOrElse(Seq.empty),
+      caption = Some(messages("viewSubmissions.heading")),
+      captionClasses = "govuk-visually-hidden",
+      firstCellIsHeader = true
+    ))
+  </div>
+   } else {
+    <h1 class="govuk-heading-l">@messages("viewSubmissions.heading")</h1>
+    <p class="govuk-body">@messages("viewSubmissions.noSubmissions.message")</p>
+    <p class="govuk-body">
+        <a
+                class="govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes.IndexController.onPageLoad().url">@messages("viewSubmissions.link.startPage")
+        </a>
+    </p>
+    }
+}
