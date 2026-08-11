@@ -160,6 +160,22 @@ standardSubmissionConfirmation.message4 = You can amend most details of this pre
 standardSubmissionConfirmation.link1 = View your submissions
 standardSubmissionConfirmation.link2 = Submit another IE507(a) notification
 
+viewSubmissions.title = Your IE507(a) submissions
+viewSubmissions.heading = Your IE507(a) submissions
+viewSubmissions.noSubmissions.message = You have no IE5070(a) submissions
+viewSubmissions.link.startPage = Go to start page
+viewSubmissions.message = Showing submissions from the last 28 days. Select a submission to view details, amend, or cancel.
+viewSubmissions.reference = Reference
+viewSubmissions.mrn = MRN
+viewSubmissions.ducr = DUCR
+viewSubmissions.officeOfExit = Office of Exit
+viewSubmissions.submitted = Submitted
+viewSubmissions.status = Status
+viewSubmissions.status.accepted = Accepted
+viewSubmissions.status.awaitingDecision = Awaiting decision
+viewSubmissions.status.cancelled = Cancelled
+viewSubmissions.status.amended = Amended
+
 discrepancyConsignment.title = How will the goods cross the border?
 discrepancyConsignment.heading = How will the goods cross the border?
 discrepancyConsignment.sea = Sea
