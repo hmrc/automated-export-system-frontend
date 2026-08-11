@@ -21,8 +21,8 @@ import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.PartOfConsolidationPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath.PartOfConsolidationSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.PartOfConsolidationPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.PartOfConsolidationSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -49,7 +49,7 @@ class PartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
             )
               .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )
@@ -69,7 +69,7 @@ class PartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
             )
               .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )

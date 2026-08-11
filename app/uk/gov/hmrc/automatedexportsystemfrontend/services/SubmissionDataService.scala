@@ -21,7 +21,7 @@ import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.{CustomsOfficeOfExitActual, ExportOperation, Submission}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.{AnyDiscrepanciesPage, EnterMrnPage, IsSplitExitPage, OfficeOfExitPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{AnyDiscrepanciesPage, EnterMrnPage, IsSplitExitPage, OfficeOfExitPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
 
 class SubmissionDataService @Inject() extends Logging {

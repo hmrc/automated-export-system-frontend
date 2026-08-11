@@ -21,8 +21,8 @@ import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.IsSplitExitPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath.IsSplitExitSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.IsSplitExitSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -49,7 +49,7 @@ class IsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes.IsSplitExitController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.IsSplitExitController.onPageLoad(CheckMode).url
             )
               .withVisuallyHiddenText("isSplitExit.change.hidden")
           )
@@ -69,7 +69,7 @@ class IsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes.IsSplitExitController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.IsSplitExitController.onPageLoad(CheckMode).url
             )
               .withVisuallyHiddenText("isSplitExit.change.hidden")
           )

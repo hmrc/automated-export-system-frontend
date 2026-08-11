@@ -21,8 +21,8 @@ import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.EnterMrnPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.HappyPath.EnterMrnSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.EnterMrnSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -49,7 +49,7 @@ class EnterMrnSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes.EnterMrnController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(CheckMode).url
             )
               .withVisuallyHiddenText("enterMrn.change.hidden")
           )
