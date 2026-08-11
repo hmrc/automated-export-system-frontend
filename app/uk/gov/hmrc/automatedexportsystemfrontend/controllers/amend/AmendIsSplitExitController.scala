@@ -31,7 +31,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.IsSplitExitVi
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class IsSplitExitController @Inject() (
+class AmendIsSplitExitController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   happyPathNavigator: HappyPathNavigator,

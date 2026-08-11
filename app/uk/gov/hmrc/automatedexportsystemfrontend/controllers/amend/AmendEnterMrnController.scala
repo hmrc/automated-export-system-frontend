@@ -31,7 +31,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.EnterMrnView
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class EnterMrnController @Inject() (
+class AmendEnterMrnController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   happyPathNavigator: HappyPathNavigator,

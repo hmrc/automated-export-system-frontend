@@ -21,7 +21,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class EnterMrnFormProvider @Inject() extends Mappings {
+class AmendEnterMrnFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(

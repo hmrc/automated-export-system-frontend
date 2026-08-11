@@ -22,7 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
 
 import javax.inject.Inject
 
-class OfficeOfExitFormProvider @Inject() extends Mappings {
+class AmendOfficeOfExitFormProvider @Inject() extends Mappings {
 
   def apply(): Form[OfficeOfExit] =
     Form("value" -> enumerable[OfficeOfExit]("officeOfExit.error.required"))

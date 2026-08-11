@@ -36,7 +36,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
 
-case object OfficeOfExitPage extends QuestionPage[OfficeOfExit] {
+case object AmendOfficeOfExitPage extends QuestionPage[OfficeOfExit] {
 
   override def path: JsPath = JsPath \ toString
 

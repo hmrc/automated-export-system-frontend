@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswe
 
 import javax.inject.Inject
 
-class PartOfConsolidationFormProvider @Inject() extends Mappings {
+class AmendPartOfConsolidationFormProvider @Inject() extends Mappings {
 
   def apply(): Form[PartOfConsolidationAnswer] =
     Form(

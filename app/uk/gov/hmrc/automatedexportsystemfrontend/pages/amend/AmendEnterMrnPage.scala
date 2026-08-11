@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object EnterMrnPage extends QuestionPage[String] {
+case object AmendEnterMrnPage extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ toString
 

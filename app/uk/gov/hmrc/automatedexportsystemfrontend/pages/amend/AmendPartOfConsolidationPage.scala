@@ -20,7 +20,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
 
-case object PartOfConsolidationPage extends QuestionPage[PartOfConsolidationAnswer] {
+case object AmendPartOfConsolidationPage extends QuestionPage[PartOfConsolidationAnswer] {
 
   override def path: JsPath = JsPath \ toString
 

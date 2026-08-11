@@ -29,7 +29,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.Future
 
-class CYASubmissionController @Inject() (
+class AmendCYASubmissionController @Inject() (
   override val messagesApi: MessagesApi,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,

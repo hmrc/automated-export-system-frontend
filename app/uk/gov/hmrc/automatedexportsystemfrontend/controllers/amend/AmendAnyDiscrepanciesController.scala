@@ -32,7 +32,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class AnyDiscrepanciesController @Inject() (
+class AmendAnyDiscrepanciesController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
   happyPathNavigator: HappyPathNavigator,

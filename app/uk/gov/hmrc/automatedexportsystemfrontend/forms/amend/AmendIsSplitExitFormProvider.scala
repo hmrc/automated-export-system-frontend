@@ -21,7 +21,7 @@ import play.api.data.Form
 
 import javax.inject.Inject
 
-class IsSplitExitFormProvider @Inject() extends Mappings {
+class AmendIsSplitExitFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form("value" -> boolean("isSplitExit.error.required"))
