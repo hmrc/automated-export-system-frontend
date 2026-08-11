@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.happyPath
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.create
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, OfficeOfExit, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.OfficeOfExitSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.EnterMrnSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -31,28 +31,27 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   SummaryListRowViewModel,
   ValueViewModel
 }
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class OfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
+class EnterMrnSummarySpec extends AnyFreeSpec with Matchers {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answer is selected, return the summary row" in {
+    "when answered, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(OfficeOfExitPage, OfficeOfExit.Belfast)
+        .set(EnterMrnPage, "Mrn")
         .get
 
-      OfficeOfExitSummary.row(userAnswers) shouldBe Some(
+      EnterMrnSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "officeOfExit.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("officeOfExit.GB000051")),
+          key = "enterMrn.checkYourAnswersLabel",
+          value = ValueViewModel("Mrn"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.OfficeOfExitController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("officeOfExit.change.hidden")
+              .withVisuallyHiddenText("enterMrn.change.hidden")
           )
         )
       )
@@ -60,8 +59,7 @@ class OfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      OfficeOfExitSummary.row(userAnswers) shouldBe None
+      EnterMrnSummary.row(userAnswers) shouldBe None
     }
   }
-
 }

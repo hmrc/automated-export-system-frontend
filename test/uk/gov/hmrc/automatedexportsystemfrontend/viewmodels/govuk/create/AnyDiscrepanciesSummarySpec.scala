@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.happyPath
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.create
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.PartOfConsolidationPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.PartOfConsolidationSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.AnyDiscrepanciesPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.AnyDiscrepanciesSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -32,26 +32,26 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   ValueViewModel
 }
 
-class PartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
+class AnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
     "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr")))
+        .set(AnyDiscrepanciesPage, true)
         .get
 
-      PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
+      AnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "partOfConsolidation.checkYourAnswersLabel",
-          value = ValueViewModel("site.yes - site.mucr: mucr"),
+          key = "anyDiscrepancies.checkYourAnswersLabel",
+          value = ValueViewModel("site.yes"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.AnyDiscrepanciesController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
+              .withVisuallyHiddenText("anyDiscrepancies.change.hidden")
           )
         )
       )
@@ -59,19 +59,19 @@ class PartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
     "when No is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None))
+        .set(AnyDiscrepanciesPage, false)
         .get
 
-      PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
+      AnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "partOfConsolidation.checkYourAnswersLabel",
+          key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.AnyDiscrepanciesController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
+              .withVisuallyHiddenText("anyDiscrepancies.change.hidden")
           )
         )
       )
@@ -79,7 +79,7 @@ class PartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      PartOfConsolidationSummary.row(userAnswers) shouldBe None
+      AnyDiscrepanciesSummary.row(userAnswers) shouldBe None
     }
   }
 }

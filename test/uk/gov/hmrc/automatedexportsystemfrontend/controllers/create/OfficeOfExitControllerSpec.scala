@@ -30,7 +30,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExi
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.OfficeOfExitView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.OfficeOfExitView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future

@@ -31,7 +31,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{OfficeOfExit, PartOfCon
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.CYASubmissionView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.CYASubmissionView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future

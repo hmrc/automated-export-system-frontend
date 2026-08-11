@@ -32,7 +32,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterMrnFormProvid
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.FakeNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.happyPath.EnterMrnView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.EnterMrnView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
