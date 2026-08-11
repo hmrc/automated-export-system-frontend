@@ -17,12 +17,12 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.CancelSubmissionView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 
-class CancelSubmissionController @Inject() (override val controllerComponents: MessagesControllerComponents, view: CancelSubmissionView)
+class ViewSubmissionController @Inject() (override val controllerComponents: MessagesControllerComponents, view: ViewSubmissionView)
     extends FrontendBaseController {
 
   def onPageLoad(mrn: String): Action[AnyContent] =
