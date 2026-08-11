@@ -56,3 +56,7 @@ POST       /change-office-of-exit                  uk.gov.hmrc.automatedexportsy
 GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()
 
 GET        /submit                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SubmissionController.standardSubmit
+
+GET  /cancel-submission/:mrn                   uk.gov.hmrc.automatedexportsystemfrontend.controllers.cancel.CancelSubmissionController.onPageLoad(mrn: String)
+
+GET  /submission-cancelled/:mrn                uk.gov.hmrc.automatedexportsystemfrontend.controllers.cancel.CancellationCompleteController.onPageLoad(mrn: String)
