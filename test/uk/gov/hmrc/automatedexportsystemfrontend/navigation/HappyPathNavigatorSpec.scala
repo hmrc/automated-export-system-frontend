@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
@@ -79,10 +80,10 @@ class HappyPathNavigatorSpec extends SpecBase {
           navigator.nextPage(IsSplitExitPage, NormalMode, userAnswers) shouldBe
             happyRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
         }
-        "to JourneyRecovery TEMPORARY when true" in {
+        "to DiscrepancyConsignmentPage true" in {
           val userAnswers = emptyUserAnswers.set(IsSplitExitPage, true).success.value
-          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
-            problemRoute.JourneyRecoveryController.onPageLoad()
+          navigator.nextPage(IsSplitExitPage, NormalMode, userAnswers) shouldBe
+            unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
         }
         "to JourneyRecovery TEMPORARY when None" in {
           val userAnswers = emptyUserAnswers
@@ -97,10 +98,10 @@ class HappyPathNavigatorSpec extends SpecBase {
           navigator.nextPage(AnyDiscrepanciesPage, NormalMode, userAnswers) shouldBe
             happyRoute.CYASubmissionController.onPageLoad()
         }
-        "to JourneyRecovery TEMPORARY when true" in {
-          val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, false).success.value
-          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
-            problemRoute.JourneyRecoveryController.onPageLoad()
+        "to DiscrepancyConsignmentPage when true" in {
+          val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, true).success.value
+          navigator.nextPage(AnyDiscrepanciesPage, NormalMode, userAnswers) shouldBe
+            unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
         }
         "to JourneyRecovery TEMPORARY when None" in {
           val userAnswers = emptyUserAnswers

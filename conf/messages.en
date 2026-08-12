@@ -159,3 +159,59 @@ standardSubmissionConfirmation.subHeading2 = If you need to make changes
 standardSubmissionConfirmation.message4 = You can amend most details of this pre-notification before the goods arrive at the port of exit. However, the MRN and DUCR cannot be amended - you would need to cancel and resubmit.
 standardSubmissionConfirmation.link1 = View your submissions
 standardSubmissionConfirmation.link2 = Submit another IE507(a) notification
+
+discrepancyConsignment.title = How will the goods cross the border?
+discrepancyConsignment.heading = How will the goods cross the border?
+discrepancyConsignment.sea = Sea
+discrepancyConsignment.rail = Rail
+discrepancyConsignment.road = Road
+discrepancyConsignment.air = Air
+discrepancyConsignment.checkYourAnswersLabel = How will the goods cross the border?
+discrepancyConsignment.error.required = Select how the goods will cross the border
+discrepancyConsignment.change.hidden = how the goods will cross the border
+
+discrepancyDucr.title = What is the Declaration Unique Consignment Reference (DUCR) for these goods?
+discrepancyDucr.heading = What is the Declaration Unique Consignment Reference (DUCR) for these goods?
+discrepancyDucr.hint = This links the movement to the underlying export declaration in CDS. It must match the DUCR used on the original declaration. The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected.
+discrepancyDucr.checkYourAnswersLabel = What is the Declaration Unique Consignment Reference (DUCR) for these goods?
+discrepancyDucr.error.required = Enter the Declaration Unique Consignment Reference (DUCR) for these goods
+discrepancyDucr.error.length = The Declaration Unique Consignment Reference (DUCR) must be 35 characters or less
+discrepancyDucr.change.hidden = the Declaration Unique Consignment Reference (DUCR) for these goods
+
+discrepancyMucr.title = What is the Master Unique Consignment Reference (MUCR) for these goods?
+discrepancyMucr.heading = What is the Master Unique Consignment Reference (MUCR) for these goods?
+discrepancyMucr.hint = Up to 35 characters. This groups multiple DUCRs under one parent reference. The MUCR must be in an open state - if it has already been closed, your submission will be rejected.
+discrepancyMucr.checkYourAnswersLabel = What is the Master Unique Consignment Reference (MUCR) for these goods?
+discrepancyMucr.error.required = Enter the Master Unique Consignment Reference (MUCR) for these goods
+discrepancyMucr.error.length = The Master Unique Consignment Reference (MUCR) must be 35 characters or less
+discrepancyMucr.change.hidden = the Master Unique Consignment Reference (MUCR) for these goods
+
+discrepancyTransport.title = Container details
+discrepancyTransport.heading = Container details
+discrepancyTransport.hint = If the goods are being transported in a container, enter the details.
+discrepancyTransport.containerId = Container identification number
+discrepancyTransport.numberOfSeals = Number of seals
+discrepancyTransport.checkYourAnswersLabel = Container details
+discrepancyTransport.error.containerId.required = Enter the container identification number
+discrepancyTransport.error.numberOfSeals.required = Enter the number of seals
+discrepancyTransport.error.containerId.length = The container identification number must be 17 characters or less
+discrepancyTransport.error.numberOfSeals.maximum = The number of seals must be 99 or less
+discrepancyTransport.error.numberOfSeals.negative = The number of seals must be 0 or more
+discrepancyTransport.containerId.change.hidden = the container identification number
+discrepancyTransport.numberOfSeals.change.hidden = the number of seals
+
+discrepancySeals.title = What is the seal identifier?
+discrepancySeals.heading = What is the seal identifier?
+discrepancySeals.hint = For example, GB12345678.
+discrepancySeals.checkYourAnswersLabel = What is the seal identifier?
+discrepancySeals.error.required = Enter the seal identifier
+discrepancySeals.error.length = The seal identifier must be 20 characters or less
+discrepancySeals.change.hidden = the seal identifier
+
+discrepancyReference.title = What is the Declaration Goods Reference?
+discrepancyReference.heading = What is the Declaration Goods Reference?
+discrepancyReference.hint = This is the 5-character reference shown on the item line in the export declaration.
+discrepancyReference.checkYourAnswersLabel = What is the Declaration Goods Reference?
+discrepancyReference.error.required = Enter the Declaration Goods Reference
+discrepancyReference.error.length = The Declaration Goods Reference must be 5 characters or less
+discrepancyReference.change.hidden = the Declaration Goods Reference
