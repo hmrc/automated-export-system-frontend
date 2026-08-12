@@ -21,12 +21,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterMrnFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterMrnFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterMrnPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.EnterMrnView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendEnterMrnView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,9 +38,9 @@ class AmendEnterMrnController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
-  formProvider: EnterMrnFormProvider,
+  formProvider: AmendEnterMrnFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: EnterMrnView
+  view: AmendEnterMrnView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
@@ -50,7 +50,7 @@ class AmendEnterMrnController @Inject() (
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REPLACED WITH
 
-    val preparedForm = answers.get(EnterMrnPage).fold(form)(form.fill)
+    val preparedForm = answers.get(AmendEnterMrnPage).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
@@ -71,10 +71,10 @@ class AmendEnterMrnController @Inject() (
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(answers.set(EnterMrnPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendEnterMrnPage, value))
             // updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(EnterMrnPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(AmendEnterMrnPage, mode, updatedAnswers))
       )
   }
 }

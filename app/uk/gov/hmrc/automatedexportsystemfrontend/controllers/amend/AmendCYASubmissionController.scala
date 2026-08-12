@@ -20,9 +20,9 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.CYASubmissionView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -35,7 +35,7 @@ class AmendCYASubmissionController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
-  view: CYASubmissionView
+  view: AmendCYASubmissionView
 ) extends FrontendBaseController with I18nSupport {
 
   def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
@@ -55,15 +55,15 @@ class AmendCYASubmissionController @Inject() (
   }
 
   private def exportOperationRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(EnterMrnSummary.row(answers), IsSplitExitSummary.row(answers))
+    Seq(AmendEnterMrnSummary.row(answers), AmendIsSplitExitSummary.row(answers))
 
   private def consignmentRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(EnterDucrSummary.row(answers), PartOfConsolidationSummary.row(answers))
+    Seq(AmendEnterDucrSummary.row(answers), AmendPartOfConsolidationSummary.row(answers))
 
   private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(OfficeOfExitSummary.row(answers))
+    Seq(AmendOfficeOfExitSummary.row(answers))
 
   private def extraRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(AnyDiscrepanciesSummary.row(answers))
+    Seq(AmendAnyDiscrepanciesSummary.row(answers))
 
 }

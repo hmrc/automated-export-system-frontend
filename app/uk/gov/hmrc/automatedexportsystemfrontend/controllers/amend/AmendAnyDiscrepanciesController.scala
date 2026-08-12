@@ -21,12 +21,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AnyDiscrepanciesFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendAnyDiscrepanciesFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.AnyDiscrepanciesPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendAnyDiscrepanciesPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AnyDiscrepanciesView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendAnyDiscrepanciesView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -39,9 +39,9 @@ class AmendAnyDiscrepanciesController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
-  formProvider: AnyDiscrepanciesFormProvider,
+  formProvider: AmendAnyDiscrepanciesFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: AnyDiscrepanciesView
+  view: AmendAnyDiscrepanciesView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
@@ -52,9 +52,9 @@ class AmendAnyDiscrepanciesController @Inject() (
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
-    //      val preparedForm = request.userAnswers.get(AnyDiscrepanciesPage) match {
+    //      val preparedForm = request.userAnswers.get(AmendAnyDiscrepanciesPage) match {
     val preparedForm: Form[Boolean] =
-      answers.get(AnyDiscrepanciesPage).fold(form)(form.fill)
+      answers.get(AmendAnyDiscrepanciesPage).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
@@ -75,9 +75,9 @@ class AmendAnyDiscrepanciesController @Inject() (
         value =>
           for {
             //            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyDiscrepanciesPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(AnyDiscrepanciesPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendAnyDiscrepanciesPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(AnyDiscrepanciesPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(AmendAnyDiscrepanciesPage, mode, updatedAnswers))
       )
   }
 }

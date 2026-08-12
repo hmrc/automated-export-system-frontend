@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.create
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.AnyDiscrepanciesPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.AnyDiscrepanciesSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendAnyDiscrepanciesPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendAnyDiscrepanciesSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -39,10 +39,10 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AnyDiscrepanciesPage, true)
+        .set(AmendAnyDiscrepanciesPage, true)
         .get
 
-      AnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
@@ -59,10 +59,10 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
 
     "when No is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AnyDiscrepanciesPage, false)
+        .set(AmendAnyDiscrepanciesPage, false)
         .get
 
-      AnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
@@ -79,7 +79,7 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      AnyDiscrepanciesSummary.row(userAnswers) shouldBe None
+      AmendAnyDiscrepanciesSummary.row(userAnswers) shouldBe None
     }
   }
 }

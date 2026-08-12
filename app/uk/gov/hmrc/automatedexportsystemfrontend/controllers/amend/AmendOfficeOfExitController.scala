@@ -20,12 +20,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.OfficeOfExitFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendOfficeOfExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendOfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.OfficeOfExitView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendOfficeOfExitView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -38,9 +38,9 @@ class AmendOfficeOfExitController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
-  formProvider: OfficeOfExitFormProvider,
+  formProvider: AmendOfficeOfExitFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: OfficeOfExitView
+  view: AmendOfficeOfExitView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
@@ -51,8 +51,8 @@ class AmendOfficeOfExitController @Inject() (
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
-    //      val preparedForm = request.userAnswers.get(OfficeOfExitPage) match {
-    val preparedForm = answers.get(OfficeOfExitPage).fold(form)(form.fill)
+    //      val preparedForm = request.userAnswers.get(AmendOfficeOfExitPage) match {
+    val preparedForm = answers.get(AmendOfficeOfExitPage).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
@@ -73,9 +73,9 @@ class AmendOfficeOfExitController @Inject() (
         value =>
           for {
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfExitPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(OfficeOfExitPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendOfficeOfExitPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(OfficeOfExitPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(AmendOfficeOfExitPage, mode, updatedAnswers))
       )
   }
 }

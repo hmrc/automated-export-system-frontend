@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.create
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.IsSplitExitSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendIsSplitExitSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -39,10 +39,10 @@ class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(IsSplitExitPage, true)
+        .set(AmendIsSplitExitPage, true)
         .get
 
-      IsSplitExitSummary.row(userAnswers) shouldBe Some(
+      AmendIsSplitExitSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "isSplitExit.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
@@ -59,10 +59,10 @@ class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
 
     "when No is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(IsSplitExitPage, false)
+        .set(AmendIsSplitExitPage, false)
         .get
 
-      IsSplitExitSummary.row(userAnswers) shouldBe Some(
+      AmendIsSplitExitSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "isSplitExit.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
@@ -79,7 +79,7 @@ class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      IsSplitExitSummary.row(userAnswers) shouldBe None
+      AmendIsSplitExitSummary.row(userAnswers) shouldBe None
     }
   }
 }

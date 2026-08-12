@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.create
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.PartOfConsolidationPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.PartOfConsolidationSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendPartOfConsolidationSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -39,10 +39,10 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr")))
+        .set(AmendPartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr")))
         .get
 
-      PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
+      AmendPartOfConsolidationSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.yes - site.mucr: mucr"),
@@ -59,10 +59,10 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
     "when No is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None))
+        .set(AmendPartOfConsolidationPage, PartOfConsolidationAnswer(false, None))
         .get
 
-      PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
+      AmendPartOfConsolidationSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
@@ -79,7 +79,7 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      PartOfConsolidationSummary.row(userAnswers) shouldBe None
+      AmendPartOfConsolidationSummary.row(userAnswers) shouldBe None
     }
   }
 }

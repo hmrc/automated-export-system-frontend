@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
 
 class AmendOfficeOfExitFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new OfficeOfExitFormProvider()()
+  val form = new AmendOfficeOfExitFormProvider()()
 
   ".value" - {
 

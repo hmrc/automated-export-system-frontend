@@ -21,12 +21,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.IsSplitExitFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendIsSplitExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.IsSplitExitView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendIsSplitExitView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,9 +38,9 @@ class AmendIsSplitExitController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
-  formProvider: IsSplitExitFormProvider,
+  formProvider: AmendIsSplitExitFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: IsSplitExitView
+  view: AmendIsSplitExitView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
@@ -51,8 +51,8 @@ class AmendIsSplitExitController @Inject() (
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
-//      val preparedForm = request.userAnswers.get(IsSplitExitPage) match {
-    val preparedForm = answers.get(IsSplitExitPage).fold(form)(form.fill)
+//      val preparedForm = request.userAnswers.get(AmendIsSplitExitPage) match {
+    val preparedForm = answers.get(AmendIsSplitExitPage).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
@@ -73,9 +73,9 @@ class AmendIsSplitExitController @Inject() (
         value =>
           for {
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsSplitExitPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(IsSplitExitPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendIsSplitExitPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(IsSplitExitPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(AmendIsSplitExitPage, mode, updatedAnswers))
       )
   }
 }

@@ -21,12 +21,12 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.PartOfConsolidationFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendPartOfConsolidationFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PartOfConsolidationAnswer, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.PartOfConsolidationPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.PartOfConsolidationView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendPartOfConsolidationView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -39,9 +39,9 @@ class AmendPartOfConsolidationController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
-  formProvider: PartOfConsolidationFormProvider,
+  formProvider: AmendPartOfConsolidationFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: PartOfConsolidationView
+  view: AmendPartOfConsolidationView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
@@ -52,8 +52,8 @@ class AmendPartOfConsolidationController @Inject() (
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
-//      val preparedForm = request.userAnswers.get(PartOfConsolidationPage) match {
-    val preparedForm = answers.get(PartOfConsolidationPage).fold(form)(form.fill)
+//      val preparedForm = request.userAnswers.get(AmendPartOfConsolidationPage) match {
+    val preparedForm = answers.get(AmendPartOfConsolidationPage).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
@@ -77,9 +77,9 @@ class AmendPartOfConsolidationController @Inject() (
           } else {
             val cleanedValue = if (!value.boolean) value.copy(mucr = None) else value
             for {
-              updatedAnswers <- Future.fromTry(answers.set(PartOfConsolidationPage, cleanedValue))
+              updatedAnswers <- Future.fromTry(answers.set(AmendPartOfConsolidationPage, cleanedValue))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(happyPathNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
+            } yield Redirect(happyPathNavigator.nextPage(AmendPartOfConsolidationPage, mode, updatedAnswers))
           }
         }
       )

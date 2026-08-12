@@ -22,12 +22,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterDucrFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterDucrFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterDucrPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.EnterDucrView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendEnterDucrView
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,9 +39,9 @@ class AmendEnterDucrController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
-  formProvider: EnterDucrFormProvider,
+  formProvider: AmendEnterDucrFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: EnterDucrView
+  view: AmendEnterDucrView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
@@ -52,8 +52,8 @@ class AmendEnterDucrController @Inject() (
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
-//      val preparedForm = request.userAnswers.get(EnterDucrPage) match {
-    val preparedForm: Form[String] = answers.get(EnterDucrPage).fold(form)(form.fill)
+//      val preparedForm = request.userAnswers.get(AmendEnterDucrPage) match {
+    val preparedForm: Form[String] = answers.get(AmendEnterDucrPage).fold(form)(form.fill)
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
   }
@@ -72,10 +72,10 @@ class AmendEnterDucrController @Inject() (
         },
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(EnterDucrPage, value))
+//            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendEnterDucrPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendEnterDucrPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(EnterDucrPage, mode, updatedAnswers))
+          } yield Redirect(happyPathNavigator.nextPage(AmendEnterDucrPage, mode, updatedAnswers))
       )
   }
 }

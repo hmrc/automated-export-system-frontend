@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.create
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, OfficeOfExit, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.OfficeOfExitSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendOfficeOfExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendOfficeOfExitSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -40,10 +40,10 @@ class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answer is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(OfficeOfExitPage, OfficeOfExit.Belfast)
+        .set(AmendOfficeOfExitPage, OfficeOfExit.Belfast)
         .get
 
-      OfficeOfExitSummary.row(userAnswers) shouldBe Some(
+      AmendOfficeOfExitSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("officeOfExit.GB000051")),
@@ -60,7 +60,7 @@ class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      OfficeOfExitSummary.row(userAnswers) shouldBe None
+      AmendOfficeOfExitSummary.row(userAnswers) shouldBe None
     }
   }
 

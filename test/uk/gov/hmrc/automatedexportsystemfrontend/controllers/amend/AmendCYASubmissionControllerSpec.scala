@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
@@ -28,7 +28,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as p
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{OfficeOfExit, PartOfConsolidationAnswer}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
@@ -49,17 +49,17 @@ class AmendCYASubmissionControllerSpec extends SpecBase {
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
       val userAnswers = emptyUserAnswers
-        .set(EnterMrnPage, "MRN")
+        .set(AmendEnterMrnPage, "MRN")
         .get
-        .set(IsSplitExitPage, false)
+        .set(AmendIsSplitExitPage, false)
         .get
-        .set(EnterDucrPage, "DUCR")
+        .set(AmendEnterDucrPage, "DUCR")
         .get
-        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("123")))
+        .set(AmendPartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("123")))
         .get
-        .set(OfficeOfExitPage, OfficeOfExit.Belfast)
+        .set(AmendOfficeOfExitPage, OfficeOfExit.Belfast)
         .get
-        .set(AnyDiscrepanciesPage, false)
+        .set(AmendAnyDiscrepanciesPage, false)
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))

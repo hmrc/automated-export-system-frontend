@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import org.scalatest.OptionValues.convertOptionToValuable
 import org.scalatest.freespec.AnyFreeSpec
@@ -25,7 +25,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswe
 
 class AmendPartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers {
 
-  private val form = new PartOfConsolidationFormProvider()()
+  private val form = new AmendPartOfConsolidationFormProvider()()
 
   "PartOfConsolidationFormProvider" - {
 

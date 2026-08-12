@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.create
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterDucrPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.EnterDucrSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterDucrPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendEnterDucrSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
   stringToText,
@@ -39,10 +39,10 @@ class AmendEnterDucrSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answered, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(EnterDucrPage, "Ducr")
+        .set(AmendEnterDucrPage, "Ducr")
         .get
 
-      EnterDucrSummary.row(userAnswers) shouldBe Some(
+      AmendEnterDucrSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "enterDucr.checkYourAnswersLabel",
           value = ValueViewModel("Ducr"),
@@ -59,7 +59,7 @@ class AmendEnterDucrSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      EnterDucrSummary.row(userAnswers) shouldBe None
+      AmendEnterDucrSummary.row(userAnswers) shouldBe None
     }
   }
 }

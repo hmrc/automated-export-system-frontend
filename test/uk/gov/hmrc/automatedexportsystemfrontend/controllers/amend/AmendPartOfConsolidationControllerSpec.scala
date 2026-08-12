@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
