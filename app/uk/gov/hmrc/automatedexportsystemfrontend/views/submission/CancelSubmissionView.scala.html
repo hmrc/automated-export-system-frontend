@@ -15,25 +15,46 @@
  *@
 
 @this(
-layout: Layout
+layout: Layout,
+govukButton: GovukButton
 )
 
 @(mrn: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
-pageTitle = titleNoForm("Cancel submission")
+pageTitle = titleNoForm(messages("viewSubmission.title"))
 ) {
 
-<h1 class="govuk-heading-l">
-    Cancel submission
-</h1>
+<span class="govuk-caption-l">Cancel submission IE507A</span>
+<h1 class="govuk-heading-l">Are you sure you want to cancel this submission?</h1>
 
-<p class="govuk-body">
-    MRN: @mrn
-</p>
+<div class="govuk-warning-text">
+ <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+ <strong class="govuk-warning-text__text">
+  <span class="govuk-visually-hidden">Warning</span>
+  This action cannot be undone. Once cancelled, the IE507(a) pre-notification for this movement will be withdrawn. If the goods still need to exit, you will need to submit a new pre-notification.
+ </strong>
+</div>
 
-@govukButton(
-ButtonViewModel(messages("viewSubmission.cancel"))
-)
+<table class="govuk-table">
+ <tbody>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header">Submission reference</th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">MRN</th>
+  <td class="govuk-table__cell">@mrn</td>
+ </tr>
+ </tbody>
+</table>
 
+<div class="govuk-button-group">
+ <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+  Cancel this submission
+ </button>
+ <p class="govuk-body">
+  <a href="#" class="govuk-link govuk-link--no-visited-state">Do not cancel - go back</a>
+ </p>
+</div>
 }
