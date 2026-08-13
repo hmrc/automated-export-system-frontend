@@ -23,7 +23,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AnyDiscrepanciesFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.AnyDiscrepanciesPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AnyDiscrepanciesView
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AnyDiscrepanciesController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  createNavigator: CreateNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -77,7 +77,7 @@ class AnyDiscrepanciesController @Inject() (
             //            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyDiscrepanciesPage, value))
             updatedAnswers <- Future.fromTry(answers.set(AnyDiscrepanciesPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(AnyDiscrepanciesPage, mode, updatedAnswers))
+          } yield Redirect(createNavigator.nextPage(AnyDiscrepanciesPage, mode, updatedAnswers))
       )
   }
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import controllers.routes
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => happyRoute}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
@@ -27,8 +27,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendPartOfConsolidationSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendPartOfConsolidationPage).map { answer =>
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendPartOfConsolidationPage(submissionId)).map { answer =>
 
       val value = answer match {
         case PartOfConsolidationAnswer(true, Some(mucr)) => messages("site.yes") + " - " + messages("site.mucr") + ": " + mucr
@@ -39,7 +39,7 @@ object AmendPartOfConsolidationSummary {
         key = "partOfConsolidation.checkYourAnswersLabel",
         value = ValueViewModel(value),
         actions = Seq(
-          ActionItemViewModel("site.change", happyRoute.PartOfConsolidationController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", amendRoute.AmendPartOfConsolidationController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("partOfConsolidation.change.hidden"))
         )
       )

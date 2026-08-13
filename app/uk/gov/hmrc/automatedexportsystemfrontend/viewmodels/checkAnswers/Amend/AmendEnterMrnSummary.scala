@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => happyRoute}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
@@ -27,13 +27,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendEnterMrnSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendEnterMrnPage).map { answer =>
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendEnterMrnPage(submissionId)).map { answer =>
       SummaryListRowViewModel(
         key = "enterMrn.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
-          ActionItemViewModel("site.change", happyRoute.EnterMrnController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", amendRoute.AmendEnterMrnController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("enterMrn.change.hidden"))
         )
       )

@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
-class HappyPathNavigatorSpec extends SpecBase {
+class CreateNavigatorSpec extends SpecBase {
 
-  val navigator = new HappyPathNavigator
+  val navigator = new CreateNavigator
 
   "ThirdPartyNavigator" - {
 
@@ -36,7 +36,7 @@ class HappyPathNavigatorSpec extends SpecBase {
         "to EnterDucrPage" in {
           val userAnswers = emptyUserAnswers.set(EnterMrnPage, "TEST").success.value
           navigator.nextPage(EnterMrnPage, NormalMode, userAnswers) shouldBe
-            happyRoute.EnterDucrController.onPageLoad(NormalMode)
+            createRoute.EnterDucrController.onPageLoad(NormalMode)
         }
       }
 
@@ -44,7 +44,7 @@ class HappyPathNavigatorSpec extends SpecBase {
         "to PartOfConsolidationpage" in {
           val userAnswers = emptyUserAnswers.set(EnterDucrPage, "TEST").success.value
           navigator.nextPage(EnterDucrPage, NormalMode, userAnswers) shouldBe
-            happyRoute.PartOfConsolidationController.onPageLoad(NormalMode)
+            createRoute.PartOfConsolidationController.onPageLoad(NormalMode)
         }
       }
 
@@ -52,7 +52,7 @@ class HappyPathNavigatorSpec extends SpecBase {
         "to IsSplitExitPage" in {
           val userAnswers = emptyUserAnswers.set(OfficeOfExitPage, OfficeOfExit.Belfast).success.value
           navigator.nextPage(OfficeOfExitPage, NormalMode, userAnswers) shouldBe
-            happyRoute.IsSplitExitController.onPageLoad(NormalMode)
+            createRoute.IsSplitExitController.onPageLoad(NormalMode)
         }
       }
 
@@ -60,12 +60,12 @@ class HappyPathNavigatorSpec extends SpecBase {
         "to OfficeOfExitPage when true" in {
           val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr"))).success.value
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
-            happyRoute.OfficeOfExitController.onPageLoad(NormalMode)
+            createRoute.OfficeOfExitController.onPageLoad(NormalMode)
         }
         "to OfficeOfExitPage when false" in {
           val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None)).success.value
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
-            happyRoute.OfficeOfExitController.onPageLoad(NormalMode)
+            createRoute.OfficeOfExitController.onPageLoad(NormalMode)
         }
         "to JourneyRecovery when None" in {
           val userAnswers = emptyUserAnswers
@@ -78,7 +78,7 @@ class HappyPathNavigatorSpec extends SpecBase {
         "to AnyDiscrepanciesPage when false" in {
           val userAnswers = emptyUserAnswers.set(IsSplitExitPage, false).success.value
           navigator.nextPage(IsSplitExitPage, NormalMode, userAnswers) shouldBe
-            happyRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
+            createRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
         }
         "to DiscrepancyConsignmentPage true" in {
           val userAnswers = emptyUserAnswers.set(IsSplitExitPage, true).success.value
@@ -96,7 +96,7 @@ class HappyPathNavigatorSpec extends SpecBase {
         "to CYASubmissionController when false" in {
           val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, false).success.value
           navigator.nextPage(AnyDiscrepanciesPage, NormalMode, userAnswers) shouldBe
-            happyRoute.CYASubmissionController.onPageLoad()
+            createRoute.CYASubmissionController.onPageLoad()
         }
         "to DiscrepancyConsignmentPage when true" in {
           val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, true).success.value

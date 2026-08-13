@@ -23,7 +23,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterDucrFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class EnterDucrController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  createNavigator: CreateNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -75,7 +75,7 @@ class EnterDucrController @Inject() (
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
             updatedAnswers <- Future.fromTry(answers.set(EnterDucrPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(EnterDucrPage, mode, updatedAnswers))
+          } yield Redirect(createNavigator.nextPage(EnterDucrPage, mode, updatedAnswers))
       )
   }
 }

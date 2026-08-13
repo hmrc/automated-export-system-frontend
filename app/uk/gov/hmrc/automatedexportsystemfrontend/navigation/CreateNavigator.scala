@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
 import play.api.mvc.Call
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
@@ -25,34 +25,34 @@ import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
-class HappyPathNavigator extends Navigator {
+class CreateNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case EnterMrnPage            => _ => happyRoute.EnterDucrController.onPageLoad(NormalMode)
-    case EnterDucrPage           => _ => happyRoute.PartOfConsolidationController.onPageLoad(NormalMode)
+    case EnterMrnPage            => _ => createRoute.EnterDucrController.onPageLoad(NormalMode)
+    case EnterDucrPage           => _ => createRoute.PartOfConsolidationController.onPageLoad(NormalMode)
     case PartOfConsolidationPage => partOfConsolidationRoute
-    case OfficeOfExitPage        => _ => happyRoute.IsSplitExitController.onPageLoad(NormalMode)
+    case OfficeOfExitPage        => _ => createRoute.IsSplitExitController.onPageLoad(NormalMode)
     case IsSplitExitPage         => isSplitExitRoute
     case AnyDiscrepanciesPage    => anyDiscrepanciesRoute
   }
 
   private def partOfConsolidationRoute(answers: UserAnswers): Call =
     answers.get(PartOfConsolidationPage) match {
-      case Some(_, _) => happyRoute.OfficeOfExitController.onPageLoad(NormalMode)
+      case Some(_, _) => createRoute.OfficeOfExitController.onPageLoad(NormalMode)
       case None       => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 
   private def isSplitExitRoute(answers: UserAnswers): Call =
     answers.get(IsSplitExitPage) match {
       case Some(true)  => unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
-      case Some(false) => happyRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
+      case Some(false) => createRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 
   private def anyDiscrepanciesRoute(answers: UserAnswers): Call =
     answers.get(AnyDiscrepanciesPage) match {
       case Some(true)  => unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
-      case Some(false) => happyRoute.CYASubmissionController.onPageLoad()
+      case Some(false) => createRoute.CYASubmissionController.onPageLoad()
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 

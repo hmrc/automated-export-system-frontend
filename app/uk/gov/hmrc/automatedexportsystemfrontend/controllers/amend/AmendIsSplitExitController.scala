@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendIsSplitExitFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendIsSplitExitController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  amendNavigator: AmendNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -46,20 +46,20 @@ class AmendIsSplitExitController @Inject() (
 
   val form = formProvider()
 
-//  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+//  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
 //      val preparedForm = request.userAnswers.get(AmendIsSplitExitPage) match {
-    val preparedForm = answers.get(AmendIsSplitExitPage).fold(form)(form.fill)
+    val preparedForm = answers.get(AmendIsSplitExitPage(submissionId)).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
   }
 
-//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+//  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
@@ -73,9 +73,9 @@ class AmendIsSplitExitController @Inject() (
         value =>
           for {
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsSplitExitPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(AmendIsSplitExitPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendIsSplitExitPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(AmendIsSplitExitPage, mode, updatedAnswers))
+          } yield Redirect(amendNavigator.nextPage(AmendIsSplitExitPage(submissionId), mode, updatedAnswers))
       )
   }
 }

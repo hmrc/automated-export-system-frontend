@@ -39,17 +39,19 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AmendPartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr")))
+        .set(AmendPartOfConsolidationPage("submissionId"), PartOfConsolidationAnswer(true, Some("mucr")))
         .get
 
-      AmendPartOfConsolidationSummary.row(userAnswers) shouldBe Some(
+      AmendPartOfConsolidationSummary.row(userAnswers)("submissionId") shouldBe Some(
         SummaryListRowViewModel(
           key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.yes - site.mucr: mucr"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendPartOfConsolidationController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )
@@ -59,17 +61,19 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
     "when No is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AmendPartOfConsolidationPage, PartOfConsolidationAnswer(false, None))
+        .set(AmendPartOfConsolidationPage("submissionId"), PartOfConsolidationAnswer(false, None))
         .get
 
-      AmendPartOfConsolidationSummary.row(userAnswers) shouldBe Some(
+      AmendPartOfConsolidationSummary.row(userAnswers)("submissionId") shouldBe Some(
         SummaryListRowViewModel(
           key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendPartOfConsolidationController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )
@@ -79,7 +83,7 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      AmendPartOfConsolidationSummary.row(userAnswers) shouldBe None
+      AmendPartOfConsolidationSummary.row(userAnswers)("submissionId") shouldBe None
     }
   }
 }

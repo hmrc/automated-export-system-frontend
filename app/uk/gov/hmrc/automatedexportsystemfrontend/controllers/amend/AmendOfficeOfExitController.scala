@@ -22,7 +22,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendOfficeOfExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendOfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendOfficeOfExitView
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendOfficeOfExitController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  amendNavigator: AmendNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -46,20 +46,20 @@ class AmendOfficeOfExitController @Inject() (
 
   val form = formProvider()
 
-//  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+//  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
-    //      val preparedForm = request.userAnswers.get(AmendOfficeOfExitPage) match {
-    val preparedForm = answers.get(AmendOfficeOfExitPage).fold(form)(form.fill)
+    //      val preparedForm = request.userAnswers.get(AmendOfficeOfExitPage(submissionId)) match {
+    val preparedForm = answers.get(AmendOfficeOfExitPage(submissionId)).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
   }
 
-//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+//  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
@@ -73,9 +73,9 @@ class AmendOfficeOfExitController @Inject() (
         value =>
           for {
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfExitPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(AmendOfficeOfExitPage, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendOfficeOfExitPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(AmendOfficeOfExitPage, mode, updatedAnswers))
+          } yield Redirect(amendNavigator.nextPage(AmendOfficeOfExitPage(submissionId), mode, updatedAnswers))
       )
   }
 }

@@ -22,7 +22,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.OfficeOfExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.OfficeOfExitView
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class OfficeOfExitController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  createNavigator: CreateNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -75,7 +75,7 @@ class OfficeOfExitController @Inject() (
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfExitPage, value))
             updatedAnswers <- Future.fromTry(answers.set(OfficeOfExitPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(OfficeOfExitPage, mode, updatedAnswers))
+          } yield Redirect(createNavigator.nextPage(OfficeOfExitPage, mode, updatedAnswers))
       )
   }
 }

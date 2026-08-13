@@ -18,23 +18,22 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterDucrPage
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendEnterDucrSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendEnterDucrPage).map { answer =>
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendEnterDucrPage(submissionId)).map { answer =>
       SummaryListRowViewModel(
         key = "enterDucr.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
-          ActionItemViewModel("site.change", happyRoute.EnterDucrController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", amendRoute.AmendEnterDucrController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("enterDucr.change.hidden"))
         )
       )
