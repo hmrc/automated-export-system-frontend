@@ -50,11 +50,15 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
 </table>
 
 <div class="govuk-button-group">
- <button type="submit" class="govuk-button govuk-button--warning" data-module="govuk-button">
+ <a href="/automated-export-system/submission-cancelled/@mrn"
+    role="button"
+    draggable="false"
+    class="govuk-button govuk-button--warning"
+    data-module="govuk-button">
   Cancel this submission
- </button>
+ </a>
  <p class="govuk-body">
-  <a href="#" class="govuk-link govuk-link--no-visited-state">Do not cancel - go back</a>
+  <a href="/automated-export-system/submission/@mrn" class="govuk-link govuk-link--no-visited-state">Do not cancel - go back</a>
  </p>
 </div>
 }
