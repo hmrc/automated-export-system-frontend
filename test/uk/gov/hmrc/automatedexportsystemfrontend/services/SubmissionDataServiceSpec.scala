@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.services
 import org.scalatest.freespec.AnyFreeSpec
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.{AnyDiscrepanciesPage, EnterMrnPage, IsSplitExitPage, OfficeOfExitPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{AnyDiscrepanciesPage, EnterMrnPage, IsSplitExitPage, OfficeOfExitPage}
 
 import scala.language.postfixOps
 

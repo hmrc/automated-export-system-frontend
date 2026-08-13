@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
 import play.api.mvc.Call
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes as appRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page

@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.*
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 class HappyPathNavigatorSpec extends SpecBase {
 
