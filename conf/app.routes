@@ -122,3 +122,13 @@ GET        /discrepancy-reference                    uk.gov.hmrc.automatedexport
 POST       /discrepancy-reference                    uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.DiscrepancyReferenceController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 GET        /change-discrepancy-reference             uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.DiscrepancyReferenceController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-discrepancy-reference             uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.DiscrepancyReferenceController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /testPage                       controllers.TestPageController.onPageLoad()
+
+GET        /test2                       controllers.test2Controller.onPageLoad()
+
+GET        /testPage                       controllers.TestPageController.onPageLoad()
+
+GET        /testingOutput                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.TestingOutputController.onPageLoad()
+
+GET        /testOutputNumberTwo                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.TestOutputNumberTwoController.onPageLoad()

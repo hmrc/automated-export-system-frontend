@@ -1,4 +1,4 @@
-package controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
 import base.SpecBase
 import play.api.test.FakeRequest

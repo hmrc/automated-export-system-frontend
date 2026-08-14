@@ -1,10 +1,10 @@
-package controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
 import javax.inject.Inject
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.$className$View
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.$className$View
 
 class $className$Controller @Inject()(
                                        override val messagesApi: MessagesApi,
