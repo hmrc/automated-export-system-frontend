@@ -123,4 +123,4 @@ POST       /discrepancy-reference                    uk.gov.hmrc.automatedexport
 GET        /change-discrepancy-reference             uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.DiscrepancyReferenceController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-discrepancy-reference             uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.DiscrepancyReferenceController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 
-GET        /testPage                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.TestPageController.onPageLoad()
+GET        /testingTest                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.TestingTestController.onPageLoad()
