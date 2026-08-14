@@ -15,10 +15,24 @@
  */
 
 package generators
-import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
+import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, ModeOfTransportAtBorder, OfficeOfExit}
 
 trait ModelGenerators {}
+
+implicit lazy val arbitraryContainerDetails: Arbitrary[ContainerDetails] =
+  Arbitrary {
+    for {
+      containerId <- arbitrary[String]
+      numberOfSeals <- arbitrary[Int]
+    } yield ContainerDetails(containerId, numberOfSeals)
+  }
+
+implicit lazy val arbitraryModeAtTheBorder: Arbitrary[ModeOfTransportAtBorder] =
+  Arbitrary {
+    Gen.oneOf(ModeOfTransportAtBorder.values.toSeq)
+  }
 
 implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
   Arbitrary {
