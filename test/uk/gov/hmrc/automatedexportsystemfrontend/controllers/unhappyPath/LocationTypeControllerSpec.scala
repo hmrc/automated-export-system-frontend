@@ -26,26 +26,26 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.unhappyPath.DiscrepancyDucrFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.unhappyPath.LocationTypeFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationType, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeUnhappyPathNavigator, UnhappyPathNavigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.DiscrepancyDucrPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.LocationTypePage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.unhappyPath.DiscrepancyDucrView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.unhappyPath.LocationTypeView
 
 import scala.concurrent.Future
 
-class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
+class LocationTypeControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DiscrepancyDucrFormProvider()
-  val form: Form[String] = formProvider()
+  lazy val locationTypeRoute: String = unhappyRoute.LocationTypeController.onPageLoad(NormalMode).url
 
-  lazy val discrepancyDucrRoute: String = unhappyRoute.DiscrepancyDucrController.onPageLoad(NormalMode).url
+  val formProvider = new LocationTypeFormProvider()
+  val form: Form[LocationType] = formProvider()
 
-  "DiscrepancyDucr Controller" - {
+  "LocationType Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -54,52 +54,49 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, locationTypeRoute)
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
+        val view = application.injector.instanceOf[LocationTypeView]
 
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("What is the Declaration Unique Consignment Reference (DUCR) for these goods?")
-        body should include(
-          "This links the movement to the underlying export declaration in CDS. " +
-            "It must match the DUCR used on the original declaration. " +
-            "The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected."
-        )
+        body should include("What type of location are the goods at?")
+        body should include("This determines what identification details you will need to provide.")
+        body should include("Designated location")
+        body should include("Authorised place")
+        body should include("Approved place")
+        body should include("Other")
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyDucrPage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId).set(LocationTypePage, LocationType.values.head).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, locationTypeRoute)
 
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
+        val view = application.injector.instanceOf[LocationTypeView]
 
         val result = route(application, request).value
 
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("What is the Declaration Unique Consignment Reference (DUCR) for these goods?")
-        body should include(
-          "This links the movement to the underlying export declaration in CDS. " +
-            "It must match the DUCR used on the original declaration. " +
-            "The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected."
-        )
-        body should include("""id="value"""")
-        body should include("""name="value"""")
-        body should include("""type="text"""")
-        body should include("""value="answer"""")
+        body should include("What type of location are the goods at?")
+        body should include("This determines what identification details you will need to provide.")
+        body should include("Designated location")
+        body should include("Authorised place")
+        body should include("Approved place")
+        body should include("Other")
+        body should include("""value="designatedLocation"""")
       }
     }
 
@@ -120,8 +117,8 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, locationTypeRoute)
+            .withFormUrlEncodedBody(("value", LocationType.values.head.toString))
 
         val result = route(application, request).value
 
@@ -138,12 +135,12 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, locationTypeRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
+        val view = application.injector.instanceOf[LocationTypeView]
 
         val result = route(application, request).value
 
@@ -161,7 +158,7 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, locationTypeRoute)
 
         val result = route(application, request).value
 
@@ -170,7 +167,7 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+    "redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -178,12 +175,13 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, locationTypeRoute)
+            .withFormUrlEncodedBody(("value", LocationType.values.head.toString))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
+
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
       }
     }

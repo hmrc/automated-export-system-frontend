@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
 import play.api.mvc.Call
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
@@ -27,12 +27,18 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.*
 class UnhappyPathNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case DiscrepancyConsignmentPage => _ => unhappyRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
-    case DiscrepancyDucrPage        => _ => unhappyRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
-    case DiscrepancyMucrPage        => _ => unhappyRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
-    case DiscrepancyTransportPage   => _ => unhappyRoute.DiscrepancySealsController.onPageLoad(NormalMode)
-    case DiscrepancySealsPage       => _ => unhappyRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
-    case DiscrepancyReferencePage   => _ => problemRoute.JourneyRecoveryController.onPageLoad() // TEMPORARY ROUTE
+    case DiscrepancyConsignmentPage    => _ => unhappyRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
+    case DiscrepancyDucrPage           => _ => unhappyRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
+    case DiscrepancyMucrPage           => _ => unhappyRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
+    case DiscrepancyTransportPage      => _ => unhappyRoute.DiscrepancySealsController.onPageLoad(NormalMode)
+    case DiscrepancySealsPage          => _ => unhappyRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
+    case DiscrepancyReferencePage      => _ => unhappyRoute.LocationTypeController.onPageLoad(NormalMode)
+    case LocationTypePage              => _ => unhappyRoute.LocationIdController.onPageLoad(NormalMode)
+    case LocationIdPage                => _ => unhappyRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
+    case DiscrepancyTransportMeansPage => _ => unhappyRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
+    case DiscrepancyTransportDocPage   => _ => unhappyRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+    case DiscrepancyGoodsPage          => _ => unhappyRoute.DiscrepancyPackingController.onPageLoad(NormalMode)
+    case DiscrepancyPackingPage        => _ => happyRoute.CYASubmissionController.onPageLoad()
   }
 
 }

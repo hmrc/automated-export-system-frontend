@@ -21,31 +21,44 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.unhappyPath.DiscrepancyDucrFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.unhappyPath.DiscrepancyGoodsFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers, WhatHasChangedDetails}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeUnhappyPathNavigator, UnhappyPathNavigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.DiscrepancyDucrPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.DiscrepancyGoodsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.unhappyPath.DiscrepancyDucrView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.unhappyPath.DiscrepancyGoodsView
 
 import scala.concurrent.Future
 
-class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
+class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DiscrepancyDucrFormProvider()
-  val form: Form[String] = formProvider()
+  val formProvider = new DiscrepancyGoodsFormProvider()
+  val form: Form[WhatHasChangedDetails] = formProvider()
 
-  lazy val discrepancyDucrRoute: String = unhappyRoute.DiscrepancyDucrController.onPageLoad(NormalMode).url
+  lazy val discrepancyGoodsRoute: String = unhappyRoute.DiscrepancyGoodsController.onPageLoad(NormalMode).url
 
-  "DiscrepancyDucr Controller" - {
+  val userAnswers = UserAnswers(
+    userAnswersId,
+    Json.obj(
+      DiscrepancyGoodsPage.toString -> Json.obj(
+        "goodsItemNumber" -> "value 1",
+        "declarationUniqueConsignmentReference" -> "value 2",
+        "newGrossMass" -> "value 3",
+        "newNetMass" -> "value 4"
+      )
+    )
+  )
+
+  "DiscrepancyGoods Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -54,52 +67,68 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, discrepancyGoodsRoute)
+
+        val view = application.injector.instanceOf[DiscrepancyGoodsView]
 
         val result = route(application, request).value
-
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
 
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("What is the Declaration Unique Consignment Reference (DUCR) for these goods?")
-        body should include(
-          "This links the movement to the underlying export declaration in CDS. " +
-            "It must match the DUCR used on the original declaration. " +
-            "The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected."
-        )
+        body should include("Tell us what’s changed")
+        body should include("Enter the details of any changes to the goods.")
+        body should include("Goods item number")
+        body should include("Declaration Unique Consignment Reference (DUCR)")
+        body should include("If you wish to amend the DUCR from the original IE501 message.")
+        body should include("New gross mass in kilograms")
+        body should include("The total weight of the goods, including all packaging and containers.")
+        body should include("New net mass in kilograms")
+        body should include("The weight of the goods only.")
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyDucrPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, discrepancyGoodsRoute)
 
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
+        val view = application.injector.instanceOf[DiscrepancyGoodsView]
 
         val result = route(application, request).value
 
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("What is the Declaration Unique Consignment Reference (DUCR) for these goods?")
-        body should include(
-          "This links the movement to the underlying export declaration in CDS. " +
-            "It must match the DUCR used on the original declaration. " +
-            "The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected."
-        )
-        body should include("""id="value"""")
-        body should include("""name="value"""")
+        body should include("Tell us what’s changed")
+        body should include("Enter the details of any changes to the goods.")
+        body should include("Goods item number")
+        body should include("""id="goodsItemNumber"""")
+        body should include("""name="goodsItemNumber"""")
         body should include("""type="text"""")
-        body should include("""value="answer"""")
+        body should include("""value="value 1"""")
+        body should include("Declaration Unique Consignment Reference (DUCR)")
+        body should include("If you wish to amend the DUCR from the original IE501 message.")
+        body should include("""id="declarationUniqueConsignmentReference"""")
+        body should include("""name="declarationUniqueConsignmentReference"""")
+        body should include("""type="text"""")
+        body should include("""value="value 2"""")
+        body should include("New gross mass in kilograms")
+        body should include("The total weight of the goods, including all packaging and containers.")
+        body should include("""id="newGrossMass"""")
+        body should include("""name="newGrossMass"""")
+        body should include("""type="text"""")
+        body should include("""value="value 3"""")
+        body should include("New net mass in kilograms")
+        body should include("The weight of the goods only.")
+        body should include("""id="newNetMass"""")
+        body should include("""name="newNetMass"""")
+        body should include("""type="text"""")
+        body should include("""value="value 4"""")
       }
     }
 
@@ -120,8 +149,13 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, discrepancyGoodsRoute)
+            .withFormUrlEncodedBody(
+              ("goodsItemNumber", "value 1"),
+              ("declarationUniqueConsignmentReference", "value 2"),
+              ("newGrossMass", "value 3"),
+              ("newNetMass", "value 4")
+            )
 
         val result = route(application, request).value
 
@@ -138,12 +172,12 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, discrepancyGoodsRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
+        val view = application.injector.instanceOf[DiscrepancyGoodsView]
 
         val result = route(application, request).value
 
@@ -161,7 +195,7 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, discrepancyGoodsRoute)
 
         val result = route(application, request).value
 
@@ -178,8 +212,13 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, discrepancyGoodsRoute)
+            .withFormUrlEncodedBody(
+              ("goodsItemNumber", "value 1"),
+              ("declarationUniqueConsignmentReference", "value 2"),
+              ("newGrossMass", "value 3"),
+              ("newNetMass", "value 4")
+            )
 
         val result = route(application, request).value
 

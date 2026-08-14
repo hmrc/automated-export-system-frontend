@@ -115,9 +115,9 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[UnhappyPathNavigator].toInstance(new FakeUnhappyPathNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
           )
-          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
       running(application) {
@@ -181,7 +181,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyTransportRoute)
-            .withFormUrlEncodedBody(("containerId", "value 1"), ("numberOfSeals", "value 2"))
+            .withFormUrlEncodedBody(("containerId", "value 1"), ("numberOfSeals", "99"))
 
         val result = route(application, request).value
 

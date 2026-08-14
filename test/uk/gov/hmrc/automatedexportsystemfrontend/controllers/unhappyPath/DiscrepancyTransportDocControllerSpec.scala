@@ -21,31 +21,37 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.unhappyPath.DiscrepancyDucrFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.unhappyPath.DiscrepancyTransportDocFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeUnhappyPathNavigator, UnhappyPathNavigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.DiscrepancyDucrPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.DiscrepancyTransportDocPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.unhappyPath.DiscrepancyDucrView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.unhappyPath.DiscrepancyTransportDocView
 
 import scala.concurrent.Future
 
-class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
+class DiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DiscrepancyDucrFormProvider()
-  val form: Form[String] = formProvider()
+  val formProvider = new DiscrepancyTransportDocFormProvider()
+  val form: Form[DocumentDetails] = formProvider()
 
-  lazy val discrepancyDucrRoute: String = unhappyRoute.DiscrepancyDucrController.onPageLoad(NormalMode).url
+  lazy val discrepancyTransportDocRoute: String = unhappyRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode).url
 
-  "DiscrepancyDucr Controller" - {
+  val userAnswers = UserAnswers(
+    userAnswersId,
+    Json.obj(DiscrepancyTransportDocPage.toString -> Json.obj("documentType" -> "value 1", "referenceNumber" -> "value 2"))
+  )
+
+  "DiscrepancyTransportDoc Controller" - {
 
     "must return OK and the correct view for a GET" in {
 
@@ -54,52 +60,54 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, discrepancyTransportDocRoute)
+
+        val view = application.injector.instanceOf[DiscrepancyTransportDocView]
 
         val result = route(application, request).value
-
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
 
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("What is the Declaration Unique Consignment Reference (DUCR) for these goods?")
-        body should include(
-          "This links the movement to the underlying export declaration in CDS. " +
-            "It must match the DUCR used on the original declaration. " +
-            "The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected."
-        )
+        body should include("Document details")
+        body should include("If the transport document details have changed, enter the new details.")
+        body should include("Document type")
+        body should include("For example, a bill of lading or waybill reference.")
+        body should include("Reference number")
+        body should include("This is shown in the transport document.")
       }
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyDucrPage, "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, discrepancyTransportDocRoute)
 
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
+        val view = application.injector.instanceOf[DiscrepancyTransportDocView]
 
         val result = route(application, request).value
 
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("What is the Declaration Unique Consignment Reference (DUCR) for these goods?")
-        body should include(
-          "This links the movement to the underlying export declaration in CDS. " +
-            "It must match the DUCR used on the original declaration. " +
-            "The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected."
-        )
-        body should include("""id="value"""")
-        body should include("""name="value"""")
+        body should include("Document details")
+        body should include("If the transport document details have changed, enter the new details.")
+        body should include("Document type")
+        body should include("For example, a bill of lading or waybill reference.")
+        body should include("""id="documentType"""")
+        body should include("""name="documentType"""")
         body should include("""type="text"""")
-        body should include("""value="answer"""")
+        body should include("""value="value 1"""")
+        body should include("Reference number")
+        body should include("This is shown in the transport document.")
+        body should include("""id="referenceNumber"""")
+        body should include("""name="referenceNumber"""")
+        body should include("""type="text"""")
+        body should include("""value="value 2"""")
       }
     }
 
@@ -120,8 +128,8 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, discrepancyTransportDocRoute)
+            .withFormUrlEncodedBody(("documentType", "value 1"), ("referenceNumber", "value 2"))
 
         val result = route(application, request).value
 
@@ -138,12 +146,12 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", ""))
+          FakeRequest(POST, discrepancyTransportDocRoute)
+            .withFormUrlEncodedBody(("value", "invalid value"))
 
-        val boundForm = form.bind(Map("value" -> ""))
+        val boundForm = form.bind(Map("value" -> "invalid value"))
 
-        val view = application.injector.instanceOf[DiscrepancyDucrView]
+        val view = application.injector.instanceOf[DiscrepancyTransportDocView]
 
         val result = route(application, request).value
 
@@ -161,7 +169,7 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, discrepancyDucrRoute)
+        val request = FakeRequest(GET, discrepancyTransportDocRoute)
 
         val result = route(application, request).value
 
@@ -178,8 +186,8 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+          FakeRequest(POST, discrepancyTransportDocRoute)
+            .withFormUrlEncodedBody(("documentType", "value 1"), ("referenceNumber", "value 2"))
 
         val result = route(application, request).value
 
