@@ -232,9 +232,3 @@ discrepancyReference.checkYourAnswersLabel = What is the Declaration Goods Refer
 discrepancyReference.error.required = Enter the Declaration Goods Reference
 discrepancyReference.error.length = The Declaration Goods Reference must be 5 characters or less
 discrepancyReference.change.hidden = the Declaration Goods Reference
-
-testPage.title = testPage
-testPage.heading = testPage
-
-testingTest.title = testingTest
-testingTest.heading = testingTest
