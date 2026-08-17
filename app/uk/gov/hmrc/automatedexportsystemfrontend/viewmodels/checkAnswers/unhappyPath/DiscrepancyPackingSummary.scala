@@ -31,7 +31,11 @@ object DiscrepancyPackingSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DiscrepancyPackingPage).map { answer =>
 
-      val value = HtmlFormat.escape(answer.packagingCode).toString + "<br/>" + HtmlFormat.escape(answer.numberOfPackages).toString
+      val value = Seq(
+        HtmlFormat.escape(answer.packagingCode).toString,
+        HtmlFormat.escape(answer.numberOfPackages).toString,
+        HtmlFormat.escape(answer.shippingMarks).toString
+      ).mkString("<br/>")
 
       SummaryListRowViewModel(
         key = "discrepancyPacking.checkYourAnswersLabel",

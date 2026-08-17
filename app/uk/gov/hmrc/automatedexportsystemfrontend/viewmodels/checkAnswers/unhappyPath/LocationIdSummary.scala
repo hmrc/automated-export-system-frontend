@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.unhappyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.LocationIdPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
@@ -31,7 +31,14 @@ object LocationIdSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(LocationIdPage).map { answer =>
 
-      val value = HtmlFormat.escape(answer.locationType).toString + "<br/>" + HtmlFormat.escape(answer.unlocode).toString
+      val value =
+        Seq(
+          HtmlFormat.escape(answer.locationType).toString,
+          HtmlFormat.escape(answer.unlocode).toString,
+          HtmlFormat.escape(answer.locationAdditionalIdentifier).toString,
+          HtmlFormat.escape(answer.authorisationReferenceNumber).toString
+        )
+          .mkString("<br/>")
 
       SummaryListRowViewModel(
         key = "locationId.checkYourAnswersLabel",
