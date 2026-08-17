@@ -17,10 +17,10 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.*
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.*
 
 class UnhappyPathNavigatorSpec extends SpecBase {
 
@@ -34,7 +34,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyDucrPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.values.head).success.value
           navigator.nextPage(DiscrepancyConsignmentPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
         }
       }
 
@@ -42,7 +42,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyMucrPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyDucrPage, "ducr").success.value
           navigator.nextPage(DiscrepancyDucrPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
         }
       }
 
@@ -50,7 +50,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyTransportPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyMucrPage, "mucr").success.value
           navigator.nextPage(DiscrepancyMucrPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
         }
       }
 
@@ -58,7 +58,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancySealsPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails("containerId", 99)).success.value
           navigator.nextPage(DiscrepancyTransportPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancySealsController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancySealsController.onPageLoad(NormalMode)
         }
       }
 
@@ -66,7 +66,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyReferencePage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage, "sealId").success.value
           navigator.nextPage(DiscrepancySealsPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
         }
       }
 
@@ -74,7 +74,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to LocationTypePage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage, "reference").success.value
           navigator.nextPage(DiscrepancyReferencePage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.LocationTypeController.onPageLoad(NormalMode)
+            discrepanciesRoute.LocationTypeController.onPageLoad(NormalMode)
         }
       }
 
@@ -82,7 +82,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to LocationIdPage" in {
           val userAnswers = emptyUserAnswers.set(LocationTypePage, LocationType.values.head).success.value
           navigator.nextPage(LocationTypePage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.LocationIdController.onPageLoad(NormalMode)
+            discrepanciesRoute.LocationIdController.onPageLoad(NormalMode)
         }
       }
 
@@ -93,7 +93,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
             .success
             .value
           navigator.nextPage(LocationIdPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
         }
       }
 
@@ -104,7 +104,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
             .success
             .value
           navigator.nextPage(DiscrepancyTransportMeansPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
         }
       }
 
@@ -115,7 +115,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
             .success
             .value
           navigator.nextPage(DiscrepancyTransportDocPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
         }
       }
 
@@ -129,7 +129,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
             .success
             .value
           navigator.nextPage(DiscrepancyGoodsPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyPackingController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyPackingController.onPageLoad(NormalMode)
         }
       }
 
