@@ -26,7 +26,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar{
         status(result) mustEqual OK
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-        body should include("$className")
+        body should include("$className;format="decap"$")
       }
     }
   }
