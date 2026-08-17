@@ -25,7 +25,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendPartOfConsolidationFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, PartOfConsolidationAnswer, UserAnswers}
@@ -44,7 +44,7 @@ class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar 
   val formProvider = new AmendPartOfConsolidationFormProvider()
   val form = formProvider()
 
-  lazy val partOfConsolidationRoute = happyRoute.PartOfConsolidationController.onPageLoad(NormalMode).url
+  lazy val partOfConsolidationRoute = amendRoute.AmendPartOfConsolidationController.onPageLoad(NormalMode).url
 
   "PartOfConsolidation Controller" - {
 

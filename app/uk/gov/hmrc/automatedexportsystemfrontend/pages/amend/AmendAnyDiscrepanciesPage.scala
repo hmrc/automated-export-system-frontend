@@ -23,5 +23,5 @@ case object AmendAnyDiscrepanciesPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ toString
 
-  override def toString: String = "anyDiscrepancies"
+  override def toString: String = "amendAnyDiscrepancies"
 }

@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.{IsSplitExitPage, PartOfConsolidationPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
 
 class UserAnswerHelperSpec extends SpecBase {
 

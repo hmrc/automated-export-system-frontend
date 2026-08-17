@@ -30,7 +30,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.services.SubmissionDataService
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.happyPath.IsSplitExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
