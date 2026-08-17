@@ -1,7 +1,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
-import forms.$className$FormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.$className$FormProvider
 import javax.inject.Inject
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator

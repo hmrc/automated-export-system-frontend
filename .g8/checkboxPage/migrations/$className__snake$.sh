@@ -6,7 +6,7 @@ echo "Applying migration $className;format="snake"$"
 echo "Adding routes to conf/app.routes"
 
 echo "" >> ../conf/app.routes
-echo "GET        /$className;format="decap"$                        .uk.gov.hmrc.automatedexportsystemfrontend.controllers.$className$Controller.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
+echo "GET        /$className;format="decap"$                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.$className$Controller.onPageLoad(mode: Mode = NormalMode)" >> ../conf/app.routes
 echo "POST       /$className;format="decap"$                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.$className$Controller.onSubmit(mode: Mode = NormalMode)" >> ../conf/app.routes
 
 echo "GET        /change$className$                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.$className$Controller.onPageLoad(mode: Mode = CheckMode)" >> ../conf/app.routes
