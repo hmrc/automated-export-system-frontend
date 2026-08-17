@@ -1,8 +1,8 @@
-package forms
+package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
 import javax.inject.Inject
 
-import forms.mappings.Mappings
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms.set
 import uk.gov.hmrc.automatedexportsystemfrontend.models.$className$

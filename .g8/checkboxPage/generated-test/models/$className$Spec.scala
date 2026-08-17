@@ -1,4 +1,4 @@
-package models
+package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import generators.ModelGenerators
 import org.scalacheck.Arbitrary.arbitrary

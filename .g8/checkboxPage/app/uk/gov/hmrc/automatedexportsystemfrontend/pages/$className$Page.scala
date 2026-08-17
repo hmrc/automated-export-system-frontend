@@ -1,4 +1,4 @@
-package pages
+package uk.gov.hmrc.automatedexportsystemfrontend.pages
 
 import uk.gov.hmrc.automatedexportsystemfrontend.models.$className$
 import play.api.libs.json.JsPath
