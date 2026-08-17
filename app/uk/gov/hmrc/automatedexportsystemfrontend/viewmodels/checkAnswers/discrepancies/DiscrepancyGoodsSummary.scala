@@ -14,38 +14,36 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Discrepancies
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.discrepancies
 
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.LocationIdPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.DiscrepancyGoodsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object LocationIdSummary {
+object DiscrepancyGoodsSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LocationIdPage).map { answer =>
+    answers.get(DiscrepancyGoodsPage).map { answer =>
 
-      val value =
-        Seq(
-          HtmlFormat.escape(answer.locationType).toString,
-          HtmlFormat.escape(answer.unlocode).toString,
-          HtmlFormat.escape(answer.locationAdditionalIdentifier).toString,
-          HtmlFormat.escape(answer.authorisationReferenceNumber).toString
-        )
-          .mkString("<br/>")
+      val value = Seq(
+        Some(HtmlFormat.escape(answer.goodsItemNumber).toString),
+        answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr).toString),
+        Some(HtmlFormat.escape(answer.newGrossMass).toString),
+        Some(HtmlFormat.escape(answer.newNetMass).toString)
+      ).flatten.mkString("<br/>")
 
       SummaryListRowViewModel(
-        key = "locationId.checkYourAnswersLabel",
+        key = "discrepancyGoods.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(value)),
         actions = Seq(
-          ActionItemViewModel("site.change", discrepanciesRoute.LocationIdController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("locationId.change.hidden"))
+          ActionItemViewModel("site.change", discrepanciesRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("discrepancyGoods.change.hidden"))
         )
       )
     }

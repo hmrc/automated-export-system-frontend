@@ -14,31 +14,35 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Discrepancies
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.discrepancies
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.LocationTypePage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.DiscrepancyTransportMeansPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object LocationTypeSummary {
+object DiscrepancyTransportMeansSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(LocationTypePage).map { answer =>
+    answers.get(DiscrepancyTransportMeansPage).map { answer =>
 
-      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$answer"))))
+      val value = Seq(
+        HtmlFormat.escape(answer.transportType).toString,
+        HtmlFormat.escape(answer.transportIdNumber).toString,
+        HtmlFormat.escape(answer.countryOfRegistration).toString
+      ).mkString("<br/>")
 
       SummaryListRowViewModel(
-        key = "locationType.checkYourAnswersLabel",
-        value = value,
+        key = "discrepancyTransportMeans.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(value)),
         actions = Seq(
-          ActionItemViewModel("site.change", discrepanciesRoute.LocationTypeController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("locationType.change.hidden"))
+          ActionItemViewModel("site.change", discrepanciesRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("discrepancyTransportMeans.change.hidden"))
         )
       )
     }

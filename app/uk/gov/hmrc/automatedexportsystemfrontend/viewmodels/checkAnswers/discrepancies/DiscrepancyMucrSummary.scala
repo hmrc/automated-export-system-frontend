@@ -14,35 +14,27 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Discrepancies
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.discrepancies
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.DiscrepancyPackingPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.DiscrepancyMucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object DiscrepancyPackingSummary {
+object DiscrepancyMucrSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancyPackingPage).map { answer =>
-
-      val value = Seq(
-        HtmlFormat.escape(answer.packagingCode).toString,
-        HtmlFormat.escape(answer.numberOfPackages).toString,
-        HtmlFormat.escape(answer.shippingMarks).toString
-      ).mkString("<br/>")
-
+    answers.get(DiscrepancyMucrPage).map { answer =>
       SummaryListRowViewModel(
-        key = "discrepancyPacking.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
+        key = "discrepancyMucr.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
-          ActionItemViewModel("site.change", discrepanciesRoute.DiscrepancyPackingController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyPacking.change.hidden"))
+          ActionItemViewModel("site.change", discrepanciesRoute.DiscrepancyMucrController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("discrepancyMucr.change.hidden"))
         )
       )
     }

@@ -14,36 +14,27 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Discrepancies
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.discrepancies
 
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.DiscrepancyGoodsPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.DiscrepancyDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object DiscrepancyGoodsSummary {
+object DiscrepancyDucrSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancyGoodsPage).map { answer =>
-
-      val value = Seq(
-        Some(HtmlFormat.escape(answer.goodsItemNumber).toString),
-        answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr).toString),
-        Some(HtmlFormat.escape(answer.newGrossMass).toString),
-        Some(HtmlFormat.escape(answer.newNetMass).toString)
-      ).flatten.mkString("<br/>")
-
+    answers.get(DiscrepancyDucrPage).map { answer =>
       SummaryListRowViewModel(
-        key = "discrepancyGoods.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
+        key = "discrepancyDucr.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
-          ActionItemViewModel("site.change", discrepanciesRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyGoods.change.hidden"))
+          ActionItemViewModel("site.change", discrepanciesRoute.DiscrepancyDucrController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("discrepancyDucr.change.hidden"))
         )
       )
     }

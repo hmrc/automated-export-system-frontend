@@ -14,31 +14,31 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Discrepancies
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.discrepancies
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.DiscrepancyTransportDocPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.LocationTypePage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object DiscrepancyTransportDocSummary {
+object LocationTypeSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancyTransportDocPage).map { answer =>
+    answers.get(LocationTypePage).map { answer =>
 
-      val value = HtmlFormat.escape(answer.documentType).toString + "<br/>" + HtmlFormat.escape(answer.referenceNumber).toString
+      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$answer"))))
 
       SummaryListRowViewModel(
-        key = "discrepancyTransportDoc.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
+        key = "locationType.checkYourAnswersLabel",
+        value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", discrepanciesRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyTransportDoc.change.hidden"))
+          ActionItemViewModel("site.change", discrepanciesRoute.LocationTypeController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("locationType.change.hidden"))
         )
       )
     }
