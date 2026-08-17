@@ -41,7 +41,6 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
   ".declarationUniqueConsignmentReference" - {
 
     val fieldName = "declarationUniqueConsignmentReference"
-    val requiredKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.required"
     val lengthKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.length"
     val maxLength = 100
 
@@ -49,7 +48,14 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+    "bind successfully when no ducr value is provided" in {
+      val data = Map("goodsItemNumber" -> "reference", "declarationUniqueConsignmentReference" -> "", "newGrossMass" -> "20", "newNetMass" -> "10")
+
+      val result = form.bind(data)
+
+      result.errors mustBe empty
+      result.value.value.declarationUniqueConsignmentReference mustBe None
+    }
   }
 
   ".newGrossMass" - {

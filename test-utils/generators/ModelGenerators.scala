@@ -34,7 +34,7 @@ implicit lazy val arbitraryDiscrepancyGoods: Arbitrary[WhatHasChangedDetails] =
   Arbitrary {
     for {
       goodsItemNumber <- arbitrary[String]
-      declarationUniqueConsignmentReference <- arbitrary[String]
+      declarationUniqueConsignmentReference <- arbitrary[Option[String]]
       newGrossMass <- arbitrary[String]
       newNetMass <- arbitrary[String]
     } yield WhatHasChangedDetails(goodsItemNumber, declarationUniqueConsignmentReference, newGrossMass, newNetMass)

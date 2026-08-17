@@ -124,7 +124,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
           val userAnswers = emptyUserAnswers
             .set(
               DiscrepancyGoodsPage,
-              WhatHasChangedDetails("goodsItemNumber", "declarationUniqueConsignmentReference", "newGrossMass", "newNetMass")
+              WhatHasChangedDetails("goodsItemNumber", Some("declarationUniqueConsignmentReference"), "newGrossMass", "newNetMass")
             )
             .success
             .value

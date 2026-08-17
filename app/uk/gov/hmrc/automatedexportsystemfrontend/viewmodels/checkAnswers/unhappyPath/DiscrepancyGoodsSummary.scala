@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.unhappyPath
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.DiscrepancyGoodsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
@@ -31,8 +31,12 @@ object DiscrepancyGoodsSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DiscrepancyGoodsPage).map { answer =>
 
-      val value =
-        HtmlFormat.escape(answer.goodsItemNumber).toString + "<br/>" + HtmlFormat.escape(answer.declarationUniqueConsignmentReference).toString
+      val value = Seq(
+        Some(HtmlFormat.escape(answer.goodsItemNumber).toString),
+        answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr).toString),
+        Some(HtmlFormat.escape(answer.newGrossMass).toString),
+        Some(HtmlFormat.escape(answer.newNetMass).toString)
+      ).flatten.mkString("<br/>")
 
       SummaryListRowViewModel(
         key = "discrepancyGoods.checkYourAnswersLabel",

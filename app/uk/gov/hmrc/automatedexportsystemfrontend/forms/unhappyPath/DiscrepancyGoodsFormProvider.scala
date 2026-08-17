@@ -29,8 +29,9 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
     mapping(
       "goodsItemNumber" -> text("discrepancyGoods.error.goodsItemNumber.required")
         .verifying(maxLength(100, "discrepancyGoods.error.goodsItemNumber.length")),
-      "declarationUniqueConsignmentReference" -> text("discrepancyGoods.error.declarationUniqueConsignmentReference.required")
-        .verifying(maxLength(100, "discrepancyGoods.error.declarationUniqueConsignmentReference.length")),
+      "declarationUniqueConsignmentReference" -> optional(
+        text().verifying(maxLength(100, "discrepancyGoods.error.declarationUniqueConsignmentReference.length"))
+      ),
       "newGrossMass" -> text("discrepancyGoods.error.newGrossMass.required")
         .verifying(maxLength(100, "discrepancyGoods.error.newGrossMass.length")),
       "newNetMass" -> text("discrepancyGoods.error.newNetMass.required")
