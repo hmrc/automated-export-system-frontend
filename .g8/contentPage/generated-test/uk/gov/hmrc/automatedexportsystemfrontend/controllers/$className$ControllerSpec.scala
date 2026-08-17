@@ -1,8 +1,10 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
-import base.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.$className$View
 import org.scalatest.matchers.must.Matchers.mustEqual
 
