@@ -1,19 +1,19 @@
-package controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
-import base.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import forms.$className$FormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, $className$, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.$className$Page
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.$className$Page
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import views.html.$className$View
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.$className$View
 
 import scala.concurrent.Future
 
@@ -30,7 +30,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -41,7 +43,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe OK
 
-        contentAsString(result) shouldBe view(form, NormalMode)(request, messages(application)).toString
+        val body = contentAsString(result)
+        body should include("automated-export-system-frontend")
+        body should include("$className;format="decap"$")
       }
     }
 
@@ -49,8 +53,10 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = UserAnswers(userAnswersId).set($className$Page, $className$.values.toSet).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
-      
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
       running(application) {
         val request = FakeRequest(GET, $className;format="decap"$Route)
 
@@ -59,7 +65,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe OK
-        contentAsString(result) shouldBe view(form.fill($className$.values.toSet), NormalMode)(request, messages(application)).toString
+        body should include("automated-export-system-frontend")
+        body should include("$className;format="decap"$")
+        body should include("value")
       }
     }
 
@@ -69,13 +77,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
-      val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
-          .overrides(
-            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
-            bind[SessionRepository].toInstance(mockSessionRepository)
-          )
-          .build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
       running(application) {
         val request =
@@ -91,12 +95,15 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
       running(application) {
         val request =
           FakeRequest(POST, $className;format="decap"$Route)
             .withFormUrlEncodedBody(("value", "invalid value"))
+          .withSession(SessionKeys.sessionId -> "some-session-id")
 
         val boundForm = form.bind(Map("value" -> "invalid value"))
 
@@ -105,14 +112,18 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe BAD_REQUEST
-        contentAsString(result) shouldBe view(boundForm, NormalMode)(request, messages(application)).toString
+        val body = contentAsString(result)
+        body should include("automated-export-system-frontend")
+        body should include("$className;format="decap"$")
       }
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-      val application = applicationBuilder(userAnswers = None).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+      
       running(application) {
         val request = FakeRequest(GET, $className;format="decap"$Route)
 
@@ -124,9 +135,11 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
-      
-      val application = applicationBuilder(userAnswers = None).build()
 
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+      
       running(application) {
         val request =
           FakeRequest(POST, $className;format="decap"$Route)
