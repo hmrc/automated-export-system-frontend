@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.happyPath.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
