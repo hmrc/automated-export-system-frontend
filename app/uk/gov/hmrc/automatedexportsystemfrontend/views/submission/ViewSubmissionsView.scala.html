@@ -35,7 +35,6 @@
 
       @govukTable(Table(
       head = Some(Seq(
-        HeadCell(content = Text(messages("viewSubmissions.reference"))),
         HeadCell(content = Text(messages("viewSubmissions.mrn"))),
         HeadCell(content = Text(messages("viewSubmissions.ducr"))),
         HeadCell(content = Text(messages("viewSubmissions.officeOfExit"))),
@@ -45,9 +44,8 @@
       rows = viewSubmissionsViewModel.map(_.summaries.map { summary =>
         Seq(
           TableRow(content = HtmlContent{
-      s"""<a href="" class="govuk-body govuk-link">${messages(summary.reference)}</a>"""
+      s"""<a href="" class="govuk-body govuk-link">${messages(summary.mrn)}</a>"""
       }),
-          TableRow(content = Text(summary.mrn)),
           TableRow(content = Text(summary.ducr)),
           TableRow(content = Text(summary.submittedDate)),
           TableRow(content = Text(messages(s"officeOfExit.${summary.officeOfExit.toString}"))),

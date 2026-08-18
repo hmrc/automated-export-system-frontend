@@ -18,14 +18,13 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit.{Belfast, Foyle, Larne, Warrenpoint}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionStatus, SubmissionSummary, ViewSubmissionsViewModel}
-import uk.gov.hmrc.automatedexportsystemfrontend.utils.DateTimeFormats
+import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionViewModelMapper
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionsView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import java.time.LocalDate
+import scala.concurrent.ExecutionContext
 import javax.inject.Inject
 
 class ViewSubmissionsController @Inject() (
@@ -33,51 +32,22 @@ class ViewSubmissionsController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   val controllerComponents: MessagesControllerComponents,
-  view: ViewSubmissionsView
-) extends FrontendBaseController with I18nSupport {
+  view: ViewSubmissionsView,
+  automatedExportSystemConnector: AutomatedExportSystemConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData) { implicit request =>
-
-    // TODO, populate this view model with submission retrieval from backend get call when ready, remove placeholder data
-    val viewSubmissionsViewModel: Option[ViewSubmissionsViewModel] = Some(
-      ViewSubmissionsViewModel(
-        Seq(
-          SubmissionSummary(
-            "IE507A-2026-04817",
-            "24GB1234567890AB1",
-            "GB123456789000-CONSGT001",
-            Belfast,
-            LocalDate.of(2026, 3, 1).format(DateTimeFormats.shortDateFormat),
-            SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green")
-          ),
-          SubmissionSummary(
-            "IE507A-2026-04818",
-            "24GB1234567890AB2",
-            "GB123456789000-CONSGT002",
-            Foyle,
-            LocalDate.of(2026, 4, 2).format(DateTimeFormats.shortDateFormat),
-            SubmissionStatus("viewSubmissions.status.awaitingDecision", "govuk-tag--blue")
-          ),
-          SubmissionSummary(
-            "IE507A-2026-04819",
-            "24GB1234567890AB3",
-            "GB123456789000-CONSGT003",
-            Larne,
-            LocalDate.of(2026, 5, 3).format(DateTimeFormats.shortDateFormat),
-            SubmissionStatus("viewSubmissions.status.cancelled", "govuk-tag--red")
-          ),
-          SubmissionSummary(
-            "IE507A-2026-04820",
-            "24GB1234567890AB4",
-            "GB123456789000-CONSGT004",
-            Warrenpoint,
-            LocalDate.of(2026, 6, 4).format(DateTimeFormats.shortDateFormat),
-            SubmissionStatus("viewSubmissions.status.amended", "govuk-tag--yellow")
-          )
-        )
-      )
-    )
-
-    Ok(view(viewSubmissionsViewModel))
-  }
+  def onPageLoad: Action[AnyContent] =
+    (actionBuilder andThen getData).async { implicit request =>
+      automatedExportSystemConnector
+        .getSubmissions()
+        .map { submissions =>
+          val viewModel = SubmissionViewModelMapper.toViewModel(submissions)
+          if (viewModel.summaries.nonEmpty) {
+            Ok(view(Some(viewModel)))
+          } else {
+            Ok(view(None))
+          }
+        }
+    }
 }
