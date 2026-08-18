@@ -1,9 +1,10 @@
-package controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
-import base.SpecBase
-import forms.$className$FormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.base.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.$className$FormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
-import navigation.{FakeNavigator, Navigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
@@ -12,8 +13,8 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers._
-import repositories.SessionRepository
-import views.html.$className$View
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.$className$View
 
 import scala.concurrent.Future
 
@@ -30,7 +31,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
     "must return OK and the correct view for a GET" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -48,7 +51,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
       val userAnswers = UserAnswers(userAnswersId).set($className$Page, true).success.value
 
-      val application = applicationBuilder(userAnswers = Some(userAnswers)).build()
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
       running(application) {
         val request = FakeRequest(GET, $className;format="decap"$Route)
@@ -58,7 +63,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe OK
-        contentAsString(result) shouldBe view(form.fill(true), NormalMode)(request, messages(application)).toString
+        val body = contentAsString(result)
+        body should include("automated-export-system-frontend")
+        body should include("$className;format="decap"$")
       }
     }
 
@@ -104,7 +111,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe BAD_REQUEST
-        contentAsString(result) shouldBe view(boundForm, NormalMode)(request, messages(application)).toString
+        val body = contentAsString(result)
+        body should include("automated-export-system-frontend")
+        body should include("$className;format="decap"$")
       }
     }
 

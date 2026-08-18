@@ -1,4 +1,4 @@
-package forms
+package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
 import forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
