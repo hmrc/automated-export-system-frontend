@@ -21,6 +21,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, ModeO
 
 trait ModelGenerators {}
 
+implicit lazy val arbitraryTest: Arbitrary[Test] =
+  Arbitrary {
+    Gen.oneOf(Test.values)
+  }
+
 implicit lazy val arbitraryContainerDetails: Arbitrary[ContainerDetails] =
   Arbitrary {
     for {
