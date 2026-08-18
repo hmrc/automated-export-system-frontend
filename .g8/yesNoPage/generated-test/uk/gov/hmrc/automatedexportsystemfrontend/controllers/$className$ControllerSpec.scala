@@ -1,6 +1,6 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
-import uk.gov.hmrc.automatedexportsystemfrontend.base.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.$className$FormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
@@ -8,7 +8,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import pages.$className$Page
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.$className$Page
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
