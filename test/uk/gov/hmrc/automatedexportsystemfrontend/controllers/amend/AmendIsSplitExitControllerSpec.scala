@@ -43,7 +43,7 @@ class AmendIsSplitExitControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new AmendIsSplitExitFormProvider()
   val form = formProvider()
 
-  lazy val isSplitExitRoute = amendRoute.AmendIsSplitExitController.onPageLoad(NormalMode).url
+  lazy val isSplitExitRoute = amendRoute.AmendIsSplitExitController.onPageLoad(NormalMode, "submissionId").url
 
   "IsSplitExit Controller" - {
 
@@ -70,7 +70,7 @@ class AmendIsSplitExitControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(AmendIsSplitExitPage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendIsSplitExitPage("submissionId"), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))

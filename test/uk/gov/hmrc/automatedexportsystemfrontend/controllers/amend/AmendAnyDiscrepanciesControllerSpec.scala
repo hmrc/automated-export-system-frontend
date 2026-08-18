@@ -42,7 +42,7 @@ class AmmendAnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new AmendAnyDiscrepanciesFormProvider()
   val form = formProvider()
 
-  lazy val anyDiscrepanciesRoute = amendRoute.AmendAnyDiscrepanciesController.onPageLoad(NormalMode).url
+  lazy val anyDiscrepanciesRoute = amendRoute.AmendAnyDiscrepanciesController.onPageLoad(NormalMode, "submissionId").url
 
   "AnyDiscrepancies Controller" - {
 
@@ -69,7 +69,7 @@ class AmmendAnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(AmendAnyDiscrepanciesPage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendAnyDiscrepanciesPage("submissionId"), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))

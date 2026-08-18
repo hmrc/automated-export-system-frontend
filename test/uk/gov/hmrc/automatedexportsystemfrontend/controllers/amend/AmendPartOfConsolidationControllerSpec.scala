@@ -44,7 +44,7 @@ class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar 
   val formProvider = new AmendPartOfConsolidationFormProvider()
   val form = formProvider()
 
-  lazy val partOfConsolidationRoute = amendRoute.AmendPartOfConsolidationController.onPageLoad(NormalMode).url
+  lazy val partOfConsolidationRoute = amendRoute.AmendPartOfConsolidationController.onPageLoad(NormalMode, "submissionId").url
 
   "PartOfConsolidation Controller" - {
 
@@ -70,7 +70,8 @@ class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar 
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(AmendPartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr"))).success.value
+      val userAnswers =
+        UserAnswers(userAnswersId).set(AmendPartOfConsolidationPage("submissionId"), PartOfConsolidationAnswer(true, Some("mucr"))).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))

@@ -19,9 +19,9 @@ package uk.gov.hmrc.automatedexportsystemfrontend.pages.amend
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object AmendIsSplitExitPage extends QuestionPage[Boolean] {
+case class AmendIsSplitExitPage(submissionId: String) extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
 
   override def toString: String = "isSplitExit"
 }

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => happyRoute}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendAnyDiscrepanciesPage
@@ -26,8 +26,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendAnyDiscrepanciesSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendAnyDiscrepanciesPage).map { answer =>
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendAnyDiscrepanciesPage(submissionId)).map { answer =>
 
       val value = if (answer) "site.yes" else "site.no"
 
@@ -35,7 +35,7 @@ object AmendAnyDiscrepanciesSummary {
         key = "anyDiscrepancies.checkYourAnswersLabel",
         value = ValueViewModel(value),
         actions = Seq(
-          ActionItemViewModel("site.change", happyRoute.AnyDiscrepanciesController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", amendRoute.AmendAnyDiscrepanciesController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("anyDiscrepancies.change.hidden"))
         )
       )

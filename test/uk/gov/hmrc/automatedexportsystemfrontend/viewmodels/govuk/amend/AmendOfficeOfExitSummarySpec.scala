@@ -40,17 +40,17 @@ class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answer is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AmendOfficeOfExitPage, OfficeOfExit.Belfast)
+        .set(AmendOfficeOfExitPage("submissionId"), OfficeOfExit.Belfast)
         .get
 
-      AmendOfficeOfExitSummary.row(userAnswers) shouldBe Some(
+      AmendOfficeOfExitSummary.row(userAnswers)("submissionId") shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("officeOfExit.GB000051")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.OfficeOfExitController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendOfficeOfExitController.onPageLoad(CheckMode, "submissionId").url
             )
               .withVisuallyHiddenText("officeOfExit.change.hidden")
           )
@@ -60,7 +60,7 @@ class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      AmendOfficeOfExitSummary.row(userAnswers) shouldBe None
+      AmendOfficeOfExitSummary.row(userAnswers)("submissionId") shouldBe None
     }
   }
 

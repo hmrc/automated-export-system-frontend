@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
-import controllers.routes
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
@@ -30,8 +29,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendOfficeOfExitSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendOfficeOfExitPage).map { answer =>
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendOfficeOfExitPage(submissionId)).map { answer =>
 
       val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answer"))))
 
@@ -39,7 +38,7 @@ object AmendOfficeOfExitSummary {
         key = "officeOfExit.checkYourAnswersLabel",
         value = value,
         actions = Seq(
-          ActionItemViewModel("site.change", happyRoute.OfficeOfExitController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", amendRoute.AmendOfficeOfExitController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("officeOfExit.change.hidden"))
         )
       )

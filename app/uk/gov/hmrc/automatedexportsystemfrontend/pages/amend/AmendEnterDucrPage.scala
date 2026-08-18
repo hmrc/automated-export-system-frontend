@@ -19,9 +19,9 @@ package uk.gov.hmrc.automatedexportsystemfrontend.pages.amend
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
 
-case object AmendEnterDucrPage extends QuestionPage[String] {
+case class AmendEnterDucrPage(submissionId: String) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
 
   override def toString: String = "ducr"
 }

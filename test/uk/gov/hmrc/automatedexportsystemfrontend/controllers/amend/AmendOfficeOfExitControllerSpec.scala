@@ -39,7 +39,7 @@ class AmendOfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  lazy val officeOfExitRoute = amendRoute.AmendOfficeOfExitController.onPageLoad(NormalMode).url
+  lazy val officeOfExitRoute = amendRoute.AmendOfficeOfExitController.onPageLoad(NormalMode, "submissionId").url
 
   val formProvider = new AmendOfficeOfExitFormProvider()
   val form = formProvider()
@@ -69,7 +69,7 @@ class AmendOfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(AmendOfficeOfExitPage, OfficeOfExit.Larne).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendOfficeOfExitPage("submissionId"), OfficeOfExit.Larne).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))

@@ -44,7 +44,7 @@ class AmendEnterMrnControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new AmendEnterMrnFormProvider()
   val form = formProvider()
 
-  lazy val enterMrnRoute = amendRoute.AmendEnterMrnController.onPageLoad(NormalMode).url
+  lazy val enterMrnRoute = amendRoute.AmendEnterMrnController.onPageLoad(NormalMode, "submissionId").url
 
   "EnterMrn Controller" - {
 
@@ -70,7 +70,7 @@ class AmendEnterMrnControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(AmendEnterMrnPage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendEnterMrnPage("submissionId"), "answer").success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))

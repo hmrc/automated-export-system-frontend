@@ -39,17 +39,19 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when Yes is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AmendAnyDiscrepanciesPage, true)
+        .set(AmendAnyDiscrepanciesPage("submissionId"), true)
         .get
 
-      AmendAnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(userAnswers)("submissionId") shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.AnyDiscrepanciesController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendAnyDiscrepanciesController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("anyDiscrepancies.change.hidden")
           )
@@ -59,17 +61,19 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
 
     "when No is selected, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AmendAnyDiscrepanciesPage, false)
+        .set(AmendAnyDiscrepanciesPage("submissionId"), false)
         .get
 
-      AmendAnyDiscrepanciesSummary.row(userAnswers) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(userAnswers)("submissionId") shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.AnyDiscrepanciesController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendAnyDiscrepanciesController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("anyDiscrepancies.change.hidden")
           )
@@ -79,7 +83,7 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      AmendAnyDiscrepanciesSummary.row(userAnswers) shouldBe None
+      AmendAnyDiscrepanciesSummary.row(userAnswers)("submissionId") shouldBe None
     }
   }
 }

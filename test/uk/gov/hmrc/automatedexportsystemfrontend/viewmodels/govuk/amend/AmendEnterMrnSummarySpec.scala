@@ -39,17 +39,17 @@ class AmendEnterMrnSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answered, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(AmendEnterMrnPage, "Mrn")
+        .set(AmendEnterMrnPage("submissionId"), "Mrn")
         .get
 
-      AmendEnterMrnSummary.row(userAnswers) shouldBe Some(
+      AmendEnterMrnSummary.row(userAnswers)("submissionId") shouldBe Some(
         SummaryListRowViewModel(
           key = "enterMrn.checkYourAnswersLabel",
           value = ValueViewModel("Mrn"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendEnterMrnController.onPageLoad(CheckMode, "submissionId").url
             )
               .withVisuallyHiddenText("enterMrn.change.hidden")
           )
@@ -59,7 +59,7 @@ class AmendEnterMrnSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      AmendEnterMrnSummary.row(userAnswers) shouldBe None
+      AmendEnterMrnSummary.row(userAnswers)("submissionId") shouldBe None
     }
   }
 }

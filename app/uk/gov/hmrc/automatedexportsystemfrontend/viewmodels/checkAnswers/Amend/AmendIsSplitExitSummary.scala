@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => happyRoute}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
@@ -26,8 +26,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendIsSplitExitSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendIsSplitExitPage).map { answer =>
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendIsSplitExitPage(submissionId)).map { answer =>
 
       val value = if (answer) "site.yes" else "site.no"
 
@@ -35,7 +35,7 @@ object AmendIsSplitExitSummary {
         key = "isSplitExit.checkYourAnswersLabel",
         value = ValueViewModel(value),
         actions = Seq(
-          ActionItemViewModel("site.change", happyRoute.IsSplitExitController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", amendRoute.AmendIsSplitExitController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
         )
       )
