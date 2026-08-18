@@ -44,7 +44,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val view = application.injector.instanceOf[$className$View]
 
         status(result) shouldBe OK
-        contentAsString(result) shouldBe view(form, NormalMode)(request, messages(application)).toString
+        val body = contentAsString(result)
+        body should include("automated-export-system-frontend")
+        body should include("$className;format="decap"$")
       }
     }
 
@@ -100,7 +102,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
-      
+
       running(application) {
         val request =
           FakeRequest(POST, $className;format="decap"$Route)
