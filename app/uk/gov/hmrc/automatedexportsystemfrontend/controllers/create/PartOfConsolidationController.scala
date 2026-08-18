@@ -23,7 +23,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.PartOfConsolidationFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PartOfConsolidationAnswer, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.PartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.PartOfConsolidationView
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class PartOfConsolidationController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  createNavigator: CreateNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -79,7 +79,7 @@ class PartOfConsolidationController @Inject() (
             for {
               updatedAnswers <- Future.fromTry(answers.set(PartOfConsolidationPage, cleanedValue))
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(happyPathNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
+            } yield Redirect(createNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
           }
         }
       )

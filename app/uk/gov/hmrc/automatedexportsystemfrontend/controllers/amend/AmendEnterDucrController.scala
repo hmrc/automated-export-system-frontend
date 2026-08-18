@@ -23,7 +23,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterDucrFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendEnterDucrController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  amendNavigator: AmendNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -47,19 +47,19 @@ class AmendEnterDucrController @Inject() (
 
   val form = formProvider()
 
-  // def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  // def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
-//      val preparedForm = request.userAnswers.get(AmendEnterDucrPage) match {
-    val preparedForm: Form[String] = answers.get(AmendEnterDucrPage).fold(form)(form.fill)
+//      val preparedForm = request.userAnswers.get(AmendEnterDucrPage(submissionId) match {
+    val preparedForm: Form[String] = answers.get(AmendEnterDucrPage(submissionId)).fold(form)(form.fill)
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
   }
 
-//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+//  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
@@ -72,10 +72,10 @@ class AmendEnterDucrController @Inject() (
         },
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendEnterDucrPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(AmendEnterDucrPage, value))
+//            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendEnterDucrPage(submissionId), value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendEnterDucrPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(AmendEnterDucrPage, mode, updatedAnswers))
+          } yield Redirect(amendNavigator.nextPage(AmendEnterDucrPage(submissionId), mode, updatedAnswers))
       )
   }
 }

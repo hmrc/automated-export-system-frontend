@@ -24,7 +24,7 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendIsSplitExitFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
@@ -43,7 +43,7 @@ class AmendIsSplitExitControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new AmendIsSplitExitFormProvider()
   val form = formProvider()
 
-  lazy val isSplitExitRoute = happyRoute.IsSplitExitController.onPageLoad(NormalMode).url
+  lazy val isSplitExitRoute = amendRoute.AmendIsSplitExitController.onPageLoad(NormalMode, "submissionId").url
 
   "IsSplitExit Controller" - {
 
@@ -70,7 +70,7 @@ class AmendIsSplitExitControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(AmendIsSplitExitPage, true).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(AmendIsSplitExitPage("submissionId"), true).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))

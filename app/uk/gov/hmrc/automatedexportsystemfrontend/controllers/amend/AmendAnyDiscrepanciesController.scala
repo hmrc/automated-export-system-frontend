@@ -23,7 +23,7 @@ import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendAnyDiscrepanciesFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendAnyDiscrepanciesPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendAnyDiscrepanciesView
@@ -35,7 +35,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class AmendAnyDiscrepanciesController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  amendNavigator: AmendNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -47,21 +47,21 @@ class AmendAnyDiscrepanciesController @Inject() (
 
   val form = formProvider()
 
-  //  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  //  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
     //      val preparedForm = request.userAnswers.get(AmendAnyDiscrepanciesPage) match {
     val preparedForm: Form[Boolean] =
-      answers.get(AmendAnyDiscrepanciesPage).fold(form)(form.fill)
+      answers.get(AmendAnyDiscrepanciesPage(submissionId)).fold(form)(form.fill)
 
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
+    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
     Future.successful(Ok(preparedView))
   }
 
-  //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  //  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
     val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
 
@@ -69,15 +69,15 @@ class AmendAnyDiscrepanciesController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          val errorPage: play.twirl.api.HtmlFormat.Appendable = view(formWithErrors, mode)
+          val errorPage: play.twirl.api.HtmlFormat.Appendable = view(formWithErrors, mode, submissionId)
           Future.successful(BadRequest(errorPage))
         },
         value =>
           for {
-            //            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyDiscrepanciesPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(AmendAnyDiscrepanciesPage, value))
+            //            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendAnyDiscrepanciesPage(submissionId, value))
+            updatedAnswers <- Future.fromTry(answers.set(AmendAnyDiscrepanciesPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(AmendAnyDiscrepanciesPage, mode, updatedAnswers))
+          } yield Redirect(amendNavigator.nextPage(AmendAnyDiscrepanciesPage(submissionId), mode, updatedAnswers))
       )
   }
 }

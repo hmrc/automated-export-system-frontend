@@ -38,32 +38,35 @@ class AmendCYASubmissionController @Inject() (
   view: AmendCYASubmissionView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+  // TODO
+  // UNSURE IF NEEDED FOR AMEND JOURNEY, WILL LEAVE COMMENTED OUT UNTIL DECISIONS ARE FINALISED
 
-    val userAnswers = request.userAnswers
-
-    Future.successful(
-      Ok(
-        view(
-          SummaryListViewModel(exportOperationRowsGenerator(userAnswers).flatten),
-          SummaryListViewModel(consignmentRowsGenerator(userAnswers).flatten),
-          SummaryListViewModel(customsOfficeExitRowGenerator(userAnswers).flatten),
-          SummaryListViewModel(extraRowsGenerator(userAnswers).flatten)
-        )
-      )
-    )
-  }
-
-  private def exportOperationRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(AmendEnterMrnSummary.row(answers), AmendIsSplitExitSummary.row(answers))
-
-  private def consignmentRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(AmendEnterDucrSummary.row(answers), AmendPartOfConsolidationSummary.row(answers))
-
-  private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(AmendOfficeOfExitSummary.row(answers))
-
-  private def extraRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(AmendAnyDiscrepanciesSummary.row(answers))
+//  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+//
+//    val userAnswers = request.userAnswers
+//
+//    Future.successful(
+//      Ok(
+//        view(
+//          SummaryListViewModel(exportOperationRowsGenerator(userAnswers).flatten),
+//          SummaryListViewModel(consignmentRowsGenerator(userAnswers).flatten),
+//          SummaryListViewModel(customsOfficeExitRowGenerator(userAnswers).flatten),
+//          SummaryListViewModel(extraRowsGenerator(userAnswers).flatten)
+//        )
+//      )
+//    )
+//  }
+//
+//  private def exportOperationRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+//    Seq(AmendEnterMrnSummary.row(answers), AmendIsSplitExitSummary.row(answers))
+//
+//  private def consignmentRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+//    Seq(AmendEnterDucrSummary.row(answers), AmendPartOfConsolidationSummary.row(answers))
+//
+//  private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+//    Seq(AmendOfficeOfExitSummary.row(answers))
+//
+//  private def extraRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+//    Seq(AmendAnyDiscrepanciesSummary.row(answers))
 
 }

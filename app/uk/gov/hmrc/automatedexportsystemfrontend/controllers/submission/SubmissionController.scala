@@ -22,7 +22,9 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.services.SubmissionDataService
+import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -34,6 +36,8 @@ class SubmissionController @Inject() (
   requireData: AesDataRequiredAction,
   automatedExportSystemConnector: AutomatedExportSystemConnector,
   submissionDataService: SubmissionDataService,
+  userAnswerHelper: UserAnswerHelper,
+  sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
@@ -44,11 +48,12 @@ class SubmissionController @Inject() (
         case Some(xmlSubmission) =>
           automatedExportSystemConnector
             .submitIE507a(xmlSubmission)
-            .map { _ =>
-              // TODO Delete All UserAnswers by directory on success when methods become available
-              Redirect(
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.StandardSubmissionConfirmationController.onPageLoad().url
-              )
+            .flatMap { _ =>
+              sessionRepository.set(userAnswerHelper.removeStandardSubmissionAnswers(request.userAnswers)).map { _ =>
+                Redirect(
+                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.StandardSubmissionConfirmationController.onPageLoad().url
+                )
+              }
             }
             .recover { case ex =>
               logger.error("Unexpected response from standard submitIE507a", ex)
@@ -57,8 +62,9 @@ class SubmissionController @Inject() (
             }
         case None =>
           logger.error("Failed to build XML due to missing user answers when submitting standard IE507a")
-          // TODO Delete All UserAnswers by directory on success when methods become available
-          Future.successful(Redirect(uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController.onPageLoad().url))
+          sessionRepository.set(userAnswerHelper.removeStandardSubmissionAnswers(request.userAnswers)).map { _ =>
+            Redirect(uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController.onPageLoad().url)
+          }
       }
     }
 }

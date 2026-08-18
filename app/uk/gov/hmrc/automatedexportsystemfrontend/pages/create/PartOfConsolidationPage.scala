@@ -22,7 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswe
 
 case object PartOfConsolidationPage extends QuestionPage[PartOfConsolidationAnswer] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "standard" \ toString
 
   override def toString: String = "partOfConsolidation"
 }

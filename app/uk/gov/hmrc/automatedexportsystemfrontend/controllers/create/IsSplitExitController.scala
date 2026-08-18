@@ -22,7 +22,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.IsSplitExitFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.HappyPathNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -34,7 +34,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class IsSplitExitController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  happyPathNavigator: HappyPathNavigator,
+  createNavigator: CreateNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
@@ -75,7 +75,7 @@ class IsSplitExitController @Inject() (
 //            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsSplitExitPage, value))
             updatedAnswers <- Future.fromTry(answers.set(IsSplitExitPage, value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(happyPathNavigator.nextPage(IsSplitExitPage, mode, updatedAnswers))
+          } yield Redirect(createNavigator.nextPage(IsSplitExitPage, mode, updatedAnswers))
       )
   }
 }
