@@ -1,9 +1,10 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import forms.$className$FormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.$className$FormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, $className$, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar

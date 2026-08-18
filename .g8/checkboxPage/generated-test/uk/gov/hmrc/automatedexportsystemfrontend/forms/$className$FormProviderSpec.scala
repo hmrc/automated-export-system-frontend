@@ -1,6 +1,6 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
-import forms.behaviours.CheckboxFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.CheckboxFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.models.$className$
 import play.api.data.FormError
 

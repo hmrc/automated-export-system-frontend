@@ -1,3 +1,6 @@
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.$className$
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes
+
 @this(
     layout: templates.Layout,
     formHelper: FormWithCSRF,
@@ -5,9 +8,6 @@
     govukCheckboxes: GovukCheckboxes,
     govukButton: GovukButton
 )
-
-@import uk.gov.hmrc.automatedexportsystemfrontend.models.$className$
-@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
