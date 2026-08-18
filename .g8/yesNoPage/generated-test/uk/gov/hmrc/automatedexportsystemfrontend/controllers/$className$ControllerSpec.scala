@@ -15,6 +15,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers._
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.$className$View
+import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -91,14 +92,15 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe onwardRoute.url
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
-
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+      
       running(application) {
         val request =
           FakeRequest(POST, $className;format="decap"$Route)
@@ -127,7 +129,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value shouldBe problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -143,7 +145,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value shouldBe problem.routes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }

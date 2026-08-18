@@ -1,6 +1,6 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
-import forms.behaviours.BooleanFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 
 class $className$FormProviderSpec extends BooleanFieldBehaviours {

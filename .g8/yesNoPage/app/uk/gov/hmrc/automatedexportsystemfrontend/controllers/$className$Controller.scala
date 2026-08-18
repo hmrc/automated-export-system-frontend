@@ -20,7 +20,7 @@ class $className;format="cap"$Controller @Inject()(
                                          navigator: Navigator,
                                          val actionBuilder: AesAuthRequestActionBuilder,
                                          getData: AesDataRetrievalAction,
-                                         requireData: AesDataRequiredAction
+                                         requireData: AesDataRequiredAction,
                                          formProvider: $className$FormProvider,
                                          val controllerComponents: MessagesControllerComponents,
                                          view: $className$View
