@@ -236,7 +236,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
 
         val body = contentAsString(result)
 
-        body should include("You have no IE5070(a) submissions")
+        body should include("You have no IE507(a) submissions")
       }
     }
 
