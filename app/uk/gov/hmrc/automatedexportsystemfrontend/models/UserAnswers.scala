@@ -57,6 +57,19 @@ final case class UserAnswers(id: String, data: JsObject = Json.obj(), lastUpdate
       page.cleanup(None, updatedAnswers)
     }
   }
+
+  def removePath(jsPath: JsPath): Try[UserAnswers] = {
+    val updatedData: Success[JsObject] = data.removeObject(jsPath) match {
+      case JsSuccess(jsValue, _) =>
+        Success(jsValue)
+      case JsError(_) =>
+        Success(data)
+    }
+
+    updatedData.flatMap { (d: JsObject) =>
+      Try(copy(data = d))
+    }
+  }
 }
 
 object UserAnswers {

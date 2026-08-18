@@ -21,7 +21,7 @@ import play.api.libs.json.JsPath
 
 case object IsSplitExitPage extends QuestionPage[Boolean] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "standard" \ toString
 
   override def toString: String = "isSplitExit"
 }

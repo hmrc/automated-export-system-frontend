@@ -48,6 +48,7 @@ class HappyPathNavigator extends Navigator {
       case Some(false) => happyRoute.AnyDiscrepanciesController.onPageLoad(NormalMode)
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
+
   private def anyDiscrepanciesRoute(answers: UserAnswers): Call =
     answers.get(AnyDiscrepanciesPage) match {
       case Some(true)  => unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)

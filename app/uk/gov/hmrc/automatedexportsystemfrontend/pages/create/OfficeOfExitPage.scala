@@ -38,7 +38,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
 
 case object OfficeOfExitPage extends QuestionPage[OfficeOfExit] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "standard" \ toString
 
   override def toString: String = "officeOfExit"
 }
