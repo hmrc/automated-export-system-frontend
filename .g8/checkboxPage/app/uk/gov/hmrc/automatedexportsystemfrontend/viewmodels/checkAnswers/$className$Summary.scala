@@ -6,6 +6,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.$className$Page
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object $className$Summary  {

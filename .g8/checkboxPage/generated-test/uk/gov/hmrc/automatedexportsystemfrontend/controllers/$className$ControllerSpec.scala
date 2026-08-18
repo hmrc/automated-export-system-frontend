@@ -66,6 +66,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe OK
+        val body = contentAsString(result)
         body should include("automated-export-system-frontend")
         body should include("$className;format="decap"$")
         body should include("value")
@@ -131,7 +132,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value shouldBe problemRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
 
@@ -149,7 +150,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe routes.JourneyRecoveryController.onPageLoad().url
+        redirectLocation(result).value shouldBe problemRoutes.JourneyRecoveryController.onPageLoad().url
       }
     }
   }
