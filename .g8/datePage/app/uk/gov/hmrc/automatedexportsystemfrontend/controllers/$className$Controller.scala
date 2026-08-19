@@ -1,15 +1,16 @@
-package controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
-import forms.$className$FormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.$className$FormProvider
 import javax.inject.Inject
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
-import navigation.Navigator
-import pages.$className$Page
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.$className$Page
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import views.html.$className$View
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.$className$View
 
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -17,15 +18,15 @@ class $className$Controller @Inject()(
                                         override val messagesApi: MessagesApi,
                                         sessionRepository: SessionRepository,
                                         navigator: Navigator,
-                                        identify: IdentifierAction,
-                                        getData: DataRetrievalAction,
-                                        requireData: DataRequiredAction,
+                                        val actionBuilder: AesAuthRequestActionBuilder,
+                                        getData: AesDataRetrievalAction,
+                                        requireData: AesDataRequiredAction,
                                         formProvider: $className$FormProvider,
                                         val controllerComponents: MessagesControllerComponents,
                                         view: $className$View
                                       )(implicit ec: ExecutionContext) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
     implicit request =>
 
       val form = formProvider()
@@ -38,7 +39,7 @@ class $className$Controller @Inject()(
       Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
     implicit request =>
 
       val form = formProvider()

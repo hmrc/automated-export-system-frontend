@@ -1,6 +1,6 @@
-package forms
+package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
-import forms.mappings.Mappings
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
 import play.api.i18n.Messages
 

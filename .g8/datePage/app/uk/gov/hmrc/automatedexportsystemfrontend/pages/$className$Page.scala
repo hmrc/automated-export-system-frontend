@@ -1,4 +1,4 @@
-package pages
+package uk.gov.hmrc.automatedexportsystemfrontend.pages
 
 import java.time.LocalDate
 
