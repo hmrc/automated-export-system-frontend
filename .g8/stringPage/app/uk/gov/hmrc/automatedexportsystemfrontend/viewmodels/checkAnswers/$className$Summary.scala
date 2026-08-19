@@ -2,7 +2,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import pages.$className$Page
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.$className$Page
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.$className$Page
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*

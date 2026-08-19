@@ -116,8 +116,9 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe BAD_REQUEST
         val body = contentAsString(result)
-        body should include("automated-export-system-fronten
-          body should include("$className;format="decap"$")      }
+        body should include("automated-export-system-frontend")
+        body should include("$className;format="decap"$")
+      }
     }
 
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
