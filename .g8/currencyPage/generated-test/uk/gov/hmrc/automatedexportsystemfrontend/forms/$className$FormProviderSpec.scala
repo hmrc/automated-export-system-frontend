@@ -1,7 +1,7 @@
-package forms
+package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
 import uk.gov.hmrc.automatedexportsystemfrontend.config.CurrencyFormatter.currencyFormat
-import forms.behaviours.CurrencyFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.CurrencyFieldBehaviours
 import org.scalacheck.Gen
 import play.api.data.FormError
 
