@@ -7,6 +7,7 @@ import play.api.i18n.{Lang, Messages}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.automatedexportsystemfrontend.DateTimeFormats.dateTimeFormat
 
 object $className$Summary  {
 
