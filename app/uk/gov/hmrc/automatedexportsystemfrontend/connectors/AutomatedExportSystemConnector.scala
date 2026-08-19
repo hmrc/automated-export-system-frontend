@@ -19,15 +19,16 @@ package uk.gov.hmrc.automatedexportsystemfrontend.connectors
 import com.google.inject.*
 import org.apache.pekko.Done
 import play.api.Logging
-import play.api.http.Status.ACCEPTED
+import play.api.http.Status.{ACCEPTED, OK}
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 import play.api.libs.ws.writeableOf_String
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionResponseParser}
 
 import scala.concurrent.{ExecutionContext, Future}
-import scala.xml.NodeSeq
+import scala.xml.XML
 
 @Singleton
 class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2)(implicit ec: ExecutionContext)
@@ -46,6 +47,20 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
           case _ =>
             logger.error(s"Failed to submit IE507a to /automated-export-system/message with status : ${response.status}")
             Future.failed(UpstreamErrorResponse("Unexpected response from /automated-export-system/message", response.status))
+        }
+      }
+
+  def getSubmissions()(implicit hc: HeaderCarrier): Future[SubmissionResponseList] =
+    httpClient
+      .get(url"${frontendAppConfig.automatedExportSystemApi}/submissions")
+      .execute[HttpResponse]
+      .flatMap { response =>
+        response.status match {
+          case OK =>
+            Future.successful(SubmissionResponseParser.parse(XML.loadString(response.body)))
+          case _ =>
+            logger.error(s"Failed to retrieve submissions from /automated-export-system/submissions with status : ${response.status}")
+            Future.failed(UpstreamErrorResponse("Unexpected response from /automated-export-system/submissions", response.status))
         }
       }
 }
