@@ -1,6 +1,6 @@
-package forms
+package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
-import forms.behaviours.StringFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import play.api.data.FormError
 
 class $className$FormProviderSpec extends StringFieldBehaviours {
