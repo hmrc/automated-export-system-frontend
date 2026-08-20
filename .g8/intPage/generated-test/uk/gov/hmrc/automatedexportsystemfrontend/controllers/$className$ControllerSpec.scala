@@ -84,6 +84,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
             bind[SessionRepository].toInstance(mockSessionRepository)
           )
           .build()
@@ -96,7 +97,7 @@ class $className$ControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        //redirectLocation(result).value shouldBe onwardRoute.url
+        redirectLocation(result).value shouldBe onwardRoute.url
       }
     }
 
