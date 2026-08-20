@@ -21,7 +21,7 @@ layout: Layout
 @(submissionID: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
-pageTitle = titleNoForm("Submission cancelled"),
+pageTitle = titleNoForm(messages("cancellationSuccess.title")),
 showBackLink = false
 ) {
 
@@ -47,6 +47,6 @@ showBackLink = false
 </p>
 
 <p class="govuk-body">
- <a href="/automated-export-system/submission/@submissionID" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returntoStartLink")</a>
+ <a href="/automated-export-system/submission/@submissionID" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToStartLink")</a>
 </p>
 }

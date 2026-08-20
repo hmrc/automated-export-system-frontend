@@ -330,6 +330,7 @@ discrepancyPacking.error.numberOfPackages.length = the number of packages must b
 discrepancyPacking.error.shippingMarks.length = the shipping marks must be 100 characters or less
 discrepancyPacking.change.hidden = the packing details
 
+cancellationSuccess.title = Submission cancelled
 cancellationSuccess.heading = Submission cancelled
 cancellationSuccess.reference = Reference {0}
 cancellationSuccess.subheading = What happens next
@@ -338,4 +339,4 @@ cancellationSuccess.hint = If the goods still need to exit the UK under this dec
 cancellationSuccess.hint2 = The cancellation will appear in your submissions list. You can use the original MRN to submit a new pre-notification if needed.
 cancellationSuccess.returnToSubmissionsLink = Return to your submissions
 cancellationSuccess.newSubmissionLink = Submit a new IE507(a) pre-notification
-cancellationSuccess.returntoStartLink = Return to start
+cancellationSuccess.returnToStartLink = Return to start
