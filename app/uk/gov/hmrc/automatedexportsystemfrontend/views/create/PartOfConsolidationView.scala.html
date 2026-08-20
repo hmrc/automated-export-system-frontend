@@ -18,6 +18,7 @@
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+@import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.LegendSize
 
 @this(
     layout: Layout,
@@ -75,7 +76,7 @@
                 RadiosViewModel(
                     field = booleanField,
                     items = Seq(noItem, yesItem),
-                    legend = LegendViewModel(messages("partOfConsolidation.heading")).withCssClass("govuk-fieldset__legend--l"))
+                    legend = LegendViewModel(messages("partOfConsolidation.heading")).asPageHeading(LegendSize.Large))
                 .withHint(HintViewModel(messages("partOfConsolidation.hint"))))
 
         }
