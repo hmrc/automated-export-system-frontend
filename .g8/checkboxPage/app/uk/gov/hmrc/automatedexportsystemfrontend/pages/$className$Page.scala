@@ -1,0 +1,11 @@
+package uk.gov.hmrc.automatedexportsystemfrontend.pages
+
+import uk.gov.hmrc.automatedexportsystemfrontend.models.$className$
+import play.api.libs.json.JsPath
+
+case object $className$Page extends QuestionPage[Set[$className$]] {
+  
+  override def path: JsPath = JsPath \ toString
+  
+  override def toString: String = "$className;format="decap"$"
+}

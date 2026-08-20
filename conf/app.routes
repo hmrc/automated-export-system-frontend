@@ -150,3 +150,5 @@ POST       /amend/change-office-of-exit/:submissionId                  uk.gov.hm
 GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()
 
 GET        /submit                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SubmissionController.standardSubmit
+
+GET        /dashboard                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSubmissionsController.onPageLoad()

@@ -17,6 +17,7 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.config.StandardAlphaBanner
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
+@import uk.gov.hmrc.automatedexportsystemfrontend.views.html.components._
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.{routes => appRoutes}
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth.{routes => authRoutes}
 
@@ -25,10 +26,12 @@
     hmrcTimeoutDialog: HmrcTimeoutDialog,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper,
     alphaBanner: StandardAlphaBanner,
+    fullWidthMainContent: fullWidthMainContent,
+    twoThirdsOneThirdMainContent: TwoThirdsOneThirdMainContent,
     hmrcStandardPage: HmrcStandardPage
 )
 
-@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
+@(pageTitle: String, showBackLink: Boolean = true, timeout: Boolean = true, showSignOut: Boolean = true, showHmrcBanner: Boolean = false, isFullWidth: Boolean = false, sidebar: Option[Html] = None)(contentBlock: Html)(implicit rh: RequestHeader, messages: Messages)
 
 @head = {
 
@@ -55,7 +58,8 @@
 @hmrcStandardPage(HmrcStandardPageParams(
     pageTitle = Some(pageTitle),
     templateOverrides = TemplateOverrides(
-        additionalHeadBlock = Some(head)
+        additionalHeadBlock = Some(head),
+        mainContentLayout = if(isFullWidth) Some(fullWidthMainContent(_)) else sidebar.map(s => twoThirdsOneThirdMainContent(s)),
     ),
     serviceURLs = ServiceURLs(
         serviceUrl = Some(appRoutes.IndexController.onPageLoad().url),
