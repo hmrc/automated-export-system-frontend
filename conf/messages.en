@@ -329,3 +329,13 @@ discrepancyPacking.error.packagingCode.length = the packaging code must be 100 c
 discrepancyPacking.error.numberOfPackages.length = the number of packages must be 100 characters or less
 discrepancyPacking.error.shippingMarks.length = the shipping marks must be 100 characters or less
 discrepancyPacking.change.hidden = the packing details
+
+cancellationSuccess.heading = Submission cancelled
+cancellationSuccess.reference = Reference {0}
+cancellationSuccess.subheading = What happens next
+cancellationSuccess.cancellationSuccess = The IE507(a) pre-notification for MRN {1} has been withdrawn. The Customs Declaration Service has been notified.
+cancellationSuccess.hint = If the goods still need to exit the UK under this declaration, you will need to submit a new IE507(a) pre-notification.
+cancellationSuccess.hint2 = The cancellation will appear in your submissions list. You can use the original MRN to submit a new pre-notification if needed.
+cancellationSuccess.returnToSubmissionsLink = Return to your submissions
+cancellationSuccess.newSubmissionLink = Submit a new IE507(a) pre-notification
+cancellationSuccess.returntoStartLink = Return to start
