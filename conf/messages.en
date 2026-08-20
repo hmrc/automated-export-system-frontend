@@ -1,4 +1,4 @@
-service.name = IE507(a) Arrival at Exit pre-notification
+service.name = Submit an IE507(a) Arrival at Exit pre-notification
 
 site.back = Back
 site.remove = Remove
@@ -15,6 +15,7 @@ site.acceptAndSubmit = Accept and submit
 
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
+site.kg.suffix = kg
 
 date.day = Day
 date.month = Month
@@ -214,8 +215,7 @@ discrepancyTransport.error.numberOfSeals.required = Enter the number of seals
 discrepancyTransport.error.containerId.length = The container identification number must be 17 characters or less
 discrepancyTransport.error.numberOfSeals.maximum = The number of seals must be 99 or less
 discrepancyTransport.error.numberOfSeals.negative = The number of seals must be 0 or more
-discrepancyTransport.containerId.change.hidden = the container identification number
-discrepancyTransport.numberOfSeals.change.hidden = the number of seals
+discrepancyTransport.change.hidden = the container details
 
 discrepancySeals.title = What is the seal identifier?
 discrepancySeals.heading = What is the seal identifier?
@@ -232,3 +232,100 @@ discrepancyReference.checkYourAnswersLabel = What is the Declaration Goods Refer
 discrepancyReference.error.required = Enter the Declaration Goods Reference
 discrepancyReference.error.length = The Declaration Goods Reference must be 5 characters or less
 discrepancyReference.change.hidden = the Declaration Goods Reference
+
+locationType.title = What type of location are the goods at?
+locationType.heading = What type of location are the goods at?
+locationType.hint = This determines what identification details you will need to provide.
+locationType.designatedLocation = Designated location
+locationType.authorisedPlace = Authorised place
+locationType.approvedPlace = Approved place
+locationType.other = Other
+locationType.checkYourAnswersLabel = What type of location are the goods at?
+locationType.error.required = Select the type of location the goods are at
+locationType.change.hidden = the type of location the goods are at
+
+locationId.title = Identify the location
+locationId.heading = Identify the location
+locationId.insetText = These are placeholder location codes for the prototype. The actual list will come from the CL327 and CL244 codelists.
+locationId.locationType = Location type
+locationId.unlocode = UN/LOCODE
+locationId.locationAdditionalIdentifier = Location additional identifier
+locationId.authorisationReferenceNumber = Authorisation reference number
+locationId.checkYourAnswersLabel = Identify the location
+locationId.error.locationType.required = Enter the location type
+locationId.error.unlocode.required = Enter the UN/LOCODE
+locationId.error.locationAdditionalIdentifier.required = Enter the location additional identifier
+locationId.error.authorisationReferenceNumber.required = Enter the authorisation reference number
+locationId.error.locationType.length = The location type must be 100 characters or less
+locationId.error.unlocode.length = The UN/LOCODE must be 100 characters or less
+locationId.error.locationAdditionalIdentifier.length = the location additional identifier must be 100 characters or less
+locationId.error.authorisationReferenceNumber.length = the authorisation reference number must be 100 characters or less
+locationId.change.hidden = the location details
+
+discrepancyTransportMeans.title = Transport across the border
+discrepancyTransportMeans.heading = Transport across the border
+discrepancyTransportMeans.hint = If the transport taking the goods across the border has changed, enter the new details.
+discrepancyTransportMeans.transportType = Transport type
+discrepancyTransportMeans.transportType.hint = For example, 10 = IMO ship number, 40 = IATA flight number.
+discrepancyTransportMeans.transportIdNumber = Transport ID number
+discrepancyTransportMeans.transportIdNumber.hint = Enter the registration or identification number that matches the transport type you selected.
+discrepancyTransportMeans.countryOfRegistration = Country of registration
+discrepancyTransportMeans.checkYourAnswersLabel = Transport across the border
+discrepancyTransportMeans.error.transportType.required = Enter the transport type
+discrepancyTransportMeans.error.transportIdNumber.required = Enter the transport ID number
+discrepancyTransportMeans.error.countryOfRegistration.required = Enter the country of registration
+discrepancyTransportMeans.error.transportType.length = The transport type must be 100 characters or less
+discrepancyTransportMeans.error.transportIdNumber.length = The transport ID number must be 100 characters or less
+discrepancyTransportMeans.error.countryOfRegistration.length = The country of registration must be 100 characters or less
+discrepancyTransportMeans.change.hidden = transport across the border details
+
+discrepancyTransportDoc.title = Document details
+discrepancyTransportDoc.heading = Document details
+discrepancyTransportDoc.hint = If the transport document details have changed, enter the new details.
+discrepancyTransportDoc.documentType = Document type
+discrepancyTransportDoc.documentType.hint = For example, a bill of lading or waybill reference.
+discrepancyTransportDoc.referenceNumber = Reference number
+discrepancyTransportDoc.referenceNumber.hint = This is shown in the transport document.
+discrepancyTransportDoc.checkYourAnswersLabel = Document details
+discrepancyTransportDoc.error.documentType.required = Enter the document type
+discrepancyTransportDoc.error.referenceNumber.required = Enter the reference number
+discrepancyTransportDoc.error.documentType.length = The document type must be 100 characters or less
+discrepancyTransportDoc.error.referenceNumber.length = The reference number must be 100 characters or less
+discrepancyTransportDoc.change.hidden = the document details
+
+discrepancyGoods.title = Tell us what’s changed
+discrepancyGoods.heading = Tell us what’s changed
+discrepancyGoods.hint = Enter the details of any changes to the goods.
+discrepancyGoods.goodsItemNumber = Goods item number
+discrepancyGoods.declarationUniqueConsignmentReference = Declaration Unique Consignment Reference (DUCR)
+discrepancyGoods.declarationUniqueConsignmentReference.hint = If you wish to amend the DUCR from the original IE501 message.
+discrepancyGoods.newGrossMass = New gross mass in kilograms
+discrepancyGoods.newGrossMass.hint = The total weight of the goods, including all packaging and containers.
+discrepancyGoods.newNetMass = New net mass in kilograms
+discrepancyGoods.newNetMass.hint = The weight of the goods only.
+discrepancyGoods.checkYourAnswersLabel = Tell us what’s changed
+discrepancyGoods.error.goodsItemNumber.required = Enter the goods item number
+discrepancyGoods.error.declarationUniqueConsignmentReference.required = Enter the Declaration Unique Consignment Reference (DUCR)
+discrepancyGoods.error.newGrossMass.required = Enter the new gross mass
+discrepancyGoods.error.newNetMass.required = Enter the new net mass
+discrepancyGoods.error.goodsItemNumber.length = The goods item number must be 100 characters or less
+discrepancyGoods.error.declarationUniqueConsignmentReference.length = The Declaration Unique Consignment Reference (DUCR) must be 100 characters or less
+discrepancyGoods.error.newGrossMass.length = The new gross mass must be 100 characters or less
+discrepancyGoods.error.newNetMass.length = The new net mass must be 100 characters or less
+discrepancyGoods.change.hidden = the what has changed details
+
+discrepancyPacking.title = Packing details
+discrepancyPacking.heading = Packing details
+discrepancyPacking.hint = If the packaging of the goods has changed, enter the new details here.
+discrepancyPacking.packagingCode = Packaging code
+discrepancyPacking.packagingCode.hint = For example, BX for Box, CT for Carton or PK for Package.
+discrepancyPacking.numberOfPackages = Number of packages
+discrepancyPacking.shippingMarks = Shipping marks
+discrepancyPacking.checkYourAnswersLabel = Packing details
+discrepancyPacking.error.packagingCode.required = Enter the packaging code
+discrepancyPacking.error.numberOfPackages.required = Enter the number of packages
+discrepancyPacking.error.shippingMarks.required = Enter the shipping marks
+discrepancyPacking.error.packagingCode.length = the packaging code must be 100 characters or less
+discrepancyPacking.error.numberOfPackages.length = the number of packages must be 100 characters or less
+discrepancyPacking.error.shippingMarks.length = the shipping marks must be 100 characters or less
+discrepancyPacking.change.hidden = the packing details

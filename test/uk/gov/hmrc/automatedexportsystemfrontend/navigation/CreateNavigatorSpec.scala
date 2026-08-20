@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
@@ -83,7 +83,7 @@ class CreateNavigatorSpec extends SpecBase {
         "to DiscrepancyConsignmentPage true" in {
           val userAnswers = emptyUserAnswers.set(IsSplitExitPage, true).success.value
           navigator.nextPage(IsSplitExitPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
         }
         "to JourneyRecovery TEMPORARY when None" in {
           val userAnswers = emptyUserAnswers
@@ -101,7 +101,7 @@ class CreateNavigatorSpec extends SpecBase {
         "to DiscrepancyConsignmentPage when true" in {
           val userAnswers = emptyUserAnswers.set(AnyDiscrepanciesPage, true).success.value
           navigator.nextPage(AnyDiscrepanciesPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
         }
         "to JourneyRecovery TEMPORARY when None" in {
           val userAnswers = emptyUserAnswers

@@ -16,18 +16,11 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, ModeOfTransportAtBorder, NormalMode}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.unhappyPath.{
-  DiscrepancyConsignmentPage,
-  DiscrepancyDucrPage,
-  DiscrepancyMucrPage,
-  DiscrepancyReferencePage,
-  DiscrepancySealsPage,
-  DiscrepancyTransportPage
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.*
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.discrepancies.*
 
 class UnhappyPathNavigatorSpec extends SpecBase {
 
@@ -41,7 +34,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyDucrPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.values.head).success.value
           navigator.nextPage(DiscrepancyConsignmentPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
         }
       }
 
@@ -49,7 +42,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyMucrPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyDucrPage, "ducr").success.value
           navigator.nextPage(DiscrepancyDucrPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
         }
       }
 
@@ -57,7 +50,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyTransportPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyMucrPage, "mucr").success.value
           navigator.nextPage(DiscrepancyMucrPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
         }
       }
 
@@ -65,7 +58,7 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancySealsPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails("containerId", 99)).success.value
           navigator.nextPage(DiscrepancyTransportPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancySealsController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancySealsController.onPageLoad(NormalMode)
         }
       }
 
@@ -73,15 +66,81 @@ class UnhappyPathNavigatorSpec extends SpecBase {
         "to DiscrepancyReferencePage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage, "sealId").success.value
           navigator.nextPage(DiscrepancySealsPage, NormalMode, userAnswers) shouldBe
-            unhappyRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
+            discrepanciesRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
         }
       }
 
       "navigate from DiscrepancyReferencePage" - {
-        "to JourneyRecovery TEMPORARY" in {
+        "to LocationTypePage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage, "reference").success.value
           navigator.nextPage(DiscrepancyReferencePage, NormalMode, userAnswers) shouldBe
-            problemRoute.JourneyRecoveryController.onPageLoad()
+            discrepanciesRoute.LocationTypeController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from LocationTypePage" - {
+        "to LocationIdPage" in {
+          val userAnswers = emptyUserAnswers.set(LocationTypePage, LocationType.values.head).success.value
+          navigator.nextPage(LocationTypePage, NormalMode, userAnswers) shouldBe
+            discrepanciesRoute.LocationIdController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from LocationIdPage" - {
+        "to DiscrepancyTransportMeansPage" in {
+          val userAnswers = emptyUserAnswers
+            .set(LocationIdPage, LocationDetails("locationType", "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber"))
+            .success
+            .value
+          navigator.nextPage(LocationIdPage, NormalMode, userAnswers) shouldBe
+            discrepanciesRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from DiscrepancyTransportMeansPage" - {
+        "to DiscrepancyTransportDocPage" in {
+          val userAnswers = emptyUserAnswers
+            .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration"))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyTransportMeansPage, NormalMode, userAnswers) shouldBe
+            discrepanciesRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from DiscrepancyTransportDocPage" - {
+        "to DiscrepancyGoodsPage" in {
+          val userAnswers = emptyUserAnswers
+            .set(DiscrepancyTransportDocPage, DocumentDetails("documentType", "referenceNumber"))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyTransportDocPage, NormalMode, userAnswers) shouldBe
+            discrepanciesRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from DiscrepancyGoodsPage" - {
+        "to DiscrepancyPackingPage" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              DiscrepancyGoodsPage,
+              WhatHasChangedDetails("goodsItemNumber", Some("declarationUniqueConsignmentReference"), "newGrossMass", "newNetMass")
+            )
+            .success
+            .value
+          navigator.nextPage(DiscrepancyGoodsPage, NormalMode, userAnswers) shouldBe
+            discrepanciesRoute.DiscrepancyPackingController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from DiscrepancyPackingPage" - {
+        "to CYASubmissionPage" in {
+          val userAnswers = emptyUserAnswers
+            .set(DiscrepancyPackingPage, PackingDetails("packagingCode", "numberOfPackages", "shippingMarks"))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyPackingPage, NormalMode, userAnswers) shouldBe
+            happyRoute.CYASubmissionController.onPageLoad()
         }
       }
     }

@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.unhappyPath.routes as unhappyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.routes as discrepanciesRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
@@ -44,13 +44,13 @@ class AmendNavigator extends Navigator {
 
   private def amendIsSplitExitRoute(submissionId: String)(answers: UserAnswers): Call =
     answers.get(AmendIsSplitExitPage(submissionId)) match {
-      case Some(true)  => unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+      case Some(true)  => discrepanciesRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
       case Some(false) => amendRoute.AmendAnyDiscrepanciesController.onPageLoad(NormalMode, submissionId)
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
   private def amendAnyDiscrepanciesRoute(submissionId: String)(answers: UserAnswers): Call =
     answers.get(AmendAnyDiscrepanciesPage(submissionId)) match {
-      case Some(true) => unhappyRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+      case Some(true) => discrepanciesRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
       // case Some(false) => amendRoute.AmendCYASubmissionController.onPageLoad()
       case None => problemRoute.JourneyRecoveryController.onPageLoad()
     }

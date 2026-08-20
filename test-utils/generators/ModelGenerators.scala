@@ -17,9 +17,60 @@
 package generators
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, ModeOfTransportAtBorder, OfficeOfExit}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 
 trait ModelGenerators {}
+
+implicit lazy val arbitraryDiscrepancyPacking: Arbitrary[PackingDetails] =
+  Arbitrary {
+    for {
+      packagingCode <- arbitrary[String]
+      numberOfPackages <- arbitrary[String]
+      shippingMarks <- arbitrary[String]
+    } yield PackingDetails(packagingCode, numberOfPackages, shippingMarks)
+  }
+
+implicit lazy val arbitraryDiscrepancyGoods: Arbitrary[WhatHasChangedDetails] =
+  Arbitrary {
+    for {
+      goodsItemNumber <- arbitrary[String]
+      declarationUniqueConsignmentReference <- arbitrary[Option[String]]
+      newGrossMass <- arbitrary[String]
+      newNetMass <- arbitrary[String]
+    } yield WhatHasChangedDetails(goodsItemNumber, declarationUniqueConsignmentReference, newGrossMass, newNetMass)
+  }
+
+implicit lazy val arbitraryDocumentDetails: Arbitrary[DocumentDetails] =
+  Arbitrary {
+    for {
+      documentType <- arbitrary[String]
+      referenceNumber <- arbitrary[String]
+    } yield DocumentDetails(documentType, referenceNumber)
+  }
+
+implicit lazy val arbitraryTransportAcrossBorderDetails: Arbitrary[TransportAcrossBorderDetails] =
+  Arbitrary {
+    for {
+      transportType <- arbitrary[String]
+      transportIdNumber <- arbitrary[String]
+      countryOfRegistration <- arbitrary[String]
+    } yield TransportAcrossBorderDetails(transportType, transportIdNumber, countryOfRegistration)
+  }
+
+implicit lazy val arbitraryLocationDetails: Arbitrary[LocationDetails] =
+  Arbitrary {
+    for {
+      locationType <- arbitrary[String]
+      unlocode <- arbitrary[String]
+      locationAdditionalIdentifier <- arbitrary[String]
+      authorisationReferenceNumber <- arbitrary[String]
+    } yield LocationDetails(locationType, unlocode, locationAdditionalIdentifier, authorisationReferenceNumber)
+  }
+
+implicit lazy val arbitraryLocationType: Arbitrary[LocationType] =
+  Arbitrary {
+    Gen.oneOf(LocationType.values.toSeq)
+  }
 
 implicit lazy val arbitraryContainerDetails: Arbitrary[ContainerDetails] =
   Arbitrary {
@@ -29,7 +80,7 @@ implicit lazy val arbitraryContainerDetails: Arbitrary[ContainerDetails] =
     } yield ContainerDetails(containerId, numberOfSeals)
   }
 
-implicit lazy val arbitraryModeAtTheBorder: Arbitrary[ModeOfTransportAtBorder] =
+implicit lazy val arbitraryModeOfTransportAtTheBorder: Arbitrary[ModeOfTransportAtBorder] =
   Arbitrary {
     Gen.oneOf(ModeOfTransportAtBorder.values.toSeq)
   }
