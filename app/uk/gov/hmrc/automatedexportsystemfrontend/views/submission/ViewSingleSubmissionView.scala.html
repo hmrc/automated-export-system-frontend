@@ -14,9 +14,13 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+
 @this(
         layout: Layout,
-        govukButton: GovukButton
+        govukButton: GovukButton,
+        govukSummaryList: GovukSummaryList,
+        govukWarningText: GovukWarningText
 )
 
 @()(implicit request: Request[_], messages: Messages)
@@ -24,4 +28,41 @@
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
 
     <h1 class="govuk-heading-xl">@messages("viewSingleSubmission.heading")</h1>
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
+
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
+
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
+
+
+    @govukWarningText(
+        WarningText(
+            iconFallbackText = Some(messages("site.warning")),
+            content = Text(messages("cYASubmission.warning"))
+        )
+    )
+
+    <div class="govuk-button-group govuk-!-margin-top-6">
+
+        <!--Update route with amend page-->
+        <div>
+            @govukButton(
+            ButtonViewModel(messages("site.amendSubmission"))
+            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.SubmissionController.standardSubmit.url)
+            )
+        </div>
+
+        <!--Update route with cancel page-->
+        <div>
+            @govukButton(
+            ButtonViewModel(messages("site.cancelSubmission")).asWarningButton()
+            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.SubmissionController.standardSubmit.url)
+            )
+        </div>
+
+
+
 }

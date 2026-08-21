@@ -33,7 +33,8 @@ class ViewSingleSubmissionController @Inject() (
   view: ViewSingleSubmissionView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+//  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData) { implicit request =>
     Ok(view())
   }
 }

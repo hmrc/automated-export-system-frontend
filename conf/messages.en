@@ -12,6 +12,8 @@ site.signIn = Sign in
 site.govuk = GOV.UK
 site.warning = Warning
 site.acceptAndSubmit = Accept and submit
+site.amendSubmission = Amend this submission
+site.cancelSubmission = Cancel this submission
 
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
@@ -330,5 +332,6 @@ discrepancyPacking.error.numberOfPackages.length = the number of packages must b
 discrepancyPacking.error.shippingMarks.length = the shipping marks must be 100 characters or less
 discrepancyPacking.change.hidden = the packing details
 
-viewSingleSubmission.title = viewSingleSubmission
-viewSingleSubmission.heading = viewSingleSubmission
+viewSingleSubmission.title = IE507(a) pre-notification details
+viewSingleSubmission.heading = IE507(a) pre-notification details
+
