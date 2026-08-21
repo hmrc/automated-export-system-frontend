@@ -11,9 +11,16 @@ site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 site.warning = Warning
+
 site.acceptAndSubmit = Accept and submit
 site.amendSubmission = Amend this submission
 site.cancelSubmission = Cancel this submission
+site.submitted = Submitted
+site.status = Status
+site.status.accepted = Accepted
+site.status.awaitingDecision = Awaiting decision
+site.status.cancelled = Cancelled
+site.status.amended = Amended
 
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
@@ -334,4 +341,5 @@ discrepancyPacking.change.hidden = the packing details
 
 viewSingleSubmission.title = IE507(a) pre-notification details
 viewSingleSubmission.heading = IE507(a) pre-notification details
+viewSingleSubmission.caption = Submission
 

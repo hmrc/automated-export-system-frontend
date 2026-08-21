@@ -19,15 +19,16 @@
 @this(
         layout: Layout,
         govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList,
-        govukWarningText: GovukWarningText
+        govukSummaryList: GovukSummaryList
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
 
-    <h1 class="govuk-heading-xl">@messages("viewSingleSubmission.heading")</h1>
+<!--Replace with dynamic submissionID-->
+    <span class="govuk-caption-l">@messages("viewSingleSubmission.caption") SubmissionID</span>
+    <h1 class="govuk-heading-l">@messages("viewSingleSubmission.heading")</h1>
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
 
@@ -36,14 +37,6 @@
 
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
-
-
-    @govukWarningText(
-        WarningText(
-            iconFallbackText = Some(messages("site.warning")),
-            content = Text(messages("cYASubmission.warning"))
-        )
-    )
 
     <div class="govuk-button-group govuk-!-margin-top-6">
 

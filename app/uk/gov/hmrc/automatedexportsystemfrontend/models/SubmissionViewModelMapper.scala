@@ -43,13 +43,13 @@ object SubmissionViewModelMapper {
 
   private def mapStatus(status: Int): SubmissionStatus =
     status match {
-      case 1 => SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green")
+      case 1 => SubmissionStatus("site.status.accepted", "govuk-tag--green")
 
-      case 2 => SubmissionStatus("viewSubmissions.status.amended", "govuk-tag--yellow")
+      case 2 => SubmissionStatus("site.status.amended", "govuk-tag--yellow")
 
-      case 3 => SubmissionStatus("viewSubmissions.status.cancelled", "govuk-tag--red")
+      case 3 => SubmissionStatus("site.status.cancelled", "govuk-tag--red")
 
-      case 4 => SubmissionStatus("viewSubmissions.status.awaitingDecision", "govuk-tag--blue")
+      case 4 => SubmissionStatus("site.status.awaitingDecision", "govuk-tag--blue")
 
       case _ => throw new IllegalArgumentException(s"Unknown submission status: $status")
     }

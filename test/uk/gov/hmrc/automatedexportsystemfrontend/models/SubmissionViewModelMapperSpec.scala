@@ -55,7 +55,7 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
       summary.ducr shouldBe "GB123456789012"
       summary.officeOfExit shouldBe OfficeOfExit.Belfast
       summary.submittedDate should not be empty
-      summary.submissionStatus shouldBe SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green")
+      summary.submissionStatus shouldBe SubmissionStatus("site.status.accepted", "govuk-tag--green")
     }
 
     "map all supported office of exit codes correctly" in {
@@ -88,10 +88,10 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
       val result = SubmissionViewModelMapper.toViewModel(submissions)
 
       result.summaries.map(_.submissionStatus) shouldBe Seq(
-        SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green"),
-        SubmissionStatus("viewSubmissions.status.amended", "govuk-tag--yellow"),
-        SubmissionStatus("viewSubmissions.status.cancelled", "govuk-tag--red"),
-        SubmissionStatus("viewSubmissions.status.awaitingDecision", "govuk-tag--blue")
+        SubmissionStatus("site.status.accepted", "govuk-tag--green"),
+        SubmissionStatus("site.status.amended", "govuk-tag--yellow"),
+        SubmissionStatus("site.status.cancelled", "govuk-tag--red"),
+        SubmissionStatus("site.status.awaitingDecision", "govuk-tag--blue")
       )
     }
   }
