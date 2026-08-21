@@ -152,3 +152,5 @@ GET        /discrepancy-packing                      uk.gov.hmrc.automatedexport
 POST       /discrepancy-packing                      uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.DiscrepancyPackingController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 GET        /change-discrepancy-packing               uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.DiscrepancyPackingController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-discrepancy-packing               uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.DiscrepancyPackingController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET        /viewSingleSubmission                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSingleSubmissionController.onPageLoad()

@@ -329,3 +329,6 @@ discrepancyPacking.error.packagingCode.length = the packaging code must be 100 c
 discrepancyPacking.error.numberOfPackages.length = the number of packages must be 100 characters or less
 discrepancyPacking.error.shippingMarks.length = the shipping marks must be 100 characters or less
 discrepancyPacking.change.hidden = the packing details
+
+viewSingleSubmission.title = viewSingleSubmission
+viewSingleSubmission.heading = viewSingleSubmission
