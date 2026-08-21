@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.discrepancies
 
 import play.api.data.Form
 import play.api.data.Forms.*
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrMaxLength, ducrRegex, goodsItemNumberMaxLength, goodsItemNumberRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.WhatHasChangedDetails
 
@@ -28,9 +29,19 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
   def apply(): Form[WhatHasChangedDetails] = Form(
     mapping(
       "goodsItemNumber" -> text("discrepancyGoods.error.goodsItemNumber.required")
-        .verifying(maxLength(100, "discrepancyGoods.error.goodsItemNumber.length")),
+        .verifying(
+          firstError(
+            maxLength(goodsItemNumberMaxLength, "discrepancyGoods.error.goodsItemNumber.length"),
+            regexp(goodsItemNumberRegex, "discrepancyGoods.error.goodsItemNumber.invalid")
+          )
+        ),
       "declarationUniqueConsignmentReference" -> optional(
-        text().verifying(maxLength(100, "discrepancyGoods.error.declarationUniqueConsignmentReference.length"))
+        text().verifying(
+          firstError(
+            maxLength(ducrMaxLength, "discrepancyGoods.error.declarationUniqueConsignmentReference.length"),
+            regexp(ducrRegex, "discrepancyGoods.error.declarationUniqueConsignmentReference.invalid")
+          )
+        )
       ),
       "newGrossMass" -> text("discrepancyGoods.error.newGrossMass.required")
         .verifying(maxLength(100, "discrepancyGoods.error.newGrossMass.length")),
