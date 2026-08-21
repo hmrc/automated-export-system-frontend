@@ -44,7 +44,7 @@
       rows = viewSubmissionsViewModel.map(_.summaries.map { summary =>
         Seq(
           TableRow(content = HtmlContent{
-      s"""<a href="" class="govuk-body govuk-link">${messages(summary.mrn)}</a>"""
+      s"""< <a href="@controllers.routes.submission.ViewSingleSubmissionController.onPageLoad().url" class="govuk-body govuk-link">${messages(summary.mrn)}</>"""
       }),
           TableRow(content = Text(summary.ducr)),
           TableRow(content = Text(messages(s"officeOfExit.${summary.officeOfExit.toString}"))),
