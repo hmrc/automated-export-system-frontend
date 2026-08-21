@@ -16,15 +16,19 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
-import play.api.data.FormError
+import org.scalacheck.Gen
+import play.api.data.{Field, FormError}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.mrnRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterMrnFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 
 class AmendEnterMrnFormProviderSpec extends StringFieldBehaviours {
 
   val requiredKey = "enterMrn.error.required"
   val lengthKey = "enterMrn.error.length"
-  val maxLength = 100
+  val invalidKey = "enterMrn.error.invalid"
+  val maxLength = 18
+  val validValues: Seq[String] = Seq("24AB123456789012A1", "99YZA1B2C3D4E5F6E9")
 
   val form = new AmendEnterMrnFormProvider()()
 
@@ -32,10 +36,22 @@ class AmendEnterMrnFormProviderSpec extends StringFieldBehaviours {
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, Gen.oneOf(validValues))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq("23AB123456789012A1", "99YZA1B2C3D4E5F6F9")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(mrnRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
+    }
   }
 }

@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrMaxLength, ducrRegex}
 
 import javax.inject.Inject
 
@@ -26,6 +27,6 @@ class AmendEnterDucrFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("enterDucr.error.required")
-        .verifying(maxLength(100, "enterDucr.error.length"))
+        .verifying(firstError(maxLength(ducrMaxLength, "enterDucr.error.length"), regexp(ducrRegex, "enterDucr.error.invalid")))
     )
 }

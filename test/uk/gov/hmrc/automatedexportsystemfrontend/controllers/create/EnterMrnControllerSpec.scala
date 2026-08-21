@@ -108,7 +108,7 @@ class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, enterMrnRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", "24AB123456789012A1"))
             .withSession(SessionKeys.sessionId -> "some-session-id")
 
         val result = route(application, request).value
