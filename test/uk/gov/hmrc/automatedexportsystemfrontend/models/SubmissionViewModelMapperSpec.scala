@@ -55,7 +55,7 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
       summary.ducr shouldBe "GB123456789012"
       summary.officeOfExit shouldBe OfficeOfExit.Belfast
       summary.submittedDate should not be empty
-      summary.submissionStatus shouldBe SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green")
+      summary.submissionStatus shouldBe SubmissionStatus("site.status.accepted", "govuk-tag--green")
     }
 
     "map all supported office of exit codes correctly" in {
