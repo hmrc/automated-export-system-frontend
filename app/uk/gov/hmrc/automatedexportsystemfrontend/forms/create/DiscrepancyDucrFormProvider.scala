@@ -17,6 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrMaxLength, ducrRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 
 import javax.inject.Inject
@@ -26,6 +27,6 @@ class DiscrepancyDucrFormProvider @Inject() extends Mappings {
   def apply(): Form[String] =
     Form(
       "value" -> text("discrepancyDucr.error.required")
-        .verifying(maxLength(35, "discrepancyDucr.error.length"))
+        .verifying(firstError(maxLength(ducrMaxLength, "discrepancyDucr.error.length"), regexp(ducrRegex, "discrepancyDucr.error.invalid")))
     )
 }

@@ -19,6 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{mucrMaxLength, mucrRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
 
 import javax.inject.Inject
@@ -33,11 +34,19 @@ class AmendPartOfConsolidationFormProvider @Inject() extends Mappings {
     )
 
   def validateAnswer(answer: PartOfConsolidationAnswer): Form[PartOfConsolidationAnswer] = {
-    val emptyForm = apply()
-    if (answer.boolean && answer.mucr.forall(_.trim.isEmpty)) {
-      emptyForm.fill(answer).withError("mucr", "partOfConsolidation.mucr.required")
+    val form: Form[PartOfConsolidationAnswer] = apply().fill(answer)
+    val mucr: String = answer.mucr.getOrElse("")
+
+    if (!answer.boolean) {
+      form
+    } else if (mucr.trim.isEmpty) {
+      form.withError("mucr", "partOfConsolidation.mucr.required")
+    } else if (mucr.length > mucrMaxLength) {
+      form.withError("mucr", "partOfConsolidation.mucr.length")
+    } else if (!mucr.matches(mucrRegex)) {
+      form.withError("mucr", "partOfConsolidation.mucr.invalid")
     } else {
-      emptyForm.fill(answer)
+      form
     }
   }
 

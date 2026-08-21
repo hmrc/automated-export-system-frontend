@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{containerIdMaxLength, containerIdRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.ContainerDetails
 
@@ -28,7 +29,12 @@ class DiscrepancyTransportFormProvider @Inject() extends Mappings {
   def apply(): Form[ContainerDetails] = Form(
     mapping(
       "containerId" -> text("discrepancyTransport.error.containerId.required")
-        .verifying(maxLength(17, "discrepancyTransport.error.containerId.length")),
+        .verifying(
+          firstError(
+            maxLength(containerIdMaxLength, "discrepancyTransport.error.containerId.length"),
+            regexp(containerIdRegex, "discrepancyTransport.error.containerId.invalid")
+          )
+        ),
       "numberOfSeals" -> int("discrepancyTransport.error.numberOfSeals.required")
         .verifying(
           minimumValue(0, "discrepancyTransport.error.numberOfSeals.negative"),
