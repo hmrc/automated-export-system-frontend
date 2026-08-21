@@ -54,7 +54,7 @@ class AmendIsSplitExitController @Inject() (
 //      val preparedForm = request.userAnswers.get(AmendIsSplitExitPage) match {
     val preparedForm = answers.get(AmendIsSplitExitPage(submissionId)).fold(form)(form.fill)
 
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
+    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
     Future.successful(Ok(preparedView))
   }
 
@@ -67,7 +67,7 @@ class AmendIsSplitExitController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          val errorPage: play.twirl.api.HtmlFormat.Appendable = view(formWithErrors, mode)
+          val errorPage: play.twirl.api.HtmlFormat.Appendable = view(formWithErrors, mode, submissionId)
           Future.successful(BadRequest(errorPage))
         },
         value =>
