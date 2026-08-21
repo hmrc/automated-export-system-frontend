@@ -342,4 +342,7 @@ discrepancyPacking.change.hidden = the packing details
 viewSingleSubmission.title = IE507(a) pre-notification details
 viewSingleSubmission.heading = IE507(a) pre-notification details
 viewSingleSubmission.caption = Submission
+viewSingleSubmission.carrier.subheading = Exit carrier
+viewSingleSubmission.loc.subheading = Location of goods
+viewSingleSubmission.auth.subheading = Authorisation
 

@@ -27,8 +27,13 @@
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
 
 <!--Replace with dynamic submissionID-->
-    <span class="govuk-caption-l">@messages("viewSingleSubmission.caption") SubmissionID</span>
+    <span class="govuk-caption-l">@messages("viewSingleSubmission.caption") #SUBMISSIONID#</span>
     <h1 class="govuk-heading-l">@messages("viewSingleSubmission.heading")</h1>
+
+<!--Replace with dynamic status-->
+    <p class="govuk-body">@messages("site.status"): #STATUS#</p>
+<!--Replace with dynamic date-->
+    <p class="govuk-body">@messages("site.submitted") #DATE OF SUBMISSION#</p>
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
 
@@ -37,6 +42,15 @@
 
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
+
+
+    <h2 class="govuk-heading-m">@messages("viewSingleSubmission.carrier.subheading")</h2>
+
+
+    <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
+
+
+    <h2 class="govuk-heading-m">@messages("viewSingleSubmission.auth.subheading")</h2>
 
     <div class="govuk-button-group govuk-!-margin-top-6">
 
