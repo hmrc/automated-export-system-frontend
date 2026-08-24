@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.mucrRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyMucrFormProvider
+import play.api.data.FormError
 
 class DiscrepancyMucrFormProviderSpec extends StringFieldBehaviours {
 

@@ -17,6 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{sealIdentifierMaxLength, sealIdentifierRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 
 import javax.inject.Inject
@@ -25,7 +26,12 @@ class DiscrepancyReferenceFormProvider @Inject() extends Mappings {
 
   def apply(): Form[String] =
     Form(
-      "value" -> text("discrepancyReference.error.required")
-        .verifying(maxLength(5, "discrepancyReference.error.length"))
+      "value" -> text("discrepancySeals.error.required")
+        .verifying(
+          firstError(
+            maxLength(sealIdentifierMaxLength, "discrepancySeals.error.length"),
+            regexp(sealIdentifierRegex, "discrepancySeals.error.invalid")
+          )
+        )
     )
 }
