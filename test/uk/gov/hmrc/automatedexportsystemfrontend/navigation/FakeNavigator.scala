@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.mvc.Call
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 
 class FakeNavigator(desiredRoute: Call) extends Navigator {
@@ -33,12 +33,6 @@ class FakeCreateNavigator(desiredRoute: Call) extends CreateNavigator {
 }
 
 class FakeAmendNavigator(desiredRoute: Call) extends AmendNavigator {
-
-  override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
-    desiredRoute
-}
-
-class FakeUnhappyPathNavigator(desiredRoute: Call) extends UnhappyPathNavigator {
 
   override def nextPage(page: Page, mode: Mode, userAnswers: UserAnswers): Call =
     desiredRoute
