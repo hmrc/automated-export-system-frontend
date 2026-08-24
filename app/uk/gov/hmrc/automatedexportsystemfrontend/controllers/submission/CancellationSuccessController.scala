@@ -25,8 +25,8 @@ import javax.inject.Inject
 class CancellationSuccessController @Inject() (override val controllerComponents: MessagesControllerComponents, view: CancellationSuccessView)
     extends FrontendBaseController {
 
-  def onPageLoad(mrn: String): Action[AnyContent] =
+  def onPageLoad(submissionID: String): Action[AnyContent] =
     Action { implicit request =>
-      Ok(view(mrn))
+      Ok(view(submissionID))
     }
 }

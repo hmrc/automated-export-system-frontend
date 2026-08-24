@@ -26,6 +26,11 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, Upstream
 import play.api.libs.ws.writeableOf_String
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionResponseParser}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.Submission
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionResponse
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionResponseParser
+import java.time.LocalDateTime
+import java.util.UUID
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML
@@ -51,6 +56,22 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
       }
 
   def getSubmissions()(implicit hc: HeaderCarrier): Future[SubmissionResponseList] =
+    Future.successful(
+      SubmissionResponseList(
+        Seq(
+          SubmissionResponse(
+            submissionId = UUID.fromString("11111111-1111-1111-1111-111111111111"),
+            mrn = "24GB12345678901234",
+            ducr = Some("DUCR123"),
+            officeOfExitCode = "GB000051",
+            updatedAt = LocalDateTime.now(),
+            status = 1
+          )
+        )
+      )
+    )
+  /*
+  def getSubmissions()(implicit hc: HeaderCarrier): Future[SubmissionResponseList] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submissions")
       .execute[HttpResponse]
@@ -61,6 +82,25 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
           case _ =>
             logger.error(s"Failed to retrieve submissions from /automated-export-system/submissions with status : ${response.status}")
             Future.failed(UpstreamErrorResponse("Unexpected response from /automated-export-system/submissions", response.status))
+        }
+      }
+   */
+  def getSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[SubmissionResponse] =
+    httpClient
+      .get(url"${frontendAppConfig.automatedExportSystemApi}/submission/$submissionId")
+      .execute[HttpResponse]
+      .flatMap { response =>
+        response.status match {
+          case OK =>
+            Future.successful(
+              SubmissionResponseParser
+                .parse(XML.loadString(response.body))
+                .submissions
+                .head
+            )
+
+          case _ =>
+            Future.failed(UpstreamErrorResponse(s"Unexpected response from /submission/$submissionId", response.status))
         }
       }
 }
