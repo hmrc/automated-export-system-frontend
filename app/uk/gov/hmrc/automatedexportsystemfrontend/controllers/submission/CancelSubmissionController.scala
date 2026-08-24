@@ -16,17 +16,43 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.CancelSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
-class CancelSubmissionController @Inject() (override val controllerComponents: MessagesControllerComponents, view: CancelSubmissionView)
-    extends FrontendBaseController {
+import play.api.Logging
 
-  def onPageLoad(mrn: String): Action[AnyContent] =
-    Action { implicit request =>
-      Ok(view(mrn))
+class CancelSubmissionController @Inject() (
+  override val messagesApi: MessagesApi,
+  val actionBuilder: AesAuthRequestActionBuilder,
+  getData: AesDataRetrievalAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: CancelSubmissionView,
+  automatedExportSystemConnector: AutomatedExportSystemConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport with Logging {
+
+  def onPageLoad(submissionID: String): Action[AnyContent] =
+    (actionBuilder andThen getData).async { implicit request =>
+      automatedExportSystemConnector.getSubmissions().map { response =>
+        response.submissions.find(_.submissionId.toString == submissionID) match {
+
+          case Some(submission) =>
+            logger.info(s"Found submission ${submission.submissionId}")
+
+            Ok(view(submissionID, submission.mrn))
+
+          case None =>
+            logger.warn(s"No submission found for $submissionID")
+
+            NotFound("Submission not found")
+        }
+      }
     }
 }
