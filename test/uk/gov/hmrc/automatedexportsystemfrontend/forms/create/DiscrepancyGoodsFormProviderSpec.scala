@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.{Field, FormError}
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrRegex, goodsItemNumberRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrRegex, goodsItemNumberRegex, grossMassRegex, netMassRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyGoodsFormProvider
 
@@ -90,13 +90,26 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "newGrossMass"
     val requiredKey = "discrepancyGoods.error.newGrossMass.required"
     val lengthKey = "discrepancyGoods.error.newGrossMass.length"
+    val invalidKey = "discrepancyGoods.error.newGrossMass.invalid"
     val maxLength = 100
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, validWeight(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq("abc123!", "abc?123")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(grossMassRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
+    }
   }
 
   ".newNetMass" - {
@@ -104,12 +117,25 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "newNetMass"
     val requiredKey = "discrepancyGoods.error.newNetMass.required"
     val lengthKey = "discrepancyGoods.error.newNetMass.length"
+    val invalidKey = "discrepancyGoods.error.newNetMass.invalid"
     val maxLength = 100
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, validWeight(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq("abc123!", "abc?123")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(netMassRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
+    }
   }
 }

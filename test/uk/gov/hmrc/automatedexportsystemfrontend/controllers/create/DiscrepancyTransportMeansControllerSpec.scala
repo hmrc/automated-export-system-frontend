@@ -138,7 +138,7 @@ class DiscrepancyTransportMeansControllerSpec extends SpecBase with MockitoSugar
       running(application) {
         val request =
           FakeRequest(POST, discrepancyTransportMeansRoute)
-            .withFormUrlEncodedBody(("transportType", "value 1"), ("transportIdNumber", "value 2"), ("countryOfRegistration", "value 3"))
+            .withFormUrlEncodedBody(("transportType", "value 1"), ("transportIdNumber", "2"), ("countryOfRegistration", "value 3"))
 
         val result = route(application, request).value
 

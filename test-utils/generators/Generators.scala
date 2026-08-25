@@ -61,6 +61,12 @@ trait Generators extends ModelGenerators {
       .suchThat(!_.isValidInt)
       .map("%f".format(_))
 
+  def validWeight(maxLength: Int): Gen[String] =
+    arbitrary[BigDecimal]
+      .suchThat(n => n > 0 && n < Int.MaxValue && !n.isValidInt)
+      .map("%f".format(_))
+      .suchThat(_.length <= maxLength)
+
   def intsBelowValue(value: Int): Gen[Int] =
     arbitrary[Int] suchThat (_ < value)
 
@@ -117,4 +123,11 @@ trait Generators extends ModelGenerators {
       Instant.ofEpochMilli(millis).atOffset(ZoneOffset.UTC).toLocalDate
     }
   }
+
+  def validDocumentTypes(maxLength: Int): Gen[String] =
+    for {
+      length <- choose(1, maxLength)
+      firstDigit <- Gen.choose('1', '9')
+      remainingDigits <- listOfN(length - 1, Gen.numChar)
+    } yield (firstDigit +: remainingDigits).mkString
 }

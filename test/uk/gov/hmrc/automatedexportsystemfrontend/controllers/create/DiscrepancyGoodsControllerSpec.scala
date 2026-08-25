@@ -153,8 +153,8 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(
               ("goodsItemNumber", "value1"),
               ("declarationUniqueConsignmentReference", "5GB000000000000-12345"),
-              ("newGrossMass", "value 3"),
-              ("newNetMass", "value 4")
+              ("newGrossMass", "1.0"),
+              ("newNetMass", "1.0")
             )
 
         val result = route(application, request).value
