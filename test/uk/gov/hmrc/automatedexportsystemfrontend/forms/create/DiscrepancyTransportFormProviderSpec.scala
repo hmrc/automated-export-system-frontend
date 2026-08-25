@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.containerIdRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
 
@@ -29,13 +30,26 @@ class DiscrepancyTransportFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "containerId"
     val requiredKey = "discrepancyTransport.error.containerId.required"
     val lengthKey = "discrepancyTransport.error.containerId.length"
+    val invalidKey = "discrepancyTransport.error.containerId.invalid"
     val maxLength = 17
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq(" abc123", "abc123 ")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(containerIdRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
+    }
   }
 
   ".numberOfSeals" - {

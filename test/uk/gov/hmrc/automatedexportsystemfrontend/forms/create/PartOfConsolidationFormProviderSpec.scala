@@ -25,34 +25,46 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswe
 
 class PartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers {
 
-  private val form = new PartOfConsolidationFormProvider()()
+  private val form = new PartOfConsolidationFormProvider()
 
   "PartOfConsolidationFormProvider" - {
 
     "bind when false and no MUCR supplied" in {
-      val result = form.bind(Map("boolean" -> "false"))
+      val result = form().bind(Map("boolean" -> "false"))
 
       result.value.value mustEqual
         PartOfConsolidationAnswer(false, None)
     }
 
     "bind when true and MUCR supplied" in {
-      val result = form.bind(Map("boolean" -> "true", "mucr" -> "123456"))
+      val result = form().bind(Map("boolean" -> "true", "mucr" -> "123456"))
 
       result.value.value mustEqual
         PartOfConsolidationAnswer(true, Some("123456"))
     }
 
     "return an error when no boolean selected" in {
-      val result = form.bind(Map.empty)
+      val result = form().bind(Map.empty)
 
       result.errors must contain(FormError("boolean", "partOfConsolidation.error.required"))
     }
 
     "allow no selected with MUCR omitted" in {
-      val result = form.bind(Map("boolean" -> "false"))
+      val result = form().bind(Map("boolean" -> "false"))
 
       result.errors mustBe empty
+    }
+
+    "must not bind when true and MUCR larger than max length" in {
+      val result = form.validateAnswer(PartOfConsolidationAnswer(boolean = true, mucr = Some("abcdefghijklmnopqr123456789012345678")))
+
+      result.errors must contain(FormError("mucr", "partOfConsolidation.mucr.length"))
+    }
+
+    "must not bind invalid data" in {
+      val result = form.validateAnswer(PartOfConsolidationAnswer(boolean = true, mucr = Some("abc!123?")))
+
+      result.errors must contain(FormError("mucr", "partOfConsolidation.mucr.invalid"))
     }
   }
 }
