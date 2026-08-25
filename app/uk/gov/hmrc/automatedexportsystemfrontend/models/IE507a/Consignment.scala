@@ -33,7 +33,7 @@ object Consignment {
   given xmlWrites: XmlWrites[Consignment] = XmlWrites.instance { c =>
     XmlWrites.elem(
       "Consignment",
-      XmlWrites.textElem("modeOfTransportAtBorder", c.modeOfTransportAtBorder.toXml),
+      XmlWrites.textElem("modeOfTransportAtTheBorder", c.modeOfTransportAtBorder.toXml),
       XmlWrites.textElem("referenceNumberUCR", c.referenceNumberUCR),
       XmlWrites.textElem("parentUCRID", c.parentUCRID),
       c.TransportEquipment.toXml,
