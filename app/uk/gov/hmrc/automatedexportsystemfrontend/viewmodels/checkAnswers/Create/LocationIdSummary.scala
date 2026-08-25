@@ -33,7 +33,7 @@ object LocationIdSummary {
 
       val value =
         Seq(
-          HtmlFormat.escape(answer.locationType).toString,
+          HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}")).toString,
           HtmlFormat.escape(answer.unlocode).toString,
           HtmlFormat.escape(answer.locationAdditionalIdentifier).toString,
           HtmlFormat.escape(answer.authorisationReferenceNumber).toString

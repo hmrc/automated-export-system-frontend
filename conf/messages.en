@@ -256,6 +256,7 @@ locationId.heading = Identify the location
 locationId.insetText = These are placeholder location codes for the prototype. The actual list will come from the CL327 and CL244 codelists.
 locationId.locationType = Location type
 locationId.unlocode = UN/LOCODE
+locationId.authnumber = Authorisation number
 locationId.locationAdditionalIdentifier = Location additional identifier
 locationId.authorisationReferenceNumber = Authorisation reference number
 locationId.checkYourAnswersLabel = Identify the location

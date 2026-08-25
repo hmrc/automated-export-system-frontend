@@ -60,7 +60,7 @@ implicit lazy val arbitraryTransportAcrossBorderDetails: Arbitrary[TransportAcro
 implicit lazy val arbitraryLocationDetails: Arbitrary[LocationDetails] =
   Arbitrary {
     for {
-      locationType <- arbitrary[String]
+      locationType <- arbitrary[LocationQualifier]
       unlocode <- arbitrary[String]
       locationAdditionalIdentifier <- arbitrary[String]
       authorisationReferenceNumber <- arbitrary[String]
@@ -88,4 +88,9 @@ implicit lazy val arbitraryModeOfTransportAtTheBorder: Arbitrary[ModeOfTransport
 implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
   Arbitrary {
     Gen.oneOf(OfficeOfExit.values.toSeq)
+  }
+
+implicit lazy val arbitraryLocationQualifier: Arbitrary[LocationQualifier] =
+  Arbitrary {
+    Gen.oneOf(LocationQualifier.values.toSeq)
   }

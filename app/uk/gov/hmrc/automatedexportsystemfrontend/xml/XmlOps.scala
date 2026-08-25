@@ -43,6 +43,9 @@ object XmlWrites {
 
   implicit def optionWrites[T](implicit w: XmlWrites[T]): XmlWrites[Option[T]] =
     instance(_.fold(NodeSeq.Empty: NodeSeq)(w.writes))
+
+  implicit def listWrites[T](implicit w: XmlWrites[T]): XmlWrites[List[T]] =
+    instance(_.flatMap(w.writes))
 }
 
 implicit class XmlOps[T](private val value: T) extends AnyVal {

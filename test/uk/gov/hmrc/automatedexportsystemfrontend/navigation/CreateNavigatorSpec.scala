@@ -168,7 +168,10 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from LocationIdPage" - {
         "to DiscrepancyTransportMeansPage" in {
           val userAnswers = emptyUserAnswers
-            .set(LocationIdPage, LocationDetails("locationType", "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber"))
+            .set(
+              LocationIdPage,
+              LocationDetails(LocationQualifier.UnLocode, "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber")
+            )
             .success
             .value
           navigator.nextPage(LocationIdPage, NormalMode, userAnswers) shouldBe

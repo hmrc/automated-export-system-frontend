@@ -15,13 +15,14 @@
  *@
 
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => createRoute}
-@import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationType
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationType,LocationQualifier}
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.InputWidth._
 
 @this(
     layout: Layout,
     formHelper: FormWithCSRF,
     govukErrorSummary: GovukErrorSummary,
+    govukSelect: GovukSelect,
     govukInput: GovukInput,
     govukButton: GovukButton
 )
@@ -42,12 +43,21 @@
           @messages("locationId.insetText")
         </div>
 
-        @govukInput(
-            InputViewModel(
-                field = form("locationType"),
-                label = LabelViewModel(messages("locationId.locationType"))
+        @govukSelect(
+            Select(
+                id = form("locationType").id,
+                name = form("locationType").name,
+                items = LocationQualifier.options,
+                value = form("locationType").value,
+                classes = Fixed20.toString,
+                label = LabelViewModel(messages("locationId.locationType")),
+                errorMessage = form("locationType").error.map { err =>
+                    ErrorMessage(
+                        content = Text(messages(err.message, err.args: _*)),
+                        visuallyHiddenText = Some(messages("error.prefix"))
+                    )
+                }
             )
-            .withWidth(Fixed20)
         )
 
         @govukInput(

@@ -17,25 +17,24 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.LocationIdFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
-class LocationIdFormProviderSpec extends StringFieldBehaviours {
+class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehaviours {
 
   val form = new LocationIdFormProvider()()
 
   ".locationType" - {
 
     val fieldName = "locationType"
-    val requiredKey = "locationId.error.locationType.required"
-    val lengthKey = "locationId.error.locationType.length"
-    val maxLength = 100
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
-
-    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+    behave like optionsField[LocationQualifier](
+      form,
+      fieldName,
+      validValues = LocationQualifier.values,
+      invalidError = FormError(fieldName, "error.invalid")
+    )
   }
 
   ".unlocode" - {

@@ -19,9 +19,9 @@ package uk.gov.hmrc.automatedexportsystemfrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.{CustomsOfficeOfExitActual, ExportOperation, Submission}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{AnyDiscrepanciesPage, EnterMrnPage, IsSplitExitPage, OfficeOfExitPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
 
 class SubmissionDataService @Inject() extends Logging {
@@ -41,7 +41,47 @@ class SubmissionDataService @Inject() extends Logging {
       discrepanciesExist <- userAnswers.get(AnyDiscrepanciesPage)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
-    } yield Submission(None, ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator), CustomsOfficeOfExitActual(referenceNumber.toString))
+
+      discrepancyConsignment <- userAnswers.get(DiscrepancyConsignmentPage)
+      transportMode = TransportMode.fromUserAnswers(discrepancyConsignment)
+      discrepancyDucr <- userAnswers.get(DiscrepancyDucrPage)
+      discrepancyMucr <- userAnswers.get(DiscrepancyMucrPage)
+
+      // Transport equipment
+      discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
+      discrepancySeals = userAnswers.get(DiscrepancySealsPage).toList
+      transportEquipment = discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
+        TransportEquipment(
+          transportIndex + 1,
+          transport.containerId,
+          transport.numberOfSeals,
+          discrepancySeals.zipWithIndex.map { case (seal, sealIndex) =>
+            Seal(sealIndex + 1, seal)
+          }
+        )
+      }
+
+      // Location of goods
+      locationType <- userAnswers.get(LocationTypePage)
+      typeOfLocation = TypeOfLocation.fromUserAnswers(locationType)
+      locationDetails <- userAnswers.get(LocationIdPage)
+      locationOfGoods = LocationOfGoods(
+        typeOfLocation,
+        QualifierOfTheIdentification.UnLocode,
+        locationDetails.authorisationReferenceNumber,
+        locationDetails.locationAdditionalIdentifier,
+        locationDetails.unlocode
+      )
+
+      // Goods shipment
+      goodsShipment = GoodsShipment(Consignment(transportMode, discrepancyDucr, discrepancyMucr, transportEquipment, locationOfGoods))
+
+    } yield Submission(
+      None,
+      ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
+      CustomsOfficeOfExitActual(referenceNumber.toString),
+      Some(goodsShipment)
+    )
 
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""

@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.Form
 import play.api.data.Forms.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
-import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationDetails
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier}
 
 import javax.inject.Inject
 
@@ -27,8 +27,7 @@ class LocationIdFormProvider @Inject() extends Mappings {
 
   def apply(): Form[LocationDetails] = Form(
     mapping(
-      "locationType" -> text("locationId.error.locationType.required")
-        .verifying(maxLength(100, "locationId.error.locationType.length")),
+      "locationType" -> enumerable[LocationQualifier]("locationId.error.locationType.required"),
       "unlocode" -> text("locationId.error.unlocode.required")
         .verifying(maxLength(100, "locationId.error.unlocode.length")),
       "locationAdditionalIdentifier" -> text("locationId.error.locationAdditionalIdentifier.required")
