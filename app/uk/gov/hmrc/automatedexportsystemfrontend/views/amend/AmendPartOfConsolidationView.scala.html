@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => happyRoute}
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -28,7 +28,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, submissionId: String)(implicit request: Request[_], messages: Messages)
 
 @content = {
     <p class="govuk-body">
@@ -41,7 +41,7 @@
 
 @layout(pageTitle = title(form, messages("partOfConsolidation.title"))) {
 
-    @formHelper(action = happyRoute.PartOfConsolidationController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = amendRoute.AmendPartOfConsolidationController.onSubmit(mode, submissionId), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

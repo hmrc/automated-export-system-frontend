@@ -55,7 +55,7 @@ class AmendPartOfConsolidationController @Inject() (
 //      val preparedForm = request.userAnswers.get(AmendPartOfConsolidationPage(submissionId)) match {
     val preparedForm = answers.get(AmendPartOfConsolidationPage(submissionId)).fold(form)(form.fill)
 
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
+    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
     Future.successful(Ok(preparedView))
   }
 
@@ -66,13 +66,13 @@ class AmendPartOfConsolidationController @Inject() (
       .bindFromRequest()
       .fold(
         formWithErrors => {
-          val errorPage: play.twirl.api.HtmlFormat.Appendable = view(formWithErrors, mode)
+          val errorPage: play.twirl.api.HtmlFormat.Appendable = view(formWithErrors, mode, submissionId)
           Future.successful(BadRequest(errorPage))
         },
         value => {
           val validatedForm = formProvider.validateAnswer(value)
           if (validatedForm.hasErrors) {
-            val errorPage: play.twirl.api.HtmlFormat.Appendable = view(validatedForm, mode)
+            val errorPage: play.twirl.api.HtmlFormat.Appendable = view(validatedForm, mode, submissionId)
             Future.successful(BadRequest(errorPage))
           } else {
             val cleanedValue = if (!value.boolean) value.copy(mucr = None) else value
