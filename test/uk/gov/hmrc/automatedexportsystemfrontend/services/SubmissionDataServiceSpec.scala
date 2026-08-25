@@ -27,7 +27,27 @@ class SubmissionDataServiceSpec extends SpecBase {
   "buildStandardSubmission" - {
 
     val service = new SubmissionDataService
-    "must return an String of XML when all required answers present " in {
+
+    "must return an String of XML with no GoodsShipment when the minimal set of required answers are present " in {
+      val userAnswers = for {
+        userAnswers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
+        userAnswers <- userAnswers.set(AnyDiscrepanciesPage, false)
+        userAnswers <- userAnswers.set(IsSplitExitPage, false)
+        userAnswers <- userAnswers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
+      } yield userAnswers
+
+      val result = service.buildStandardSubmission(userAnswers.get)
+
+      result shouldBe an[Option[String]]
+      result.value should include("<MRN>MRN</MRN>")
+      result.value should include("<type>1</type>")
+      result.value should include("<discrepanciesExist>0</discrepanciesExist>")
+      result.value should include("<splitIndicator>0</splitIndicator>")
+      result.value should include("<referenceNumber>GB000051</referenceNumber>")
+      result.value shouldNot include("<GoodsShipment>")
+    }
+
+    "must include a GoodsShipment when all the required answers are present " in {
       val userAnswers = for {
         userAnswers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
         userAnswers <- userAnswers.set(AnyDiscrepanciesPage, false)

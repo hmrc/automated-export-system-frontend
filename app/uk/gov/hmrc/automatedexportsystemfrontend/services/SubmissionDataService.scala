@@ -18,8 +18,8 @@ package uk.gov.hmrc.automatedexportsystemfrontend.services
 
 import com.google.inject.Inject
 import play.api.Logging
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
@@ -35,6 +35,34 @@ class SubmissionDataService @Inject() extends Logging {
         None
     }
 
+  private def collectTransportEquipment(userAnswers: UserAnswers): List[TransportEquipment] = {
+    val discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
+    val discrepancySeals = userAnswers.get(DiscrepancySealsPage).toList
+    discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
+      TransportEquipment(
+        transportIndex + 1,
+        transport.containerId,
+        transport.numberOfSeals,
+        discrepancySeals.zipWithIndex.map { case (seal, sealIndex) =>
+          Seal(sealIndex + 1, seal)
+        }
+      )
+    }
+  }
+
+  private def collectGoodsLocation(userAnswers: UserAnswers): Option[LocationOfGoods] =
+    for {
+      locationType <- userAnswers.get(LocationTypePage)
+      typeOfLocation = TypeOfLocation.fromUserAnswers(locationType)
+      locationDetails <- userAnswers.get(LocationIdPage)
+    } yield LocationOfGoods(
+      typeOfLocation,
+      QualifierOfTheIdentification.UnLocode,
+      locationDetails.authorisationReferenceNumber,
+      locationDetails.locationAdditionalIdentifier,
+      locationDetails.unlocode
+    )
+
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
     for {
       mrn <- userAnswers.get(EnterMrnPage)
@@ -42,45 +70,20 @@ class SubmissionDataService @Inject() extends Logging {
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
 
-      discrepancyConsignment <- userAnswers.get(DiscrepancyConsignmentPage)
-      transportMode = TransportMode.fromUserAnswers(discrepancyConsignment)
-      discrepancyDucr <- userAnswers.get(DiscrepancyDucrPage)
-      discrepancyMucr <- userAnswers.get(DiscrepancyMucrPage)
-
-      // Transport equipment
-      discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
-      discrepancySeals = userAnswers.get(DiscrepancySealsPage).toList
-      transportEquipment = discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
-        TransportEquipment(
-          transportIndex + 1,
-          transport.containerId,
-          transport.numberOfSeals,
-          discrepancySeals.zipWithIndex.map { case (seal, sealIndex) =>
-            Seal(sealIndex + 1, seal)
-          }
-        )
-      }
-
-      // Location of goods
-      locationType <- userAnswers.get(LocationTypePage)
-      typeOfLocation = TypeOfLocation.fromUserAnswers(locationType)
-      locationDetails <- userAnswers.get(LocationIdPage)
-      locationOfGoods = LocationOfGoods(
-        typeOfLocation,
-        QualifierOfTheIdentification.UnLocode,
-        locationDetails.authorisationReferenceNumber,
-        locationDetails.locationAdditionalIdentifier,
-        locationDetails.unlocode
-      )
-
-      // Goods shipment
-      goodsShipment = GoodsShipment(Consignment(transportMode, discrepancyDucr, discrepancyMucr, transportEquipment, locationOfGoods))
+      goodsShipment = for {
+        discrepancyConsignment <- userAnswers.get(DiscrepancyConsignmentPage)
+        transportMode = TransportMode.fromUserAnswers(discrepancyConsignment)
+        ducr <- userAnswers.get(DiscrepancyDucrPage)
+        mucr <- userAnswers.get(DiscrepancyMucrPage)
+        transportEquipment = collectTransportEquipment(userAnswers)
+        location <- collectGoodsLocation(userAnswers)
+      } yield GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location))
 
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
-      Some(goodsShipment)
+      goodsShipment
     )
 
   private def buildXmlWithDeclaration(submission: Submission): String =
