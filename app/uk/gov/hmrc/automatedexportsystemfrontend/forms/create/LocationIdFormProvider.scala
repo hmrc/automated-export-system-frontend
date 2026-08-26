@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier}
 
@@ -29,11 +30,21 @@ class LocationIdFormProvider @Inject() extends Mappings {
     mapping(
       "locationType" -> enumerable[LocationQualifier]("locationId.error.locationType.required"),
       "unlocode" -> text("locationId.error.unlocode.required")
-        .verifying(maxLength(100, "locationId.error.unlocode.length")),
+        .verifying(maxLength(unlocodeMaxLength, "locationId.error.unlocode.length")),
       "locationAdditionalIdentifier" -> text("locationId.error.locationAdditionalIdentifier.required")
-        .verifying(maxLength(100, "locationId.error.locationAdditionalIdentifier.length")),
+        .verifying(
+          firstError(
+            maxLength(additionalIdentifierMaxLength, "locationId.error.locationAdditionalIdentifier.length"),
+            regexp(additionalIdentifierRegex, "locationId.error.locationAdditionalIdentifier.invalid")
+          )
+        ),
       "authorisationReferenceNumber" -> text("locationId.error.authorisationReferenceNumber.required")
-        .verifying(maxLength(100, "locationId.error.authorisationReferenceNumber.length"))
+        .verifying(
+          firstError(
+            maxLength(authorisationNumberMaxLength, "locationId.error.authorisationReferenceNumber.length"),
+            regexp(authorisationNumberRegex, "locationId.error.authorisationReferenceNumber.invalid")
+          )
+        )
     )(LocationDetails.apply)(x => Some((x.locationType, x.unlocode, x.locationAdditionalIdentifier, x.authorisationReferenceNumber)))
   )
 }

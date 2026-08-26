@@ -147,8 +147,8 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(
               ("locationType", "authnumber"),
               ("unlocode", "value 2"),
-              ("locationAdditionalIdentifier", "value 3"),
-              ("authorisationReferenceNumber", "value 4")
+              ("locationAdditionalIdentifier", "ABCD"),
+              ("authorisationReferenceNumber", "value4")
             )
 
         val result = route(application, request).value

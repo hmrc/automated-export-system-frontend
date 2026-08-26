@@ -42,7 +42,7 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
     val fieldName = "unlocode"
     val requiredKey = "locationId.error.unlocode.required"
     val lengthKey = "locationId.error.unlocode.length"
-    val maxLength = 100
+    val maxLength = 17
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
@@ -56,7 +56,7 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
     val fieldName = "locationAdditionalIdentifier"
     val requiredKey = "locationId.error.locationAdditionalIdentifier.required"
     val lengthKey = "locationId.error.locationAdditionalIdentifier.length"
-    val maxLength = 100
+    val maxLength = 4
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
@@ -70,7 +70,7 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
     val fieldName = "authorisationReferenceNumber"
     val requiredKey = "locationId.error.authorisationReferenceNumber.required"
     val lengthKey = "locationId.error.authorisationReferenceNumber.length"
-    val maxLength = 100
+    val maxLength = 35
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 

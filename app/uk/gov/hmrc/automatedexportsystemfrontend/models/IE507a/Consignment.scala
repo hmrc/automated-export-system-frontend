@@ -22,7 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 case class Consignment(
   modeOfTransportAtBorder: TransportMode,
   referenceNumberUCR: String,
-  parentUCRID: String, // Note: optional in the schema but mandatory in the journey
+  parentUCRID: Option[String],
   TransportEquipment: List[TransportEquipment],
   LocationOfGoods: LocationOfGoods
 )
@@ -35,7 +35,7 @@ object Consignment {
       "Consignment",
       XmlWrites.textElem("modeOfTransportAtTheBorder", c.modeOfTransportAtBorder.toXml),
       XmlWrites.textElem("referenceNumberUCR", c.referenceNumberUCR),
-      XmlWrites.textElem("parentUCRID", c.parentUCRID),
+      XmlWrites.optElem("parentUCRID", c.parentUCRID),
       c.TransportEquipment.toXml,
       c.LocationOfGoods.toXml
     )

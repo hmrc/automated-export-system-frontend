@@ -152,7 +152,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, discrepancyGoodsRoute)
             .withFormUrlEncodedBody(
               ("goodsItemNumber", "value1"),
-              ("declarationUniqueConsignmentReference", "value2"),
+              ("declarationUniqueConsignmentReference", "5GB000000000000-12345"),
               ("newGrossMass", "value 3"),
               ("newNetMass", "value 4")
             )

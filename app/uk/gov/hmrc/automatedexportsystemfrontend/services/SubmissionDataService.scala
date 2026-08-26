@@ -73,8 +73,9 @@ class SubmissionDataService @Inject() extends Logging {
       goodsShipment = for {
         discrepancyConsignment <- userAnswers.get(DiscrepancyConsignmentPage)
         transportMode = TransportMode.fromUserAnswers(discrepancyConsignment)
-        ducr <- userAnswers.get(DiscrepancyDucrPage)
-        mucr <- userAnswers.get(DiscrepancyMucrPage)
+        ducr <- userAnswers.get(EnterDucrPage)
+        part = userAnswers.get(PartOfConsolidationPage)
+        mucr = part.flatMap(_.mucr)
         transportEquipment = collectTransportEquipment(userAnswers)
         location <- collectGoodsLocation(userAnswers)
       } yield GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location))

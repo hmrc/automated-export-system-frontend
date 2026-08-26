@@ -59,7 +59,7 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
     val invalidKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.invalid"
     val maxLength = 35
 
-    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, ducrGen)
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 

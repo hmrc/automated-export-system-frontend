@@ -15,82 +15,132 @@
  */
 
 package generators
+
 import org.scalacheck.Arbitrary.arbitrary
 import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 
-trait ModelGenerators {}
+trait ModelGenerators {
+  // Lowercase alpha chars are not allowed in most identifiers
+  private val alphaNumChar: Gen[Char] = Gen.oneOf(Gen.alphaUpperChar, Gen.numChar)
 
-implicit lazy val arbitraryDiscrepancyPacking: Arbitrary[PackingDetails] =
-  Arbitrary {
+  val gbInventoryMucr: Gen[String] =
     for {
-      packagingCode <- arbitrary[String]
-      numberOfPackages <- arbitrary[String]
-      shippingMarks <- arbitrary[String]
-    } yield PackingDetails(packagingCode, numberOfPackages, shippingMarks)
-  }
+      inventoryPartSize <- Gen.choose(3, 4)
+      inventoryPart <- Gen.stringOfN(inventoryPartSize, alphaNumChar)
+      remainingChars = 31 // Max length 35 minus GB/ and hyphen
+      idPartSize <- Gen.choose(5, remainingChars - inventoryPartSize)
+      idPart <- Gen.stringOfN(idPartSize, alphaNumChar)
+    } yield s"GB/$inventoryPart-$idPart"
 
-implicit lazy val arbitraryDiscrepancyGoods: Arbitrary[WhatHasChangedDetails] =
-  Arbitrary {
+  val gbEoriMucr: Gen[String] =
     for {
-      goodsItemNumber <- arbitrary[String]
-      declarationUniqueConsignmentReference <- arbitrary[Option[String]]
-      newGrossMass <- arbitrary[String]
-      newNetMass <- arbitrary[String]
-    } yield WhatHasChangedDetails(goodsItemNumber, declarationUniqueConsignmentReference, newGrossMass, newNetMass)
-  }
+      eoriPartSize <- Gen.choose(9, 12)
+      eoriPart <- Gen.stringOfN(eoriPartSize, alphaNumChar)
+      remainingChars = 31 // Max length 35 minus GB/ and hyphen
+      idPartSize <- Gen.choose(1, remainingChars - eoriPartSize)
+      idPart <- Gen.stringOfN(idPartSize, alphaNumChar)
+    } yield s"GB/$eoriPart-$idPart"
 
-implicit lazy val arbitraryDocumentDetails: Arbitrary[DocumentDetails] =
-  Arbitrary {
+  val airMucr: Gen[String] =
     for {
-      documentType <- arbitrary[String]
-      referenceNumber <- arbitrary[String]
-    } yield DocumentDetails(documentType, referenceNumber)
-  }
+      alphaNumPart <- Gen.stringOfN(3, alphaNumChar)
+      numPart <- Gen.stringOfN(8, Gen.numChar)
+    } yield s"A:$alphaNumPart$numPart"
 
-implicit lazy val arbitraryTransportAcrossBorderDetails: Arbitrary[TransportAcrossBorderDetails] =
-  Arbitrary {
+  val courierMucr: Gen[String] =
     for {
-      transportType <- arbitrary[String]
-      transportIdNumber <- arbitrary[String]
-      countryOfRegistration <- arbitrary[String]
-    } yield TransportAcrossBorderDetails(transportType, transportIdNumber, countryOfRegistration)
-  }
+      alphaPart <- Gen.stringOfN(3, Gen.alphaUpperChar)
+      numSize <- Gen.choose(3, 30)
+      alphaNumPart <- Gen.stringOfN(numSize, Gen.numChar)
+    } yield s"C:$alphaPart$alphaNumPart"
 
-implicit lazy val arbitraryLocationDetails: Arbitrary[LocationDetails] =
-  Arbitrary {
+  val mucrGen: Gen[String] =
+    Gen.oneOf(gbInventoryMucr, gbEoriMucr, airMucr, courierMucr)
+
+  val standardDucr: Gen[String] =
     for {
-      locationType <- arbitrary[LocationQualifier]
-      unlocode <- arbitrary[String]
-      locationAdditionalIdentifier <- arbitrary[String]
-      authorisationReferenceNumber <- arbitrary[String]
-    } yield LocationDetails(locationType, unlocode, locationAdditionalIdentifier, authorisationReferenceNumber)
-  }
+      lastYearDigit <- Gen.choose('0', '9')
+      countryChars <- Gen.stringOfN(2, Gen.alphaUpperChar)
+      eoriChars <- Gen.stringOfN(12, alphaNumChar)
+      idPartSize <- Gen.choose(1, 18)
+      idPart <- Gen.stringOfN(idPartSize, Gen.oneOf(alphaNumChar, Gen.const('-'), Gen.const('('), Gen.const(')')))
+    } yield s"$lastYearDigit$countryChars$eoriChars-$idPart"
 
-implicit lazy val arbitraryLocationType: Arbitrary[LocationType] =
-  Arbitrary {
-    Gen.oneOf(LocationType.values.toSeq)
-  }
+  val ducrGen: Gen[String] =
+    Gen.oneOf(standardDucr, mucrGen)
 
-implicit lazy val arbitraryContainerDetails: Arbitrary[ContainerDetails] =
-  Arbitrary {
-    for {
-      containerId <- arbitrary[String]
-      numberOfSeals <- arbitrary[Int]
-    } yield ContainerDetails(containerId, numberOfSeals)
-  }
+  given arbitraryDiscrepancyPacking: Arbitrary[PackingDetails] =
+    Arbitrary {
+      for {
+        packagingCode <- arbitrary[String]
+        numberOfPackages <- arbitrary[String]
+        shippingMarks <- arbitrary[String]
+      } yield PackingDetails(packagingCode, numberOfPackages, shippingMarks)
+    }
 
-implicit lazy val arbitraryModeOfTransportAtTheBorder: Arbitrary[ModeOfTransportAtBorder] =
-  Arbitrary {
-    Gen.oneOf(ModeOfTransportAtBorder.values.toSeq)
-  }
+  given arbitraryDiscrepancyGoods: Arbitrary[WhatHasChangedDetails] =
+    Arbitrary {
+      for {
+        goodsItemNumber <- arbitrary[String]
+        declarationUniqueConsignmentReference <- arbitrary[Option[String]]
+        newGrossMass <- arbitrary[String]
+        newNetMass <- arbitrary[String]
+      } yield WhatHasChangedDetails(goodsItemNumber, declarationUniqueConsignmentReference, newGrossMass, newNetMass)
+    }
 
-implicit lazy val arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
-  Arbitrary {
-    Gen.oneOf(OfficeOfExit.values.toSeq)
-  }
+  given arbitraryDocumentDetails: Arbitrary[DocumentDetails] =
+    Arbitrary {
+      for {
+        documentType <- arbitrary[String]
+        referenceNumber <- arbitrary[String]
+      } yield DocumentDetails(documentType, referenceNumber)
+    }
 
-implicit lazy val arbitraryLocationQualifier: Arbitrary[LocationQualifier] =
-  Arbitrary {
-    Gen.oneOf(LocationQualifier.values.toSeq)
-  }
+  given arbitraryTransportAcrossBorderDetails: Arbitrary[TransportAcrossBorderDetails] =
+    Arbitrary {
+      for {
+        transportType <- arbitrary[String]
+        transportIdNumber <- arbitrary[String]
+        countryOfRegistration <- arbitrary[String]
+      } yield TransportAcrossBorderDetails(transportType, transportIdNumber, countryOfRegistration)
+    }
+
+  given arbitraryLocationDetails: Arbitrary[LocationDetails] =
+    Arbitrary {
+      for {
+        locationType <- arbitrary[LocationQualifier]
+        unlocode <- arbitrary[String]
+        locationAdditionalIdentifier <- arbitrary[String]
+        authorisationReferenceNumber <- arbitrary[String]
+      } yield LocationDetails(locationType, unlocode, locationAdditionalIdentifier, authorisationReferenceNumber)
+    }
+
+  given arbitraryLocationType: Arbitrary[LocationType] =
+    Arbitrary {
+      Gen.oneOf(LocationType.values)
+    }
+
+  given arbitraryContainerDetails: Arbitrary[ContainerDetails] =
+    Arbitrary {
+      for {
+        containerId <- arbitrary[String]
+        numberOfSeals <- arbitrary[Int]
+      } yield ContainerDetails(containerId, numberOfSeals)
+    }
+
+  given arbitraryModeOfTransportAtTheBorder: Arbitrary[ModeOfTransportAtBorder] =
+    Arbitrary {
+      Gen.oneOf(ModeOfTransportAtBorder.values)
+    }
+
+  given arbitraryOfficeOfExit: Arbitrary[OfficeOfExit] =
+    Arbitrary {
+      Gen.oneOf(OfficeOfExit.values)
+    }
+
+  given arbitraryLocationQualifier: Arbitrary[LocationQualifier] =
+    Arbitrary {
+      Gen.oneOf(LocationQualifier.values)
+    }
+}
