@@ -22,11 +22,13 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthReq
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionViewModelMapper}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 
 class ViewSubmissionController @Inject() (
+                                           override val messagesApi: MessagesApi,
                                            override val controllerComponents: MessagesControllerComponents,
                                            view: ViewSubmissionView,
                                            automatedExportSystemConnector: AutomatedExportSystemConnector,
@@ -34,7 +36,8 @@ class ViewSubmissionController @Inject() (
                                            getData: AesDataRetrievalAction,
                                            requireData: AesDataRequiredAction
                                          )(implicit ec: ExecutionContext)
-  extends FrontendBaseController {
+  extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
