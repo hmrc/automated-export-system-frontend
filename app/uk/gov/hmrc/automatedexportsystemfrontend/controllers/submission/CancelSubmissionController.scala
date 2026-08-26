@@ -16,43 +16,64 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionViewModelMapper}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.CancelSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
-import play.api.Logging
-
 class CancelSubmissionController @Inject() (
   override val messagesApi: MessagesApi,
   val actionBuilder: AesAuthRequestActionBuilder,
-  getData: AesDataRetrievalAction,
-  val controllerComponents: MessagesControllerComponents,
+  override val controllerComponents: MessagesControllerComponents,
   view: CancelSubmissionView,
   automatedExportSystemConnector: AutomatedExportSystemConnector
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
-    (actionBuilder andThen getData).async { implicit request =>
-      automatedExportSystemConnector.getSubmissions().map { response =>
-        response.submissions.find(_.submissionId.toString == submissionID) match {
+    actionBuilder.async { implicit request =>
+      automatedExportSystemConnector
+        .getSubmissions()
+        .map { response =>
+          response.submissions
+            .find(_.submissionId.toString == submissionID)
+            .map { submission =>
+              val summary =
+                SubmissionViewModelMapper
+                  .toViewModel(SubmissionResponseList(Seq(submission)))
+                  .summaries
+                  .head
 
-          case Some(submission) =>
-            logger.info(s"Found submission ${submission.submissionId}")
-
-            Ok(view(submissionID, submission.mrn))
-
-          case None =>
-            logger.warn(s"No submission found for $submissionID")
-
-            NotFound("Submission not found")
+              Ok(view(summary))
+            }
+            .getOrElse {
+              logger.warn(s"No submission found for submission ID $submissionID")
+              NotFound
+            }
         }
-      }
+    }
+
+  def onSubmit(submissionID: String): Action[AnyContent] =
+    actionBuilder.async { implicit request =>
+      automatedExportSystemConnector
+        .cancelSubmission(submissionID)
+        .map { _ =>
+          Redirect(routes.CancellationSuccessController.onPageLoad(submissionID))
+        }
+        .recover { case exception =>
+          logger.error(s"Failed to cancel submission $submissionID", exception)
+
+          Redirect(
+            uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController
+              .onPageLoad()
+          )
+        }
     }
 }

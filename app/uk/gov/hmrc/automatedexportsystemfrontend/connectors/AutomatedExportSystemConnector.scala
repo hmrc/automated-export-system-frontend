@@ -28,9 +28,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionResponseParser}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.Submission
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionResponse
-import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionResponseParser
 import java.time.LocalDateTime
 import java.util.UUID
+import play.api.http.Status.NO_CONTENT
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML
@@ -56,22 +56,6 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
       }
 
   def getSubmissions()(implicit hc: HeaderCarrier): Future[SubmissionResponseList] =
-    Future.successful(
-      SubmissionResponseList(
-        Seq(
-          SubmissionResponse(
-            submissionId = UUID.fromString("11111111-1111-1111-1111-111111111111"),
-            mrn = "24GB12345678901234",
-            ducr = Some("DUCR123"),
-            officeOfExitCode = "GB000051",
-            updatedAt = LocalDateTime.now(),
-            status = 1
-          )
-        )
-      )
-    )
-  /*
-  def getSubmissions()(implicit hc: HeaderCarrier): Future[SubmissionResponseList] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submissions")
       .execute[HttpResponse]
@@ -84,7 +68,7 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
             Future.failed(UpstreamErrorResponse("Unexpected response from /automated-export-system/submissions", response.status))
         }
       }
-   */
+
   def getSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[SubmissionResponse] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submission/$submissionId")
@@ -101,6 +85,20 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
 
           case _ =>
             Future.failed(UpstreamErrorResponse(s"Unexpected response from /submission/$submissionId", response.status))
+        }
+      }
+
+  def cancelSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[Done] =
+    httpClient
+      .get(url"${frontendAppConfig.automatedExportSystemApi}/cancel/$submissionId")
+      .execute[HttpResponse]
+      .flatMap { response =>
+        response.status match {
+          case NO_CONTENT =>
+            Future.successful(Done)
+
+          case _ =>
+            Future.failed(UpstreamErrorResponse(s"Unexpected response from cancel submission $submissionId", response.status))
         }
       }
 }
