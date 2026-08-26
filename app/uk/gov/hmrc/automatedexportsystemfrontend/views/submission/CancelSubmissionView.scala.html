@@ -14,19 +14,22 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
+
 @this(
 layout: Layout,
 govukButton: GovukButton
 )
 
-@(submissionID: String, mrn: String)(implicit request: Request[_], messages: Messages)
+@(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
 
 @layout(
-pageTitle = titleNoForm(messages("cancelSubmission.title"))
+pageTitle = titleNoForm(messages("cancelSubmission.heading"))
 ) {
 
 <span class="govuk-caption-l">
-  @messages("cancelSubmission.caption", submissionID)
+  @messages("cancelSubmission.caption", submission.reference)
 </span>
 
 <h1 class="govuk-heading-l">
@@ -49,26 +52,43 @@ pageTitle = titleNoForm(messages("cancelSubmission.title"))
   <th scope="row" class="govuk-table__header">
    @messages("cancelSubmission.submissionReference")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">
+   @submission.reference
+  </td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("cancelSubmission.mrn")
   </th>
-  <td class="govuk-table__cell"> </td>
+  <td class="govuk-table__cell">
+   @submission.mrn
+  </td>
  </tr>
  </tbody>
 </table>
 
 <div class="govuk-button-group">
- <a href="/automated-export-system/submission-cancelled/@submissionID"
-    role="button"
-    draggable="false"
-    class="govuk-button govuk-button--warning"
-    data-module="govuk-button">
+
+ @helper.form(
+ action = routes.CancelSubmissionController.onSubmit(submission.reference)
+ ) {
+ @helper.CSRF.formField
+
+ <button
+         type="submit"
+         class="govuk-button govuk-button--warning"
+         data-module="govuk-button">
   @messages("cancelSubmission.confirmButton")
- </a>
+ </button>
+ }
 
  <p class="govuk-body">
-  <a href="/automated-export-system/">
+  <a
+          href="/automated-export-system/submission/@submission.reference"
+          class="govuk-link govuk-link--no-visited-state">
+   @messages("cancelSubmission.backLink")
+  </a>
+ </p>
+
+</div>
 }

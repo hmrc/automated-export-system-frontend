@@ -14,11 +14,13 @@
  * limitations under the License.
  *@
 
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
+
 @this(
 layout: Layout
 )
 
-@(submissionID: String)(implicit request: Request[_], messages: Messages)
+@(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
 
 @layout(
 pageTitle = titleNoForm(messages("cancellationSuccess.title")),
@@ -27,26 +29,26 @@ showBackLink = false
 
 <div class="govuk-panel govuk-panel--confirmation">
  <h1 class="govuk-panel__title">@messages("cancellationSuccess.heading")</h1>
- <div class="govuk-panel__body">@messages("cancellationSuccess.reference", submissionID)<br><strong> </strong></div>
+ <div class="govuk-panel__body">@messages("cancellationSuccess.reference", submission.reference)<br><strong> </strong></div>
 </div>
 
 <h2 class="govuk-heading-m">@messages("cancellationSuccess.subheading")</h2>
 
-<p class="govuk-body">@messages("cancellationSuccess.cancellationSuccess", "add mrn here")</p>
+<p class="govuk-body">@messages("cancellationSuccess.cancellationSuccess", submission.mrn)</p>
 
 <p class="govuk-body">@messages("cancellationSuccess.hint")</p>
 
 <div class="govuk-inset-text">@messages("cancellationSuccess.hint2")</div>
 
 <p class="govuk-body">
- <a href="#" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToSubmissionsLink")</a><br>
+ <a href="/automated-export-system/dashboard" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToSubmissionsLink")</a><br>
 </p>
 
 <p class="govuk-body">
- <a href="#" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.newSubmissionLink")</a>
+ <a href="/automated-export-system/mrn" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.newSubmissionLink")</a>
 </p>
 
 <p class="govuk-body">
- <a href="/automated-export-system/submission/@submissionID" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToStartLink")</a>
+ <a href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSubmissionController.onPageLoad(submission.reference).url" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToStartLink")</a>
 </p>
 }

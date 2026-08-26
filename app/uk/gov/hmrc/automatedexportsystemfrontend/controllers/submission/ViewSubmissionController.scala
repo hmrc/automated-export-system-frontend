@@ -17,16 +17,39 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionViewModelMapper}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
-class ViewSubmissionController @Inject() (override val controllerComponents: MessagesControllerComponents, view: ViewSubmissionView)
+class ViewSubmissionController @Inject() (
+  override val controllerComponents: MessagesControllerComponents,
+  view: ViewSubmissionView,
+  automatedExportSystemConnector: AutomatedExportSystemConnector
+)(implicit ec: ExecutionContext)
     extends FrontendBaseController {
 
-  def onPageLoad(mrn: String): Action[AnyContent] =
-    Action { implicit request =>
-      Ok(view(mrn))
+  def onPageLoad(submissionID: String): Action[AnyContent] =
+    Action.async { implicit request =>
+      automatedExportSystemConnector
+        .getSubmissions()
+        .map { response =>
+          response.submissions
+            .find(_.submissionId.toString == submissionID)
+            .map { submission =>
+
+              val summary =
+                SubmissionViewModelMapper
+                  .toViewModel(SubmissionResponseList(Seq(submission)))
+                  .summaries
+                  .head
+
+              Ok(view(summary))
+            }
+            .getOrElse(NotFound)
+        }
     }
 }

@@ -156,3 +156,8 @@ GET        /discrepancy-packing                      uk.gov.hmrc.automatedexport
 POST       /discrepancy-packing                      uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.DiscrepancyPackingController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 GET        /change-discrepancy-packing               uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.DiscrepancyPackingController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
 POST       /change-discrepancy-packing               uk.gov.hmrc.automatedexportsystemfrontend.controllers.discrepancies.DiscrepancyPackingController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+
+GET   /submission/:submissionID     uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSubmissionController.onPageLoad(submissionID: String)
+GET   /cancel-submission/:submissionID      uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.CancelSubmissionController.onPageLoad(submissionID: String)
+POST  /cancel-submission/:submissionID     uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.CancelSubmissionController.onSubmit(submissionID: String)
+GET   /submission-cancelled/:submissionID     uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.CancellationSuccessController.onPageLoad(submissionID: String)
