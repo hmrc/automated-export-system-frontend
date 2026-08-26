@@ -28,12 +28,13 @@ import scala.concurrent.ExecutionContext
 class ViewSubmissionController @Inject() (
   override val controllerComponents: MessagesControllerComponents,
   view: ViewSubmissionView,
-  automatedExportSystemConnector: AutomatedExportSystemConnector
+  automatedExportSystemConnector: AutomatedExportSystemConnector,
+  aesAuthRequestActionBuilder: AesAuthRequestActionBuilder
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
-    Action.async { implicit request =>
+    aesAuthRequestActionBuilder.async { implicit request =>
       automatedExportSystemConnector
         .getSubmissions()
         .map { response =>
