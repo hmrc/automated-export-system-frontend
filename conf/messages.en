@@ -56,10 +56,11 @@ unauthorised.heading = You can’t access this service with this account
 
 enterMrn.title = What is the Movement Reference Number (MRN)?
 enterMrn.heading = What is the Movement Reference Number (MRN)?
-enterMrn.hint = This is the 18-character reference from the EU export declaration. For example, 24DE9876AB0012345T.
+enterMrn.hint = This is the 18-character reference from the EU export declaration. For example, 24AB123456789012A1.
 enterMrn.checkYourAnswersLabel = MRN
 enterMrn.error.required = Enter `enterMrn`
-enterMrn.error.length = EnterMrn must be 100 characters or less
+enterMrn.error.length = EnterMrn must be 18 characters
+enterMrn.error.invalid = EnterMrn must be in the correct format, for example 24AB123456789012A1
 enterMrn.change.hidden = MRN
 enterMrn.caption = Export operation
 
@@ -70,7 +71,8 @@ enterDucr.summary.title = Where to find the DUCR
 enterDucr.summary.message = The DUCR was assigned when the export declaration was submitted to CDS. You can find it on the declaration confirmation or by checking with the declarant.
 enterDucr.checkYourAnswersLabel = DUCR
 enterDucr.error.required = Enter enterDucr
-enterDucr.error.length = EnterDucr must be 100 characters or less
+enterDucr.error.length = EnterDucr must be 35 characters or less
+enterDucr.error.invalid = EnterDucr must only include letters and numbers
 enterDucr.change.hidden = EnterDucr
 enterDucr.caption = Consignment details
 
@@ -84,6 +86,8 @@ partOfConsolidation.mucr.hint = Up to 35 characters. This groups multiple DUCRs 
 partOfConsolidation.checkYourAnswersLabel = Is this part of a consolidation?
 partOfConsolidation.error.required = Select yes if partOfConsolidation
 partOfConsolidation.mucr.required = MUCR required
+partOfConsolidation.mucr.length = MUCR must be 35 characters or less
+partOfConsolidation.mucr.invalid = MUCR must only include letters and numbers
 partOfConsolidation.change.hidden = PartOfConsolidation
 
 isSplitExit.title = Is this a split exit?
@@ -177,7 +181,6 @@ viewSubmissions.status.awaitingDecision = Awaiting decision
 viewSubmissions.status.cancelled = Cancelled
 viewSubmissions.status.amended = Amended
 
-
 discrepancyConsignment.title = How will the goods cross the border?
 discrepancyConsignment.heading = How will the goods cross the border?
 discrepancyConsignment.sea = Sea
@@ -194,6 +197,7 @@ discrepancyDucr.hint = This links the movement to the underlying export declarat
 discrepancyDucr.checkYourAnswersLabel = What is the Declaration Unique Consignment Reference (DUCR) for these goods?
 discrepancyDucr.error.required = Enter the Declaration Unique Consignment Reference (DUCR) for these goods
 discrepancyDucr.error.length = The Declaration Unique Consignment Reference (DUCR) must be 35 characters or less
+discrepancyDucr.error.invalid = The Declaration Unique Consignment Reference (DUCR) must only include letters and numbers
 discrepancyDucr.change.hidden = the Declaration Unique Consignment Reference (DUCR) for these goods
 
 discrepancyMucr.title = What is the Master Unique Consignment Reference (MUCR) for these goods?
@@ -202,6 +206,7 @@ discrepancyMucr.hint = Up to 35 characters. This groups multiple DUCRs under one
 discrepancyMucr.checkYourAnswersLabel = What is the Master Unique Consignment Reference (MUCR) for these goods?
 discrepancyMucr.error.required = Enter the Master Unique Consignment Reference (MUCR) for these goods
 discrepancyMucr.error.length = The Master Unique Consignment Reference (MUCR) must be 35 characters or less
+discrepancyMucr.error.invalid = The Master Unique Consignment Reference (MUCR) must only include letters and numbers
 discrepancyMucr.change.hidden = the Master Unique Consignment Reference (MUCR) for these goods
 
 discrepancyTransport.title = Container details
@@ -213,6 +218,7 @@ discrepancyTransport.checkYourAnswersLabel = Container details
 discrepancyTransport.error.containerId.required = Enter the container identification number
 discrepancyTransport.error.numberOfSeals.required = Enter the number of seals
 discrepancyTransport.error.containerId.length = The container identification number must be 17 characters or less
+discrepancyTransport.error.containerId.invalid = The container identification number must be in the correct format, for example CONT1234567890123
 discrepancyTransport.error.numberOfSeals.maximum = The number of seals must be 99 or less
 discrepancyTransport.error.numberOfSeals.negative = The number of seals must be 0 or more
 discrepancyTransport.change.hidden = the container details
@@ -223,6 +229,7 @@ discrepancySeals.hint = For example, GB12345678.
 discrepancySeals.checkYourAnswersLabel = What is the seal identifier?
 discrepancySeals.error.required = Enter the seal identifier
 discrepancySeals.error.length = The seal identifier must be 20 characters or less
+discrepancySeals.error.invalid = The seal identifier must be in the correct format, for example SEAL123
 discrepancySeals.change.hidden = the seal identifier
 
 discrepancyReference.title = What is the Declaration Goods Reference?
@@ -308,10 +315,12 @@ discrepancyGoods.error.goodsItemNumber.required = Enter the goods item number
 discrepancyGoods.error.declarationUniqueConsignmentReference.required = Enter the Declaration Unique Consignment Reference (DUCR)
 discrepancyGoods.error.newGrossMass.required = Enter the new gross mass
 discrepancyGoods.error.newNetMass.required = Enter the new net mass
-discrepancyGoods.error.goodsItemNumber.length = The goods item number must be 100 characters or less
-discrepancyGoods.error.declarationUniqueConsignmentReference.length = The Declaration Unique Consignment Reference (DUCR) must be 100 characters or less
+discrepancyGoods.error.goodsItemNumber.length = The goods item number must be 35 characters or less
+discrepancyGoods.error.declarationUniqueConsignmentReference.length = The Declaration Unique Consignment Reference (DUCR) must be 35 characters or less
 discrepancyGoods.error.newGrossMass.length = The new gross mass must be 100 characters or less
 discrepancyGoods.error.newNetMass.length = The new net mass must be 100 characters or less
+discrepancyGoods.error.goodsItemNumber.invalid = The goods item number must only include letters and numbers
+discrepancyGoods.error.declarationUniqueConsignmentReference.invalid = The Declaration Unique Consignment Reference (DUCR) must only include letters and numbers
 discrepancyGoods.change.hidden = the what has changed details
 
 discrepancyPacking.title = Packing details
@@ -327,7 +336,8 @@ discrepancyPacking.error.numberOfPackages.required = Enter the number of package
 discrepancyPacking.error.shippingMarks.required = Enter the shipping marks
 discrepancyPacking.error.packagingCode.length = the packaging code must be 100 characters or less
 discrepancyPacking.error.numberOfPackages.length = the number of packages must be 100 characters or less
-discrepancyPacking.error.shippingMarks.length = the shipping marks must be 100 characters or less
+discrepancyPacking.error.shippingMarks.length = the shipping marks must be 512 characters or less
+discrepancyPacking.error.shippingMarks.invalid = the shipping marks must be in the correct format, for example MARKS123
 discrepancyPacking.change.hidden = the packing details
 
 cancellationSuccess.title = Submission cancelled

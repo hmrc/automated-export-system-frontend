@@ -15,7 +15,7 @@
  *@
 
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.InputWidth._
-@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => happyRoute}
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 
 @this(
     layout: Layout,
@@ -25,7 +25,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, submissionId: String)(implicit request: Request[_], messages: Messages)
 
 @content = {
     <div id="ducr-hint" class = "govuk-hint">
@@ -46,7 +46,7 @@
 
 @layout(pageTitle = title(form, messages("enterDucr.title"))) {
 
-    @formHelper(action = happyRoute.EnterDucrController.onSubmit(mode)) {
+    @formHelper(action = amendRoute.AmendEnterDucrController.onSubmit(mode, submissionId)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
