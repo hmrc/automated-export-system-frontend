@@ -30,17 +30,15 @@ class CreateNavigator extends Navigator {
     case EnterMrnPage                  => _ => createRoute.EnterDucrController.onPageLoad(NormalMode)
     case EnterDucrPage                 => _ => createRoute.PartOfConsolidationController.onPageLoad(NormalMode)
     case PartOfConsolidationPage       => partOfConsolidationRoute
+    case LocationTypePage              => _ => createRoute.LocationIdController.onPageLoad(NormalMode)
+    case LocationIdPage                => _ => createRoute.OfficeOfExitController.onPageLoad(NormalMode)
     case OfficeOfExitPage              => _ => createRoute.IsSplitExitController.onPageLoad(NormalMode)
     case IsSplitExitPage               => isSplitExitRoute
     case AnyDiscrepanciesPage          => anyDiscrepanciesRoute
-    case DiscrepancyConsignmentPage    => _ => createRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
-    case DiscrepancyDucrPage           => _ => createRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
-    case DiscrepancyMucrPage           => _ => createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
+    case DiscrepancyConsignmentPage    => _ => createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
     case DiscrepancyTransportPage      => _ => createRoute.DiscrepancySealsController.onPageLoad(NormalMode)
     case DiscrepancySealsPage          => _ => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
-    case DiscrepancyReferencePage      => _ => createRoute.LocationTypeController.onPageLoad(NormalMode)
-    case LocationTypePage              => _ => createRoute.LocationIdController.onPageLoad(NormalMode)
-    case LocationIdPage                => _ => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
+    case DiscrepancyReferencePage      => _ => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
     case DiscrepancyTransportMeansPage => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
     case DiscrepancyTransportDocPage   => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
     case DiscrepancyGoodsPage          => _ => createRoute.DiscrepancyPackingController.onPageLoad(NormalMode)
@@ -49,7 +47,7 @@ class CreateNavigator extends Navigator {
 
   private def partOfConsolidationRoute(answers: UserAnswers): Call =
     answers.get(PartOfConsolidationPage) match {
-      case Some(_, _) => createRoute.OfficeOfExitController.onPageLoad(NormalMode)
+      case Some(_, _) => createRoute.LocationTypeController.onPageLoad(NormalMode)
       case None       => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 
