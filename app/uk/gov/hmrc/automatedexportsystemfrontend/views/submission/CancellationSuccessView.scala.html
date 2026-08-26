@@ -41,7 +41,7 @@ showBackLink = false
 <div class="govuk-inset-text">@messages("cancellationSuccess.hint2")</div>
 
 <p class="govuk-body">
- <a href="/automated-export-system/dashboard" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToSubmissionsLink")</a><br>
+ <a href="@routes.EnterMrnController.onPageLoad(NormalMode).url" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToSubmissionsLink")</a><br>
 </p>
 
 <p class="govuk-body">
