@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionViewModelMapper}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -26,15 +27,17 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class ViewSubmissionController @Inject() (
-  override val controllerComponents: MessagesControllerComponents,
-  view: ViewSubmissionView,
-  automatedExportSystemConnector: AutomatedExportSystemConnector,
-  aesAuthRequestActionBuilder: AesAuthRequestActionBuilder
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController {
+                                           override val controllerComponents: MessagesControllerComponents,
+                                           view: ViewSubmissionView,
+                                           automatedExportSystemConnector: AutomatedExportSystemConnector,
+                                           actionBuilder: AesAuthRequestActionBuilder,
+                                           getData: AesDataRetrievalAction,
+                                           requireData: AesDataRequiredAction
+                                         )(implicit ec: ExecutionContext)
+  extends FrontendBaseController {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
-    aesAuthRequestActionBuilder.async { implicit request =>
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
       automatedExportSystemConnector
         .getSubmissions()
         .map { response =>

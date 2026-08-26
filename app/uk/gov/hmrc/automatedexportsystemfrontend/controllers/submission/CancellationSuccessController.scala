@@ -22,22 +22,25 @@ import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSyste
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionViewModelMapper}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.CancellationSuccessView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class CancellationSuccessController @Inject() (
-  override val messagesApi: MessagesApi,
-  val controllerComponents: MessagesControllerComponents,
-  view: CancellationSuccessView,
-  automatedExportSystemConnector: AutomatedExportSystemConnector,
-  aesAuthAction: AesAuthRequestActionBuilder
-)(implicit ec: ExecutionContext)
-    extends FrontendBaseController
+                                                override val messagesApi: MessagesApi,
+                                                val controllerComponents: MessagesControllerComponents,
+                                                view: CancellationSuccessView,
+                                                automatedExportSystemConnector: AutomatedExportSystemConnector,
+                                                actionBuilder: AesAuthRequestActionBuilder,
+                                                getData: AesDataRetrievalAction,
+                                                requireData: AesDataRequiredAction
+                                              )(implicit ec: ExecutionContext)
+  extends FrontendBaseController
     with I18nSupport {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
-    aesAuthAction.async { implicit request =>
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
       automatedExportSystemConnector
         .getSubmissions()
         .map { response =>
