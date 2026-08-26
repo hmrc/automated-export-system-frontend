@@ -264,10 +264,11 @@ locationId.error.locationType.required = Enter the location type
 locationId.error.unlocode.required = Enter the UN/LOCODE
 locationId.error.locationAdditionalIdentifier.required = Enter the location additional identifier
 locationId.error.authorisationReferenceNumber.required = Enter the authorisation reference number
-locationId.error.locationType.length = The location type must be 100 characters or less
-locationId.error.unlocode.length = The UN/LOCODE must be 100 characters or less
-locationId.error.locationAdditionalIdentifier.length = the location additional identifier must be 100 characters or less
-locationId.error.authorisationReferenceNumber.length = the authorisation reference number must be 100 characters or less
+locationId.error.unlocode.length = The UN/LOCODE must be 17 characters or less
+locationId.error.locationAdditionalIdentifier.length = the location additional identifier must be 4 characters or less
+locationId.error.locationAdditionalIdentifier.invalid = the location additional identifier must not include spaces
+locationId.error.authorisationReferenceNumber.length = the authorisation reference number must be 35 characters or less
+locationId.error.authorisationReferenceNumber.invalid = the authorisation reference number must not include spaces
 locationId.change.hidden = the location details
 
 discrepancyTransportMeans.title = Transport across the border
