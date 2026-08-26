@@ -30,12 +30,14 @@ class CancellationSuccessController @Inject() (
   override val messagesApi: MessagesApi,
   val controllerComponents: MessagesControllerComponents,
   view: CancellationSuccessView,
-  automatedExportSystemConnector: AutomatedExportSystemConnector
+  automatedExportSystemConnector: AutomatedExportSystemConnector,
+  aesAuthAction: AesAuthRequestActionBuilder
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController
+    with I18nSupport {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
-    Action.async { implicit request =>
+    aesAuthAction.async { implicit request =>
       automatedExportSystemConnector
         .getSubmissions()
         .map { response =>
@@ -52,7 +54,6 @@ class CancellationSuccessController @Inject() (
               Ok(view(summary))
             }
             .getOrElse(NotFound)
-
         }
     }
 }
