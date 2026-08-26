@@ -56,20 +56,42 @@ class CreateNavigatorSpec extends SpecBase {
       }
 
       "navigate from PartOfConsolidationPage" - {
-        "to OfficeOfExitPage when true" in {
+        "to LocationTypePage when true" in {
           val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("mucr"))).success.value
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
-            createRoute.OfficeOfExitController.onPageLoad(NormalMode)
+            createRoute.LocationTypeController.onPageLoad(NormalMode)
         }
-        "to OfficeOfExitPage when false" in {
+        "to LocationTypePage when false" in {
           val userAnswers = emptyUserAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None)).success.value
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
-            createRoute.OfficeOfExitController.onPageLoad(NormalMode)
+            createRoute.LocationTypeController.onPageLoad(NormalMode)
         }
         "to JourneyRecovery when None" in {
           val userAnswers = emptyUserAnswers
           navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
             problemRoute.JourneyRecoveryController.onPageLoad()
+        }
+      }
+
+      "navigate from LocationTypePage" - {
+        "to LocationIdPage" in {
+          val userAnswers = emptyUserAnswers.set(LocationTypePage, LocationType.values.head).success.value
+          navigator.nextPage(LocationTypePage, NormalMode, userAnswers) shouldBe
+            createRoute.LocationIdController.onPageLoad(NormalMode)
+        }
+      }
+
+      "navigate from LocationIdPage" - {
+        "to OfficeOfExitPage" in {
+          val userAnswers = emptyUserAnswers
+            .set(
+              LocationIdPage,
+              LocationDetails(LocationQualifier.UnLocode, "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber")
+            )
+            .success
+            .value
+          navigator.nextPage(LocationIdPage, NormalMode, userAnswers) shouldBe
+            createRoute.OfficeOfExitController.onPageLoad(NormalMode)
         }
       }
 
@@ -86,7 +108,7 @@ class CreateNavigatorSpec extends SpecBase {
         }
         "to JourneyRecovery TEMPORARY when None" in {
           val userAnswers = emptyUserAnswers
-          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
+          navigator.nextPage(IsSplitExitPage, NormalMode, userAnswers) shouldBe
             problemRoute.JourneyRecoveryController.onPageLoad()
         }
       }
@@ -104,31 +126,15 @@ class CreateNavigatorSpec extends SpecBase {
         }
         "to JourneyRecovery TEMPORARY when None" in {
           val userAnswers = emptyUserAnswers
-          navigator.nextPage(PartOfConsolidationPage, NormalMode, userAnswers) shouldBe
+          navigator.nextPage(AnyDiscrepanciesPage, NormalMode, userAnswers) shouldBe
             problemRoute.JourneyRecoveryController.onPageLoad()
         }
       }
 
       "navigate from DiscrepancyConsignmentPage" - {
-        "to DiscrepancyDucrPage" in {
+        "to DiscrepancyTransportPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.values.head).success.value
           navigator.nextPage(DiscrepancyConsignmentPage, NormalMode, userAnswers) shouldBe
-            createRoute.DiscrepancyDucrController.onPageLoad(NormalMode)
-        }
-      }
-
-      "navigate from DiscrepancyDucrPage" - {
-        "to DiscrepancyMucrPage" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyDucrPage, "ducr").success.value
-          navigator.nextPage(DiscrepancyDucrPage, NormalMode, userAnswers) shouldBe
-            createRoute.DiscrepancyMucrController.onPageLoad(NormalMode)
-        }
-      }
-
-      "navigate from DiscrepancyMucrPage" - {
-        "to DiscrepancyTransportPage" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyMucrPage, "mucr").success.value
-          navigator.nextPage(DiscrepancyMucrPage, NormalMode, userAnswers) shouldBe
             createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
         }
       }
@@ -150,31 +156,9 @@ class CreateNavigatorSpec extends SpecBase {
       }
 
       "navigate from DiscrepancyReferencePage" - {
-        "to LocationTypePage" in {
+        "to DiscrepancyTransportMeansPage" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage, "reference").success.value
           navigator.nextPage(DiscrepancyReferencePage, NormalMode, userAnswers) shouldBe
-            createRoute.LocationTypeController.onPageLoad(NormalMode)
-        }
-      }
-
-      "navigate from LocationTypePage" - {
-        "to LocationIdPage" in {
-          val userAnswers = emptyUserAnswers.set(LocationTypePage, LocationType.values.head).success.value
-          navigator.nextPage(LocationTypePage, NormalMode, userAnswers) shouldBe
-            createRoute.LocationIdController.onPageLoad(NormalMode)
-        }
-      }
-
-      "navigate from LocationIdPage" - {
-        "to DiscrepancyTransportMeansPage" in {
-          val userAnswers = emptyUserAnswers
-            .set(
-              LocationIdPage,
-              LocationDetails(LocationQualifier.UnLocode, "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber")
-            )
-            .success
-            .value
-          navigator.nextPage(LocationIdPage, NormalMode, userAnswers) shouldBe
             createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
         }
       }
