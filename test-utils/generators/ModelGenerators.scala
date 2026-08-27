@@ -74,7 +74,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         packagingCode <- arbitrary[String]
-        numberOfPackages <- arbitrary[String]
+        numberOfPackages <- arbitrary[Int]
         shippingMarks <- arbitrary[String]
       } yield PackingDetails(packagingCode, numberOfPackages, shippingMarks)
     }

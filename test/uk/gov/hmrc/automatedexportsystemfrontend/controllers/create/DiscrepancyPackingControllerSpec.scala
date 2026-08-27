@@ -48,11 +48,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
   val userAnswers =
     UserAnswers(
       userAnswersId,
-      Json.obj(
-        "standard" -> Json.obj(
-          DiscrepancyPackingPage.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> "value 2", "shippingMarks" -> "value 3")
-        )
-      )
+      Json.obj(DiscrepancyPackingPage.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> 123, "shippingMarks" -> "value 3"))
     )
 
   "DiscrepancyPacking Controller" - {
@@ -104,7 +100,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         body should include("""id="numberOfPackages"""")
         body should include("""name="numberOfPackages"""")
         body should include("""type="text"""")
-        body should include("""value="value 2"""")
+        body should include("""value="123"""")
         body should include("Shipping marks")
         body should include("""id="shippingMarks"""")
         body should include("""name="shippingMarks"""")
@@ -131,7 +127,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyPackingRoute)
-            .withFormUrlEncodedBody(("packagingCode", "value 1"), ("numberOfPackages", "value 2"), ("shippingMarks", "value 3"))
+            .withFormUrlEncodedBody(("packagingCode", "value 1"), ("numberOfPackages", "123"), ("shippingMarks", "value 3"))
 
         val result = route(application, request).value
 

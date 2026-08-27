@@ -199,7 +199,7 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyPackingPage" - {
         "to CYASubmissionPage" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage, PackingDetails("packagingCode", "numberOfPackages", "shippingMarks"))
+            .set(DiscrepancyPackingPage, PackingDetails("packagingCode", 1, "shippingMarks"))
             .success
             .value
           navigator.nextPage(DiscrepancyPackingPage, NormalMode, userAnswers) shouldBe

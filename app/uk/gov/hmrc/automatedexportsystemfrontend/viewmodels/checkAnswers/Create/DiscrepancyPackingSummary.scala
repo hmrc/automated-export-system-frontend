@@ -33,7 +33,7 @@ object DiscrepancyPackingSummary {
 
       val value = Seq(
         HtmlFormat.escape(answer.packagingCode).toString,
-        HtmlFormat.escape(answer.numberOfPackages).toString,
+        HtmlFormat.escape(answer.numberOfPackages.toString).toString,
         HtmlFormat.escape(answer.shippingMarks).toString
       ).mkString("<br/>")
 

@@ -33,7 +33,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
 
   "row" - {
     "when answered, return the summary row" in {
-      val packingDetails = PackingDetails("packingCode", "2", "2")
+      val packingDetails = PackingDetails("packingCode", 2, "2")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyPackingPage, packingDetails)
         .get

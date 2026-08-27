@@ -108,7 +108,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
         body should include("""id="declarationGoodsItemNumber"""")
         body should include("""name="declarationGoodsItemNumber"""")
         body should include("""type="text"""")
-        body should include("""value="1"""")
+        body should include("""value="123"""")
         body should include("Declaration Unique Consignment Reference (DUCR)")
         body should include("If you wish to amend the DUCR from the original IE501 message.")
         body should include("""id="declarationUniqueConsignmentReference"""")
