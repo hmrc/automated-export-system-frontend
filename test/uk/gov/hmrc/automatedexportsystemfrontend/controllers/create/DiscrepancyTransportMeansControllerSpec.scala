@@ -33,7 +33,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, TransportAc
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportMeansPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyTransportMeansView
 
 import scala.concurrent.Future
 
@@ -49,8 +48,11 @@ class DiscrepancyTransportMeansControllerSpec extends SpecBase with MockitoSugar
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
-      DiscrepancyTransportMeansPage.toString -> Json
-        .obj("transportType" -> "value 1", "transportIdNumber" -> "value 2", "countryOfRegistration" -> "value 3")
+      "standard" ->
+        Json.obj(
+          DiscrepancyTransportMeansPage.toString -> Json
+            .obj("transportType" -> "value 1", "transportIdNumber" -> "value 2", "countryOfRegistration" -> "value 3")
+        )
     )
   )
 
@@ -64,8 +66,6 @@ class DiscrepancyTransportMeansControllerSpec extends SpecBase with MockitoSugar
 
       running(application) {
         val request = FakeRequest(GET, discrepancyTransportMeansRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyTransportMeansView]
 
         val result = route(application, request).value
 
@@ -90,8 +90,6 @@ class DiscrepancyTransportMeansControllerSpec extends SpecBase with MockitoSugar
 
       running(application) {
         val request = FakeRequest(GET, discrepancyTransportMeansRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyTransportMeansView]
 
         val result = route(application, request).value
 
@@ -157,10 +155,6 @@ class DiscrepancyTransportMeansControllerSpec extends SpecBase with MockitoSugar
         val request =
           FakeRequest(POST, discrepancyTransportMeansRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[DiscrepancyTransportMeansView]
 
         val result = route(application, request).value
 

@@ -25,6 +25,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSyste
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.services.SubmissionDataService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,30 +48,33 @@ class SubmissionController @Inject() (
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
       submissionDataService.buildStandardSubmission(request.userAnswers) match {
         case Some(xmlSubmission) =>
-          automatedExportSystemConnector.submitIE507a(xmlSubmission).transformWith { submitResult =>
-            sessionRepository.set(userAnswerHelper.removeStandardSubmissionAnswers(request.userAnswers)).flatMap { _ =>
-              submitResult match {
-                case scala.util.Success(_) =>
-                  Future.successful(
-                    Redirect(
-                      uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.StandardSubmissionConfirmationController
-                        .onPageLoad()
-                        .url
-                    )
-                  )
-                case scala.util.Failure(ex) =>
-                  logger.error("Unexpected response from standard submitIE507a", ex)
-                  Future.successful(
-                    Redirect(uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController.onPageLoad().url)
-                  )
+          val doSubmission =
+            automatedExportSystemConnector
+              .submitIE507a(xmlSubmission)
+              .flatMap { _ =>
+                sessionRepository.set(userAnswerHelper.removeStandardSubmissionAnswers(request.userAnswers)).map { _ =>
+                  Redirect(submission.routes.StandardSubmissionConfirmationController.onPageLoad().url)
+                }
               }
-            }
-          }
+              .recoverWith { case scala.util.control.NonFatal(ex) =>
+                logger.warn("Unexpected error from standard submission", ex)
+                sessionRepository.set(userAnswerHelper.removeStandardSubmissionAnswers(request.userAnswers)).map { _ =>
+                  Redirect(problem.routes.JourneyRecoveryController.onPageLoad().url)
+                }
+              }
+          doSubmission
         case None =>
           logger.error("Failed to build XML due to missing user answers when submitting standard IE507a")
-          sessionRepository.set(userAnswerHelper.removeStandardSubmissionAnswers(request.userAnswers)).map { _ =>
-            Redirect(uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController.onPageLoad().url)
-          }
+
+          sessionRepository
+            .set(userAnswerHelper.removeStandardSubmissionAnswers(request.userAnswers))
+            .map { _ =>
+              Redirect(
+                problem.routes.JourneyRecoveryController
+                  .onPageLoad()
+                  .url
+              )
+            }
       }
     }
 }

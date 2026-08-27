@@ -33,7 +33,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, Norma
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyTransportView
 
 import scala.concurrent.Future
 
@@ -47,7 +46,13 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
   lazy val discrepancyTransportRoute: String = createRoute.DiscrepancyTransportController.onPageLoad(NormalMode).url
 
   val userAnswers =
-    UserAnswers(userAnswersId, Json.obj(DiscrepancyTransportPage.toString -> Json.obj("containerId" -> "value 1", "numberOfSeals" -> 99)))
+    UserAnswers(
+      userAnswersId,
+      Json.obj(
+        "standard" ->
+          Json.obj(DiscrepancyTransportPage.toString -> Json.obj("containerId" -> "value 1", "numberOfSeals" -> 99))
+      )
+    )
 
   "DiscrepancyTransport Controller" - {
 
@@ -59,8 +64,6 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyTransportRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyTransportView]
 
         val result = route(application, request).value
 
@@ -82,9 +85,6 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyTransportRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyTransportView]
-
         val result = route(application, request).value
 
         status(result) shouldBe OK
@@ -142,10 +142,6 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancyTransportRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm: Form[ContainerDetails] = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[DiscrepancyTransportView]
 
         val result = route(application, request).value
 

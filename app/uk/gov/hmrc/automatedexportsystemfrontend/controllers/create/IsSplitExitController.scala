@@ -47,9 +47,11 @@ class IsSplitExitController @Inject() (
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
-    val preparedForm = answers.get(IsSplitExitPage).fold(form)(form.fill)
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+    val preparedForm = request.userAnswers.get(IsSplitExitPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
     Future.successful(Ok(view(preparedForm, mode)))
   }
 
