@@ -33,7 +33,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, PackingDeta
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyPackingView
 
 import scala.concurrent.Future
 
@@ -50,7 +49,9 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
     UserAnswers(
       userAnswersId,
       Json.obj(
-        DiscrepancyPackingPage.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> "value 2", "shippingMarks" -> "value 3")
+        "standard" -> Json.obj(
+          DiscrepancyPackingPage.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> "value 2", "shippingMarks" -> "value 3")
+        )
       )
     )
 
@@ -64,9 +65,6 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyPackingRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyPackingView]
-
         val result = route(application, request).value
 
         status(result) shouldBe OK
@@ -89,9 +87,6 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyPackingRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyPackingView]
-
         val result = route(application, request).value
 
         status(result) shouldBe OK
@@ -155,10 +150,6 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancyPackingRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[DiscrepancyPackingView]
 
         val result = route(application, request).value
 

@@ -22,7 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
 case object DiscrepancyPackingPage extends QuestionPage[PackingDetails] {
 
-  override def path: JsPath = JsPath \ toString
+  override def path: JsPath = JsPath \ "standard" \ toString
 
   override def toString: String = "discrepancyPacking"
 }
