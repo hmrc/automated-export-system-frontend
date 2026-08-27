@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.{Field, FormError}
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrRegex, goodsItemNumberRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.ducrRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyGoodsFormProvider
 
@@ -31,25 +31,13 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
     val requiredKey = "discrepancyGoods.error.goodsItemNumber.required"
     val lengthKey = "discrepancyGoods.error.goodsItemNumber.length"
     val invalidKey = "discrepancyGoods.error.goodsItemNumber.invalid"
-    val maxLength = 35
+    val maxLength = 9999
 
-    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, intsInRangeWithCommas(0, maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
-
-    "must not bind invalid data" in {
-
-      val invalidValues: Seq[String] = Seq("abc123!", "abc?123")
-
-      val expectedError = FormError(fieldName, invalidKey, Seq(goodsItemNumberRegex))
-
-      invalidValues.foreach { invalidValue =>
-        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
-        result.errors must contain(expectedError)
-      }
-    }
   }
 
   ".declarationUniqueConsignmentReference" - {

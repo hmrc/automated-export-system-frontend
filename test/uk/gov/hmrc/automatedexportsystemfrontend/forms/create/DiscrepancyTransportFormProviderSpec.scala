@@ -57,7 +57,7 @@ class DiscrepancyTransportFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "numberOfSeals"
     val requiredKey = "discrepancyTransport.error.numberOfSeals.required"
     val minimum = 0
-    val maximum = 99
+    val maximum = 9999
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 

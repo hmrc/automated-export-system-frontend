@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{shippingMarksMaxLength, shippingMarksRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{numberOfPackageLength, shippingMarksMaxLength, shippingMarksRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PackingDetails
 
@@ -31,7 +31,7 @@ class DiscrepancyPackingFormProvider @Inject() extends Mappings {
       "packagingCode" -> text("discrepancyPacking.error.packagingCode.required")
         .verifying(maxLength(100, "discrepancyPacking.error.packagingCode.length")),
       "numberOfPackages" -> text("discrepancyPacking.error.numberOfPackages.required")
-        .verifying(maxLength(100, "discrepancyPacking.error.numberOfPackages.length")),
+        .verifying(maxLength(numberOfPackageLength, "discrepancyPacking.error.numberOfPackages.length")),
       "shippingMarks" -> text("discrepancyPacking.error.shippingMarks.required")
         .verifying(
           firstError(

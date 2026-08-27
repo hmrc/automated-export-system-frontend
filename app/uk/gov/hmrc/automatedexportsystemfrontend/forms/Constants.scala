@@ -38,8 +38,7 @@ object Constants {
   lazy val sealIdentifierMaxLength = 20
   lazy val sealIdentifierRegex = "^\\P{Z}(.{0,18}\\P{Z})?$"
 
-  lazy val goodsItemNumberMaxLength = 35
-  lazy val goodsItemNumberRegex = "^[A-Za-z0-9]{1,35}$"
+  lazy val goodsItemNumberMaxLength = 9999
 
   lazy val shippingMarksMaxLength = 512
   lazy val shippingMarksRegex = "^(?=.{1,512}$)\\P{Z}(.*\\P{Z})?$"
@@ -53,4 +52,8 @@ object Constants {
   lazy val additionalIdentifierRegex = "^\\P{Z}(.{0,2}\\P{Z})?$"
 
   lazy val unlocodeMaxLength = 17
+
+  lazy val numberOfPackageLength = 99999999
+
+  lazy val numberOfSealsLength = 9999
 }
