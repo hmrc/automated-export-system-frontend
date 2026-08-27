@@ -17,14 +17,19 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
+import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
-case class GoodsShipment(Consignment: Consignment, GoodsItem: GoodsItem)
+case class ActiveBorderTransportMeans(`type`: String, identificationNumber: String, nationality: String)
 
-object GoodsShipment {
-  given format: Format[GoodsShipment] = Json.format[GoodsShipment]
+object ActiveBorderTransportMeans {
+  given format: Format[ActiveBorderTransportMeans] = Json.format[ActiveBorderTransportMeans]
 
-  given xmlWrites: XmlWrites[GoodsShipment] = XmlWrites.instance { s =>
-    XmlWrites.elem("GoodsShipment", s.Consignment.toXml, s.GoodsItem.toXml)
+  given xmlWrites: XmlWrites[ActiveBorderTransportMeans] = XmlWrites.instance { a =>
+    XmlWrites.elem(
+      "ActiveBorderTransportMeans",
+      XmlWrites.textElem("type", a.`type`),
+      XmlWrites.textElem("identificationNumber", a.identificationNumber),
+      XmlWrites.textElem("nationality", a.nationality)
+    )
   }
 }

@@ -47,7 +47,7 @@ class SubmissionDataServiceSpec extends SpecBase {
       result.value shouldNot include("<GoodsShipment>")
     }
 
-    "must include a GoodsShipment when all the required answers are present " in {
+    "must include a GoodsShipment when all the required answers are present" in {
       val userAnswers = for {
         userAnswers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
         userAnswers <- userAnswers.set(AnyDiscrepanciesPage, false)
@@ -60,6 +60,11 @@ class SubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancySealsPage, "sealId")
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("road", "transportId", "GB"))
+        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails("documentType", "documentReference"))
+        userAnswers <- userAnswers.set(DiscrepancyReferencePage, "1")
+        userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails("1", Some("5GB000000000000-12345"), "20", "10"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage, PackingDetails("PK", "1", "marks"))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)
@@ -70,22 +75,54 @@ class SubmissionDataServiceSpec extends SpecBase {
       result.value should include("<discrepanciesExist>0</discrepanciesExist>")
       result.value should include("<splitIndicator>0</splitIndicator>")
       result.value should include("<referenceNumber>GB000051</referenceNumber>")
+
       result.value should include("<GoodsShipment>")
       result.value should include("<Consignment>")
+
       result.value should include("<modeOfTransportAtTheBorder>1</modeOfTransportAtTheBorder>")
       result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
       result.value should include("<parentUCRID>GB/000000000000-12345</parentUCRID>")
+
       result.value should include("<TransportEquipment>")
       result.value should include("<sequenceNumber>1</sequenceNumber>")
       result.value should include("<containerIdentificationNumber>containerId</containerIdentificationNumber>")
       result.value should include("<numberOfSeals>1</numberOfSeals>")
+
+      result.value should include("<Seal>")
       result.value should include("<identifier>sealId</identifier>")
+
+      result.value should include("<GoodsReference>")
+      result.value should include("<declarationGoodsItemNumber>1</declarationGoodsItemNumber>")
+
       result.value should include("<LocationOfGoods>")
       result.value should include("<typeOfLocation>B</typeOfLocation>")
       result.value should include("<qualifierOfIdentification>U</qualifierOfIdentification>")
       result.value should include("<authorisationNumber>abc123</authorisationNumber>")
       result.value should include("<additionalIdentifier>locationId</additionalIdentifier>")
       result.value should include("<UNLocode>GBBEL</UNLocode>")
+
+      result.value should include("<ActiveBorderTransportMeans>")
+      result.value should include("<type>road</type>")
+      result.value should include("<identificationNumber>transportId</identificationNumber>")
+      result.value should include("<nationality>GB</nationality>")
+
+      result.value should include("<TransportDocument>")
+      result.value should include("<type>documentType</type>")
+      result.value should include("<referenceNumber>documentReference</referenceNumber>")
+
+      result.value should include("<GoodsItem>")
+      result.value should include("<declarationGoodsItemNumber>1</declarationGoodsItemNumber>")
+      result.value should include("<declarationUniqueConsignmentReference>5GB000000000000-12345</declarationUniqueConsignmentReference>")
+
+      result.value should include("<Commodity>")
+      result.value should include("<grossMass>20</grossMass>")
+      result.value should include("<netMass>10</netMass>")
+
+      result.value should include("<Packaging>")
+      result.value should include("<sequenceNumber>1</sequenceNumber>")
+      result.value should include("<typeOfPackages>PK</typeOfPackages>")
+      result.value should include("<numberOfPackages>1</numberOfPackages>")
+      result.value should include("<shippingMarks>marks</shippingMarks>")
     }
 
     "must return a None when all required answers not present" in {
