@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.data.Form
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,25 +45,15 @@ class IsSplitExitController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
 
-//  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
   def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
-//      val preparedForm = request.userAnswers.get(IsSplitExitPage) match {
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
     val preparedForm = answers.get(IsSplitExitPage).fold(form)(form.fill)
-
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
-    Future.successful(Ok(preparedView))
+    Future.successful(Ok(view(preparedForm, mode)))
   }
 
-//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -72,8 +63,7 @@ class IsSplitExitController @Inject() (
         },
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsSplitExitPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(IsSplitExitPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsSplitExitPage, value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(createNavigator.nextPage(IsSplitExitPage, mode, updatedAnswers))
       )

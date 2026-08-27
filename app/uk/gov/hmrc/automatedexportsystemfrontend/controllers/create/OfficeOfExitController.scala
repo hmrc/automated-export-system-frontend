@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.OfficeOfExitFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, OfficeOfExit, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
@@ -44,25 +45,15 @@ class OfficeOfExitController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[OfficeOfExit] = formProvider()
 
-//  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
-    //      val preparedForm = request.userAnswers.get(OfficeOfExitPage) match {
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData) { implicit request =>
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
     val preparedForm = answers.get(OfficeOfExitPage).fold(form)(form.fill)
-
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
-    Future.successful(Ok(preparedView))
+    Ok(view(preparedForm, mode))
   }
 
-//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -72,8 +63,7 @@ class OfficeOfExitController @Inject() (
         },
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfExitPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(OfficeOfExitPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(OfficeOfExitPage, value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(createNavigator.nextPage(OfficeOfExitPage, mode, updatedAnswers))
       )

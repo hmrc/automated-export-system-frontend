@@ -26,7 +26,7 @@ import scala.concurrent.{ExecutionContext, Future}
 class FakeDataRetrievalAction(dataToReturn: Option[UserAnswers]) extends AesDataRetrievalAction {
 
   override protected def transform[A](request: AesAuthRequest[A]): Future[OptionalDataRequest[A]] =
-    Future(OptionalDataRequest(request.request, request.eori, dataToReturn))
+    Future(OptionalDataRequest(request.request, request.sessionId, dataToReturn))
 
   override protected implicit val executionContext: ExecutionContext =
     scala.concurrent.ExecutionContext.Implicits.global

@@ -47,21 +47,13 @@ class PartOfConsolidationController @Inject() (
 
   val form: Form[PartOfConsolidationAnswer] = formProvider()
 
-//  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
   def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
-//      val preparedForm = request.userAnswers.get(PartOfConsolidationPage) match {
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
     val preparedForm = answers.get(PartOfConsolidationPage).fold(form)(form.fill)
-
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
-    Future.successful(Ok(preparedView))
+    Future.successful(Ok(view(preparedForm, mode)))
   }
 
-//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -77,7 +69,7 @@ class PartOfConsolidationController @Inject() (
           } else {
             val cleanedValue = if (!value.boolean) value.copy(mucr = None) else value
             for {
-              updatedAnswers <- Future.fromTry(answers.set(PartOfConsolidationPage, cleanedValue))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartOfConsolidationPage, value))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(createNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
           }

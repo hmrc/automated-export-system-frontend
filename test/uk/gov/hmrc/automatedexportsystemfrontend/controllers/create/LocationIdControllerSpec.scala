@@ -34,6 +34,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, Fa
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.LocationIdPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.LocationIdView
+import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -86,15 +87,20 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+      val locationDetails = LocationDetails(
+        locationType = "value 1",
+        unlocode = "value 2",
+        locationAdditionalIdentifier = "value 3",
+        authorisationReferenceNumber = "value 4"
+      )
 
+      val userAnswers = UserAnswers(userAnswersId).set(LocationIdPage, locationDetails).success.value
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
         val request = FakeRequest(GET, locationIdRoute)
-
-        val view = application.injector.instanceOf[LocationIdView]
 
         val result = route(application, request).value
 

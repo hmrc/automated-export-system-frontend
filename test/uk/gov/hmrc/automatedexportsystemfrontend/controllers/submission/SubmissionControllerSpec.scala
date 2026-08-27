@@ -121,13 +121,16 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "redirect to journey recovery when connector submission fails and should not clean up user answers" in {
+    "redirect to journey recovery when connector submission fails and should clean up user answers" in {
 
       when(mockSubmissionDataService.buildStandardSubmission(any()))
         .thenReturn(Some("<xml/>"))
 
       when(mockAutomatedExportSystemConnector.submitIE507a(any())(any()))
         .thenReturn(Future.failed(UpstreamErrorResponse("boom", 400)))
+
+      when(mockSessionRepository.set(any()))
+        .thenReturn(Future.successful(true))
 
       val application =
         applicationBuilder(userAnswers = Some(answers))
@@ -140,18 +143,14 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
       running(application) {
-
-        val request =
-          FakeRequest(GET, routes.SubmissionController.standardSubmit.url)
-
+        val request = FakeRequest(GET, routes.SubmissionController.standardSubmit.url)
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-
         redirectLocation(result).value shouldBe
           uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
 
-        verify(mockSessionRepository, never()).set(any())
+        verify(mockSessionRepository).set(any())
       }
     }
   }
