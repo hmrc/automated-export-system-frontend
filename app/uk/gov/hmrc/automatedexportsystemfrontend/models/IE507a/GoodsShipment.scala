@@ -14,18 +14,17 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.models
+package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
-import play.api.libs.json.*
+import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
-case class LocationDetails(
-  locationType: LocationQualifier,
-  unlocode: String,
-  locationAdditionalIdentifier: String,
-  authorisationReferenceNumber: String
-)
+case class GoodsShipment(Consignment: Consignment)
 
-object LocationDetails {
+object GoodsShipment {
+  given format: Format[GoodsShipment] = Json.format[GoodsShipment]
 
-  implicit val format: OFormat[LocationDetails] = Json.format
+  given xmlWrites: XmlWrites[GoodsShipment] = XmlWrites.instance { s =>
+    XmlWrites.elem("GoodsShipment", s.Consignment.toXml)
+  }
 }

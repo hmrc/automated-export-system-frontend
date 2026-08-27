@@ -50,7 +50,7 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
     userAnswersId,
     Json.obj(
       LocationIdPage.toString -> Json.obj(
-        "locationType" -> "value 1",
+        "locationType" -> "unlocode",
         "unlocode" -> "value 2",
         "locationAdditionalIdentifier" -> "value 3",
         "authorisationReferenceNumber" -> "value 4"
@@ -106,8 +106,8 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
         body should include("Location type")
         body should include("""id="locationType"""")
         body should include("""name="locationType"""")
-        body should include("""type="text"""")
-        body should include("""value="value 1"""")
+        body should include("""value="unlocode"""")
+        body should include("""value="authnumber"""")
         body should include("UN/LOCODE")
         body should include("""id="unlocode"""")
         body should include("""name="unlocode"""")
@@ -145,10 +145,10 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, locationIdRoute)
             .withFormUrlEncodedBody(
-              ("locationType", "value 1"),
+              ("locationType", "authnumber"),
               ("unlocode", "value 2"),
-              ("locationAdditionalIdentifier", "value 3"),
-              ("authorisationReferenceNumber", "value 4")
+              ("locationAdditionalIdentifier", "ABCD"),
+              ("authorisationReferenceNumber", "value4")
             )
 
         val result = route(application, request).value

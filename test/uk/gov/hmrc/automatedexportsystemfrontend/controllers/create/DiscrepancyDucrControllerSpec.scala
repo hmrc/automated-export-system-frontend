@@ -121,7 +121,7 @@ class DiscrepancyDucrControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyDucrRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
+            .withFormUrlEncodedBody(("value", "5GB000000000000-12345"))
 
         val result = route(application, request).value
 

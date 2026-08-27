@@ -17,25 +17,25 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{additionalIdentifierRegex, authorisationNumberRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.LocationIdFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
-class LocationIdFormProviderSpec extends StringFieldBehaviours {
+class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehaviours {
 
   val form = new LocationIdFormProvider()()
 
   ".locationType" - {
 
     val fieldName = "locationType"
-    val requiredKey = "locationId.error.locationType.required"
-    val lengthKey = "locationId.error.locationType.length"
-    val maxLength = 100
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
-
-    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+    behave like optionsField[LocationQualifier](
+      form,
+      fieldName,
+      validValues = LocationQualifier.values,
+      invalidError = FormError(fieldName, "error.invalid")
+    )
   }
 
   ".unlocode" - {
@@ -43,7 +43,7 @@ class LocationIdFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "unlocode"
     val requiredKey = "locationId.error.unlocode.required"
     val lengthKey = "locationId.error.unlocode.length"
-    val maxLength = 100
+    val maxLength = 17
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
@@ -57,13 +57,26 @@ class LocationIdFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "locationAdditionalIdentifier"
     val requiredKey = "locationId.error.locationAdditionalIdentifier.required"
     val lengthKey = "locationId.error.locationAdditionalIdentifier.length"
-    val maxLength = 100
+    val invalidKey = "locationId.error.locationAdditionalIdentifier.invalid"
+    val maxLength = 4
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq(" ab1", "ab1 ")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(additionalIdentifierRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
+    }
   }
 
   ".authorisationReferenceNumber" - {
@@ -71,12 +84,25 @@ class LocationIdFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "authorisationReferenceNumber"
     val requiredKey = "locationId.error.authorisationReferenceNumber.required"
     val lengthKey = "locationId.error.authorisationReferenceNumber.length"
-    val maxLength = 100
+    val invalidKey = "locationId.error.authorisationReferenceNumber.invalid"
+    val maxLength = 35
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq(" abcd1", "abcd1 ")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(authorisationNumberRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
+    }
   }
 }

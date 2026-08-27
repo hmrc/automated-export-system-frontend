@@ -21,7 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, LocationDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, LocationDetails, LocationQualifier, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.LocationIdPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.LocationIdSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
@@ -33,7 +33,7 @@ class LocationIdSummarySpec extends AnyFreeSpec with Matchers with Generators {
 
   "row" - {
     "when answered, return the summary row" in {
-      val locationDetails = LocationDetails("locationType", "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber")
+      val locationDetails = LocationDetails(LocationQualifier.UnLocode, "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber")
       val userAnswers = UserAnswers("id")
         .set(LocationIdPage, locationDetails)
         .get
@@ -41,7 +41,7 @@ class LocationIdSummarySpec extends AnyFreeSpec with Matchers with Generators {
       LocationIdSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "locationId.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("locationType<br/>unlocode<br/>locationAdditionalIdentifier<br/>authorisationReferenceNumber")),
+          value = ValueViewModel(HtmlContent("locationId.unlocode<br/>unlocode<br/>locationAdditionalIdentifier<br/>authorisationReferenceNumber")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",

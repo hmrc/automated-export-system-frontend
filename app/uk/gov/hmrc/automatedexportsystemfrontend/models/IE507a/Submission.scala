@@ -20,14 +20,25 @@ import play.api.libs.json.{Json, OFormat, Writes}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
-case class Submission(submissionId: Option[String], exportOperation: ExportOperation, CustomsOfficeOfExitActual: CustomsOfficeOfExitActual)
+case class Submission(
+  submissionId: Option[String],
+  exportOperation: ExportOperation,
+  CustomsOfficeOfExitActual: CustomsOfficeOfExitActual,
+  GoodsShipment: Option[GoodsShipment]
+)
 
 object Submission {
   implicit val format: OFormat[Submission] = Json.format[Submission]
 
   implicit val xmlWrites: XmlWrites[Submission] =
     XmlWrites.instance { s =>
-      XmlWrites.rootElem("Submission", XmlWrites.optElem("submissionId", s.submissionId), s.exportOperation.toXml, s.CustomsOfficeOfExitActual.toXml)
+      XmlWrites.rootElem(
+        "Submission",
+        XmlWrites.optElem("submissionId", s.submissionId),
+        s.exportOperation.toXml,
+        s.CustomsOfficeOfExitActual.toXml,
+        s.GoodsShipment.toXml
+      )
     }
 }
 
