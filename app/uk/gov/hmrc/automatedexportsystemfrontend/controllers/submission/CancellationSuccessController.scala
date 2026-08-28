@@ -28,16 +28,15 @@ import javax.inject.Inject
 import scala.concurrent.ExecutionContext
 
 class CancellationSuccessController @Inject() (
-                                                override val messagesApi: MessagesApi,
-                                                val controllerComponents: MessagesControllerComponents,
-                                                view: CancellationSuccessView,
-                                                automatedExportSystemConnector: AutomatedExportSystemConnector,
-                                                actionBuilder: AesAuthRequestActionBuilder,
-                                                getData: AesDataRetrievalAction,
-                                                requireData: AesDataRequiredAction
-                                              )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport {
+  override val messagesApi: MessagesApi,
+  val controllerComponents: MessagesControllerComponents,
+  view: CancellationSuccessView,
+  automatedExportSystemConnector: AutomatedExportSystemConnector,
+  actionBuilder: AesAuthRequestActionBuilder,
+  getData: AesDataRetrievalAction,
+  requireData: AesDataRequiredAction
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>

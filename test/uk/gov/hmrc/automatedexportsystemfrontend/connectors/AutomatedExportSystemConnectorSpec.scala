@@ -19,6 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.connectors
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.apache.pekko.Done
+import play.api.http.Status.NO_CONTENT
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.*
 import play.api.Application
@@ -27,6 +28,7 @@ import uk.gov.hmrc.http.UpstreamErrorResponse
 class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
 
   val url = "/automated-export-system/message"
+  val cancelUrl = "/automated-export-system/cancel/test-submission-id"
 
   private def application: Application =
     new GuiceApplicationBuilder()
@@ -68,6 +70,56 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
           .submitIE507a("someXml")
           .failed
           .futureValue
+
+        result shouldBe an[UpstreamErrorResponse]
+      }
+    }
+  }
+
+  "cancelSubmission" - {
+
+    "must return Done when NO_CONTENT returned" in {
+
+      val app = application
+
+      running(app) {
+
+        val connector =
+          app.injector.instanceOf[AutomatedExportSystemConnector]
+
+        server.stubFor(
+          get(urlEqualTo(cancelUrl))
+            .willReturn(aResponse.withStatus(NO_CONTENT))
+        )
+
+        val result =
+          connector
+            .cancelSubmission("test-submission-id")
+            .futureValue
+
+        result shouldBe Done
+      }
+    }
+
+    "must return an upstream error response when anything else is returned" in {
+
+      val app = application
+
+      running(app) {
+
+        val connector =
+          app.injector.instanceOf[AutomatedExportSystemConnector]
+
+        server.stubFor(
+          get(urlEqualTo(cancelUrl))
+            .willReturn(aResponse.withStatus(400).withBody("boom"))
+        )
+
+        val result =
+          connector
+            .cancelSubmission("test-submission-id")
+            .failed
+            .futureValue
 
         result shouldBe an[UpstreamErrorResponse]
       }

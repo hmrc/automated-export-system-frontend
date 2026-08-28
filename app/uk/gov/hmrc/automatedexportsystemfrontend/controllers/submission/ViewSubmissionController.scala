@@ -28,16 +28,15 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 
 class ViewSubmissionController @Inject() (
-                                           override val messagesApi: MessagesApi,
-                                           override val controllerComponents: MessagesControllerComponents,
-                                           view: ViewSubmissionView,
-                                           automatedExportSystemConnector: AutomatedExportSystemConnector,
-                                           actionBuilder: AesAuthRequestActionBuilder,
-                                           getData: AesDataRetrievalAction,
-                                           requireData: AesDataRequiredAction
-                                         )(implicit ec: ExecutionContext)
-  extends FrontendBaseController
-    with I18nSupport {
+  override val messagesApi: MessagesApi,
+  override val controllerComponents: MessagesControllerComponents,
+  view: ViewSubmissionView,
+  automatedExportSystemConnector: AutomatedExportSystemConnector,
+  actionBuilder: AesAuthRequestActionBuilder,
+  getData: AesDataRetrievalAction,
+  requireData: AesDataRequiredAction
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
   def onPageLoad(submissionID: String): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
