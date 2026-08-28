@@ -284,7 +284,8 @@ discrepancyTransportMeans.error.transportType.required = Enter the transport typ
 discrepancyTransportMeans.error.transportIdNumber.required = Enter the transport ID number
 discrepancyTransportMeans.error.countryOfRegistration.required = Enter the country of registration
 discrepancyTransportMeans.error.transportType.length = The transport type must be 100 characters or less
-discrepancyTransportMeans.error.transportIdNumber.length = The transport ID number must be 100 characters or less
+discrepancyTransportMeans.error.transportIdNumber.length = The transport ID number must be 35 characters or less
+discrepancyTransportMeans.error.transportIdNumber.invalid = TODO: TRANSPORT ID INVALID
 discrepancyTransportMeans.error.countryOfRegistration.length = The country of registration must be 100 characters or less
 discrepancyTransportMeans.change.hidden = transport across the border details
 
@@ -298,8 +299,10 @@ discrepancyTransportDoc.referenceNumber.hint = This is shown in the transport do
 discrepancyTransportDoc.checkYourAnswersLabel = Document details
 discrepancyTransportDoc.error.documentType.required = Enter the document type
 discrepancyTransportDoc.error.referenceNumber.required = Enter the reference number
-discrepancyTransportDoc.error.documentType.length = The document type must be 100 characters or less
-discrepancyTransportDoc.error.referenceNumber.length = The reference number must be 100 characters or less
+discrepancyTransportDoc.error.documentType.length = The document type must be 4 characters or less
+discrepancyTransportDoc.error.referenceNumber.length = The reference number must be 70 characters or less
+discrepancyTransportDoc.error.documentType.invalid = DOCUMENT TYPE INVALID
+discrepancyTransportDoc.error.referenceNumber.invalid = REFERENCE NUMBER INVALID
 discrepancyTransportDoc.change.hidden = the document details
 
 discrepancyGoods.title = Tell us what’s changed
@@ -322,6 +325,8 @@ discrepancyGoods.error.declarationUniqueConsignmentReference.length = The Declar
 discrepancyGoods.error.newGrossMass.length = The new gross mass must be 100 characters or less
 discrepancyGoods.error.newNetMass.length = The new net mass must be 100 characters or less
 discrepancyGoods.error.goodsItemNumber.invalid = The goods item number must only include letters and numbers
+discrepancyGoods.error.newNetMass.invalid = NEW NET MASS REGEX ERROR
+discrepancyGoods.error.newGrossMass.invalid = NEW GROSS MASS REGEX ERROR
 discrepancyGoods.error.declarationUniqueConsignmentReference.invalid = The Declaration Unique Consignment Reference (DUCR) must only include letters and numbers
 discrepancyGoods.change.hidden = the what has changed details
 

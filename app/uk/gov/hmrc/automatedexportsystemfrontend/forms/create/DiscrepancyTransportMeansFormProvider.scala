@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.identificationNumberRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.TransportAcrossBorderDetails
 
@@ -30,7 +31,12 @@ class DiscrepancyTransportMeansFormProvider @Inject() extends Mappings {
       "transportType" -> text("discrepancyTransportMeans.error.transportType.required")
         .verifying(maxLength(100, "discrepancyTransportMeans.error.transportType.length")),
       "transportIdNumber" -> text("discrepancyTransportMeans.error.transportIdNumber.required")
-        .verifying(maxLength(100, "discrepancyTransportMeans.error.transportIdNumber.length")),
+        .verifying(
+          firstError(
+            maxLength(35, "discrepancyTransportMeans.error.transportIdNumber.length"),
+            regexp(identificationNumberRegex, "discrepancyTransportMeans.error.transportIdNumber.invalid")
+          )
+        ),
       "countryOfRegistration" -> text("discrepancyTransportMeans.error.countryOfRegistration.required")
         .verifying(maxLength(100, "discrepancyTransportMeans.error.countryOfRegistration.length"))
     )(TransportAcrossBorderDetails.apply)(x => Some((x.transportType, x.transportIdNumber, x.countryOfRegistration)))

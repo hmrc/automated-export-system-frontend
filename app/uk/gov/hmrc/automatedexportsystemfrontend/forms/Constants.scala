@@ -53,4 +53,15 @@ object Constants {
   lazy val additionalIdentifierRegex = "^\\P{Z}(.{0,2}\\P{Z})?$"
 
   lazy val unlocodeMaxLength = 17
+
+  lazy val grossMassRegex = "^(0|[1-9]\\d*)(\\.\\d{1,6})?$"
+  lazy val netMassRegex = "^(0|[1-9]\\d*)(\\.\\d{1,6})?$"
+
+  lazy val identificationNumberRegex = "^\\P{Z}(.{0,33}\\P{Z})?$"
+
+  lazy val documentTypeRegex = "^[1-9][0-9]{0,3}$"
+  lazy val documentTypeMaxLength = 4
+
+  lazy val referenceNumberRegex = "^\\P{Z}(.{0,68}\\P{Z})?$"
+  lazy val referenceNumberMaxLength = 70
 }

@@ -18,7 +18,14 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrMaxLength, ducrRegex, goodsItemNumberMaxLength, goodsItemNumberRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
+  ducrMaxLength,
+  ducrRegex,
+  goodsItemNumberMaxLength,
+  goodsItemNumberRegex,
+  grossMassRegex,
+  netMassRegex
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.WhatHasChangedDetails
 
@@ -44,9 +51,16 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
         )
       ),
       "newGrossMass" -> text("discrepancyGoods.error.newGrossMass.required")
-        .verifying(maxLength(100, "discrepancyGoods.error.newGrossMass.length")),
+        .verifying(
+          firstError(
+            maxLength(100, "discrepancyGoods.error.newGrossMass.length"),
+            regexp(grossMassRegex, "discrepancyGoods.error.newGrossMass.invalid")
+          )
+        ),
       "newNetMass" -> text("discrepancyGoods.error.newNetMass.required")
-        .verifying(maxLength(100, "discrepancyGoods.error.newNetMass.length"))
+        .verifying(
+          firstError(maxLength(100, "discrepancyGoods.error.newNetMass.length"), regexp(netMassRegex, "discrepancyGoods.error.newNetMass.invalid"))
+        )
     )(WhatHasChangedDetails.apply)(x => Some((x.goodsItemNumber, x.declarationUniqueConsignmentReference, x.newGrossMass, x.newNetMass)))
   )
 }

@@ -18,6 +18,12 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
+  documentTypeMaxLength,
+  documentTypeRegex,
+  referenceNumberMaxLength,
+  referenceNumberRegex
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.DocumentDetails
 
@@ -28,9 +34,19 @@ class DiscrepancyTransportDocFormProvider @Inject() extends Mappings {
   def apply(): Form[DocumentDetails] = Form(
     mapping(
       "documentType" -> text("discrepancyTransportDoc.error.documentType.required")
-        .verifying(maxLength(100, "discrepancyTransportDoc.error.documentType.length")),
+        .verifying(
+          firstError(
+            maxLength(documentTypeMaxLength, "discrepancyTransportDoc.error.documentType.length"),
+            regexp(documentTypeRegex, "discrepancyTransportDoc.error.documentType.invalid")
+          )
+        ),
       "referenceNumber" -> text("discrepancyTransportDoc.error.referenceNumber.required")
-        .verifying(maxLength(100, "discrepancyTransportDoc.error.referenceNumber.length"))
+        .verifying(
+          firstError(
+            maxLength(referenceNumberMaxLength, "discrepancyTransportDoc.error.referenceNumber.length"),
+            regexp(referenceNumberRegex, "discrepancyTransportDoc.error.referenceNumber.invalid")
+          )
+        )
     )(DocumentDetails.apply)(x => Some((x.documentType, x.referenceNumber)))
   )
 }

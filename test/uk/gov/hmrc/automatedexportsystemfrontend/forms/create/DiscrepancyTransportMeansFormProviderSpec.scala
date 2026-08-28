@@ -16,7 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
-import play.api.data.FormError
+import play.api.data.{Field, FormError}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.identificationNumberRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportMeansFormProvider
 
@@ -43,13 +44,26 @@ class DiscrepancyTransportMeansFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "transportIdNumber"
     val requiredKey = "discrepancyTransportMeans.error.transportIdNumber.required"
     val lengthKey = "discrepancyTransportMeans.error.transportIdNumber.length"
-    val maxLength = 100
+    val invalidKey = "discrepancyTransportMeans.error.transportIdNumber.invalid"
+    val maxLength = 35
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq(" abc123!", "abc ")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(identificationNumberRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
+    }
   }
 
   ".countryOfRegistration" - {
