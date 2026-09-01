@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.data.Form
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
@@ -44,24 +45,15 @@ class EnterMrnController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REPLACED WITH
-
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
     val preparedForm = answers.get(EnterMrnPage).fold(form)(form.fill)
-
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
-    Future.successful(Ok(preparedView))
+    Future.successful(Ok(view(preparedForm, mode)))
   }
 
-  // TO BE REPLACED WITH
-  // def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
   def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
     form
       .bindFromRequest()
       .fold(
@@ -71,8 +63,8 @@ class EnterMrnController @Inject() (
         },
         value =>
           for {
+            answers <- Future.successful(request.userAnswers.getOrElse(UserAnswers(request.sessionId)))
             updatedAnswers <- Future.fromTry(answers.set(EnterMrnPage, value))
-            // updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(createNavigator.nextPage(EnterMrnPage, mode, updatedAnswers))
       )

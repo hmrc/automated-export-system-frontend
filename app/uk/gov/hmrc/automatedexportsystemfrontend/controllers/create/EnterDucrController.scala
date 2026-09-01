@@ -21,7 +21,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterDucrFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterDucrPage
@@ -45,24 +44,17 @@ class EnterDucrController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[String] = formProvider()
 
-  // def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
-//      val preparedForm = request.userAnswers.get(EnterDucrPage) match {
-    val preparedForm: Form[String] = answers.get(EnterDucrPage).fold(form)(form.fill)
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
-    Future.successful(Ok(preparedView))
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+    val preparedForm = request.userAnswers.get(EnterDucrPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
+    Future.successful(Ok(view(preparedForm, mode)))
   }
 
-//  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -72,8 +64,7 @@ class EnterDucrController @Inject() (
         },
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(EnterDucrPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(createNavigator.nextPage(EnterDucrPage, mode, updatedAnswers))
       )

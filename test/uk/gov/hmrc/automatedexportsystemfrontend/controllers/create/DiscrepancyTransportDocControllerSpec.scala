@@ -33,7 +33,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, Normal
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportDocPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyTransportDocView
 
 import scala.concurrent.Future
 
@@ -48,7 +47,10 @@ class DiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers = UserAnswers(
     userAnswersId,
-    Json.obj(DiscrepancyTransportDocPage.toString -> Json.obj("documentType" -> "value 1", "referenceNumber" -> "value 2"))
+    Json.obj(
+      "standard" ->
+        Json.obj(DiscrepancyTransportDocPage.toString -> Json.obj("documentType" -> "value 1", "referenceNumber" -> "value 2"))
+    )
   )
 
   "DiscrepancyTransportDoc Controller" - {
@@ -61,8 +63,6 @@ class DiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyTransportDocRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyTransportDocView]
 
         val result = route(application, request).value
 
@@ -86,9 +86,6 @@ class DiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyTransportDocRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyTransportDocView]
-
         val result = route(application, request).value
 
         status(result) shouldBe OK
@@ -148,10 +145,6 @@ class DiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancyTransportDocRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[DiscrepancyTransportDocView]
 
         val result = route(application, request).value
 
