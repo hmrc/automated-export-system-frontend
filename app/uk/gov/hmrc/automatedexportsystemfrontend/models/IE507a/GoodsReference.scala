@@ -19,7 +19,10 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
-case class GoodsReference(sequenceNumber: Int, declarationGoodsItemNumber: Int)
+case class GoodsReference(
+  sequenceNumber: Int, // Note: optional in the schema but we can easily provide it on behalf of the user
+  declarationGoodsItemNumber: Int // Optional in the schema, but mandatory in the journey
+)
 
 object GoodsReference {
   given format: Format[GoodsReference] = Json.format[GoodsReference]

@@ -20,10 +20,10 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
 case class GoodsItem(
-  declarationGoodsItemNumber: String,
+  declarationGoodsItemNumber: Option[String],
   declarationUniqueConsignmentReference: Option[String],
   commodity: Commodity,
-  packaging: Packaging
+  packaging: List[Packaging]
 )
 
 object GoodsItem {
@@ -35,7 +35,7 @@ object GoodsItem {
       XmlWrites.textElem("declarationGoodsItemNumber", g.declarationGoodsItemNumber),
       XmlWrites.optElem("declarationUniqueConsignmentReference", g.declarationUniqueConsignmentReference),
       g.commodity.toXml,
-      g.packaging.toXml
+      g.packaging.flatMap(_.toXml)
     )
   }
 }

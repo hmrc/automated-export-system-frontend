@@ -27,7 +27,7 @@ case class Consignment(
   Seal: List[Seal],
   GoodsReference: List[GoodsReference],
   LocationOfGoods: LocationOfGoods,
-  ActiveBorderTransportMeans: ActiveBorderTransportMeans,
+  ActiveBorderTransportMeans: Option[ActiveBorderTransportMeans],
   TransportDocument: List[TransportDocument]
 )
 

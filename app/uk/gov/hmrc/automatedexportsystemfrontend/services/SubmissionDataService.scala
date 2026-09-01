@@ -80,8 +80,8 @@ class SubmissionDataService @Inject() extends Logging {
       Commodity(goods.newGrossMass, goods.newNetMass)
     }
 
-  private def collectPackaging(userAnswers: UserAnswers): Option[Packaging] =
-    userAnswers.get(DiscrepancyPackingPage).map { packing =>
+  private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
+    userAnswers.get(DiscrepancyPackingPage).toList.map { packing =>
       Packaging(1, packing.packagingCode, packing.numberOfPackages, packing.shippingMarks)
     }
 
@@ -102,13 +102,13 @@ class SubmissionDataService @Inject() extends Logging {
         seals = collectSeals(userAnswers)
         goodsReference = collectGoodsReference(userAnswers)
         location <- collectGoodsLocation(userAnswers)
-        transport <- collectActiveBorderTransportMeans(userAnswers)
+        transport = collectActiveBorderTransportMeans(userAnswers)
         transportDocument = collectTransportDocument(userAnswers)
         goods <- userAnswers.get(DiscrepancyGoodsPage)
-        goodsItemNumber = goods.goodsItemNumber
+        goodsItemNumber = Some(goods.goodsItemNumber)
         ucr = goods.declarationUniqueConsignmentReference
         commodity <- collectCommodity(userAnswers)
-        packaging <- collectPackaging(userAnswers)
+        packaging = collectPackaging(userAnswers)
       } yield GoodsShipment(
         Consignment(transportMode, ducr, mucr, transportEquipment, seals, goodsReference, location, transport, transportDocument),
         GoodsItem(goodsItemNumber, ucr, commodity, packaging)
