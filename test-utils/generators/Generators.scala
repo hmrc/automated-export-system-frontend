@@ -61,11 +61,27 @@ trait Generators extends ModelGenerators {
       .suchThat(!_.isValidInt)
       .map("%f".format(_))
 
-  def validWeight(maxLength: Int): Gen[String] =
-    arbitrary[BigDecimal]
-      .suchThat(n => n > 0 && n < Int.MaxValue && !n.isValidInt)
-      .map("%f".format(_))
-      .suchThat(_.length <= maxLength)
+  def validWeight(maxLength: Int): Gen[String] = {
+    val intPartGen: Gen[String] =
+      Gen.frequency(1 -> Gen.const("0"), 9 -> Gen.chooseNum(1, Int.MaxValue).map(_.toString))
+
+    val decPartGen: Gen[String] =
+      Gen.frequency(
+        1 -> Gen.const(""),
+        3 -> (for {
+          scale <- Gen.chooseNum(1, 6)
+          first <- Gen.numChar.suchThat(_ != '0')
+          rest <- Gen.listOfN(scale - 1, Gen.numChar).map(_.mkString)
+        } yield s".$first$rest")
+      )
+
+    for {
+      i <- intPartGen
+      d <- decPartGen
+      s = i + d
+      if s.length <= maxLength
+    } yield s
+  }
 
   def intsBelowValue(value: Int): Gen[Int] =
     arbitrary[Int] suchThat (_ < value)
