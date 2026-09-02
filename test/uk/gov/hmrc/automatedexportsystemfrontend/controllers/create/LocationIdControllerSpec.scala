@@ -29,7 +29,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.LocationIdFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.LocationIdPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
@@ -88,7 +88,7 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val locationDetails = LocationDetails(
-        locationType = "value 1",
+        locationType = LocationQualifier.UnLocode,
         unlocode = "value 2",
         locationAdditionalIdentifier = "value 3",
         authorisationReferenceNumber = "value 4"
