@@ -25,29 +25,37 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
 
   val form = new DiscrepancyGoodsFormProvider()()
 
-  ".goodsItemNumber" - {
+  ".declarationGoodsItemNumber" - {
 
-    val fieldName = "goodsItemNumber"
-    val requiredKey = "discrepancyGoods.error.goodsItemNumber.required"
-    val lengthKey = "discrepancyGoods.error.goodsItemNumber.length"
+    val fieldName = "declarationGoodsItemNumber"
     val invalidKey = "discrepancyGoods.error.goodsItemNumber.invalid"
-    val maxLength = 35
 
-    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
+    "bind valid values" in {
+      val validValues = Seq("0", "1", "12", "999")
 
-    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
+      validValues.foreach { value =>
+        val result = form.bind(Map(fieldName -> value, "newGrossMass" -> "20", "newNetMass" -> "10"))
+        result.errors mustBe empty
+        result.value.value.declarationGoodsItemNumber mustBe Some(value.toInt)
+      }
+    }
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+    "bind successfully when no goods item number is provided" in {
+      val data =
+        Map(fieldName -> "", "declarationUniqueConsignmentReference" -> "5GB000000000000-12345", "newGrossMass" -> "20", "newNetMass" -> "10")
+
+      val result = form.bind(data)
+
+      result.errors mustBe empty
+      result.value.value.declarationGoodsItemNumber mustBe None
+    }
 
     "must not bind invalid data" in {
-
-      val invalidValues: Seq[String] = Seq("abc123!", "abc?123")
-
-      val expectedError = FormError(fieldName, invalidKey, Seq(goodsItemNumberRegex))
+      val invalidValues = Seq("1000", "01", "abc", "1a")
 
       invalidValues.foreach { invalidValue =>
-        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
-        result.errors must contain(expectedError)
+        val result = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(FormError(fieldName, invalidKey, Seq(goodsItemNumberRegex)))
       }
     }
   }
@@ -64,7 +72,7 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours {
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     "bind successfully when no ducr value is provided" in {
-      val data = Map("goodsItemNumber" -> "reference", "declarationUniqueConsignmentReference" -> "", "newGrossMass" -> "20", "newNetMass" -> "10")
+      val data = Map("declarationGoodsItemNumber" -> "1", "declarationUniqueConsignmentReference" -> "", "newGrossMass" -> "20", "newNetMass" -> "10")
 
       val result = form.bind(data)
 

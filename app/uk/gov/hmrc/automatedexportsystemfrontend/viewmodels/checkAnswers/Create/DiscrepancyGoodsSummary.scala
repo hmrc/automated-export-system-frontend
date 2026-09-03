@@ -32,7 +32,7 @@ object DiscrepancyGoodsSummary {
     answers.get(DiscrepancyGoodsPage).map { answer =>
 
       val value = Seq(
-        Some(HtmlFormat.escape(answer.goodsItemNumber).toString),
+        Some(HtmlFormat.escape(answer.declarationGoodsItemNumber.map(_.toString).getOrElse("")).toString),
         answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr).toString),
         Some(HtmlFormat.escape(answer.newGrossMass).toString),
         Some(HtmlFormat.escape(answer.newNetMass).toString)

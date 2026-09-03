@@ -23,6 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
   referenceNumberMaxLength,
   referenceNumberRegex
 }
+import org.scalatest.matchers.should.Matchers.shouldBe
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportDocFormProvider
 
@@ -33,55 +34,38 @@ class DiscrepancyTransportDocFormProviderSpec extends StringFieldBehaviours {
   ".documentType" - {
 
     val fieldName = "documentType"
-    val requiredKey = "discrepancyTransportDoc.error.documentType.required"
-    val lengthKey = "discrepancyTransportDoc.error.documentType.length"
-    val invalidKey = "discrepancyTransportDoc.error.documentType.invalid"
-    val maxLength = documentTypeMaxLength
+    "must bind valid values" in {
+      form.bind(Map(fieldName -> "1")).errors shouldBe empty
+      form.bind(Map(fieldName -> "1234")).errors shouldBe empty
+    }
 
-    behave like fieldThatBindsValidData(form, fieldName, validDocumentTypes(maxLength))
+    "must bind empty value as None" in {
+      form.bind(Map.empty).errors shouldBe empty
+      form.bind(Map(fieldName -> "")).errors shouldBe empty
+    }
 
-    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
-
-    "must not bind invalid data" in {
-
-      val invalidValues: Seq[String] = Seq("000", "abc")
-
-      val expectedError = FormError(fieldName, invalidKey, Seq(documentTypeRegex))
-
-      invalidValues.foreach { invalidValue =>
-        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
-        result.errors must contain(expectedError)
-      }
+    "must reject invalid values" in {
+      form.bind(Map(fieldName -> "12345")).errors.head.message shouldBe
+        "discrepancyTransportDoc.error.documentType.invalid"
     }
   }
 
   ".referenceNumber" - {
 
     val fieldName = "referenceNumber"
-    val requiredKey = "discrepancyTransportDoc.error.referenceNumber.required"
-    val lengthKey = "discrepancyTransportDoc.error.referenceNumber.length"
-    val invalidKey = "discrepancyTransportDoc.error.referenceNumber.invalid"
-    val maxLength = referenceNumberMaxLength
-
-    behave like fieldThatBindsValidData(form, fieldName, validDocumentTypes(maxLength))
-
-    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
-
-    "must not bind invalid data" in {
-
-      val invalidValues: Seq[String] = Seq("000 ", " 1234")
-
-      val expectedError = FormError(fieldName, invalidKey, Seq(referenceNumberRegex))
-
-      invalidValues.foreach { invalidValue =>
-        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
-        result.errors must contain(expectedError)
-      }
+    "must bind valid values" in {
+      form.bind(Map(fieldName -> "1")).errors shouldBe empty
+      form.bind(Map(fieldName -> "1234")).errors shouldBe empty
     }
 
+    "must bind empty value as None" in {
+      form.bind(Map.empty).errors shouldBe empty
+      form.bind(Map(fieldName -> "")).errors shouldBe empty
+    }
+
+    "must reject invalid values" in {
+      form.bind(Map(fieldName -> "12345")).errors.head.message shouldBe
+        "discrepancyTransportDoc.error.referenceNumber.invalid"
+    }
   }
 }

@@ -45,7 +45,8 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
           case ACCEPTED =>
             Future.successful(Done)
           case _ =>
-            logger.error(s"Failed to submit IE507a to /automated-export-system/message with status : ${response.status}")
+            // logger.error(s"Failed to submit IE507a to /automated-export-system/message with status : ${response.status}")
+            logger.error(s"Failed to submit IE507a to /automated-export-system/message with status : ${response.status}, body : ${response.body}")
             Future.failed(UpstreamErrorResponse("Unexpected response from /automated-export-system/message", response.status))
         }
       }

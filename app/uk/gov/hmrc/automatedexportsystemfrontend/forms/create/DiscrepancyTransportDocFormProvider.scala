@@ -24,6 +24,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
   referenceNumberMaxLength,
   referenceNumberRegex
 }
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{transportDocumentReferenceNumberRegex, transportDocumentTypeRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.DocumentDetails
 
@@ -33,20 +34,16 @@ class DiscrepancyTransportDocFormProvider @Inject() extends Mappings {
 
   def apply(): Form[DocumentDetails] = Form(
     mapping(
-      "documentType" -> text("discrepancyTransportDoc.error.documentType.required")
-        .verifying(
-          firstError(
-            maxLength(documentTypeMaxLength, "discrepancyTransportDoc.error.documentType.length"),
-            regexp(documentTypeRegex, "discrepancyTransportDoc.error.documentType.invalid")
-          )
-        ),
-      "referenceNumber" -> text("discrepancyTransportDoc.error.referenceNumber.required")
-        .verifying(
-          firstError(
-            maxLength(referenceNumberMaxLength, "discrepancyTransportDoc.error.referenceNumber.length"),
-            regexp(referenceNumberRegex, "discrepancyTransportDoc.error.referenceNumber.invalid")
-          )
-        )
+      "documentType" -> optional(
+        text()
+          .verifying(regexp(transportDocumentTypeRegex, "discrepancyTransportDoc.error.documentType.invalid"))
+          .transform[Int](_.toInt, _.toString)
+      ),
+      "referenceNumber" -> optional(
+        text()
+          .verifying(regexp(transportDocumentReferenceNumberRegex, "discrepancyTransportDoc.error.referenceNumber.invalid"))
+          .transform[Int](_.toInt, _.toString)
+      )
     )(DocumentDetails.apply)(x => Some((x.documentType, x.referenceNumber)))
   )
 }

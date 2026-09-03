@@ -25,6 +25,9 @@ object Commodity {
   given format: Format[Commodity] = Json.format[Commodity]
 
   given xmlWrites: XmlWrites[Commodity] = XmlWrites.instance { c =>
-    XmlWrites.elem("Commodity", XmlWrites.textElem("grossMass", c.grossMass), XmlWrites.textElem("netMass", c.netMass))
+    XmlWrites.elem(
+      "Commodity",
+      XmlWrites.elem("GoodsMeasure", XmlWrites.textElem("grossMass", c.grossMass), XmlWrites.textElem("netMass", c.netMass))
+    )
   }
 }

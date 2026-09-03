@@ -19,12 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
-case class GoodsItem(
-  declarationGoodsItemNumber: Option[String],
-  declarationUniqueConsignmentReference: Option[String],
-  commodity: Commodity,
-  packaging: List[Packaging]
-)
+case class GoodsItem(declarationGoodsItemNumber: Option[Int], referenceNumberUCR: Option[String], commodity: Commodity, packaging: List[Packaging])
 
 object GoodsItem {
   given format: Format[GoodsItem] = Json.format[GoodsItem]
@@ -32,8 +27,8 @@ object GoodsItem {
   given xmlWrites: XmlWrites[GoodsItem] = XmlWrites.instance { g =>
     XmlWrites.elem(
       "GoodsItem",
-      XmlWrites.textElem("declarationGoodsItemNumber", g.declarationGoodsItemNumber),
-      XmlWrites.optElem("declarationUniqueConsignmentReference", g.declarationUniqueConsignmentReference),
+      XmlWrites.optElem("declarationGoodsItemNumber", g.declarationGoodsItemNumber),
+      XmlWrites.optElem("referenceNumberUCR", g.referenceNumberUCR),
       g.commodity.toXml,
       g.packaging.flatMap(_.toXml)
     )
