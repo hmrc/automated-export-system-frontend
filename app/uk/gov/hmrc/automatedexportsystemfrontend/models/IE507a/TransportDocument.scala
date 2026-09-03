@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
-case class TransportDocument(sequenceNumber: Int, typeOfDocument: String, referenceNumber: String)
+case class TransportDocument(sequenceNumber: Int, typeOfDocument: Option[Int], referenceNumber: Option[Int])
 
 object TransportDocument {
   given format: Format[TransportDocument] = Json.format[TransportDocument]
@@ -28,8 +28,8 @@ object TransportDocument {
     XmlWrites.elem(
       "TransportDocument",
       XmlWrites.textElem("sequenceNumber", t.sequenceNumber.toString),
-      XmlWrites.textElem("type", t.typeOfDocument),
-      XmlWrites.textElem("referenceNumber", t.referenceNumber)
+      XmlWrites.optElem("type", t.typeOfDocument),
+      XmlWrites.optElem("referenceNumber", t.referenceNumber)
     )
   }
 }

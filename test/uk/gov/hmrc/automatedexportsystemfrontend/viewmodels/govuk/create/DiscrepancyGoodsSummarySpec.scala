@@ -33,7 +33,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
 
   "row" - {
     "when answered, return the summary row" in {
-      val whatHasChangedDetails = WhatHasChangedDetails("goodsItemNumber", Some("ducr"), "20", "10")
+      val whatHasChangedDetails = WhatHasChangedDetails(Some(1), Some("ducr"), "20", "10")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyGoodsPage, whatHasChangedDetails)
         .get
@@ -41,7 +41,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
       DiscrepancyGoodsSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyGoods.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("goodsItemNumber<br/>ducr<br/>20<br/>10")),
+          value = ValueViewModel(HtmlContent("1<br/>ducr<br/>20<br/>10")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",

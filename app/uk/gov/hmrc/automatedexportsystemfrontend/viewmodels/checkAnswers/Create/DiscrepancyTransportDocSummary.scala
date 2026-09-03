@@ -31,7 +31,10 @@ object DiscrepancyTransportDocSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DiscrepancyTransportDocPage).map { answer =>
 
-      val value = HtmlFormat.escape(answer.documentType).toString + "<br/>" + HtmlFormat.escape(answer.referenceNumber).toString
+      val value =
+        answer.documentType.map(_.toString).getOrElse("") +
+          "<br/>" +
+          answer.referenceNumber.map(_.toString).getOrElse("")
 
       SummaryListRowViewModel(
         key = "discrepancyTransportDoc.checkYourAnswersLabel",

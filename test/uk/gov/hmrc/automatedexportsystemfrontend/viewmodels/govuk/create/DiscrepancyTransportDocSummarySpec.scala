@@ -33,7 +33,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
 
   "row" - {
     "when answered, return the summary row" in {
-      val documentDetails = DocumentDetails("documentType", "referenceNumber")
+      val documentDetails = DocumentDetails(Some(1), Some(1234))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportDocPage, documentDetails)
         .get
@@ -41,7 +41,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
       DiscrepancyTransportDocSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyTransportDoc.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("documentType<br/>referenceNumber")),
+          value = ValueViewModel(HtmlContent("1<br/>1234")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",

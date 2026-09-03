@@ -298,11 +298,9 @@ discrepancyTransportDoc.referenceNumber = Reference number
 discrepancyTransportDoc.referenceNumber.hint = This is shown in the transport document.
 discrepancyTransportDoc.checkYourAnswersLabel = Document details
 discrepancyTransportDoc.error.documentType.required = Enter the document type
+discrepancyTransportDoc.error.documentType.invalid = Enter a document type between 1 and 9999
 discrepancyTransportDoc.error.referenceNumber.required = Enter the reference number
-discrepancyTransportDoc.error.documentType.length = The document type must be 4 characters or less
-discrepancyTransportDoc.error.referenceNumber.length = The reference number must be 70 characters or less
-discrepancyTransportDoc.error.documentType.invalid = DOCUMENT TYPE INVALID
-discrepancyTransportDoc.error.referenceNumber.invalid = REFERENCE NUMBER INVALID
+discrepancyTransportDoc.error.referenceNumber.invalid = Enter a reference number between 1 and 9999
 discrepancyTransportDoc.change.hidden = the document details
 
 discrepancyGoods.title = Tell us what’s changed

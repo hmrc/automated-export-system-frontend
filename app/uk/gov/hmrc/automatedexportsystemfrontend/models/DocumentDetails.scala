@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.libs.json.*
 
-case class DocumentDetails(documentType: String, referenceNumber: String)
+case class DocumentDetails(documentType: Option[Int], referenceNumber: Option[Int])
 
 object DocumentDetails {
 

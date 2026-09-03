@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 import play.api.libs.json.*
 
 case class WhatHasChangedDetails(
-  goodsItemNumber: String,
+  declarationGoodsItemNumber: Option[Int],
   declarationUniqueConsignmentReference: Option[String],
   newGrossMass: String,
   newNetMass: String

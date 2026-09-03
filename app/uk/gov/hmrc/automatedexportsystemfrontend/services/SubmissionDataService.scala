@@ -35,10 +35,19 @@ class SubmissionDataService @Inject() extends Logging {
         None
     }
 
-  private def collectTransportEquipment(userAnswers: UserAnswers): List[TransportEquipment] = {
+  private def collectDiscrepanciesExist(userAnswers: UserAnswers): Option[Boolean] =
+    userAnswers
+      .get(AnyDiscrepanciesPage)
+      .orElse(userAnswers.get(IsSplitExitPage))
+
+  private def collectTransportEquipment(
+    userAnswers: UserAnswers,
+    seals: List[Seal],
+    goodsReferences: List[GoodsReference]
+  ): List[TransportEquipment] = {
     val discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
     discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
-      TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals)
+      TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
     }
   }
 
@@ -88,7 +97,7 @@ class SubmissionDataService @Inject() extends Logging {
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
     for {
       mrn <- userAnswers.get(EnterMrnPage)
-      discrepanciesExist <- userAnswers.get(AnyDiscrepanciesPage)
+      discrepanciesExist <- collectDiscrepanciesExist(userAnswers)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
 
@@ -98,20 +107,20 @@ class SubmissionDataService @Inject() extends Logging {
         ducr <- userAnswers.get(EnterDucrPage)
         part = userAnswers.get(PartOfConsolidationPage)
         mucr = part.flatMap(_.mucr)
-        transportEquipment = collectTransportEquipment(userAnswers)
         seals = collectSeals(userAnswers)
         goodsReference = collectGoodsReference(userAnswers)
+        transportEquipment = collectTransportEquipment(userAnswers, seals, goodsReference)
         location <- collectGoodsLocation(userAnswers)
         transport = collectActiveBorderTransportMeans(userAnswers)
         transportDocument = collectTransportDocument(userAnswers)
         goods <- userAnswers.get(DiscrepancyGoodsPage)
-        goodsItemNumber = Some(goods.goodsItemNumber)
-        ucr = goods.declarationUniqueConsignmentReference
+        declarationGoodsItemNumber = goods.declarationGoodsItemNumber
+        referenceNumberUCR = goods.declarationUniqueConsignmentReference
         commodity <- collectCommodity(userAnswers)
         packaging = collectPackaging(userAnswers)
       } yield GoodsShipment(
-        Consignment(transportMode, ducr, mucr, transportEquipment, seals, goodsReference, location, transport, transportDocument),
-        GoodsItem(goodsItemNumber, ucr, commodity, packaging)
+        Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument),
+        GoodsItem(declarationGoodsItemNumber, referenceNumberUCR, commodity, packaging)
       )
     } yield Submission(
       None,

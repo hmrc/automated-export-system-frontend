@@ -38,8 +38,8 @@ object Constants {
   lazy val sealIdentifierMaxLength = 20
   lazy val sealIdentifierRegex = "^\\P{Z}(.{0,18}\\P{Z})?$"
 
-  lazy val goodsItemNumberMaxLength = 35
-  lazy val goodsItemNumberRegex = "^[A-Za-z0-9]{1,35}$"
+  lazy val goodsItemNumberMaxLength = 3
+  lazy val goodsItemNumberRegex = "^[1-9][0-9]{0,2}|0$"
 
   lazy val shippingMarksMaxLength = 512
   lazy val shippingMarksRegex = "^(?=.{1,512}$)\\P{Z}(.*\\P{Z})?$"
@@ -51,6 +51,10 @@ object Constants {
   // UK_AlphaNumeric4NoSpacesType pattern
   lazy val additionalIdentifierMaxLength = 4
   lazy val additionalIdentifierRegex = "^\\P{Z}(.{0,2}\\P{Z})?$"
+
+  // UK_NumericWithoutZero_4 pattern
+  lazy val transportDocumentTypeRegex = "^[1-9][0-9]{0,3}$"
+  lazy val transportDocumentReferenceNumberRegex = "^[1-9][0-9]{0,3}$"
 
   lazy val unlocodeMaxLength = 17
 
