@@ -16,6 +16,7 @@
 
 @import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.{routes => indexRoute}
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukWarningText
 @this(
 layout: Layout,
@@ -74,7 +75,7 @@ pageTitle = titleNoForm(messages("cancelSubmission.heading"))
 
   <p class="govuk-body">
    <a
-           href="/automated-export-system/submission/@submission.reference"
+           href="@indexRoute.IndexController.onPageLoad().url"
            class="govuk-link govuk-link--no-visited-state">
     @messages("cancelSubmission.backLink")
    </a>
