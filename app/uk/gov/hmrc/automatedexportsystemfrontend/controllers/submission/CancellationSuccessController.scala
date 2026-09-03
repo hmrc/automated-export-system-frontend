@@ -16,13 +16,14 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
+import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionViewModelMapper}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.CancellationSuccessView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 
 import javax.inject.Inject
 import scala.concurrent.ExecutionContext
@@ -32,21 +33,18 @@ class CancellationSuccessController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: CancellationSuccessView,
   automatedExportSystemConnector: AutomatedExportSystemConnector,
-  actionBuilder: AesAuthRequestActionBuilder,
-  getData: AesDataRetrievalAction,
-  requireData: AesDataRequiredAction
+  actionBuilder: AesAuthRequestActionBuilder
 )(implicit ec: ExecutionContext)
-    extends FrontendBaseController with I18nSupport {
+    extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(submissionID: String): Action[AnyContent] =
-    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(submissionId: String): Action[AnyContent] =
+    actionBuilder.async { implicit request =>
       automatedExportSystemConnector
         .getSubmissions()
-        .map { response =>
+        .map[Result] { response =>
           response.submissions
-            .find(_.submissionId.toString == submissionID)
+            .find(_.submissionId.toString == submissionId)
             .map { submission =>
-
               val summary =
                 SubmissionViewModelMapper
                   .toViewModel(SubmissionResponseList(Seq(submission)))
@@ -55,7 +53,10 @@ class CancellationSuccessController @Inject() (
 
               Ok(view(summary))
             }
-            .getOrElse(NotFound)
+            .getOrElse {
+              logger.warn(s"No submission found for submission ID $submissionId")
+              NotFound("Not Found")
+            }
         }
     }
 }
