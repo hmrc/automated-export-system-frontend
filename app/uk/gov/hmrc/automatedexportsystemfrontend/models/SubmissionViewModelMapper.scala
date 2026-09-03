@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.DateTimeFormats
-
+import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
 object SubmissionViewModelMapper {
 
   def toViewModel(response: SubmissionResponseList): ViewSubmissionsViewModel =
@@ -26,31 +26,10 @@ object SubmissionViewModelMapper {
         reference = submission.submissionId.toString,
         mrn = submission.mrn,
         ducr = submission.ducr.getOrElse(""),
-        officeOfExit = mapOfficeOfExit(submission.officeOfExitCode),
+        officeOfExit = SubmissionLookups.mapOfficeOfExit(submission.officeOfExitCode),
         submittedDate = submission.updatedAt.format(DateTimeFormats.shortDateFormat),
-        submissionStatus = mapStatus(submission.status)
+        submissionStatus = SubmissionLookups.mapStatus(submission.status)
       )
     })
 
-  private def mapOfficeOfExit(code: String): OfficeOfExit =
-    code match {
-      case "GB000051" => OfficeOfExit.Belfast
-      case "GB000142" => OfficeOfExit.Larne
-      case "GB000244" => OfficeOfExit.Warrenpoint
-      case "GB000411" => OfficeOfExit.Foyle
-      case _          => throw new IllegalArgumentException(s"Unknown office of exit code: $code")
-    }
-
-  private def mapStatus(status: Int): SubmissionStatus =
-    status match {
-      case 1 => SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green")
-
-      case 2 => SubmissionStatus("viewSubmissions.status.amended", "govuk-tag--yellow")
-
-      case 3 => SubmissionStatus("viewSubmissions.status.cancelled", "govuk-tag--red")
-
-      case 4 => SubmissionStatus("viewSubmissions.status.awaitingDecision", "govuk-tag--blue")
-
-      case _ => throw new IllegalArgumentException(s"Unknown submission status: $status")
-    }
 }

@@ -15,10 +15,16 @@
  *@
 
 @import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
+@import uk.gov.hmrc.govukfrontend.views.html.components.GovukPanel
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.panel.Panel
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+
 
 @this(
-layout: Layout
+layout: Layout,
+govukPanel: GovukPanel
 )
+
 
 @(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
 
@@ -27,10 +33,12 @@ pageTitle = titleNoForm(messages("cancellationSuccess.title")),
 showBackLink = false
 ) {
 
-<div class="govuk-panel govuk-panel--confirmation">
- <h1 class="govuk-panel__title">@messages("cancellationSuccess.heading")</h1>
- <div class="govuk-panel__body">@messages("cancellationSuccess.reference", submission.reference)<br><strong> </strong></div>
-</div>
+@govukPanel(
+Panel(
+title = Text(messages("cancellationSuccess.heading")),
+content = Text(messages("cancellationSuccess.reference", submission.mrn))
+)
+)
 
 <h2 class="govuk-heading-m">@messages("cancellationSuccess.subheading")</h2>
 

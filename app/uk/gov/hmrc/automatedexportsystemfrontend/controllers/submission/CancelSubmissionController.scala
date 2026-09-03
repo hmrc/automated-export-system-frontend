@@ -18,9 +18,9 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionViewModelMapper}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.CancelSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -31,21 +31,19 @@ import scala.concurrent.ExecutionContext
 class CancelSubmissionController @Inject() (
   override val messagesApi: MessagesApi,
   val actionBuilder: AesAuthRequestActionBuilder,
-  getData: AesDataRetrievalAction,
-  requireData: AesDataRequiredAction,
   override val controllerComponents: MessagesControllerComponents,
   view: CancelSubmissionView,
   automatedExportSystemConnector: AutomatedExportSystemConnector
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
-  def onPageLoad(submissionID: String): Action[AnyContent] =
+  def onPageLoad(submissionId: String): Action[AnyContent] =
     actionBuilder.async { implicit request =>
       automatedExportSystemConnector
         .getSubmissions()
-        .map { response =>
+        .map[Result] { response =>
           response.submissions
-            .find(_.submissionId.toString == submissionID)
+            .find(_.submissionId.toString == submissionId)
             .map { submission =>
               val summary =
                 SubmissionViewModelMapper
@@ -56,8 +54,8 @@ class CancelSubmissionController @Inject() (
               Ok(view(summary))
             }
             .getOrElse {
-              logger.warn(s"No submission found for submission ID $submissionID")
-              NotFound
+              logger.warn(s"No submission found for submission ID $submissionId")
+              NotFound("Not Found")
             }
         }
     }
