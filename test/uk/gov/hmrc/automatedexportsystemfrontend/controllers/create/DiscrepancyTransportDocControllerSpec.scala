@@ -49,8 +49,8 @@ class DiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSugar {
     UserAnswers(
       userAnswersId,
       Json.obj(
-      "standard" ->
-        Json.obj(DiscrepancyTransportDocPage.toString -> Json.obj("documentType" -> 1, "referenceNumber" -> 1234))
+        "standard" ->
+          Json.obj(DiscrepancyTransportDocPage.toString -> Json.obj("documentType" -> 1, "referenceNumber" -> 1234))
       )
     )
 

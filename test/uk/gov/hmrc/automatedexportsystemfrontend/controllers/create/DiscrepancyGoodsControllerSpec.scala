@@ -48,11 +48,13 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
-      DiscrepancyGoodsPage.toString -> Json.obj(
-        "declarationGoodsItemNumber" -> 1,
-        "declarationUniqueConsignmentReference" -> "value 2",
-        "newGrossMass" -> "value 3",
-        "newNetMass" -> "value 4"
+      "standard" -> Json.obj(
+        DiscrepancyGoodsPage.toString -> Json.obj(
+          "declarationGoodsItemNumber" -> 1,
+          "declarationUniqueConsignmentReference" -> "value 2",
+          "newGrossMass" -> "value 3",
+          "newNetMass" -> "value 4"
+        )
       )
     )
   )
