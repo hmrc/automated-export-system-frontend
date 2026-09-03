@@ -22,8 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 case class TransportEquipment(
   sequenceNumber: Int, // Note: optional in the schema but we can easily provide it on behalf of the user
   containerIdentificationNumber: String, // Note: optional in the schema but mandatory in the journey
-  numberOfSeals: Int, // Note: optional in the schema but mandatory in the journey
-  seals: List[Seal]
+  numberOfSeals: Int // Note: optional in the schema but mandatory in the journey
 )
 
 object TransportEquipment {
@@ -34,8 +33,7 @@ object TransportEquipment {
       "TransportEquipment",
       XmlWrites.textElem("sequenceNumber", e.sequenceNumber),
       XmlWrites.textElem("containerIdentificationNumber", e.containerIdentificationNumber),
-      XmlWrites.textElem("numberOfSeals", e.numberOfSeals),
-      e.seals.toXml
+      XmlWrites.textElem("numberOfSeals", e.numberOfSeals)
     )
   }
 }

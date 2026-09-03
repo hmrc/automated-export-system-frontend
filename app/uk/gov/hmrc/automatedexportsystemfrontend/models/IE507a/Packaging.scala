@@ -17,14 +17,20 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
+import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
-case class GoodsShipment(Consignment: Consignment, GoodsItem: GoodsItem)
+case class Packaging(sequenceNumber: Int, typeOfPackages: String, numberOfPackages: String, shippingMarks: String)
 
-object GoodsShipment {
-  given format: Format[GoodsShipment] = Json.format[GoodsShipment]
+object Packaging {
+  given format: Format[Packaging] = Json.format[Packaging]
 
-  given xmlWrites: XmlWrites[GoodsShipment] = XmlWrites.instance { s =>
-    XmlWrites.elem("GoodsShipment", s.Consignment.toXml, s.GoodsItem.toXml)
+  given xmlWrites: XmlWrites[Packaging] = XmlWrites.instance { p =>
+    XmlWrites.elem(
+      "Packaging",
+      XmlWrites.textElem("sequenceNumber", p.sequenceNumber),
+      XmlWrites.textElem("typeOfPackages", p.typeOfPackages),
+      XmlWrites.textElem("numberOfPackages", p.numberOfPackages),
+      XmlWrites.textElem("shippingMarks", p.shippingMarks)
+    )
   }
 }
