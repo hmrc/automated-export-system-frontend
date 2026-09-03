@@ -28,11 +28,13 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[WhatHasChangedDetails] = Form(
     mapping(
-      "goodsItemNumber" -> int("discrepancyGoods.error.goodsItemNumber.required")
-        .verifying(
-          minimumValue(0, "discrepancyGoods.error.goodsItemNumber.length"),
-          maximumValue(goodsItemNumberMaxValue, "discrepancyGoods.error.goodsItemNumber.length")
-        ),
+      "goodsItemNumber" -> optional(
+        int("discrepancyGoods.error.goodsItemNumber.required")
+          .verifying(
+            minimumValue(0, "discrepancyGoods.error.goodsItemNumber.length"),
+            maximumValue(goodsItemNumberMaxValue, "discrepancyGoods.error.goodsItemNumber.length")
+          )
+      ),
       "declarationUniqueConsignmentReference" -> optional(
         text().verifying(
           firstError(

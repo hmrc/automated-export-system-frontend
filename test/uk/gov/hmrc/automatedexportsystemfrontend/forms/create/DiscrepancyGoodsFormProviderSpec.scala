@@ -72,7 +72,8 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     "bind successfully when no ducr value is provided" in {
-      val data = Map("declarationGoodsItemNumber" -> "1234", "declarationUniqueConsignmentReference" -> "", "newGrossMass" -> "20", "newNetMass" -> "10")
+      val data =
+        Map("declarationGoodsItemNumber" -> "1234", "declarationUniqueConsignmentReference" -> "", "newGrossMass" -> "20", "newNetMass" -> "10")
 
       val result = form.bind(data)
 

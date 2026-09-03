@@ -91,7 +91,7 @@ class SubmissionDataService @Inject() extends Logging {
 
   private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
     userAnswers.get(DiscrepancyPackingPage).toList.map { packing =>
-      Packaging(1, packing.packagingCode, packing.numberOfPackages, packing.shippingMarks)
+      Packaging(1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
 
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =

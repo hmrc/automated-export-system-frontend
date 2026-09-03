@@ -99,7 +99,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         body should include("Number of packages")
         body should include("""id="numberOfPackages"""")
         body should include("""name="numberOfPackages"""")
-        body should include("""type="text"""")
+        body should include("""type="int"""")
         body should include("""value="123"""")
         body should include("Shipping marks")
         body should include("""id="shippingMarks"""")
