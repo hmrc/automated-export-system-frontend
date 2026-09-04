@@ -48,7 +48,10 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
   val userAnswers =
     UserAnswers(
       userAnswersId,
-      Json.obj(DiscrepancyPackingPage.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> 123, "shippingMarks" -> "value 3"))
+      Json.obj(
+        "standard" -> Json
+          .obj(DiscrepancyPackingPage.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> 123, "shippingMarks" -> "value 3"))
+      )
     )
 
   "DiscrepancyPacking Controller" - {
@@ -99,7 +102,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         body should include("Number of packages")
         body should include("""id="numberOfPackages"""")
         body should include("""name="numberOfPackages"""")
-        body should include("""type="int"""")
+        body should include("""type="text"""")
         body should include("""value="123"""")
         body should include("Shipping marks")
         body should include("""id="shippingMarks"""")

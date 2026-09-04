@@ -35,8 +35,6 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
 
     behave like intFieldWithMaximum(form, fieldName, maxLength, FormError(fieldName, lengthKey, Seq(maxLength)))
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
-
     "bind successfully when no goods item number is provided" in {
       val data =
         Map(fieldName -> "", "declarationUniqueConsignmentReference" -> "5GB000000000000-12345", "newGrossMass" -> "20", "newNetMass" -> "10")

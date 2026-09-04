@@ -28,7 +28,7 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[WhatHasChangedDetails] = Form(
     mapping(
-      "goodsItemNumber" -> optional(
+      "declarationGoodsItemNumber" -> optional(
         int("discrepancyGoods.error.goodsItemNumber.required")
           .verifying(
             minimumValue(0, "discrepancyGoods.error.goodsItemNumber.length"),
