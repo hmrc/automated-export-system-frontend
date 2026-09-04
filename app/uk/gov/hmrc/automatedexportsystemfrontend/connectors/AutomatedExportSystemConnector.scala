@@ -26,6 +26,11 @@ import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, Upstream
 import play.api.libs.ws.writeableOf_String
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponseList, SubmissionResponseParser}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.Submission
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionResponse
+import java.time.LocalDateTime
+import java.util.UUID
+import play.api.http.Status.NO_CONTENT
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML
@@ -61,6 +66,39 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
           case _ =>
             logger.error(s"Failed to retrieve submissions from /automated-export-system/submissions with status : ${response.status}")
             Future.failed(UpstreamErrorResponse("Unexpected response from /automated-export-system/submissions", response.status))
+        }
+      }
+
+  def getSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[SubmissionResponse] =
+    httpClient
+      .get(url"${frontendAppConfig.automatedExportSystemApi}/submission/$submissionId")
+      .execute[HttpResponse]
+      .flatMap { response =>
+        response.status match {
+          case OK =>
+            Future.successful(
+              SubmissionResponseParser
+                .parse(XML.loadString(response.body))
+                .submissions
+                .head
+            )
+
+          case _ =>
+            Future.failed(UpstreamErrorResponse(s"Unexpected response from /submission/$submissionId", response.status))
+        }
+      }
+
+  def cancelSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[Done] =
+    httpClient
+      .get(url"${frontendAppConfig.automatedExportSystemApi}/cancel/$submissionId")
+      .execute[HttpResponse]
+      .flatMap { response =>
+        response.status match {
+          case NO_CONTENT =>
+            Future.successful(Done)
+
+          case _ =>
+            Future.failed(UpstreamErrorResponse(s"Unexpected response from cancel submission $submissionId", response.status))
         }
       }
 }
