@@ -19,6 +19,13 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 import java.time.LocalDateTime
 import java.util.UUID
 
-case class SubmissionResponse(submissionId: UUID, mrn: String, ducr: Option[String], officeOfExitCode: String, updatedAt: LocalDateTime, status: Int)
+case class SubmissionSummaryResponse(
+  submissionId: UUID,
+  mrn: String,
+  ducr: Option[String],
+  officeOfExitCode: String,
+  updatedAt: LocalDateTime,
+  status: Int
+)
 
-case class SubmissionResponseList(submissions: Seq[SubmissionResponse])
+case class SubmissionSummaryResponseList(submissions: Seq[SubmissionSummaryResponse])

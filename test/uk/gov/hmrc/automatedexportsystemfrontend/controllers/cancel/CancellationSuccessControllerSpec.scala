@@ -26,7 +26,7 @@ import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponse, SubmissionResponseList}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponse, SubmissionSummaryResponseList}
 import uk.gov.hmrc.http.SessionKeys
 
 import java.time.LocalDateTime
@@ -56,7 +56,7 @@ class CancellationSuccessControllerSpec extends SpecBase {
           .authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any())
       ).thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      val submission = SubmissionResponse(
+      val submission = SubmissionSummaryResponse(
         submissionId = UUID.randomUUID(),
         mrn = "24GB12345678901234",
         ducr = Some("8GB1234567890123456"),
@@ -65,7 +65,7 @@ class CancellationSuccessControllerSpec extends SpecBase {
         status = 1
       )
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any())).thenReturn(Future.successful(SubmissionResponseList(Seq(submission))))
+      when(mockAutomatedExportSystemConnector.getSubmissions()(any())).thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission))))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -116,7 +116,7 @@ class CancellationSuccessControllerSpec extends SpecBase {
           .authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any())
       ).thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any())).thenReturn(Future.successful(SubmissionResponseList(Seq.empty)))
+      when(mockAutomatedExportSystemConnector.getSubmissions()(any())).thenReturn(Future.successful(SubmissionSummaryResponseList(Seq.empty)))
 
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))

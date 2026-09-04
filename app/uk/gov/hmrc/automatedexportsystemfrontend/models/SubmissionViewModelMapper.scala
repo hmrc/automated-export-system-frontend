@@ -18,9 +18,10 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.DateTimeFormats
 import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
+
 object SubmissionViewModelMapper {
 
-  def toViewModel(response: SubmissionResponseList): ViewSubmissionsViewModel =
+  def toViewModel(response: SubmissionSummaryResponseList): ViewSubmissionsViewModel =
     ViewSubmissionsViewModel(response.submissions.map { submission =>
       SubmissionSummary(
         reference = submission.submissionId.toString,
