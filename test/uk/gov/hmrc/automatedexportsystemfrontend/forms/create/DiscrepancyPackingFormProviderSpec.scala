@@ -18,10 +18,10 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.shippingMarksRegex
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{IntFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyPackingFormProvider
 
-class DiscrepancyPackingFormProviderSpec extends StringFieldBehaviours {
+class DiscrepancyPackingFormProviderSpec extends StringFieldBehaviours with IntFieldBehaviours {
 
   val form = new DiscrepancyPackingFormProvider()()
 
@@ -44,11 +44,11 @@ class DiscrepancyPackingFormProviderSpec extends StringFieldBehaviours {
     val fieldName = "numberOfPackages"
     val requiredKey = "discrepancyPacking.error.numberOfPackages.required"
     val lengthKey = "discrepancyPacking.error.numberOfPackages.length"
-    val maxLength = 100
+    val maxLength = 99999999
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like intFieldWithMaximum(form, fieldName, maxLength, FormError(fieldName, lengthKey, Seq(maxLength)))
 
-    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
+//    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
   }
