@@ -39,15 +39,50 @@ class LocationIdSummarySpec extends AnyFreeSpec with Matchers with Generators {
         .get
 
       LocationIdSummary.row(userAnswers) shouldBe Some(
-        SummaryListRowViewModel(
-          key = "locationId.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("locationId.unlocode<br/>unlocode<br/>locationAdditionalIdentifier<br/>authorisationReferenceNumber")),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.LocationIdController.onPageLoad(CheckMode).url
+        Seq(
+          SummaryListRowViewModel(
+            key = "locationId.identificationType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("locationId.unlocode")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.LocationIdController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("locationId.identificationType.change.hidden")
             )
-              .withVisuallyHiddenText("locationId.change.hidden")
+          ),
+          SummaryListRowViewModel(
+            key = "locationId.unlocode.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("unlocode")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.LocationIdController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("locationId.unlocode.change.hidden")
+            )
+          ),
+          SummaryListRowViewModel(
+            key = "locationId.locationAdditionalIdentifier.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("locationAdditionalIdentifier")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.LocationIdController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("locationId.locationAdditionalIdentifier.change.hidden")
+            )
+          ),
+          SummaryListRowViewModel(
+            key = "locationId.authorisationReferenceNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("authorisationReferenceNumber")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.LocationIdController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("locationId.authorisationReferenceNumber.change.hidden")
+            )
           )
         )
       )

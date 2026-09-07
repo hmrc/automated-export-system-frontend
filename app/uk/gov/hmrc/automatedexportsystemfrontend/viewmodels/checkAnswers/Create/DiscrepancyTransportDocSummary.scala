@@ -28,17 +28,28 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyTransportDocSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportDocPage).map { answer =>
 
-      val value = HtmlFormat.escape(answer.documentType).toString + "<br/>" + HtmlFormat.escape(answer.referenceNumber).toString
+      val documentType = HtmlFormat.escape(answer.documentType).toString
+      val referenceNumber = HtmlFormat.escape(answer.referenceNumber).toString
 
-      SummaryListRowViewModel(
-        key = "discrepancyTransportDoc.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyTransportDoc.change.hidden"))
+      Seq(
+        SummaryListRowViewModel(
+          key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(documentType)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyTransportDoc.documentType.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(referenceNumber)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyTransportDoc.referenceNumber.change.hidden"))
+          )
         )
       )
     }

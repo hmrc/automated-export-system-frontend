@@ -28,21 +28,37 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyTransportMeansSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportMeansPage).map { answer =>
 
-      val value = Seq(
-        HtmlFormat.escape(answer.transportType).toString,
-        HtmlFormat.escape(answer.transportIdNumber).toString,
-        HtmlFormat.escape(answer.countryOfRegistration).toString
-      ).mkString("<br/>")
+      val transportType = HtmlFormat.escape(answer.transportType).toString
+      val transportIdNumber = HtmlFormat.escape(answer.transportIdNumber).toString
+      val countryOfRegistration = HtmlFormat.escape(answer.countryOfRegistration).toString
 
-      SummaryListRowViewModel(
-        key = "discrepancyTransportMeans.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyTransportMeans.change.hidden"))
+      Seq(
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(transportType)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyTransportMeans.transportType.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(transportIdNumber)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyTransportMeans.transportIdNumber.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(countryOfRegistration)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyTransportMeans.countryOfRegistration.change.hidden"))
+          )
         )
       )
     }

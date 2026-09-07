@@ -27,7 +27,20 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as ha
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{OfficeOfExit, PartOfConsolidationAnswer}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier.AuthorisationNumber
+import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder.Sea
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  ContainerDetails,
+  DocumentDetails,
+  LocationDetails,
+  LocationType,
+  ModeOfTransportAtBorder,
+  OfficeOfExit,
+  PackingDetails,
+  PartOfConsolidationAnswer,
+  TransportAcrossBorderDetails,
+  WhatHasChangedDetails
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
@@ -40,7 +53,7 @@ class CYASubmissionControllerSpec extends SpecBase {
 
   "CYASubmissionController" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET with no discrepancies present" in {
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
       val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
       val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
@@ -60,6 +73,10 @@ class CYASubmissionControllerSpec extends SpecBase {
         .set(OfficeOfExitPage, OfficeOfExit.Belfast)
         .get
         .set(AnyDiscrepanciesPage, false)
+        .get
+        .set(LocationTypePage, LocationType.DesignatedLocation)
+        .get
+        .set(LocationIdPage, LocationDetails(AuthorisationNumber, "unlocode", "1234", "authorisationReferenceNumber"))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -86,12 +103,137 @@ class CYASubmissionControllerSpec extends SpecBase {
         val view = application.injector.instanceOf[CYASubmissionView]
         status(result) shouldBe OK
         val body = contentAsString(result)
+        body should include("Export operation")
         body should include("MRN")
         body should include("Is this a split exit?")
         body should include("DUCR")
         body should include("Yes - MUCR: 123")
-        body should include("Belfast")
         body should include("Are there any discrepancies with this consignment?")
+        body should include("Location of goods")
+        body should include("Type of location")
+        body should include("Designated location")
+        body should include("Location identifier")
+        body should include("Authorisation number")
+        body should include("UN/LOCODE")
+        body should include("unlocode")
+        body should include("Location additional identifier")
+        body should include("1234")
+        body should include("Authorisation reference number")
+        body should include("authorisationReferenceNumber")
+        body should include("Customs office of exit")
+        body should include("Belfast")
+        body should not include "Discrepancy details"
+      }
+    }
+
+    "must return OK and the correct view for a GET with discrepancies present" in {
+      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+      val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
+      val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
+
+      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+      val userAnswers = emptyUserAnswers
+        .set(EnterMrnPage, "MRN")
+        .get
+        .set(IsSplitExitPage, false)
+        .get
+        .set(EnterDucrPage, "DUCR")
+        .get
+        .set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("123")))
+        .get
+        .set(OfficeOfExitPage, OfficeOfExit.Belfast)
+        .get
+        .set(AnyDiscrepanciesPage, true)
+        .get
+        .set(LocationTypePage, LocationType.DesignatedLocation)
+        .get
+        .set(LocationIdPage, LocationDetails(AuthorisationNumber, "unlocode", "1234", "authorisationReferenceNumber"))
+        .get
+        .set(DiscrepancyConsignmentPage, Sea)
+        .get
+        .set(DiscrepancyTransportPage, ContainerDetails("containerId123", 99))
+        .get
+        .set(DiscrepancySealsPage, "GB12345678")
+        .get
+        .set(DiscrepancyReferencePage, "12")
+        .get
+        .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration"))
+        .get
+        .set(DiscrepancyTransportDocPage, DocumentDetails("documentType", "documentReferenceNumber"))
+        .get
+        .set(DiscrepancyPackingPage, PackingDetails("BX", "10", "MARKS123"))
+        .get
+        .set(DiscrepancyGoodsPage, WhatHasChangedDetails("1234", Some("2GB647298735290-S569"), "20", "10"))
+        .get
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, happyRoute.CYASubmissionController.onPageLoad().url)
+          .withSession(SessionKeys.sessionId -> "some-session-id")
+        val result = route(application, request).value
+
+        val view = application.injector.instanceOf[CYASubmissionView]
+        status(result) shouldBe OK
+        val body = contentAsString(result)
+        body should include("Export operation")
+        body should include("MRN")
+        body should include("Is this a split exit?")
+        body should include("DUCR")
+        body should include("Yes - MUCR: 123")
+        body should include("Are there any discrepancies with this consignment?")
+        body should include("Location of goods")
+        body should include("Type of location")
+        body should include("Designated location")
+        body should include("Location identifier")
+        body should include("Authorisation number")
+        body should include("UN/LOCODE")
+        body should include("unlocode")
+        body should include("Location additional identifier")
+        body should include("1234")
+        body should include("Authorisation reference number")
+        body should include("authorisationReferenceNumber")
+        body should include("Customs office of exit")
+        body should include("Belfast")
+        body should include("Discrepancy details")
+        body should include("How will the goods cross the border?")
+        body should include("Sea")
+        body should include("Container identification number")
+        body should include("containerId123")
+        body should include("Number of seals")
+        body should include("99")
+        body should include("Seal identifier")
+        body should include("GB12345678")
+        body should include("Declaration Goods Reference")
+        body should include("12")
+        body should include("Transport means type")
+        body should include("transportType")
+        body should include("Transport means ID")
+        body should include("transportIdNumber")
+        body should include("Transport means nationality")
+        body should include("countryOfRegistration")
+        body should include("Transport document type")
+        body should include("documentType")
+        body should include("Transport document reference")
+        body should include("documentReferenceNumber")
+        body should include("Package type")
+        body should include("BX")
+        body should include("Number of packages")
+        body should include("10")
+        body should include("Shipping marks")
+        body should include("MARKS123")
+        body should include("Declaration goods item number")
+        body should include("1234")
+        body should include("Declaration Unique Consignment Reference (DUCR)")
+        body should include("2GB647298735290-S569")
+        body should include("New gross mass")
+        body should include("20")
+        body should include("New net mass")
+        body should include("10")
       }
     }
 

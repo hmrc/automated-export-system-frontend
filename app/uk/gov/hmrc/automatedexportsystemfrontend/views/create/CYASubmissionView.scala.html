@@ -24,9 +24,9 @@
 
 @(
     exportOperationList: SummaryList,
-    consignmentList: SummaryList,
+    locationOfGoodsList: SummaryList,
     customsOfficeExitList: SummaryList,
-    extraRowsList: SummaryList
+    discrepancyDetailsList: SummaryList
     )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("cYASubmission.title"))) {
@@ -36,15 +36,18 @@
 
     @govukSummaryList(exportOperationList)
 
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.locationOfGoods")</h2>
 
-    @govukSummaryList(consignmentList)
+    @govukSummaryList(locationOfGoodsList)
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
 
     @govukSummaryList(customsOfficeExitList)
 
-    @govukSummaryList(extraRowsList)
+    @if(discrepancyDetailsList.rows.nonEmpty) {
+        <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.discrepancyDetails")</h2>
+        @govukSummaryList(discrepancyDetailsList)
+    }
 
     @govukWarningText(
         WarningText(

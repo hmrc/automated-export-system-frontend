@@ -28,24 +28,46 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object LocationIdSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(LocationIdPage).map { answer =>
 
-      val value =
-        Seq(
-          HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}")).toString,
-          HtmlFormat.escape(answer.unlocode).toString,
-          HtmlFormat.escape(answer.locationAdditionalIdentifier).toString,
-          HtmlFormat.escape(answer.authorisationReferenceNumber).toString
-        )
-          .mkString("<br/>")
+      val locationType = HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}")).toString
+      val unlocode = HtmlFormat.escape(answer.unlocode).toString
+      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier).toString
+      val authorisationReferenceNumber = HtmlFormat.escape(answer.authorisationReferenceNumber).toString
 
-      SummaryListRowViewModel(
-        key = "locationId.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.LocationIdController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("locationId.change.hidden"))
+      Seq(
+        SummaryListRowViewModel(
+          key = "locationId.identificationType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(locationType)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.LocationIdController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("locationId.identificationType.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "locationId.unlocode.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(unlocode)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.LocationIdController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "locationId.locationAdditionalIdentifier.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(locationAdditionalIdentifier)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.LocationIdController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("locationId.locationAdditionalIdentifier.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "locationId.authorisationReferenceNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(authorisationReferenceNumber)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.LocationIdController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("locationId.authorisationReferenceNumber.change.hidden"))
+          )
         )
       )
     }

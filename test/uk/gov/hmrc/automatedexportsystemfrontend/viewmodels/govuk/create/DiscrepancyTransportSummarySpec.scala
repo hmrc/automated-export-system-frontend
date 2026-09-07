@@ -31,23 +31,36 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  "row" - {
-    "when answered, return the summary row" in {
+  "rows" - {
+    "when answered, return the summary rows" in {
       val containerDetails = ContainerDetails("containerId", 99)
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportPage, containerDetails)
         .get
 
-      DiscrepancyTransportSummary.row(userAnswers) shouldBe Some(
-        SummaryListRowViewModel(
-          key = "discrepancyTransport.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("containerId<br/>99")),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController.onPageLoad(CheckMode).url
+      DiscrepancyTransportSummary.rows(userAnswers) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyTransport.containerId.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("containerId")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransport.containerId.change.hidden")
             )
-              .withVisuallyHiddenText("discrepancyTransport.change.hidden")
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("99")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransport.numberOfSeals.change.hidden")
+            )
           )
         )
       )
@@ -55,7 +68,7 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyTransportSummary.row(userAnswers) shouldBe None
+      DiscrepancyTransportSummary.rows(userAnswers) shouldBe None
     }
   }
 }

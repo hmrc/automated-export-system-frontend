@@ -31,23 +31,36 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  "row" - {
-    "when answered, return the summary row" in {
+  "rows" - {
+    "when answered, return the summary rows" in {
       val documentDetails = DocumentDetails("documentType", "referenceNumber")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportDocPage, documentDetails)
         .get
 
-      DiscrepancyTransportDocSummary.row(userAnswers) shouldBe Some(
-        SummaryListRowViewModel(
-          key = "discrepancyTransportDoc.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("documentType<br/>referenceNumber")),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("documentType")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
             )
-              .withVisuallyHiddenText("discrepancyTransportDoc.change.hidden")
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("referenceNumber")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportDoc.referenceNumber.change.hidden")
+            )
           )
         )
       )
@@ -55,7 +68,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyTransportDocSummary.row(userAnswers) shouldBe None
+      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe None
     }
   }
 }
