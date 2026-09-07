@@ -32,8 +32,8 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "rows" - {
-    "when answered, return the summary rows" in {
-      val documentDetails = DocumentDetails("documentType", "referenceNumber")
+    "when answered, return the both optional summary rows" in {
+      val documentDetails = DocumentDetails(Some(1), Some(1234))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportDocPage, documentDetails)
         .get
@@ -42,7 +42,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("documentType")),
+            value = ValueViewModel(HtmlContent("1")),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
@@ -53,13 +53,36 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
           ),
           SummaryListRowViewModel(
             key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("referenceNumber")),
+            value = ValueViewModel(HtmlContent("1234")),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
                 uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyTransportDoc.referenceNumber.change.hidden")
+            )
+          )
+        )
+      )
+    }
+
+    "when answered, return one optional summary row" in {
+      val documentDetails = DocumentDetails(Some(1), None)
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyTransportDocPage, documentDetails)
+        .get
+
+      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("1")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
             )
           )
         )

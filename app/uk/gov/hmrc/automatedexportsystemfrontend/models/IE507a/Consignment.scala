@@ -24,7 +24,9 @@ case class Consignment(
   referenceNumberUCR: String,
   parentUCRID: Option[String],
   TransportEquipment: List[TransportEquipment],
-  LocationOfGoods: LocationOfGoods
+  LocationOfGoods: LocationOfGoods,
+  ActiveBorderTransportMeans: Option[ActiveBorderTransportMeans],
+  TransportDocument: List[TransportDocument]
 )
 
 object Consignment {
@@ -37,7 +39,9 @@ object Consignment {
       XmlWrites.textElem("referenceNumberUCR", c.referenceNumberUCR),
       XmlWrites.optElem("parentUCRID", c.parentUCRID),
       c.TransportEquipment.toXml,
-      c.LocationOfGoods.toXml
+      c.LocationOfGoods.toXml,
+      c.ActiveBorderTransportMeans.toXml,
+      c.TransportDocument.toXml
     )
   }
 }

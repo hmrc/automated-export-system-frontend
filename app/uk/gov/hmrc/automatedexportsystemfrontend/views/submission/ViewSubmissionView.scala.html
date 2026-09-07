@@ -1,0 +1,215 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
+
+@this(
+layout: Layout,
+govukButton: GovukButton
+)
+
+@(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
+
+@layout(
+pageTitle = titleNoForm(messages("viewSubmission.title"))
+) {
+
+<span class="govuk-caption-l">
+@messages("viewSubmission.caption", submission.reference)
+</span>
+
+<h1 class="govuk-heading-l">
+ @messages("viewSubmission.heading")
+</h1>
+
+<p class="govuk-body">
+ @messages("viewSubmission.status.label")
+ <strong class="govuk-tag @submission.submissionStatus.cssClass">
+  @messages(submission.submissionStatus.key)
+ </strong>
+</p>
+
+<p class="govuk-body">
+ @messages("viewSubmission.submitted", submission.submittedDate)
+</p>
+
+
+<br>
+
+<table class="govuk-table">
+ <caption class="govuk-table__caption govuk-table__caption--m">
+  @messages("viewSubmission.exportOperation.heading")
+ </caption>
+ <tbody class="govuk-table__body">
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.exportOperation.mrn")
+  </th>
+  <td class="govuk-table__cell">@submission.mrn</td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header">
+   @messages("viewSubmission.exportOperation.goodsBeingStored")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header">
+   @messages("viewSubmission.exportOperation.discrepancies")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header">
+   @messages("viewSubmission.exportOperation.splitExit")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ </tbody>
+</table>
+
+<table class="govuk-table">
+ <caption class="govuk-table__caption govuk-table__caption--m">
+  @messages("viewSubmission.consignment.heading")
+ </caption>
+ <tbody class="govuk-table__body">
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.consignment.ducr")
+  </th>
+  <td class="govuk-table__cell">
+   @submission.ducr
+  </td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header">
+   @messages("viewSubmission.consignment.mucr")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ </tbody>
+</table>
+
+<table class="govuk-table">
+ <caption class="govuk-table__caption govuk-table__caption--m">
+  @messages("viewSubmission.customsOfficeOfExit.heading")
+ </caption>
+
+ <tbody class="govuk-table__body">
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.customsOfficeOfExit.office")
+  </th>
+
+  <td class="govuk-table__cell">
+   @messages(s"officeOfExit.${submission.officeOfExit}")
+  </td>
+ </tr>
+ </tbody>
+</table>
+
+<table class="govuk-table">
+ <caption class="govuk-table__caption govuk-table__caption--m">
+  @messages("viewSubmission.exitCarrier.heading")
+ </caption>
+ <tbody class="govuk-table__body">
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.exitCarrier.eori")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.exitCarrier.name")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.exitCarrier.address")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ </tbody>
+</table>
+
+<table class="govuk-table">
+ <caption class="govuk-table__caption govuk-table__caption--m">
+  @messages("viewSubmission.location.heading")
+ </caption>
+ <tbody class="govuk-table__body">
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.location.type")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.location.identifiedBy")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.location.contact")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ </tbody>
+</table>
+
+<table class="govuk-table">
+ <caption class="govuk-table__caption govuk-table__caption--m">
+  @messages("viewSubmission.authorisation.heading")
+ </caption>
+ <tbody class="govuk-table__body">
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.authorisation.type")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ <tr class="govuk-table__row">
+  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+   @messages("viewSubmission.authorisation.referenceNumber")
+  </th>
+  <td class="govuk-table__cell"></td>
+ </tr>
+ </tbody>
+</table>
+
+<div class="govuk-button-group">
+
+ <button
+         type="submit"
+         class="govuk-button"
+         data-module="govuk-button">
+  @messages("viewSubmission.amendButton")
+ </button>
+
+ <a href="/automated-export-system/cancel-submission/@submission.reference"
+    role="button"
+    draggable="false"
+    class="govuk-button govuk-button--warning"
+    data-module="govuk-button">
+  @messages("viewSubmission.cancelButton")
+ </a>
+
+</div>
+
+}

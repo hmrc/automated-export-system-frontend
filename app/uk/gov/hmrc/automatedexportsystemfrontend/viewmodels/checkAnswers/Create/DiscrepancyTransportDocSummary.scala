@@ -31,26 +31,30 @@ object DiscrepancyTransportDocSummary {
   def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportDocPage).map { answer =>
 
-      val documentType = HtmlFormat.escape(answer.documentType).toString
-      val referenceNumber = HtmlFormat.escape(answer.referenceNumber).toString
+      val maybeDocumentType = answer.documentType.map(docType => HtmlFormat.escape(docType.toString))
+      val maybeReferenceNumber = answer.referenceNumber.map(refNum => HtmlFormat.escape(refNum.toString))
 
       Seq(
-        SummaryListRowViewModel(
-          key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(documentType)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransportDoc.documentType.change.hidden"))
+        maybeDocumentType.map { documentType =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(documentType)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransportDoc.documentType.change.hidden"))
+            )
           )
-        ),
-        SummaryListRowViewModel(
-          key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(referenceNumber)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransportDoc.referenceNumber.change.hidden"))
+        },
+        maybeReferenceNumber.map { referenceNumber =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(referenceNumber)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransportDoc.referenceNumber.change.hidden"))
+            )
           )
-        )
-      )
+        }
+      ).flatten
     }
 }

@@ -31,10 +31,10 @@ object LocationIdSummary {
   def row(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(LocationIdPage).map { answer =>
 
-      val locationType = HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}")).toString
-      val unlocode = HtmlFormat.escape(answer.unlocode).toString
-      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier).toString
-      val authorisationReferenceNumber = HtmlFormat.escape(answer.authorisationReferenceNumber).toString
+      val locationType = HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}"))
+      val unlocode = HtmlFormat.escape(answer.unlocode)
+      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier)
+      val authorisationReferenceNumber = HtmlFormat.escape(answer.authorisationReferenceNumber)
 
       Seq(
         SummaryListRowViewModel(

@@ -177,7 +177,7 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyTransportDocPage" - {
         "to DiscrepancyGoodsPage" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyTransportDocPage, DocumentDetails("documentType", "referenceNumber"))
+            .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
             .success
             .value
           navigator.nextPage(DiscrepancyTransportDocPage, NormalMode, userAnswers) shouldBe
@@ -188,10 +188,7 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyGoodsPage" - {
         "to DiscrepancyPackingPage" in {
           val userAnswers = emptyUserAnswers
-            .set(
-              DiscrepancyGoodsPage,
-              WhatHasChangedDetails("goodsItemNumber", Some("declarationUniqueConsignmentReference"), "newGrossMass", "newNetMass")
-            )
+            .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("declarationUniqueConsignmentReference"), "newGrossMass", "newNetMass"))
             .success
             .value
           navigator.nextPage(DiscrepancyGoodsPage, NormalMode, userAnswers) shouldBe
@@ -202,7 +199,7 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyPackingPage" - {
         "to CYASubmissionPage" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage, PackingDetails("packagingCode", "numberOfPackages", "shippingMarks"))
+            .set(DiscrepancyPackingPage, PackingDetails("packagingCode", 1, "shippingMarks"))
             .success
             .value
           navigator.nextPage(DiscrepancyPackingPage, NormalMode, userAnswers) shouldBe

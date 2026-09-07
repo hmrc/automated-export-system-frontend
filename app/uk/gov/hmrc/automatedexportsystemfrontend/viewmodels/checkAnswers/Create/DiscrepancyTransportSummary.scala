@@ -31,8 +31,8 @@ object DiscrepancyTransportSummary {
   def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportPage).map { answer =>
 
-      val containerId = HtmlFormat.escape(answer.containerId).toString
-      val numberOfSeals = answer.numberOfSeals
+      val containerId = HtmlFormat.escape(answer.containerId)
+      val numberOfSeals = answer.numberOfSeals.toString
 
       Seq(
         SummaryListRowViewModel(
@@ -45,7 +45,7 @@ object DiscrepancyTransportSummary {
         ),
         SummaryListRowViewModel(
           key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(numberOfSeals.toString)),
+          value = ValueViewModel(HtmlContent(numberOfSeals)),
           actions = Seq(
             ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))

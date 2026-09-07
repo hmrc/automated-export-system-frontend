@@ -33,7 +33,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
 
   "rows" - {
     "when answered, return all summary rows" in {
-      val whatHasChangedDetails = WhatHasChangedDetails("goodsItemNumber", Some("2GB647298735290-S569"), "20", "10")
+      val whatHasChangedDetails = WhatHasChangedDetails(Some(1), Some("2GB647298735290-S569"), "20", "10")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyGoodsPage, whatHasChangedDetails)
         .get
@@ -42,7 +42,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("goodsItemNumber")),
+            value = ValueViewModel(HtmlContent("1")),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
@@ -88,25 +88,14 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
       )
     }
 
-    "when answered, return summary rows excluding ducr" in {
-      val whatHasChangedDetails = WhatHasChangedDetails("goodsItemNumber", None, "20", "10")
+    "when answered, return summary rows excluding optional values" in {
+      val whatHasChangedDetails = WhatHasChangedDetails(None, None, "20", "10")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyGoodsPage, whatHasChangedDetails)
         .get
 
       DiscrepancyGoodsSummary.rows(userAnswers) shouldBe Some(
         Seq(
-          SummaryListRowViewModel(
-            key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("goodsItemNumber")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(CheckMode).url
-              )
-                .withVisuallyHiddenText("discrepancyGoods.goodsItemNumber.change.hidden")
-            )
-          ),
           SummaryListRowViewModel(
             key = "discrepancyGoods.newGrossMass.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent("20")),

@@ -152,3 +152,16 @@ GET        /confirmation                       uk.gov.hmrc.automatedexportsystem
 GET        /submit                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SubmissionController.standardSubmit
 
 GET        /dashboard                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSubmissionsController.onPageLoad()
+
+
+# View submission
+GET   /submission/:submissionID      uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSubmissionController.onPageLoad(submissionID: String)
+
+# Cancel confirmation page
+GET   /cancel-submission/:submissionID      uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.CancelSubmissionController.onPageLoad(submissionID: String)
+
+# Submit cancellation
+POST  /cancel-submission/:submissionID      uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.CancelSubmissionController.onSubmit(submissionID: String)
+
+# Cancellation success page
+GET   /submission-cancelled/:submissionID      uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.CancellationSuccessController.onPageLoad(submissionID: String)

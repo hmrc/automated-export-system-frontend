@@ -161,11 +161,11 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration"))
         .get
-        .set(DiscrepancyTransportDocPage, DocumentDetails("documentType", "documentReferenceNumber"))
+        .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         .get
-        .set(DiscrepancyPackingPage, PackingDetails("BX", "10", "MARKS123"))
+        .set(DiscrepancyPackingPage, PackingDetails("BX", 1, "MARKS123"))
         .get
-        .set(DiscrepancyGoodsPage, WhatHasChangedDetails("1234", Some("2GB647298735290-S569"), "20", "10"))
+        .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("2GB647298735290-S569"), "20", "10"))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -217,17 +217,17 @@ class CYASubmissionControllerSpec extends SpecBase {
         body should include("Transport means nationality")
         body should include("countryOfRegistration")
         body should include("Transport document type")
-        body should include("documentType")
+        body should include("1")
         body should include("Transport document reference")
-        body should include("documentReferenceNumber")
+        body should include("1234")
         body should include("Package type")
         body should include("BX")
         body should include("Number of packages")
-        body should include("10")
+        body should include("1")
         body should include("Shipping marks")
         body should include("MARKS123")
         body should include("Declaration goods item number")
-        body should include("1234")
+        body should include("1")
         body should include("Declaration Unique Consignment Reference (DUCR)")
         body should include("2GB647298735290-S569")
         body should include("New gross mass")

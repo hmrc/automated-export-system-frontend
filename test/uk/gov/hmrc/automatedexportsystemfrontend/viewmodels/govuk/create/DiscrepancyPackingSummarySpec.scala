@@ -33,7 +33,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
 
   "rows" - {
     "when answered, return the summary rows" in {
-      val packingDetails = PackingDetails("BX", "10", "MARKS123")
+      val packingDetails = PackingDetails("BX", 2, "MARKS123")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyPackingPage, packingDetails)
         .get
@@ -53,7 +53,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
           ),
           SummaryListRowViewModel(
             key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("10")),
+            value = ValueViewModel(HtmlContent("2")),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",

@@ -33,6 +33,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyGoodsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyGoodsView
 
 import scala.concurrent.Future
 
@@ -50,7 +51,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
     Json.obj(
       "standard" -> Json.obj(
         DiscrepancyGoodsPage.toString -> Json.obj(
-          "goodsItemNumber" -> "value 1",
+          "declarationGoodsItemNumber" -> 123,
           "declarationUniqueConsignmentReference" -> "value 2",
           "newGrossMass" -> "value 3",
           "newNetMass" -> "value 4"
@@ -95,7 +96,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request = FakeRequest(GET, discrepancyGoodsRoute)
 
-        // val view = application.injector.instanceOf[DiscrepancyGoodsView]
+        val view = application.injector.instanceOf[DiscrepancyGoodsView]
 
         val result = route(application, request).value
 
@@ -105,10 +106,10 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
         body should include("Tell us what’s changed")
         body should include("Enter the details of any changes to the goods.")
         body should include("Goods item number")
-        body should include("""id="goodsItemNumber"""")
-        body should include("""name="goodsItemNumber"""")
+        body should include("""id="declarationGoodsItemNumber"""")
+        body should include("""name="declarationGoodsItemNumber"""")
         body should include("""type="text"""")
-        body should include("""value="value 1"""")
+        body should include("""value="123""")
         body should include("Declaration Unique Consignment Reference (DUCR)")
         body should include("If you wish to amend the DUCR from the original IE501 message.")
         body should include("""id="declarationUniqueConsignmentReference"""")
@@ -149,7 +150,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancyGoodsRoute)
             .withFormUrlEncodedBody(
-              ("goodsItemNumber", "value1"),
+              ("declarationGoodsItemNumber", "123"),
               ("declarationUniqueConsignmentReference", "5GB000000000000-12345"),
               ("newGrossMass", "1.0"),
               ("newNetMass", "1.0")
@@ -208,7 +209,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancyGoodsRoute)
             .withFormUrlEncodedBody(
-              ("goodsItemNumber", "value 1"),
+              ("declarationGoodsItemNumber", "1"),
               ("declarationUniqueConsignmentReference", "value 2"),
               ("newGrossMass", "value 3"),
               ("newNetMass", "value 4")

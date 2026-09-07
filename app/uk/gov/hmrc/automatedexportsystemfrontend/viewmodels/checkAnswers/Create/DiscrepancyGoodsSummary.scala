@@ -31,22 +31,23 @@ object DiscrepancyGoodsSummary {
   def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyGoodsPage).map { answer =>
 
-      val goodsItemNumber = HtmlFormat.escape(answer.goodsItemNumber).toString
-      val maybeDucr = answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr).toString)
-      val newGrossMass = HtmlFormat.escape(answer.newGrossMass).toString
-      val newNetMass = HtmlFormat.escape(answer.newNetMass).toString
+      val maybeDeclarationGoodsItemNumber =
+        answer.declarationGoodsItemNumber.map(declarationGoodsItemNum => HtmlFormat.escape(declarationGoodsItemNum.toString))
+      val maybeDucr = answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr))
+      val newGrossMass = HtmlFormat.escape(answer.newGrossMass)
+      val newNetMass = HtmlFormat.escape(answer.newNetMass)
 
       Seq(
-        Some(
+        maybeDeclarationGoodsItemNumber.map { declarationGoodsItemNumber =>
           SummaryListRowViewModel(
             key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent(goodsItemNumber)),
+            value = ValueViewModel(HtmlContent(declarationGoodsItemNumber)),
             actions = Seq(
               ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
                 .withVisuallyHiddenText(messages("discrepancyGoods.goodsItemNumber.change.hidden"))
             )
           )
-        ),
+        },
         maybeDucr.map { ducr =>
           SummaryListRowViewModel(
             key = "discrepancyGoods.ducr.checkYourAnswersLabel",

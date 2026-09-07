@@ -14,13 +14,20 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.models
+package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
-import play.api.libs.json.*
+import play.api.libs.json.{Format, Json}
+import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
-case class DocumentDetails(documentType: Option[Int], referenceNumber: Option[Int])
+case class Commodity(grossMass: String, netMass: String)
 
-object DocumentDetails {
+object Commodity {
+  given format: Format[Commodity] = Json.format[Commodity]
 
-  implicit val format: OFormat[DocumentDetails] = Json.format
+  given xmlWrites: XmlWrites[Commodity] = XmlWrites.instance { c =>
+    XmlWrites.elem(
+      "Commodity",
+      XmlWrites.elem("GoodsMeasure", XmlWrites.textElem("grossMass", c.grossMass), XmlWrites.textElem("netMass", c.netMass))
+    )
+  }
 }

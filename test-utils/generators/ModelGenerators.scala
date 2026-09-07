@@ -74,7 +74,7 @@ trait ModelGenerators {
     Arbitrary {
       for {
         packagingCode <- arbitrary[String]
-        numberOfPackages <- arbitrary[String]
+        numberOfPackages <- arbitrary[Int]
         shippingMarks <- arbitrary[String]
       } yield PackingDetails(packagingCode, numberOfPackages, shippingMarks)
     }
@@ -82,7 +82,7 @@ trait ModelGenerators {
   given arbitraryDiscrepancyGoods: Arbitrary[WhatHasChangedDetails] =
     Arbitrary {
       for {
-        goodsItemNumber <- arbitrary[String]
+        goodsItemNumber <- arbitrary[Option[Int]]
         declarationUniqueConsignmentReference <- arbitrary[Option[String]]
         newGrossMass <- arbitrary[String]
         newNetMass <- arbitrary[String]
@@ -92,8 +92,8 @@ trait ModelGenerators {
   given arbitraryDocumentDetails: Arbitrary[DocumentDetails] =
     Arbitrary {
       for {
-        documentType <- arbitrary[String]
-        referenceNumber <- arbitrary[String]
+        documentType <- arbitrary[Option[Int]]
+        referenceNumber <- arbitrary[Option[Int]]
       } yield DocumentDetails(documentType, referenceNumber)
     }
 

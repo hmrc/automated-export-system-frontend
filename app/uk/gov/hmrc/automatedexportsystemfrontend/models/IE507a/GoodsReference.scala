@@ -19,25 +19,19 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
-case class TransportEquipment(
+case class GoodsReference(
   sequenceNumber: Int, // Note: optional in the schema but we can easily provide it on behalf of the user
-  containerIdentificationNumber: String, // Note: optional in the schema but mandatory in the journey
-  numberOfSeals: Int, // Note: optional in the schema but mandatory in the journey
-  seals: List[Seal],
-  goodsReferences: List[GoodsReference]
+  declarationGoodsItemNumber: Int // Optional in the schema, but mandatory in the journey
 )
 
-object TransportEquipment {
-  given format: Format[TransportEquipment] = Json.format[TransportEquipment]
+object GoodsReference {
+  given format: Format[GoodsReference] = Json.format[GoodsReference]
 
-  given xmlWrites: XmlWrites[TransportEquipment] = XmlWrites.instance { e =>
+  given xmlWrites: XmlWrites[GoodsReference] = XmlWrites.instance { g =>
     XmlWrites.elem(
-      "TransportEquipment",
-      XmlWrites.textElem("sequenceNumber", e.sequenceNumber),
-      XmlWrites.textElem("containerIdentificationNumber", e.containerIdentificationNumber),
-      XmlWrites.textElem("numberOfSeals", e.numberOfSeals),
-      e.seals.toXml,
-      e.goodsReferences.toXml
+      "GoodsReference",
+      XmlWrites.textElem("sequenceNumber", g.sequenceNumber.toString),
+      XmlWrites.textElem("declarationGoodsItemNumber", g.declarationGoodsItemNumber.toString)
     )
   }
 }

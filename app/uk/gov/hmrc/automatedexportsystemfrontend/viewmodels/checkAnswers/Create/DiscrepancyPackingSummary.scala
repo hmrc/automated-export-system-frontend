@@ -31,9 +31,9 @@ object DiscrepancyPackingSummary {
   def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyPackingPage).map { answer =>
 
-      val packagingCode = HtmlFormat.escape(answer.packagingCode).toString
-      val numberOfPackages = HtmlFormat.escape(answer.numberOfPackages).toString
-      val shippingMarks = HtmlFormat.escape(answer.shippingMarks).toString
+      val packagingCode = HtmlFormat.escape(answer.packagingCode)
+      val numberOfPackages = HtmlFormat.escape(answer.numberOfPackages.toString)
+      val shippingMarks = HtmlFormat.escape(answer.shippingMarks)
 
       Seq(
         SummaryListRowViewModel(

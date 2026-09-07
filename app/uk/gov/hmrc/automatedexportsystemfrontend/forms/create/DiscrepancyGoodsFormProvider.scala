@@ -28,13 +28,13 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
 
   def apply(): Form[WhatHasChangedDetails] = Form(
     mapping(
-      "goodsItemNumber" -> text("discrepancyGoods.error.goodsItemNumber.required")
-        .verifying(
-          firstError(
-            maxLength(goodsItemNumberMaxLength, "discrepancyGoods.error.goodsItemNumber.length"),
-            regexp(goodsItemNumberRegex, "discrepancyGoods.error.goodsItemNumber.invalid")
+      "declarationGoodsItemNumber" -> optional(
+        int("discrepancyGoods.error.goodsItemNumber.required")
+          .verifying(
+            minimumValue(0, "discrepancyGoods.error.goodsItemNumber.length"),
+            maximumValue(goodsItemNumberMaxValue, "discrepancyGoods.error.goodsItemNumber.length")
           )
-        ),
+      ),
       "declarationUniqueConsignmentReference" -> optional(
         text("discrepancyGoods.error.declarationUniqueConsignmentReference.optional").verifying(
           firstError(
@@ -54,6 +54,6 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
         .verifying(
           firstError(maxLength(100, "discrepancyGoods.error.newNetMass.length"), regexp(netMassRegex, "discrepancyGoods.error.newNetMass.invalid"))
         )
-    )(WhatHasChangedDetails.apply)(x => Some((x.goodsItemNumber, x.declarationUniqueConsignmentReference, x.newGrossMass, x.newNetMass)))
+    )(WhatHasChangedDetails.apply)(x => Some((x.declarationGoodsItemNumber, x.declarationUniqueConsignmentReference, x.newGrossMass, x.newNetMass)))
   )
 }

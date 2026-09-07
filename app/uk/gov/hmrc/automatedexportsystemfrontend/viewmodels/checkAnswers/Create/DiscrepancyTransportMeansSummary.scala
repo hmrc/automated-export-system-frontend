@@ -31,9 +31,9 @@ object DiscrepancyTransportMeansSummary {
   def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportMeansPage).map { answer =>
 
-      val transportType = HtmlFormat.escape(answer.transportType).toString
-      val transportIdNumber = HtmlFormat.escape(answer.transportIdNumber).toString
-      val countryOfRegistration = HtmlFormat.escape(answer.countryOfRegistration).toString
+      val transportType = HtmlFormat.escape(answer.transportType)
+      val transportIdNumber = HtmlFormat.escape(answer.transportIdNumber)
+      val countryOfRegistration = HtmlFormat.escape(answer.countryOfRegistration)
 
       Seq(
         SummaryListRowViewModel(
