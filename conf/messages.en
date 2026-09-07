@@ -192,24 +192,6 @@ discrepancyConsignment.checkYourAnswersLabel = How will the goods cross the bord
 discrepancyConsignment.error.required = Select how the goods will cross the border
 discrepancyConsignment.change.hidden = how the goods will cross the border
 
-discrepancyDucr.title = What is the Declaration Unique Consignment Reference (DUCR) for these goods?
-discrepancyDucr.heading = What is the Declaration Unique Consignment Reference (DUCR) for these goods?
-discrepancyDucr.hint = This links the movement to the underlying export declaration in CDS. It must match the DUCR used on the original declaration. The DUCR must be valid and not already linked to another MRN - if it is, your submission will be rejected.
-discrepancyDucr.checkYourAnswersLabel = What is the Declaration Unique Consignment Reference (DUCR) for these goods?
-discrepancyDucr.error.required = Enter the Declaration Unique Consignment Reference (DUCR) for these goods
-discrepancyDucr.error.length = The Declaration Unique Consignment Reference (DUCR) must be 35 characters or less
-discrepancyDucr.error.invalid = The Declaration Unique Consignment Reference (DUCR) must only include letters and numbers
-discrepancyDucr.change.hidden = the Declaration Unique Consignment Reference (DUCR) for these goods
-
-discrepancyMucr.title = What is the Master Unique Consignment Reference (MUCR) for these goods?
-discrepancyMucr.heading = What is the Master Unique Consignment Reference (MUCR) for these goods?
-discrepancyMucr.hint = Up to 35 characters. This groups multiple DUCRs under one parent reference. The MUCR must be in an open state - if it has already been closed, your submission will be rejected.
-discrepancyMucr.checkYourAnswersLabel = What is the Master Unique Consignment Reference (MUCR) for these goods?
-discrepancyMucr.error.required = Enter the Master Unique Consignment Reference (MUCR) for these goods
-discrepancyMucr.error.length = The Master Unique Consignment Reference (MUCR) must be 35 characters or less
-discrepancyMucr.error.invalid = The Master Unique Consignment Reference (MUCR) must only include letters and numbers
-discrepancyMucr.change.hidden = the Master Unique Consignment Reference (MUCR) for these goods
-
 discrepancyTransport.title = Container details
 discrepancyTransport.heading = Container details
 discrepancyTransport.hint = If the goods are being transported in a container, enter the details.
