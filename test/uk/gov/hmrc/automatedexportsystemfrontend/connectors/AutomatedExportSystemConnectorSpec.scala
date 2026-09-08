@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.connectors
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.apache.pekko.Done
-import play.api.http.Status.NO_CONTENT
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.*
 import play.api.Application
@@ -29,6 +28,7 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
 
   val url = "/automated-export-system/message"
   val cancelUrl = "/automated-export-system/cancel/test-submission-id"
+  val submissionUrl = "/automated-export-system/submission/test-submission-id"
 
   private def application: Application =
     new GuiceApplicationBuilder()
@@ -70,6 +70,84 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
           .submitIE507a("someXml")
           .failed
           .futureValue
+
+        result shouldBe an[UpstreamErrorResponse]
+      }
+    }
+  }
+
+  "getSubmission" - {
+
+    "must return a full submission when OK returned" in {
+
+      val app = application
+
+      running(app) {
+
+        val connector =
+          app.injector.instanceOf[AutomatedExportSystemConnector]
+
+        server.stubFor(
+          get(urlEqualTo(submissionUrl))
+            .willReturn(
+              aResponse()
+                .withStatus(OK)
+                .withBody("""
+                    |<Submission>
+                    |  <submissionId>test-submission-id</submissionId>
+                    |  <ExportOperation>
+                    |    <type>1</type>
+                    |    <MRN>26GB0000X6524786A9</MRN>
+                    |    <discrepanciesExist>0</discrepanciesExist>
+                    |    <splitIndicator>0</splitIndicator>
+                    |  </ExportOperation>
+                    |  <CustomsOfficeOfExitActual>
+                    |    <referenceNumber>GB000051</referenceNumber>
+                    |  </CustomsOfficeOfExitActual>
+                    |  <updatedAt>2026-08-03T00:00:00</updatedAt>
+                    |</Submission>
+                    |""".stripMargin)
+            )
+        )
+
+        val result =
+          connector
+            .getSubmission("test-submission-id")
+            .futureValue
+
+        result.submissionId shouldBe "test-submission-id"
+        result.exportOperation.exportOperationType shouldBe "1"
+        result.exportOperation.mrn shouldBe "26GB0000X6524786A9"
+        result.exportOperation.discrepanciesExist shouldBe 0
+        result.exportOperation.splitIndicator shouldBe 0
+        result.customsOfficeOfExitActual.referenceNumber shouldBe "GB000051"
+        result.goodsShipment shouldBe None
+      }
+    }
+
+    "must return an upstream error response when anything else is returned" in {
+
+      val app = application
+
+      running(app) {
+
+        val connector =
+          app.injector.instanceOf[AutomatedExportSystemConnector]
+
+        server.stubFor(
+          get(urlEqualTo(submissionUrl))
+            .willReturn(
+              aResponse()
+                .withStatus(400)
+                .withBody("boom")
+            )
+        )
+
+        val result =
+          connector
+            .getSubmission("test-submission-id")
+            .failed
+            .futureValue
 
         result shouldBe an[UpstreamErrorResponse]
       }
