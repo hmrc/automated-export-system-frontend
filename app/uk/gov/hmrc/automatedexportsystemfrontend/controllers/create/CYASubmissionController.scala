@@ -46,24 +46,37 @@ class CYASubmissionController @Inject() (
       Ok(
         view(
           SummaryListViewModel(exportOperationRowsGenerator(userAnswers).flatten),
-          SummaryListViewModel(consignmentRowsGenerator(userAnswers).flatten),
+          SummaryListViewModel(locationOfGoodsRowsGenerator(userAnswers).flatten),
           SummaryListViewModel(customsOfficeExitRowGenerator(userAnswers).flatten),
-          SummaryListViewModel(extraRowsGenerator(userAnswers).flatten)
+          SummaryListViewModel(discrepancyRowsGenerator(userAnswers).flatten)
         )
       )
     )
   }
 
   private def exportOperationRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(EnterMrnSummary.row(answers), IsSplitExitSummary.row(answers))
+    Seq(
+      EnterMrnSummary.row(answers),
+      EnterDucrSummary.row(answers),
+      PartOfConsolidationSummary.row(answers),
+      IsSplitExitSummary.row(answers),
+      AnyDiscrepanciesSummary.row(answers)
+    )
 
-  private def consignmentRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(EnterDucrSummary.row(answers), PartOfConsolidationSummary.row(answers))
+  private def locationOfGoodsRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+    Seq(LocationTypeSummary.row(answers)) ++ LocationIdSummary.row(answers).toSeq.flatten.map(Some(_))
 
   private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     Seq(OfficeOfExitSummary.row(answers))
 
-  private def extraRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(AnyDiscrepanciesSummary.row(answers))
+  private def discrepancyRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+    Seq(DiscrepancyConsignmentSummary.row(answers)) ++
+      DiscrepancyTransportSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
+      Seq(DiscrepancySealsSummary.row(answers)) ++
+      Seq(DiscrepancyReferenceSummary.row(answers)) ++
+      DiscrepancyTransportMeansSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
+      DiscrepancyTransportDocSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
+      DiscrepancyGoodsSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
+      DiscrepancyPackingSummary.rows(answers).toSeq.flatten.map(Some(_))
 
 }

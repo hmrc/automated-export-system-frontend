@@ -31,23 +31,59 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  "row" - {
-    "when answered, return the summary row" in {
+  "rows" - {
+    "when answered, return the both optional summary rows" in {
       val documentDetails = DocumentDetails(Some(1), Some(1234))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportDocPage, documentDetails)
         .get
 
-      DiscrepancyTransportDocSummary.row(userAnswers) shouldBe Some(
-        SummaryListRowViewModel(
-          key = "discrepancyTransportDoc.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("1<br/>1234")),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("1")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
             )
-              .withVisuallyHiddenText("discrepancyTransportDoc.change.hidden")
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("1234")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportDoc.referenceNumber.change.hidden")
+            )
+          )
+        )
+      )
+    }
+
+    "when answered, return one optional summary row" in {
+      val documentDetails = DocumentDetails(Some(1), None)
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyTransportDocPage, documentDetails)
+        .get
+
+      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("1")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
+            )
           )
         )
       )
@@ -55,7 +91,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyTransportDocSummary.row(userAnswers) shouldBe None
+      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe None
     }
   }
 }

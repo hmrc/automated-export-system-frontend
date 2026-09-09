@@ -61,6 +61,7 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
   ".declarationUniqueConsignmentReference" - {
 
     val fieldName = "declarationUniqueConsignmentReference"
+    val optionalKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.optional"
     val lengthKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.length"
     val invalidKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.invalid"
     val maxLength = 35
@@ -89,6 +90,16 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
         val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
         result.errors must contain(expectedError)
       }
+    }
+
+    "not bind when only spaces are entered, prompting an optional ducr error" in {
+      val data = Map("goodsItemNumber" -> "reference", "declarationUniqueConsignmentReference" -> " ", "newGrossMass" -> "20", "newNetMass" -> "10")
+
+      val expectedError = FormError(fieldName, optionalKey)
+
+      val result = form.bind(data)
+
+      result.errors must contain(expectedError)
     }
   }
 

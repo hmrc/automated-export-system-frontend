@@ -28,23 +28,56 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyGoodsSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyGoodsPage).map { answer =>
 
-      val value = Seq(
-        Some(HtmlFormat.escape(answer.declarationGoodsItemNumber.map(_.toString).getOrElse("")).toString),
-        answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr).toString),
-        Some(HtmlFormat.escape(answer.newGrossMass).toString),
-        Some(HtmlFormat.escape(answer.newNetMass).toString)
-      ).flatten.mkString("<br/>")
+      val maybeDeclarationGoodsItemNumber =
+        answer.declarationGoodsItemNumber.map(declarationGoodsItemNum => HtmlFormat.escape(declarationGoodsItemNum.toString))
+      val maybeDucr = answer.declarationUniqueConsignmentReference.map(ducr => HtmlFormat.escape(ducr))
+      val newGrossMass = HtmlFormat.escape(answer.newGrossMass)
+      val newNetMass = HtmlFormat.escape(answer.newNetMass)
 
-      SummaryListRowViewModel(
-        key = "discrepancyGoods.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyGoods.change.hidden"))
+      Seq(
+        maybeDeclarationGoodsItemNumber.map { declarationGoodsItemNumber =>
+          SummaryListRowViewModel(
+            key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(declarationGoodsItemNumber)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyGoods.goodsItemNumber.change.hidden"))
+            )
+          )
+        },
+        maybeDucr.map { ducr =>
+          SummaryListRowViewModel(
+            key = "discrepancyGoods.ducr.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(ducr)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyGoods.ducr.change.hidden"))
+            )
+          )
+        },
+        Some(
+          SummaryListRowViewModel(
+            key = "discrepancyGoods.newGrossMass.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(newGrossMass)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyGoods.newGrossMass.change.hidden"))
+            )
+          )
+        ),
+        Some(
+          SummaryListRowViewModel(
+            key = "discrepancyGoods.newNetMass.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(newNetMass)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyGoods.newNetMass.change.hidden"))
+            )
+          )
         )
-      )
+      ).flatten
     }
 }

@@ -28,21 +28,37 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyPackingSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyPackingPage).map { answer =>
 
-      val value = Seq(
-        HtmlFormat.escape(answer.packagingCode).toString,
-        HtmlFormat.escape(answer.numberOfPackages.toString).toString,
-        HtmlFormat.escape(answer.shippingMarks).toString
-      ).mkString("<br/>")
+      val packagingCode = HtmlFormat.escape(answer.packagingCode)
+      val numberOfPackages = HtmlFormat.escape(answer.numberOfPackages.toString)
+      val shippingMarks = HtmlFormat.escape(answer.shippingMarks)
 
-      SummaryListRowViewModel(
-        key = "discrepancyPacking.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyPacking.change.hidden"))
+      Seq(
+        SummaryListRowViewModel(
+          key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(packagingCode)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyPacking.packagingCode.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(numberOfPackages)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyPacking.numberOfPackages.change.hidden"))
+          )
+        ),
+        SummaryListRowViewModel(
+          key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(shippingMarks)),
+          actions = Seq(
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(CheckMode).url)
+              .withVisuallyHiddenText(messages("discrepancyPacking.shippingMarks.change.hidden"))
+          )
         )
       )
     }

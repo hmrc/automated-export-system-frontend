@@ -28,21 +28,33 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyTransportDocSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportDocPage).map { answer =>
 
-      val value =
-        answer.documentType.map(_.toString).getOrElse("") +
-          "<br/>" +
-          answer.referenceNumber.map(_.toString).getOrElse("")
+      val maybeDocumentType = answer.documentType.map(docType => HtmlFormat.escape(docType.toString))
+      val maybeReferenceNumber = answer.referenceNumber.map(refNum => HtmlFormat.escape(refNum.toString))
 
-      SummaryListRowViewModel(
-        key = "discrepancyTransportDoc.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(value)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyTransportDoc.change.hidden"))
-        )
-      )
+      Seq(
+        maybeDocumentType.map { documentType =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(documentType)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransportDoc.documentType.change.hidden"))
+            )
+          )
+        },
+        maybeReferenceNumber.map { referenceNumber =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(referenceNumber)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransportDoc.referenceNumber.change.hidden"))
+            )
+          )
+        }
+      ).flatten
     }
 }

@@ -31,23 +31,47 @@ class DiscrepancyTransportMeansSummarySpec extends AnyFreeSpec with Matchers wit
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  "row" - {
-    "when answered, return the summary row" in {
+  "rows" - {
+    "when answered, return the summary rows" in {
       val transportAcrossBorderDetails = TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportMeansPage, transportAcrossBorderDetails)
         .get
 
-      DiscrepancyTransportMeansSummary.row(userAnswers) shouldBe Some(
-        SummaryListRowViewModel(
-          key = "discrepancyTransportMeans.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("transportType<br/>transportIdNumber<br/>countryOfRegistration")),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+      DiscrepancyTransportMeansSummary.rows(userAnswers) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("transportType")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportMeans.transportType.change.hidden")
             )
-              .withVisuallyHiddenText("discrepancyTransportMeans.change.hidden")
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("transportIdNumber")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportMeans.transportIdNumber.change.hidden")
+            )
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("countryOfRegistration")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+              )
+                .withVisuallyHiddenText("discrepancyTransportMeans.countryOfRegistration.change.hidden")
+            )
           )
         )
       )
@@ -55,7 +79,7 @@ class DiscrepancyTransportMeansSummarySpec extends AnyFreeSpec with Matchers wit
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyTransportMeansSummary.row(userAnswers) shouldBe None
+      DiscrepancyTransportMeansSummary.rows(userAnswers) shouldBe None
     }
   }
 }

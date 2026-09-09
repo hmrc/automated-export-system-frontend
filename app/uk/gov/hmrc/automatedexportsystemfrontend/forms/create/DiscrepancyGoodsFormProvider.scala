@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrMaxLength, ducrRegex, goodsItemNumberMaxValue, grossMassRegex, netMassRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.WhatHasChangedDetails
 
@@ -36,7 +36,7 @@ class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
           )
       ),
       "declarationUniqueConsignmentReference" -> optional(
-        text().verifying(
+        text("discrepancyGoods.error.declarationUniqueConsignmentReference.optional").verifying(
           firstError(
             maxLength(ducrMaxLength, "discrepancyGoods.error.declarationUniqueConsignmentReference.length"),
             regexp(ducrRegex, "discrepancyGoods.error.declarationUniqueConsignmentReference.invalid")
