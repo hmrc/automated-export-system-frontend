@@ -112,7 +112,7 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
 
         val result =
           connector
-            .getSubmission("test-submission-id")
+            .getSingleSubmission("test-submission-id")
             .futureValue
 
         result.submissionId shouldBe "test-submission-id"
@@ -145,7 +145,7 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
 
         val result =
           connector
-            .getSubmission("test-submission-id")
+            .getSingleSubmission("test-submission-id")
             .failed
             .futureValue
 

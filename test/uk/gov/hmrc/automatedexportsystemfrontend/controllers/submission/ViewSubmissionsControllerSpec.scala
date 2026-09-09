@@ -65,7 +65,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
       val submissionResponseList =
         SubmissionSummaryResponseList(Seq(submissionResponse))
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(submissionResponseList))
 
       val application = applicationBuilder(userAnswers = None)
@@ -123,7 +123,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         status = 2
       )
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission1, submission2))))
 
       val application = applicationBuilder(userAnswers = None)
@@ -174,7 +174,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         status = 1
       )
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission))))
 
       val application = applicationBuilder(userAnswers = None)
@@ -215,7 +215,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
           .authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any())
       ).thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq.empty)))
 
       val application = applicationBuilder(userAnswers = None)

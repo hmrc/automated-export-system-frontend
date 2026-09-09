@@ -40,7 +40,7 @@ class CancellationSuccessController @Inject() (
   def onPageLoad(submissionId: String): Action[AnyContent] =
     actionBuilder.async { implicit request =>
       automatedExportSystemConnector
-        .getSubmissions()
+        .getSubmissionSummaryResponses()
         .map[Result] { response =>
           response.submissions
             .find(_.submissionId.toString == submissionId)

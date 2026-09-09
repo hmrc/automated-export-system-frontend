@@ -56,7 +56,7 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
         }
       }
 
-  def getSubmissions()(implicit hc: HeaderCarrier): Future[SubmissionSummaryResponseList] =
+  def getSubmissionSummaryResponses()(implicit hc: HeaderCarrier): Future[SubmissionSummaryResponseList] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submissions")
       .execute[HttpResponse]
@@ -70,7 +70,7 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
         }
       }
 
-  def getSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[SingleSubmissionResponse] =
+  def getSingleSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[SingleSubmissionResponse] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submission/$submissionId")
       .execute[HttpResponse]

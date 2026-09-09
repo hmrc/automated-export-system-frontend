@@ -69,7 +69,9 @@ object SingleSubmissionResponseParser {
           .map(_.text.trim)
           .filter(_.nonEmpty),
         transportEquipment = parseOptionalList(consignmentXml \ "TransportEquipment")(parseTransportEquipment),
-        locationOfGoods = parseLocationOfGoods((consignmentXml \ "LocationOfGoods").head),
+        locationOfGoods = parseLocationOfGoods(
+          (consignmentXml \ "LocationOfGoods").headOption.getOrElse(throw new IllegalStateException("Missing LocationOfGoods element in submission"))
+        ),
         activeBorderTransportMeans = (consignmentXml \ "ActiveBorderTransportMeans").headOption
           .map(parseActiveBorderTransportMeans),
         transportDocument = parseOptionalList(consignmentXml \ "TransportDocument")(parseTransportDocument)
@@ -148,14 +150,17 @@ object SingleSubmissionResponseParser {
       referenceNumberUCR = (xml \ "referenceNumberUCR").headOption
         .map(_.text.trim)
         .filter(_.nonEmpty),
-      commodity = parseCommodity((xml \ "Commodity").head),
+      commodity = parseCommodity(
+        (xml \ "Commodity").headOption
+          .getOrElse(throw new IllegalStateException("Missing Commodity element in goods item"))
+      ),
       packaging = parseOptionalList(xml \ "Packaging")(parsePackaging)
     )
 
   private def parseCommodity(xml: NodeSeq): SingleSubmissionCommodity = {
 
     val goodsMeasureXml =
-      (xml \ "GoodsMeasure").head
+      (xml \ "GoodsMeasure").headOption.getOrElse(throw new IllegalStateException("Missing GoodsMeasure element in commodity"))
 
     SingleSubmissionCommodity(
       grossMass = BigDecimal((goodsMeasureXml \ "grossMass").text.trim),

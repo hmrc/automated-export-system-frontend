@@ -68,7 +68,7 @@ class CancelSubmissionControllerSpec extends SpecBase {
 
       when(
         mockAutomatedExportSystemConnector
-          .getSubmissions()(any())
+          .getSubmissionSummaryResponses()(any())
       ).thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission))))
 
       val application =
@@ -121,7 +121,7 @@ class CancelSubmissionControllerSpec extends SpecBase {
 
       when(
         mockAutomatedExportSystemConnector
-          .getSubmissions()(any())
+          .getSubmissionSummaryResponses()(any())
       ).thenReturn(Future.successful(SubmissionSummaryResponseList(Seq.empty)))
 
       val application =

@@ -60,7 +60,7 @@ class ViewSubmissionControllerSpec extends SpecBase {
         status = 1
       )
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission))))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
@@ -101,7 +101,7 @@ class ViewSubmissionControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq.empty)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
