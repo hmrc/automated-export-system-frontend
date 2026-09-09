@@ -40,7 +40,7 @@ class ViewSubmissionsController @Inject() (
   def onPageLoad: Action[AnyContent] =
     (actionBuilder andThen getData).async { implicit request =>
       automatedExportSystemConnector
-        .getSubmissions()
+        .getSubmissionSummaryResponses()
         .map { submissions =>
           val viewModel = SubmissionViewModelMapper.toViewModel(submissions)
           if (viewModel.summaries.nonEmpty) {

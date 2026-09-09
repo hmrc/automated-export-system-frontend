@@ -20,9 +20,9 @@ import java.time.LocalDateTime
 import java.util.UUID
 import scala.xml.NodeSeq
 
-object SubmissionResponseParser {
+object SubmissionSummaryResponseParser {
 
-  def parse(xml: NodeSeq): SubmissionResponseList = {
+  def parse(xml: NodeSeq): SubmissionSummaryResponseList = {
 
     val submissions = (xml \ "Submission").map { submission =>
 
@@ -46,7 +46,7 @@ object SubmissionResponseParser {
       val status =
         (submission \ "status").text.trim.toInt
 
-      SubmissionResponse(
+      SubmissionSummaryResponse(
         submissionId = submissionId,
         mrn = mrn,
         ducr = ducr,
@@ -56,6 +56,6 @@ object SubmissionResponseParser {
       )
     }
 
-    SubmissionResponseList(submissions)
+    SubmissionSummaryResponseList(submissions)
   }
 }
