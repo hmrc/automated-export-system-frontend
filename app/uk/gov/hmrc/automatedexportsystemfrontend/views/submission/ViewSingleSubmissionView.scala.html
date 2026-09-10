@@ -22,7 +22,9 @@
         govukSummaryList: GovukSummaryList
 )
 
-@()(implicit request: Request[_], messages: Messages)
+@(
+    exportOperationList: SummaryList
+)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
 
@@ -36,7 +38,7 @@
     <p class="govuk-body">@messages("site.submitted") #DATE OF SUBMISSION#</p>
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
-
+    @govukSummaryList(exportOperationList)
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
 
