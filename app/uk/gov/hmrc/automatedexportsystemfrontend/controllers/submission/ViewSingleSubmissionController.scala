@@ -16,13 +16,20 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionExportOperation
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendEnterMrnSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.EnterMrnSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
+import scala.concurrent.{ExecutionContext, Future}
 
 class ViewSingleSubmissionController @Inject() (
   override val messagesApi: MessagesApi,
@@ -30,11 +37,18 @@ class ViewSingleSubmissionController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
-  view: ViewSingleSubmissionView
-) extends FrontendBaseController with I18nSupport {
+  view: ViewSingleSubmissionView,
+  automatedExportSystemConnector: AutomatedExportSystemConnector
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
 //  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData) { implicit request =>
-    Ok(view())
+  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+    automatedExportSystemConnector.getSingleSubmissionTestOnly("12345").flatMap { submission =>
+      Future.successful(Ok(view(SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation).flatten))))
+    }
   }
+
+  private def exportOperationRowsGenerator(answers: SingleSubmissionExportOperation)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+    Seq(AmendEnterMrnSummary.row(answers.mrn, "test", false), AmendEnterMrnSummary.row("", "test", false))
 }
