@@ -42,13 +42,13 @@ class FrontendAppConfig @Inject() (configuration: Configuration, servicesConfig:
   val eccSubscribeUrl: String = configuration.get[String](s"urls.eccSubscribeUrl")
   val authContinueBaseUrl: String = configuration.get[String]("urls.authContinueBaseUrl")
 
-  private val exitSurveyBaseUrl: String = configuration.get[Service]("microservice.services.feedback-frontend").baseUrl
-  val exitSurveyUrl: String = s"$exitSurveyBaseUrl/feedback/automated-export-system-frontend?useServiceNavigation"
+  private val feedbackHost = configuration.get[String]("feedback-frontend.host")
+  val exitSurveyUrl: String = s"$feedbackHost/feedback/automated-export-system-frontend?useServiceNavigation"
 
   val languageTranslationEnabled: Boolean =
     configuration.get[Boolean]("features.welsh-translation")
 
-  def languageMap: Map[String, Lang] = Map("en" -> Lang("en"), "cy" -> Lang("cy"))
+  def languageMap: Map[String, Lang] = Map("en" -> Lang("en"))
 
   val timeout: Int = configuration.get[Int]("timeout-dialog.timeout")
   val countdown: Int = configuration.get[Int]("timeout-dialog.countdown")
