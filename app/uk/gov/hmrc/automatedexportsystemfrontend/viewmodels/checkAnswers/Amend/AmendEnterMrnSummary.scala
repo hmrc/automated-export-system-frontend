@@ -30,7 +30,11 @@ object AmendEnterMrnSummary {
   def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = Some(
     SummaryListRowViewModel(
       key = "enterMrn.checkYourAnswersLabel",
-      value = ValueViewModel(HtmlFormat.escape(answerFromXml).toString),
+      value = if (answerFromXml.nonEmpty) {
+        ValueViewModel(HtmlFormat.escape(answerFromXml).toString)
+      } else {
+        ValueViewModel(HtmlFormat.escape(messages("site.notAnswered")).toString)
+      },
       actions = if (withAmendLink) {
         Seq(
           ActionItemViewModel("site.change", amendRoute.AmendEnterMrnController.onPageLoad(CheckMode, submissionId).url)

@@ -25,6 +25,7 @@ site.status.amended = Amended
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
 site.kg.suffix = kg
+site.notAnswered = Not answered
 
 date.day = Day
 date.month = Month
