@@ -128,7 +128,6 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
                       |                  </GoodsReference>
                       |                </TransportEquipment>
                       |                <LocationOfGoods>
-                      |                  <typeOfLocation>typeOfLocation</typeOfLocation>
                       |                  <qualifierOfIdentification>qualifierOfIdentification</qualifierOfIdentification>
                       |                  <authorisationNumber>authorisationNumber</authorisationNumber>
                       |                  <additionalIdentifier>additionalIdentifier</additionalIdentifier>
