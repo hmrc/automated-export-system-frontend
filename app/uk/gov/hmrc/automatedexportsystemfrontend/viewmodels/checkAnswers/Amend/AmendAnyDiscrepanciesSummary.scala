@@ -26,18 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendAnyDiscrepanciesSummary {
 
-  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendAnyDiscrepanciesPage(submissionId)).map { answer =>
+  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-      val value = if (answer) "site.yes" else "site.no"
+    val value = answerFromXml match {
+      case 1 => "site.yes"
+      case 0 => "site.no" // TODO double check this is correct handling
+    }
 
+    Some(
       SummaryListRowViewModel(
         key = "anyDiscrepancies.checkYourAnswersLabel",
         value = ValueViewModel(value),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendAnyDiscrepanciesController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("anyDiscrepancies.change.hidden"))
-        )
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendAnyDiscrepanciesController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("anyDiscrepancies.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
       )
-    }
+    )
+  }
 }
