@@ -16,12 +16,22 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
+
+import scala.util.Try
 
 case object IsSplitExitPage extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "standard" \ toString
 
   override def toString: String = "isSplitExit"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(true) =>
+        userAnswers.remove(AnyDiscrepanciesPage)
+      case _ => super.cleanup(value, userAnswers)
+    }
 }
