@@ -30,7 +30,8 @@ object AmendLocationTypeSummary {
 
   def row(answerFromXml: Option[String], submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$answerFromXml"))))
+    val test = answerFromXml.getOrElse(None)
+    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$test"))))
 
     Some(
       SummaryListRowViewModel(
