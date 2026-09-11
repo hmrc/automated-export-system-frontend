@@ -28,7 +28,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.http.SessionKeys
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionResponse, SubmissionResponseList}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponse, SubmissionSummaryResponseList}
 
 import java.time.LocalDateTime
 import java.util.UUID
@@ -53,7 +53,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      val submissionResponse = SubmissionResponse(
+      val submissionResponse = SubmissionSummaryResponse(
         submissionId = UUID.randomUUID(),
         mrn = "24GB12345678901234",
         ducr = Some("8GB1234567890123456"),
@@ -63,9 +63,9 @@ class ViewSubmissionsControllerSpec extends SpecBase {
       )
 
       val submissionResponseList =
-        SubmissionResponseList(Seq(submissionResponse))
+        SubmissionSummaryResponseList(Seq(submissionResponse))
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(submissionResponseList))
 
       val application = applicationBuilder(userAnswers = None)
@@ -105,7 +105,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      val submission1 = SubmissionResponse(
+      val submission1 = SubmissionSummaryResponse(
         submissionId = UUID.randomUUID(),
         mrn = "MRN1234567890ABCDEF",
         ducr = Some("DUCR1234567890XYZ"),
@@ -114,7 +114,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         status = 1
       )
 
-      val submission2 = SubmissionResponse(
+      val submission2 = SubmissionSummaryResponse(
         submissionId = UUID.randomUUID(),
         mrn = "A1B2C3D4E5F6G7H8I9J0",
         ducr = Some("DUCR-SECOND-0001"),
@@ -123,8 +123,8 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         status = 2
       )
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
-        .thenReturn(Future.successful(SubmissionResponseList(Seq(submission1, submission2))))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
+        .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission1, submission2))))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(
@@ -165,7 +165,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      val submission = SubmissionResponse(
+      val submission = SubmissionSummaryResponse(
         submissionId = UUID.randomUUID(),
         mrn = "MRN1234567890ABCPDF",
         ducr = None,
@@ -174,8 +174,8 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         status = 1
       )
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
-        .thenReturn(Future.successful(SubmissionResponseList(Seq(submission))))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
+        .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission))))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(
@@ -215,8 +215,8 @@ class ViewSubmissionsControllerSpec extends SpecBase {
           .authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any())
       ).thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      when(mockAutomatedExportSystemConnector.getSubmissions()(any()))
-        .thenReturn(Future.successful(SubmissionResponseList(Seq.empty)))
+      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
+        .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq.empty)))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(

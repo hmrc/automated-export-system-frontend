@@ -31,9 +31,9 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
       val submissionId =
         UUID.fromString("6fb33641-6dc7-4a4f-adef-06238c13a317")
 
-      val response = SubmissionResponseList(
+      val response = SubmissionSummaryResponseList(
         Seq(
-          SubmissionResponse(
+          SubmissionSummaryResponse(
             submissionId = submissionId,
             mrn = "26GB0000X6524786A9",
             ducr = Some("GB123456789012"),
@@ -60,12 +60,12 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
 
     "map all supported office of exit codes correctly" in {
 
-      val submissions = SubmissionResponseList(
+      val submissions = SubmissionSummaryResponseList(
         Seq(
-          SubmissionResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000142", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000244", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000411", LocalDateTime.of(2026, 8, 17, 10, 30), 1)
+          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
+          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000142", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
+          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000244", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
+          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000411", LocalDateTime.of(2026, 8, 17, 10, 30), 1)
         )
       )
 
@@ -76,12 +76,12 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
 
     "map all supported submission statuses correctly" in {
 
-      val submissions = SubmissionResponseList(
+      val submissions = SubmissionSummaryResponseList(
         Seq(
-          SubmissionResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 2),
-          SubmissionResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 3),
-          SubmissionResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 4)
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 2),
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 3),
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 4)
         )
       )
 
