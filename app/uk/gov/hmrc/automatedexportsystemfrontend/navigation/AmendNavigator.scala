@@ -34,6 +34,7 @@ class AmendNavigator extends Navigator {
     case AmendOfficeOfExitPage(submissionId)        => _ => amendRoute.AmendIsSplitExitController.onPageLoad(NormalMode, submissionId)
     case AmendIsSplitExitPage(submissionId)         => amendIsSplitExitRoute(submissionId)
     case AmendAnyDiscrepanciesPage(submissionId)    => amendAnyDiscrepanciesRoute(submissionId)
+    case AmendLocationTypePage(submissionId)        => _ => amendRoute.AmendLocationTypeController.onPageLoad(NormalMode, submissionId)
   }
 
   private def amendPartOfConsolidationRoute(submissionId: String)(answers: UserAnswers): Call =

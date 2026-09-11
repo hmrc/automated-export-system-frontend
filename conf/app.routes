@@ -137,6 +137,12 @@ POST       /amend/office-of-exit/:submissionId                        uk.gov.hmr
 GET        /amend/change-office-of-exit/:submissionId                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendOfficeOfExitController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
 POST       /amend/change-office-of-exit/:submissionId                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendOfficeOfExitController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
 
+
+GET        /amend/location-type/:submissionId                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendLocationTypeController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId: String)
+POST       /amend/location-type/:submissionId                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendLocationTypeController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId: String)
+GET        /amend/change-location-type/:submissionId                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendLocationTypeController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
+POST       /amend/change-location-type/:submissionId                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendLocationTypeController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
+
 GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()
 
 GET        /submit                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SubmissionController.standardSubmit
