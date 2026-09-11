@@ -20,11 +20,17 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SingleSubmissionCustomsOfficeOfExitActual, SingleSubmissionExportOperation}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  SingleSubmissionCustomsOfficeOfExitActual,
+  SingleSubmissionExportOperation,
+  SingleSubmissionGoodsShipment,
+  SingleSubmissionLocationOfGoods
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendAnyDiscrepanciesSummary,
   AmendEnterMrnSummary,
   AmendIsSplitExitSummary,
+  AmendLocationTypeSummary,
   AmendOfficeOfExitSummary
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{AnyDiscrepanciesSummary, EnterMrnSummary}
@@ -50,11 +56,16 @@ class ViewSingleSubmissionController @Inject() (
 //  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
   def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     automatedExportSystemConnector.getSingleSubmissionTestOnly("12345").flatMap { submission =>
+
+      val locationOfGoods =
+        submission.goodsShipment.map(_.consignment.locationOfGoods)
+
       Future.successful(
         Ok(
           view(
             SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submission.submissionId).flatten),
-            SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten)
+            SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
+            SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten)
           )
         )
       )
@@ -71,13 +82,13 @@ class ViewSingleSubmissionController @Inject() (
       AmendIsSplitExitSummary.row(answers.splitIndicator, submissionId, false)
     )
 
-  private def exportOperationRRowsGenerator(answers: SingleSubmissionExportOperation, submissionId: String)(
-    implicit messages: Messages
-  ): Seq[Option[SummaryListRow]] =
-    Seq.empty
-
   private def customsOfficeOfExitRowsGenerator(answers: SingleSubmissionCustomsOfficeOfExitActual, submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
     Seq(AmendOfficeOfExitSummary.row(answers.referenceNumber, submissionId, false))
+
+  private def locationOfGoodsRowsGenerator(answers: Option[SingleSubmissionLocationOfGoods], submissionId: String)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] =
+    Seq(AmendLocationTypeSummary.row(answers.map(_.typeOfLocation), submissionId, false))
 }
