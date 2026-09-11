@@ -26,18 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendIsSplitExitSummary {
 
-  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendIsSplitExitPage(submissionId)).map { answer =>
+  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-      val value = if (answer) "site.yes" else "site.no"
+    val value = answerFromXml match {
+      case 1 => "site.yes"
+      case 0 => "site.no" // TODO double check this is correct handling
+    }
 
+    Some(
       SummaryListRowViewModel(
         key = "isSplitExit.checkYourAnswersLabel",
         value = ValueViewModel(value),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendIsSplitExitController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
-        )
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendIsSplitExitController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
       )
-    }
+    )
+  }
 }
