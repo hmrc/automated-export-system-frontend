@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
@@ -65,4 +65,84 @@ class CreateNavigator extends Navigator {
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 
+  override val checkRoutes: Page => UserAnswers => Call = {
+    case IsSplitExitPage               => isSplitExitCheckRoute
+    case AnyDiscrepanciesPage          => anyDiscrepanciesCheckRoute
+    case DiscrepancyConsignmentPage    => discrepancyConsignmentCheckRoute
+    case DiscrepancyTransportPage      => discrepancyTransportCheckRoute
+    case DiscrepancySealsPage          => discrepancySealsCheckRoute
+    case DiscrepancyReferencePage      => discrepancyReferenceCheckRoute
+    case DiscrepancyTransportMeansPage => discrepancyTransportMeansCheckRoute
+    case DiscrepancyTransportDocPage   => discrepancyTransportDocCheckRoute
+    case DiscrepancyGoodsPage          => discrepancyGoodsCheckRoute
+    case _                             => _ => createRoute.CYASubmissionController.onPageLoad()
+  }
+
+  private def isSplitExitCheckRoute(answers: UserAnswers): Call =
+    answers.get(IsSplitExitPage) match {
+      case Some(true) =>
+        answers.get(DiscrepancyConsignmentPage) match {
+          case None => createRoute.DiscrepancyConsignmentController.onPageLoad(CheckMode)
+          case _    => createRoute.CYASubmissionController.onPageLoad()
+        }
+      case Some(false) =>
+        answers.get(AnyDiscrepanciesPage) match {
+          case None => createRoute.AnyDiscrepanciesController.onPageLoad(CheckMode)
+          case _    => createRoute.CYASubmissionController.onPageLoad()
+        }
+      case _ => problemRoute.JourneyRecoveryController.onPageLoad()
+    }
+
+  private def anyDiscrepanciesCheckRoute(answers: UserAnswers): Call =
+    answers.get(AnyDiscrepanciesPage) match {
+      case Some(true) =>
+        answers.get(DiscrepancyConsignmentPage) match {
+          case None => createRoute.DiscrepancyConsignmentController.onPageLoad(CheckMode)
+          case _    => createRoute.CYASubmissionController.onPageLoad()
+        }
+      case Some(false) => createRoute.CYASubmissionController.onPageLoad()
+      case _           => problemRoute.JourneyRecoveryController.onPageLoad()
+    }
+
+  private def discrepancyConsignmentCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyTransportPage) match {
+      case None => createRoute.DiscrepancyTransportController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancyTransportCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancySealsPage) match {
+      case None => createRoute.DiscrepancySealsController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancySealsCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyReferencePage) match {
+      case None => createRoute.DiscrepancyReferenceController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancyReferenceCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyTransportMeansPage) match {
+      case None => createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancyTransportMeansCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyTransportDocPage) match {
+      case None => createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancyTransportDocCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyGoodsPage) match {
+      case None => createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancyGoodsCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyPackingPage) match {
+      case None => createRoute.DiscrepancyPackingController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
 }
