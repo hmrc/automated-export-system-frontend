@@ -21,8 +21,8 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionExportOperation
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendEnterMrnSummary
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.EnterMrnSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{AmendAnyDiscrepanciesSummary, AmendEnterMrnSummary}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{AnyDiscrepanciesSummary, EnterMrnSummary}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -50,5 +50,8 @@ class ViewSingleSubmissionController @Inject() (
   }
 
   private def exportOperationRowsGenerator(answers: SingleSubmissionExportOperation)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-    Seq(AmendEnterMrnSummary.row(answers.mrn, "test", false), AmendEnterMrnSummary.row("", "test", false))
+    Seq(
+      AmendEnterMrnSummary.row(answers.mrn, "test", false)
+//      AmendAnyDiscrepanciesSummary.row(answers.discrepanciesExist, "test", false)
+    )
 }
