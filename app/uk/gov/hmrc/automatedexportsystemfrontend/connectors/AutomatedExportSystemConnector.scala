@@ -94,7 +94,7 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
                       |              <splitIndicator>1</splitIndicator>
                       |            </ExportOperation>
                       |            <CustomsOfficeOfExitActual>
-                      |              <referenceNumber>referenceNumber</referenceNumber>
+                      |              <referenceNumber>GB000051</referenceNumber>
                       |            </CustomsOfficeOfExitActual>
                       |            <GoodsShipment>
                       |              <Consignment>
