@@ -23,7 +23,8 @@
 )
 
 @(
-    exportOperationList: SummaryList
+    exportOperationList: SummaryList,
+    customOfficeOfExitList: SummaryList
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
@@ -44,7 +45,7 @@
 
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
-
+    @govukSummaryList(customOfficeOfExitList)
 
     <h2 class="govuk-heading-m">@messages("viewSingleSubmission.carrier.subheading")</h2>
 
