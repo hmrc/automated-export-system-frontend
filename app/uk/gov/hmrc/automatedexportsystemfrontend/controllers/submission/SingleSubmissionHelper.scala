@@ -16,15 +16,27 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendLocationTypeSummary
+import play.api.i18n.Messages
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{AmendLocationIdSummary, AmendLocationTypeSummary}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class SingleSubmissionHelper {
 
-//  def typeOfLocationHandler(location: Option[String]): Option[SummaryListRow] =
-//    location match {
-//      case Some(location) => AmendLocationTypeSummary.row(location, submissionId, false)
-//      case _              => None
-//    }
+  def authorisationNumberHandler(authorisationNumber: Option[String], submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    authorisationNumber match {
+      case Some(number) => AmendLocationIdSummary.authNumberRow(number, submissionId, false)
+      case _            => None
+    }
 
+  def additionalIdHandler(additionalId: Option[String], submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    additionalId match {
+      case Some(number) => AmendLocationIdSummary.additionalIdRow(number, submissionId, false)
+      case _            => None
+    }
+
+  def unloHandler(unlo: Option[String], submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    unlo match {
+      case Some(code) => AmendLocationIdSummary.unloRow(code, submissionId, false)
+      case _          => None
+    }
 }
