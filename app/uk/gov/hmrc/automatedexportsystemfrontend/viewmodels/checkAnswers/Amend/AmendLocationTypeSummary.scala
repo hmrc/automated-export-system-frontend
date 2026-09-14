@@ -36,10 +36,14 @@ object AmendLocationTypeSummary {
       SummaryListRowViewModel(
         key = "locationType.checkYourAnswersLabel",
         value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendLocationTypeController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("locationType.change.hidden"))
-        )
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendLocationTypeController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("locationType.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
       )
     )
   }
