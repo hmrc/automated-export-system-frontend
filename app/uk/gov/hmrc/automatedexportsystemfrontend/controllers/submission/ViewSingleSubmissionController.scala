@@ -65,7 +65,8 @@ class ViewSingleSubmissionController @Inject() (
           view(
             SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submission.submissionId).flatten),
             SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
-            SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten)
+            if (locationOfGoods.isEmpty) None
+            else Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten))
           )
         )
       )
@@ -90,5 +91,11 @@ class ViewSingleSubmissionController @Inject() (
   private def locationOfGoodsRowsGenerator(answers: Option[SingleSubmissionLocationOfGoods], submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
-    Seq(AmendLocationTypeSummary.row(answers.map(_.typeOfLocation), submissionId, false))
+
+    val typeOfLocation = answers.map(_.typeOfLocation)g
+
+  Seq(
+    if (typeOfLocation.isEmpty) None else AmendLocationTypeSummary.row(typeOfLocation.get, submissionId, false),
+  )
+
 }
