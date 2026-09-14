@@ -28,20 +28,19 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendLocationTypeSummary {
 
-  def row(answerFromXml: Option[String], submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val test = answerFromXml.getOrElse(None)
-    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$test"))))
+      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$answerFromXml"))))
 
-    Some(
-      SummaryListRowViewModel(
-        key = "locationType.checkYourAnswersLabel",
-        value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendLocationTypeController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("locationType.change.hidden"))
+      Some(
+        SummaryListRowViewModel(
+          key = "locationType.checkYourAnswersLabel",
+          value = value,
+          actions = Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendLocationTypeController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("locationType.change.hidden"))
+          )
         )
       )
-    )
   }
 }
