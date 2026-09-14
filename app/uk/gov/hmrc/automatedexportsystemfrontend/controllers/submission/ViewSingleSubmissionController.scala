@@ -91,11 +91,6 @@ class ViewSingleSubmissionController @Inject() (
   private def locationOfGoodsRowsGenerator(answers: Option[SingleSubmissionLocationOfGoods], submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
-
-    val typeOfLocation = answers.map(_.typeOfLocation)g
-
-  Seq(
-    if (typeOfLocation.isEmpty) None else AmendLocationTypeSummary.row(typeOfLocation.get, submissionId, false),
-  )
+    Seq(AmendLocationTypeSummary.row(answers.map(_.typeOfLocation).get, submissionId, false))
 
 }
