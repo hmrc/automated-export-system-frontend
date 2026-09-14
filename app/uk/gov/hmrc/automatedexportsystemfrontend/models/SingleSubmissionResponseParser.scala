@@ -46,12 +46,16 @@ object SingleSubmissionResponseParser {
     val goodsShipment =
       (submission \ "GoodsShipment").headOption.map(parseGoodsShipment)
 
+    val metadata =
+      (submission \ "metadata").headOption.map(parseMetadata)
+
     SingleSubmissionResponse(
       submissionId = (submission \ "submissionId").text.trim,
       exportOperation = exportOperation,
       customsOfficeOfExitActual = customsOfficeOfExitActual,
       goodsShipment = goodsShipment,
-      updatedAt = LocalDateTime.parse((submission \ "updatedAt").text.trim)
+      updatedAt = LocalDateTime.parse((submission \ "updatedAt").text.trim),
+      metadata = metadata
     )
   }
 
@@ -184,4 +188,15 @@ object SingleSubmissionResponseParser {
 
   private def parseOptionalList[T](nodes: NodeSeq)(parser: NodeSeq => T): Option[Seq[T]] =
     if (nodes.nonEmpty) Some(nodes.map(parser)) else None
+
+  private def parseMetadata(xml: NodeSeq): SingleSubmissionMetadata =
+    SingleSubmissionMetadata(errors = (xml \ "error").map(parseError))
+
+  private def parseError(xml: NodeSeq): SingleSubmissionError =
+    SingleSubmissionError(
+      code = (xml \ "code").text.trim,
+      description = (xml \ "description").headOption.map(_.text.trim),
+      path = (xml \ "path").headOption.map(_.text.trim),
+      originalValue = (xml \ "originalValue").headOption.map(_.text.trim)
+    )
 }
