@@ -29,23 +29,85 @@
 // * See the License for the specific language governing permissions and
 // * limitations under the License.
 // */
-//
-//package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
-//
-//import play.api.i18n.Messages
-//import play.twirl.api.HtmlFormat
-//import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-//import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-//import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendLocationIdPage
-//import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
-//import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
-//import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
-//import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-//
-//object AmendLocationIdSummary {
-//
-//  def row(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-//
+
+package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
+
+import play.api.i18n.Messages
+import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendLocationIdPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+
+object AmendLocationIdSummary {
+
+  def qualifierRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(
+      SummaryListRowViewModel(
+        key = "locationId.identificationType.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(answerFromXml)),
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("locationId.identificationType.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
+      )
+    )
+
+  def authNumberRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(
+      SummaryListRowViewModel(
+        key = "locationId.identificationType.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(answerFromXml)),
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
+      )
+    )
+
+  def additionalIdRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(
+      SummaryListRowViewModel(
+        key = "locationId.identificationType.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(answerFromXml)),
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
+      )
+    )
+
+  def unloRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(
+      SummaryListRowViewModel(
+        key = "locationId.identificationType.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(answerFromXml)),
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
+      )
+    )
+
 //      val locationType = HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}"))
 //      val unlocode = HtmlFormat.escape(answer.unlocode)
 //      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier)
@@ -86,4 +148,4 @@
 //        )
 //      )
 //    }
-//}
+}

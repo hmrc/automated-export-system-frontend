@@ -30,6 +30,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendAnyDiscrepanciesSummary,
   AmendEnterMrnSummary,
   AmendIsSplitExitSummary,
+  AmendLocationIdSummary,
   AmendLocationTypeSummary,
   AmendOfficeOfExitSummary
 }
@@ -38,6 +39,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryLis
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -49,7 +51,8 @@ class ViewSingleSubmissionController @Inject() (
   requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
   view: ViewSingleSubmissionView,
-  automatedExportSystemConnector: AutomatedExportSystemConnector
+  automatedExportSystemConnector: AutomatedExportSystemConnector,
+  singleSubmissionHelper: SingleSubmissionHelper
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
@@ -91,6 +94,12 @@ class ViewSingleSubmissionController @Inject() (
   private def locationOfGoodsRowsGenerator(answers: Option[SingleSubmissionLocationOfGoods], submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
-    Seq(AmendLocationTypeSummary.row(answers.map(_.typeOfLocation).get, submissionId, false))
+    Seq(
+      AmendLocationTypeSummary.row(answers.map(_.typeOfLocation).get, submissionId, false),
+      AmendLocationIdSummary.qualifierRow(answers.map(_.qualifierOfIdentification).get, submissionId, false),
+      singleSubmissionHelper.authorisationNumberHandler(answers.flatMap(_.authorisationNumber), submissionId),
+      singleSubmissionHelper.additionalIdHandler(answers.flatMap(_.additionalIdentifier), submissionId),
+      singleSubmissionHelper.unloHandler(answers.flatMap(_.UNLocode), submissionId)
+    )
 
 }
