@@ -25,7 +25,7 @@
 @(
     exportOperationList: SummaryList,
     customOfficeOfExitList: SummaryList,
-    locationOfGoodsList: SummaryList
+    locationOfGoodsList: Option[SummaryList]
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
@@ -51,8 +51,11 @@
     <h2 class="govuk-heading-m">@messages("viewSingleSubmission.carrier.subheading")</h2>
 
 
-    <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
-    @govukSummaryList(locationOfGoodsList)
+    @if(locationOfGoodsList.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
+        @govukSummaryList(locationOfGoodsList.get)
+    }
+
 
 
     <h2 class="govuk-heading-m">@messages("viewSingleSubmission.auth.subheading")</h2>
