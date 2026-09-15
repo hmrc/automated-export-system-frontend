@@ -30,6 +30,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendAnyDiscrepanciesSummary,
   AmendDiscrepancyConsignmentSummary,
+  AmendEnterDucrSummary,
   AmendEnterMrnSummary,
   AmendIsSplitExitSummary,
   AmendLocationIdSummary,
@@ -94,7 +95,11 @@ class ViewSingleSubmissionController @Inject() (
   private def consignmentRowsGenerator(answers: Option[SingleSubmissionConsignment], submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
-    Seq(singleSubmissionHelper.modeOfTransportAtBorder(answers.flatMap(_.modeOfTransportAtTheBorder), submissionId, false))
+    Seq(
+      singleSubmissionHelper.modeOfTransportAtBorderHandler(answers.flatMap(_.modeOfTransportAtTheBorder), submissionId, false),
+      AmendEnterDucrSummary.row(answers.map(_.referenceNumberUCR).get, submissionId, false),
+      singleSubmissionHelper.parentUCRIDHandler(answers.flatMap(_.parentUCRID), submissionId, false)
+    )
 
   private def customsOfficeOfExitRowsGenerator(answers: SingleSubmissionCustomsOfficeOfExitActual, submissionId: String)(
     implicit messages: Messages
