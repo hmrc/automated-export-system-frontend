@@ -420,6 +420,7 @@ cancelSubmission.submissionReference=Submission reference
 cancelSubmission.mrn=MRN
 cancelSubmission.confirmButton=Cancel this submission
 cancelSubmission.backLink=Do not cancel - go back
+<<<<<<< HEAD
 viewSingleSubmission.title = IE507(a) pre-notification details
 viewSingleSubmission.heading = IE507(a) pre-notification details
 viewSingleSubmission.caption = Submission
@@ -465,4 +466,3 @@ viewSubmission.error.diversionRejectedInvalidDeclaration=The export declaration 
 viewSubmission.error.diversionRejectedUnknownMrn=This request can't be completed as the MRN can't be found
 viewSubmission.error.diversionRejectedAlreadyExited=This request can't be completed as the goods have already exited.
 viewSubmission.error.diversionRejectedOther=Your attempt to reroute the goods covered by this Export Declaration to Exit the customs territory of the EU via a Northern Ireland Office of Exit has not been possible. It is not clear what the issue is, please contact Business Helpline.
-
