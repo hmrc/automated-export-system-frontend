@@ -20,18 +20,27 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
   AmendLocationIdSummary,
-  AmendLocationTypeSummary
+  AmendLocationTypeSummary,
+  AmendPartOfConsolidationSummary
 }
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class SingleSubmissionHelper {
 
-  def modeOfTransportAtBorder(modeOfTransport: Option[Int], submissionId: String, withChangeLink: Boolean)(
+  def modeOfTransportAtBorderHandler(modeOfTransport: Option[Int], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
   ): Option[SummaryListRow] =
     modeOfTransport match {
       case Some(mode) => AmendDiscrepancyConsignmentSummary.row(mode, submissionId, withChangeLink)
       case _          => None
+    }
+
+  def parentUCRIDHandler(referenceNumber: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    referenceNumber match {
+      case Some(number) => AmendPartOfConsolidationSummary.row(number, submissionId, withChangeLink)
+      case _            => None
     }
 
   def authorisationNumberHandler(authorisationNumber: Option[String], submissionId: String, withChangeLink: Boolean)(
