@@ -147,6 +147,12 @@ POST       /amend/location-id/:submissionId                              uk.gov.
 GET        /amend/change-location-id/submissionId                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendLocationIdController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
 POST       /amend/change-location-id/submissionId                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendLocationIdController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
 
+GET        /amend/discrepancy-consignment/submissionId                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyConsignmentController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId: String)
+POST       /amend/discrepancy-consignment/submissionId                  uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyConsignmentController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId: String)
+GET        /amend/change-discrepancy-consignment/submissionId           uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyConsignmentController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
+POST       /amend/change-discrepancy-consignment/submissionId           uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyConsignmentController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId: String)
+
+
 GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()
 
 GET        /submit                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SubmissionController.standardSubmit
