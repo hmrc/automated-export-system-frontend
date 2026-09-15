@@ -20,23 +20,8 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{
-  SingleSubmissionConsignment,
-  SingleSubmissionCustomsOfficeOfExitActual,
-  SingleSubmissionExportOperation,
-  SingleSubmissionGoodsShipment,
-  SingleSubmissionLocationOfGoods
-}
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
-  AmendAnyDiscrepanciesSummary,
-  AmendDiscrepancyConsignmentSummary,
-  AmendEnterDucrSummary,
-  AmendEnterMrnSummary,
-  AmendIsSplitExitSummary,
-  AmendLocationIdSummary,
-  AmendLocationTypeSummary,
-  AmendOfficeOfExitSummary
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SingleSubmissionConsignment, SingleSubmissionCustomsOfficeOfExitActual, SingleSubmissionExportOperation, SingleSubmissionGoodsShipment, SingleSubmissionLocationOfGoods, SingleSubmissionTransportEquipment}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{AmendAnyDiscrepanciesSummary, AmendDiscrepancyConsignmentSummary, AmendEnterDucrSummary, AmendEnterMrnSummary, AmendIsSplitExitSummary, AmendLocationIdSummary, AmendLocationTypeSummary, AmendOfficeOfExitSummary}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{AnyDiscrepanciesSummary, EnterMrnSummary}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
@@ -68,12 +53,15 @@ class ViewSingleSubmissionController @Inject() (
 
       val consignment = submission.goodsShipment.map(_.consignment)
 
+      val transportEquipment = submission.goodsShipment.flatMap(_.consignment.transportEquipment)
+
       Future.successful(
         Ok(
           view(
             SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submission.submissionId).flatten),
             SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
             Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submission.submissionId).flatten)),
+            Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatten)),
             if (locationOfGoods.isEmpty) None
             else Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten))
           )
@@ -99,6 +87,13 @@ class ViewSingleSubmissionController @Inject() (
       singleSubmissionHelper.modeOfTransportAtBorderHandler(answers.flatMap(_.modeOfTransportAtTheBorder), submissionId, false),
       AmendEnterDucrSummary.row(answers.map(_.referenceNumberUCR).get, submissionId, false),
       singleSubmissionHelper.parentUCRIDHandler(answers.flatMap(_.parentUCRID), submissionId, false)
+    )
+
+  private def transportEquipmentRowsGenerator(answers: Option[Seq[SingleSubmissionTransportEquipment]], submissionId: String)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] =
+    Seq(
+
     )
 
   private def customsOfficeOfExitRowsGenerator(answers: SingleSubmissionCustomsOfficeOfExitActual, submissionId: String)(
