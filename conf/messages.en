@@ -403,3 +403,27 @@ cancelSubmission.submissionReference=Submission reference
 cancelSubmission.mrn=MRN
 cancelSubmission.confirmButton=Cancel this submission
 cancelSubmission.backLink=Do not cancel - go back
+
+viewSubmission.errorSummary.heading=There is a problem
+
+viewSubmission.error.technical=Sorry, there is a problem with the service. Try again later. We have not saved your answers. When the service is available, you will have to start again.
+
+viewSubmission.error.invalidFormatDucr=We can’t complete this request because the DUCR is not valid. You can update the DUCR by starting a new request.
+
+viewSubmission.error.mucrShut=This MUCR can no longer be updated
+
+viewSubmission.error.unknownMrn=That MRN can't be found
+
+viewSubmission.error.invalidMrn=We can’t complete this request because the MRN is not valid. You can update the MRN by starting a new request.
+
+viewSubmission.error.invalidDiscrepancies=This doesn't match the details in the declaration
+
+viewSubmission.error.invalidAmendment=A Technical Business Rule has been broken by the contents of your IE507a amendment. We cannot process the amendment. Please review the Original Attribute Value to see which data has caused the error.
+
+viewSubmission.error.diversionRejectedInvalidDeclaration=The export declaration for which you have provided the MRN has been invalidated (cancelled). You will not be able to use it to export the goods out of the customs territory of the EU via Northern Ireland or any other country. Please check you have used the correct export declaration MRN, or raise a new Export Declaration if required.
+
+viewSubmission.error.diversionRejectedUnknownMrn=This request can't be completed as the MRN can't be found
+
+viewSubmission.error.diversionRejectedAlreadyExited=This request can't be completed as the goods have already exited.
+
+viewSubmission.error.diversionRejectedOther=Your attempt to reroute the goods covered by this Export Declaration to Exit the customs territory of the EU via a Northern Ireland Office of Exit has not been possible. It is not clear what the issue is, please contact Business Helpline.
