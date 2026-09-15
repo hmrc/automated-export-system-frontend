@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.pages.amend
+package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
-import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationType
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
+import play.api.data.Form
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
+import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
 
-case class AmendLocationTypePage(submissionId: String) extends QuestionPage[LocationType] {
+import javax.inject.Inject
 
-  override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
+class AmendDiscrepancyConsignmentFormProvider @Inject() extends Mappings {
 
-  override def toString: String = "locationType"
+  def apply(): Form[ModeOfTransportAtBorder] =
+    Form("value" -> enumerable[ModeOfTransportAtBorder]("discrepancyConsignment.error.required"))
 }
