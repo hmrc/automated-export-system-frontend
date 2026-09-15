@@ -420,7 +420,7 @@ cancelSubmission.submissionReference=Submission reference
 cancelSubmission.mrn=MRN
 cancelSubmission.confirmButton=Cancel this submission
 cancelSubmission.backLink=Do not cancel - go back
-<<<<<<< HEAD
+
 viewSingleSubmission.title = IE507(a) pre-notification details
 viewSingleSubmission.heading = IE507(a) pre-notification details
 viewSingleSubmission.caption = Submission
