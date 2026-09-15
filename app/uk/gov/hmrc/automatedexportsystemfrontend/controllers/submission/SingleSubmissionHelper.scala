@@ -17,26 +17,42 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{AmendLocationIdSummary, AmendLocationTypeSummary}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
+  AmendDiscrepancyConsignmentSummary,
+  AmendLocationIdSummary,
+  AmendLocationTypeSummary
+}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class SingleSubmissionHelper {
 
-  def authorisationNumberHandler(authorisationNumber: Option[String], submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def modeOfTransportAtBorder(modeOfTransport: Option[Int], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    modeOfTransport match {
+      case Some(mode) => AmendDiscrepancyConsignmentSummary.row(mode, submissionId, withChangeLink)
+      case _          => None
+    }
+
+  def authorisationNumberHandler(authorisationNumber: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
     authorisationNumber match {
-      case Some(number) => AmendLocationIdSummary.authNumberRow(number, submissionId, false)
+      case Some(number) => AmendLocationIdSummary.authNumberRow(number, submissionId, withChangeLink)
       case _            => None
     }
 
-  def additionalIdHandler(additionalId: Option[String], submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def additionalIdHandler(additionalId: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
     additionalId match {
-      case Some(number) => AmendLocationIdSummary.additionalIdRow(number, submissionId, false)
+      case Some(number) => AmendLocationIdSummary.additionalIdRow(number, submissionId, withChangeLink)
       case _            => None
     }
 
-  def unloHandler(unlo: Option[String], submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def unloHandler(unlo: Option[String], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     unlo match {
-      case Some(code) => AmendLocationIdSummary.unloRow(code, submissionId, false)
+      case Some(code) => AmendLocationIdSummary.unloRow(code, submissionId, withChangeLink)
       case _          => None
     }
 }

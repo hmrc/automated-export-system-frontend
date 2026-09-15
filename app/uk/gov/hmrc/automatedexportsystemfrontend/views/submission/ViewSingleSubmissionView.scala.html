@@ -25,6 +25,7 @@
 @(
     exportOperationList: SummaryList,
     customOfficeOfExitList: SummaryList,
+    consignment: Option[SummaryList],
     locationOfGoodsList: Option[SummaryList]
 )(implicit request: Request[_], messages: Messages)
 
@@ -42,7 +43,10 @@
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
     @govukSummaryList(exportOperationList)
 
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
+    @if(consignment.isDefined) {
+        <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
+        @govukSummaryList(consignment.get)
+    }
 
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
