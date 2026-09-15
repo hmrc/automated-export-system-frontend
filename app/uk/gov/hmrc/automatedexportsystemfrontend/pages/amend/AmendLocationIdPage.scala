@@ -22,7 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
 case class AmendLocationIdPage(submissionId: String) extends QuestionPage[LocationDetails] {
 
-  override def path: JsPath = JsPath \ "standard" \ submissionId \ toString
+  override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
 
   override def toString: String = "locationId"
 }

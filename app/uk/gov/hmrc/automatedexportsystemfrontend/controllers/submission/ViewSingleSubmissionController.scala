@@ -21,6 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  SingleSubmissionConsignment,
   SingleSubmissionCustomsOfficeOfExitActual,
   SingleSubmissionExportOperation,
   SingleSubmissionGoodsShipment,
@@ -28,6 +29,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendAnyDiscrepanciesSummary,
+  AmendDiscrepancyConsignmentSummary,
   AmendEnterMrnSummary,
   AmendIsSplitExitSummary,
   AmendLocationIdSummary,
@@ -63,11 +65,14 @@ class ViewSingleSubmissionController @Inject() (
       val locationOfGoods =
         submission.goodsShipment.map(_.consignment.locationOfGoods)
 
+      val consignment = submission.goodsShipment.map(_.consignment)
+
       Future.successful(
         Ok(
           view(
             SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submission.submissionId).flatten),
             SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
+            Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submission.submissionId).flatten)),
             if (locationOfGoods.isEmpty) None
             else Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten))
           )
@@ -86,6 +91,11 @@ class ViewSingleSubmissionController @Inject() (
       AmendIsSplitExitSummary.row(answers.splitIndicator, submissionId, false)
     )
 
+  private def consignmentRowsGenerator(answers: Option[SingleSubmissionConsignment], submissionId: String)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] =
+    Seq(singleSubmissionHelper.modeOfTransportAtBorder(answers.flatMap(_.modeOfTransportAtTheBorder), submissionId, false))
+
   private def customsOfficeOfExitRowsGenerator(answers: SingleSubmissionCustomsOfficeOfExitActual, submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
@@ -97,9 +107,9 @@ class ViewSingleSubmissionController @Inject() (
     Seq(
       AmendLocationTypeSummary.row(answers.map(_.typeOfLocation).get, submissionId, false),
       AmendLocationIdSummary.qualifierRow(answers.map(_.qualifierOfIdentification).get, submissionId, false),
-      singleSubmissionHelper.authorisationNumberHandler(answers.flatMap(_.authorisationNumber), submissionId),
-      singleSubmissionHelper.additionalIdHandler(answers.flatMap(_.additionalIdentifier), submissionId),
-      singleSubmissionHelper.unloHandler(answers.flatMap(_.UNLocode), submissionId)
+      singleSubmissionHelper.authorisationNumberHandler(answers.flatMap(_.authorisationNumber), submissionId, false),
+      singleSubmissionHelper.additionalIdHandler(answers.flatMap(_.additionalIdentifier), submissionId, false),
+      singleSubmissionHelper.unloHandler(answers.flatMap(_.UNLocode), submissionId, false)
     )
 
 }
