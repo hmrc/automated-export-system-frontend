@@ -46,6 +46,14 @@ object TransportMode {
       case ModeOfTransportAtBorder.Air  => TransportMode.Air
     }
 
+  def fromXmlPayload(mode: Int): TransportMode =
+    mode match {
+      case 1 => TransportMode.Sea
+      case 2 => TransportMode.Rail
+      case 3 => TransportMode.Road
+      case 4 => TransportMode.Air
+    }
+
   given reads: Reads[TransportMode] = Reads.of[String].flatMapResult { value =>
     if (nameMap.contains(value)) JsSuccess(nameMap(value))
     else JsError(s"Invalid TransportMode: $value")

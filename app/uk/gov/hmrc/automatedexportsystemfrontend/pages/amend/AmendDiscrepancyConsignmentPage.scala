@@ -17,12 +17,12 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.pages.amend
 
 import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationType
+import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
-case class AmendLocationTypePage(submissionId: String) extends QuestionPage[LocationType] {
+case class AmendDiscrepancyConsignmentPage(submissionId: String) extends QuestionPage[ModeOfTransportAtBorder] {
 
   override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
 
-  override def toString: String = "locationType"
+  override def toString: String = "discrepancyConsignment"
 }
