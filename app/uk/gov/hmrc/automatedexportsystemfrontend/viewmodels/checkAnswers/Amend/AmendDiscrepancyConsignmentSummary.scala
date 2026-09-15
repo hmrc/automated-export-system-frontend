@@ -41,10 +41,14 @@ object AmendDiscrepancyConsignmentSummary {
       SummaryListRowViewModel(
         key = "discrepancyConsignment.checkYourAnswersLabel",
         value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("discrepancyConsignment.change.hidden"))
-        )
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("discrepancyConsignment.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
       )
     )
   }
