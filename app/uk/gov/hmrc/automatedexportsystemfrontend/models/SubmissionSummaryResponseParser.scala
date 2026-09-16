@@ -71,16 +71,6 @@ object SubmissionSummaryResponseParser {
         status = status,
         errors = SubmissionErrorMapper.toMessageKeys(submissionErrors)
       )
-
-      SubmissionSummaryResponse(
-        submissionId = submissionId,
-        mrn = mrn,
-        ducr = ducr,
-        officeOfExitCode = officeOfExitCode,
-        updatedAt = updatedAt,
-        status = status,
-        errors = SubmissionErrorMapper.toMessageKeys(submissionErrors)
-      )
     }
 
     SubmissionSummaryResponseList(submissions)
