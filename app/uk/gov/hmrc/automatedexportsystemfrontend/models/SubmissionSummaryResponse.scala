@@ -25,7 +25,8 @@ case class SubmissionSummaryResponse(
   ducr: Option[String],
   officeOfExitCode: String,
   updatedAt: LocalDateTime,
-  status: Int
+  status: Int,
+  errors: Seq[String]
 )
 
 case class SubmissionSummaryResponseList(submissions: Seq[SubmissionSummaryResponse])

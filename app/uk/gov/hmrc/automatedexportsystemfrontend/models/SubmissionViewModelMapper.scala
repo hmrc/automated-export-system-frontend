@@ -31,7 +31,7 @@ object SubmissionViewModelMapper {
         officeOfExit = SubmissionLookups.mapOfficeOfExit(submission.officeOfExitCode),
         submittedDate = submission.updatedAt.format(DateTimeFormats.shortDateFormat),
         submissionStatus = SubmissionLookups.mapStatus(submission.status),
-        errors = Seq.empty
+        errors = submission.errors
       )
     })
 

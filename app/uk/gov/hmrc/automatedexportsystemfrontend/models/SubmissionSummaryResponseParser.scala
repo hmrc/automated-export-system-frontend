@@ -46,13 +46,40 @@ object SubmissionSummaryResponseParser {
       val status =
         (submission \ "status").text.trim.toInt
 
+      val submissionErrors =
+        (submission \ "metadata" \ "error").map { error =>
+          SingleSubmissionError(
+            code = (error \ "code").text.trim,
+            description = (error \ "description").headOption
+              .map(_.text.trim)
+              .filter(_.nonEmpty),
+            path = (error \ "path").headOption
+              .map(_.text.trim)
+              .filter(_.nonEmpty),
+            originalValue = (error \ "originalValue").headOption
+              .map(_.text.trim)
+              .filter(_.nonEmpty)
+          )
+        }
+
       SubmissionSummaryResponse(
         submissionId = submissionId,
         mrn = mrn,
         ducr = ducr,
         officeOfExitCode = officeOfExitCode,
         updatedAt = updatedAt,
-        status = status
+        status = status,
+        errors = SubmissionErrorMapper.toMessageKeys(submissionErrors)
+      )
+
+      SubmissionSummaryResponse(
+        submissionId = submissionId,
+        mrn = mrn,
+        ducr = ducr,
+        officeOfExitCode = officeOfExitCode,
+        updatedAt = updatedAt,
+        status = status,
+        errors = SubmissionErrorMapper.toMessageKeys(submissionErrors)
       )
     }
 
