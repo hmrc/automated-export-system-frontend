@@ -19,6 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
+  AmendDiscrepancyTransportSummary,
   AmendLocationIdSummary,
   AmendLocationTypeSummary,
   AmendPartOfConsolidationSummary
@@ -40,6 +41,23 @@ class SingleSubmissionHelper {
   ): Option[SummaryListRow] =
     referenceNumber match {
       case Some(number) => AmendPartOfConsolidationSummary.row(number, submissionId, withChangeLink)
+      case _            => None
+    }
+
+  def containerIdHandler(containerId: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    containerId match {
+      case Some(id) =>
+        AmendDiscrepancyTransportSummary.containerIdRow(id, submissionId, withChangeLink)
+      case _ => None
+    }
+
+  def numberOfSealsHandler(numberOfSeals: Option[Int], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    numberOfSeals match {
+      case Some(number) => AmendDiscrepancyTransportSummary.numberOfSealsRow(number, submissionId, withChangeLink)
       case _            => None
     }
 
