@@ -26,31 +26,38 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object DiscrepancyTransportSummary {
+object AmendDiscrepancyTransportSummary {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-    answers.get(DiscrepancyTransportPage).map { answer =>
+  def containerIdRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-      val containerId = HtmlFormat.escape(answer.containerId)
-      val numberOfSeals = answer.numberOfSeals.toString
+    val containerId = HtmlFormat.escape(answerFromXml)
 
-      Seq(
-        SummaryListRowViewModel(
-          key = "discrepancyTransport.containerId.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(containerId)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
-          )
-        ),
-        SummaryListRowViewModel(
-          key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(numberOfSeals)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
-          )
+    Some(
+      SummaryListRowViewModel(
+        key = "discrepancyTransport.containerId.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(containerId)),
+        actions = Seq(
+          ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
         )
       )
-    }
+    )
+
+  }
+
+  def numberOfSealsRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+
+    val numberOfSeals = answerFromXml.toString
+
+    Some(
+      SummaryListRowViewModel(
+        key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(numberOfSeals)),
+        actions = Seq(
+          ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
+            .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
+        )
+      )
+    )
+  }
 }
