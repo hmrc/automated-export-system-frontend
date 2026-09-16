@@ -26,6 +26,7 @@
     exportOperationList: SummaryList,
     customOfficeOfExitList: SummaryList,
     consignment: Option[SummaryList],
+    transportEquipmentList: Option[SummaryList],
     locationOfGoodsList: Option[SummaryList]
 )(implicit request: Request[_], messages: Messages)
 
@@ -54,6 +55,10 @@
 
     <h2 class="govuk-heading-m">@messages("viewSingleSubmission.carrier.subheading")</h2>
 
+    @if(transportEquipmentList.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.TEMP.subheading")</h2>
+        @govukSummaryList(transportEquipmentList.get)
+    }
 
     @if(locationOfGoodsList.isDefined) {
         <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
