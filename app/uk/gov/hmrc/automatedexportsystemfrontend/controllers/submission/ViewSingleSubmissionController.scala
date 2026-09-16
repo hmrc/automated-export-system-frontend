@@ -20,8 +20,24 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SingleSubmissionConsignment, SingleSubmissionCustomsOfficeOfExitActual, SingleSubmissionExportOperation, SingleSubmissionGoodsShipment, SingleSubmissionLocationOfGoods, SingleSubmissionTransportEquipment}
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{AmendAnyDiscrepanciesSummary, AmendDiscrepancyConsignmentSummary, AmendEnterDucrSummary, AmendEnterMrnSummary, AmendIsSplitExitSummary, AmendLocationIdSummary, AmendLocationTypeSummary, AmendOfficeOfExitSummary}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  SingleSubmissionConsignment,
+  SingleSubmissionCustomsOfficeOfExitActual,
+  SingleSubmissionExportOperation,
+  SingleSubmissionGoodsShipment,
+  SingleSubmissionLocationOfGoods,
+  SingleSubmissionTransportEquipment
+}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
+  AmendAnyDiscrepanciesSummary,
+  AmendDiscrepancyConsignmentSummary,
+  AmendEnterDucrSummary,
+  AmendEnterMrnSummary,
+  AmendIsSplitExitSummary,
+  AmendLocationIdSummary,
+  AmendLocationTypeSummary,
+  AmendOfficeOfExitSummary
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{AnyDiscrepanciesSummary, EnterMrnSummary}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
@@ -92,9 +108,21 @@ class ViewSingleSubmissionController @Inject() (
   private def transportEquipmentRowsGenerator(answers: Option[Seq[SingleSubmissionTransportEquipment]], submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
-    Seq(
+    answers.toSeq.flatten.flatMap { answer =>
+      System.out.println("///////////////////////////////////////")
+      System.out.println("HITTING HERE")
+      System.out.println(answer.containerIdentificationNumber)
+      System.out.println("///////////////////////////////////////zzz")
 
-    )
+      Seq(
+        singleSubmissionHelper.containerIdHandler(answer.containerIdentificationNumber, submissionId, false),
+      )
+
+    }
+
+//    Seq(
+//      singleSubmissionHelper.containerIdHandler(answers.map(_.map(_.containerIdentificationNumber)).toSeq.flatten, submissionId, false)
+//    )
 
   private def customsOfficeOfExitRowsGenerator(answers: SingleSubmissionCustomsOfficeOfExitActual, submissionId: String)(
     implicit messages: Messages
