@@ -77,7 +77,9 @@ class ViewSingleSubmissionController @Inject() (
             SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submission.submissionId).flatten),
             SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
             Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submission.submissionId).flatten)),
-            Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatten)),
+            Some(
+              SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatMap(_.flatten).flatMap(Some(_)))
+            ),
             if (locationOfGoods.isEmpty) None
             else Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten))
           )
@@ -107,20 +109,24 @@ class ViewSingleSubmissionController @Inject() (
 
   private def transportEquipmentRowsGenerator(answers: Option[Seq[SingleSubmissionTransportEquipment]], submissionId: String)(
     implicit messages: Messages
-  ): Seq[Option[SummaryListRow]] =
+  ): Seq[Seq[Option[SummaryListRow]]] =
     answers.toSeq.flatten.flatMap { answer =>
-      System.out.println("///////////////////////////////////////")
-      System.out.println("HITTING HERE")
-      System.out.println(answer.containerIdentificationNumber)
-      System.out.println("///////////////////////////////////////zzz")
-
       Seq(
-        singleSubmissionHelper.containerIdHandler(answer.containerIdentificationNumber, submissionId, false),
+        Seq(singleSubmissionHelper.containerIdHandler(answer.containerIdentificationNumber, submissionId, false)),
+        Seq(singleSubmissionHelper.numberOfSealsHandler(answer.numberOfSeals, submissionId, false)),
+        answer.goodsReference.toSeq.flatten.flatMap { value =>
+          Seq(
+            singleSubmissionHelper.sequenceNumberHandler(value.sequenceNumber, submissionId, false),
+            singleSubmissionHelper.declarationGoodsItemNumberHandler(value.declarationGoodsItemNumber, submissionId, false)
+          )
+        }
       )
-
     }
 
-//    Seq(
+  // Possilbly map here?
+//        singleSubmissionHelper.goodsReferenceHandler(answer.goodsReference, submissionId, false)
+
+  //    Seq(
 //      singleSubmissionHelper.containerIdHandler(answers.map(_.map(_.containerIdentificationNumber)).toSeq.flatten, submissionId, false)
 //    )
 
