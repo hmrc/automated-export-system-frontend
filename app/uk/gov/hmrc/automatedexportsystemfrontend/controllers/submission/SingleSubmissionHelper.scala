@@ -17,6 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.i18n.Messages
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsReference
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
   AmendDiscrepancyTransportSummary,
@@ -59,6 +60,30 @@ class SingleSubmissionHelper {
     numberOfSeals match {
       case Some(number) => AmendDiscrepancyTransportSummary.numberOfSealsRow(number, submissionId, withChangeLink)
       case _            => None
+    }
+
+  def sequenceNumberHandler(sequenceNumber: Option[Int], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    sequenceNumber.flatMap { value =>
+      AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
+    }
+
+  def declarationGoodsItemNumberHandler(numberOfSeals: Option[Int], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    numberOfSeals.flatMap { value =>
+      AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
+    }
+
+  def goodsReferenceHandler(goodsReference: Option[Seq[SingleSubmissionGoodsReference]], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] =
+    goodsReference.toSeq.flatten.flatMap { value =>
+      Some(value.declarationGoodsItemNumber match {
+        case Some(value) => AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
+        case _           => None
+      })
     }
 
   def authorisationNumberHandler(authorisationNumber: Option[String], submissionId: String, withChangeLink: Boolean)(
