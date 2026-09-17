@@ -20,6 +20,7 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsReference
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
+  AmendDiscrepancyReferenceSummary,
   AmendDiscrepancyTransportSummary,
   AmendLocationIdSummary,
   AmendLocationTypeSummary,
@@ -62,18 +63,20 @@ class SingleSubmissionHelper {
       case _            => None
     }
 
-  def sequenceNumberHandler(sequenceNumber: Option[Int], submissionId: String, withChangeLink: Boolean)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] =
-    sequenceNumber.flatMap { value =>
-      AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
-    }
+  // TODO, not sure if we've got the designs to handle how we display the indexed items to the user, this can maybe
+  // TODO be updated to a generic index handler and be reused, for now will leave commented out and we can revisit
+//  def sequenceNumberHandler(sequenceNumber: Option[Int], submissionId: String, withChangeLink: Boolean)(
+//    implicit messages: Messages
+//  ): Option[SummaryListRow] =
+//    sequenceNumber.flatMap { value =>
+//      AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
+//    }
 
   def declarationGoodsItemNumberHandler(numberOfSeals: Option[Int], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
   ): Option[SummaryListRow] =
     numberOfSeals.flatMap { value =>
-      AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
+      AmendDiscrepancyReferenceSummary.row(value, submissionId, withChangeLink)
     }
 
   def goodsReferenceHandler(goodsReference: Option[Seq[SingleSubmissionGoodsReference]], submissionId: String, withChangeLink: Boolean)(
