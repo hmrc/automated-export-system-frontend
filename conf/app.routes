@@ -157,6 +157,10 @@ POST       /amend/discrepancy-transport                    uk.gov.hmrc.automated
 GET        /amend/change-discrepancy-transport             uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
 POST       /amend/change-discrepancy-transport             uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
 
+GET        /amend/discrepancy-reference                    uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyReferenceController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId)
+POST       /amend/discrepancy-reference                    uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyReferenceController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId)
+GET        /amend/change-discrepancy-reference             uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyReferenceController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
+POST       /amend/change-discrepancy-reference             uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyReferenceController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
 
 
 GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()

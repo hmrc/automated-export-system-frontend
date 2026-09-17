@@ -34,8 +34,8 @@ case class SingleSubmissionGoodsShipment(consignment: SingleSubmissionConsignmen
 
 case class SingleSubmissionConsignment(
   modeOfTransportAtTheBorder: Option[Int],
-  parentUCRID: Option[String],
   referenceNumberUCR: String,
+  parentUCRID: Option[String],
   transportEquipment: Option[Seq[SingleSubmissionTransportEquipment]],
   locationOfGoods: SingleSubmissionLocationOfGoods,
   activeBorderTransportMeans: Option[SingleSubmissionActiveBorderTransportMeans],

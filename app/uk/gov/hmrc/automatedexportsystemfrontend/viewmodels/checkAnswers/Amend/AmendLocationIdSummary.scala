@@ -63,7 +63,7 @@ object AmendLocationIdSummary {
   def authNumberRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
       SummaryListRowViewModel(
-        key = "locationId.identificationType.checkYourAnswersLabel",
+        key = "locationId.authorisationReferenceNumber.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(answerFromXml)),
         actions = if (withAmendLink) {
           Seq(
@@ -79,7 +79,7 @@ object AmendLocationIdSummary {
   def additionalIdRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
       SummaryListRowViewModel(
-        key = "locationId.identificationType.checkYourAnswersLabel",
+        key = "locationId.locationAdditionalIdentifier.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(answerFromXml)),
         actions = if (withAmendLink) {
           Seq(
@@ -95,7 +95,7 @@ object AmendLocationIdSummary {
   def unloRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
       SummaryListRowViewModel(
-        key = "locationId.identificationType.checkYourAnswersLabel",
+        key = "locationId.unlocode.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(answerFromXml)),
         actions = if (withAmendLink) {
           Seq(

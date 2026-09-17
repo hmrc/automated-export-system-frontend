@@ -125,6 +125,8 @@ cYASubmission.subHeading.exportOperation = Export operation
 cYASubmission.subHeading.locationOfGoods = Location of goods
 cYASubmission.subHeading.customsOfficeExit = Customs office of exit
 cYASubmission.subHeading.discrepancyDetails = Discrepancy details
+cYASubmission.subHeading.consignment = Consignment
+cYASubmission.subHeading.transportEquipment = Transport equipment
 cYASubmission.warning = By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct.
 
 officeOfExit.title = Where do you expect the goods to exit the UK?
