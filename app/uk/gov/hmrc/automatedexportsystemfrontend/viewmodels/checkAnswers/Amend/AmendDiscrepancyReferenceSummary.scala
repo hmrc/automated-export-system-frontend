@@ -27,15 +27,15 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyReferenceSummary {
 
-  def row(answers: UserAnswers, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendDiscrepancyReferencePage(submissionId)).map { answer =>
+  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(
       SummaryListRowViewModel(
         key = "discrepancyReference.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        value = ValueViewModel(HtmlFormat.escape(answerFromXml.toString).toString),
         actions = Seq(
           ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyReferenceController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("discrepancyReference.change.hidden"))
         )
       )
-    }
+    )
 }
