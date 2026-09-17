@@ -77,9 +77,7 @@ class ViewSingleSubmissionController @Inject() (
             SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submission.submissionId).flatten),
             SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
             Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submission.submissionId).flatten)),
-            Some(
-              SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatMap(_.flatten).flatMap(Some(_)))
-            ),
+            Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatMap(_.flatten))),
             if (locationOfGoods.isEmpty) None
             else Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten))
           )
@@ -123,13 +121,6 @@ class ViewSingleSubmissionController @Inject() (
         }
       )
     }
-
-  // Possilbly map here?
-//        singleSubmissionHelper.goodsReferenceHandler(answer.goodsReference, submissionId, false)
-
-  //    Seq(
-//      singleSubmissionHelper.containerIdHandler(answers.map(_.map(_.containerIdentificationNumber)).toSeq.flatten, submissionId, false)
-//    )
 
   private def customsOfficeOfExitRowsGenerator(answers: SingleSubmissionCustomsOfficeOfExitActual, submissionId: String)(
     implicit messages: Messages
