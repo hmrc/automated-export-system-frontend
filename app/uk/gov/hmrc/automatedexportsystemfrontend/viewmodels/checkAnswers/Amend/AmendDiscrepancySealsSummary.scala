@@ -24,17 +24,17 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
-object AmendDiscrepancyReferenceSummary {
+object AmendDiscrepancySealsSummary {
 
-  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
       SummaryListRowViewModel(
-        key = "discrepancyReference.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answerFromXml.toString).toString),
+        key = "discrepancySeals.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlFormat.escape(answerFromXml).toString),
         actions = if (withAmendLink) {
           Seq(
-            ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyReferenceController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("discrepancyReference.change.hidden"))
+            ActionItemViewModel("site.change", amendRoute.AmendDiscrepancySealsController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("discrepancySeals.change.hidden"))
           )
         } else {
           Seq.empty
