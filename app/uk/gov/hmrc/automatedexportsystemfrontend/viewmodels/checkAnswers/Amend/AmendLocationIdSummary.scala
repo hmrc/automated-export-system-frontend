@@ -107,45 +107,4 @@ object AmendLocationIdSummary {
         }
       )
     )
-
-//      val locationType = HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}"))
-//      val unlocode = HtmlFormat.escape(answer.unlocode)
-//      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier)
-//      val authorisationReferenceNumber = HtmlFormat.escape(answer.authorisationReferenceNumber)
-//
-//      Seq(
-//        SummaryListRowViewModel(
-//          key = "locationId.identificationType.checkYourAnswersLabel",
-//          value = ValueViewModel(HtmlContent(locationType)),
-//          actions = Seq(
-//            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode).url)
-//              .withVisuallyHiddenText(messages("locationId.identificationType.change.hidden"))
-//          )
-//        ),
-//        SummaryListRowViewModel(
-//          key = "locationId.unlocode.checkYourAnswersLabel",
-//          value = ValueViewModel(HtmlContent(unlocode)),
-//          actions = Seq(
-//            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode).url)
-//              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
-//          )
-//        ),
-//        SummaryListRowViewModel(
-//          key = "locationId.locationAdditionalIdentifier.checkYourAnswersLabel",
-//          value = ValueViewModel(HtmlContent(locationAdditionalIdentifier)),
-//          actions = Seq(
-//            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode).url)
-//              .withVisuallyHiddenText(messages("locationId.locationAdditionalIdentifier.change.hidden"))
-//          )
-//        ),
-//        SummaryListRowViewModel(
-//          key = "locationId.authorisationReferenceNumber.checkYourAnswersLabel",
-//          value = ValueViewModel(HtmlContent(authorisationReferenceNumber)),
-//          actions = Seq(
-//            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode).url)
-//              .withVisuallyHiddenText(messages("locationId.authorisationReferenceNumber.change.hidden"))
-//          )
-//        )
-//      )
-//    }
 }
