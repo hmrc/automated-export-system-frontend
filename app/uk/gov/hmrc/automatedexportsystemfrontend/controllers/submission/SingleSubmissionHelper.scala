@@ -21,6 +21,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsRef
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
   AmendDiscrepancyReferenceSummary,
+  AmendDiscrepancySealsSummary,
   AmendDiscrepancyTransportSummary,
   AmendLocationIdSummary,
   AmendLocationTypeSummary,
@@ -72,10 +73,17 @@ class SingleSubmissionHelper {
 //      AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
 //    }
 
-  def declarationGoodsItemNumberHandler(numberOfSeals: Option[Int], submissionId: String, withChangeLink: Boolean)(
+  def sealIdentifierHandler(numberOfSeals: Option[String], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
   ): Option[SummaryListRow] =
     numberOfSeals.flatMap { value =>
+      AmendDiscrepancySealsSummary.row(value, submissionId, withChangeLink)
+    }
+
+  def declarationGoodsItemNumberHandler(declarationGoods: Option[Int], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    declarationGoods.flatMap { value =>
       AmendDiscrepancyReferenceSummary.row(value, submissionId, withChangeLink)
     }
 
