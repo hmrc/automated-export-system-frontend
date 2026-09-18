@@ -18,15 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsReference
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
-  AmendDiscrepancyConsignmentSummary,
-  AmendDiscrepancyReferenceSummary,
-  AmendDiscrepancySealsSummary,
-  AmendDiscrepancyTransportSummary,
-  AmendLocationIdSummary,
-  AmendLocationTypeSummary,
-  AmendPartOfConsolidationSummary
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{AmendDiscrepancyConsignmentSummary, AmendDiscrepancyReferenceSummary, AmendDiscrepancySealsSummary, AmendDiscrepancyTransportMeansSummary, AmendDiscrepancyTransportSummary, AmendLocationIdSummary, AmendLocationTypeSummary, AmendPartOfConsolidationSummary}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class SingleSubmissionHelper {
@@ -117,5 +109,17 @@ class SingleSubmissionHelper {
     unlo match {
       case Some(code) => AmendLocationIdSummary.unloRow(code, submissionId, withChangeLink)
       case _          => None
+    }
+
+  def borderIdHandler(id: Option[String], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    id match {
+      case Some(value) => AmendDiscrepancyTransportMeansSummary.row(value, submissionId, withChangeLink)
+      case _ => None
+    }
+
+  def borderIdHandler(id: Option[String], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    id match {
+      case Some(value) => AmendLocationIdSummary.unloRow(value, submissionId, withChangeLink)
+      case _ => None
     }
 }
