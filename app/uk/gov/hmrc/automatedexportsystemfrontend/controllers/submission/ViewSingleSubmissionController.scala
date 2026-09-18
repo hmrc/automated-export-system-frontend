@@ -112,6 +112,13 @@ class ViewSingleSubmissionController @Inject() (
       Seq(
         Seq(singleSubmissionHelper.containerIdHandler(answer.containerIdentificationNumber, submissionId, false)),
         Seq(singleSubmissionHelper.numberOfSealsHandler(answer.numberOfSeals, submissionId, false)),
+        answer.seal.toSeq.flatten.flatMap { value =>
+          Seq(
+            // TODO, commented out until we understand how we are going to display indexed to user
+            // singleSubmissionHelper.sequenceNumberHandler(value.sequenceNumber, submissionId, false),
+            singleSubmissionHelper.sealIdentifierHandler(value.identifier, submissionId, false)
+          )
+        },
         answer.goodsReference.toSeq.flatten.flatMap { value =>
           Seq(
             // TODO, commented out until we understand how we are going to display indexed to user
