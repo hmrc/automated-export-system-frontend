@@ -21,6 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  SingleSubmissionActiveBorderTransportMeans,
   SingleSubmissionConsignment,
   SingleSubmissionCustomsOfficeOfExitActual,
   SingleSubmissionExportOperation,
@@ -60,7 +61,7 @@ class ViewSingleSubmissionController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-//  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  //  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
   def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     automatedExportSystemConnector.getSingleSubmissionTestOnly("12345").flatMap { submission =>
 
@@ -143,6 +144,13 @@ class ViewSingleSubmissionController @Inject() (
       singleSubmissionHelper.authorisationNumberHandler(answers.flatMap(_.authorisationNumber), submissionId, false),
       singleSubmissionHelper.additionalIdHandler(answers.flatMap(_.additionalIdentifier), submissionId, false),
       singleSubmissionHelper.unloHandler(answers.flatMap(_.UNLocode), submissionId, false)
+    )
+
+  private def customsOfficeOfExitRowsGenerator(answers: Option[SingleSubmissionActiveBorderTransportMeans], submissionId: String)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] =
+    Seq(
+      singleSubmissionHelper.borderIdHandler(answers.flatMap(_.identificationNumber), submissionId, false)
     )
 
 }
