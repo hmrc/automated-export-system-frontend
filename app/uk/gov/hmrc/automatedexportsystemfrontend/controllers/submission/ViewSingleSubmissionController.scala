@@ -72,6 +72,8 @@ class ViewSingleSubmissionController @Inject() (
 
       val transportEquipment = submission.goodsShipment.flatMap(_.consignment.transportEquipment)
 
+      val activeBorderTransportMeans = submission.goodsShipment.flatMap(_.consignment.activeBorderTransportMeans)
+
       Future.successful(
         Ok(
           view(
@@ -79,8 +81,8 @@ class ViewSingleSubmissionController @Inject() (
             SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
             Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submission.submissionId).flatten)),
             Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatMap(_.flatten))),
-            if (locationOfGoods.isEmpty) None
-            else Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten))
+            Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten)),
+            Some(SummaryListViewModel(activeBorderTransportMeansRowsGenerator(activeBorderTransportMeans, submission.submissionId).flatten))
           )
         )
       )
@@ -146,11 +148,13 @@ class ViewSingleSubmissionController @Inject() (
       singleSubmissionHelper.unloHandler(answers.flatMap(_.UNLocode), submissionId, false)
     )
 
-  private def customsOfficeOfExitRowsGenerator(answers: Option[SingleSubmissionActiveBorderTransportMeans], submissionId: String)(
+  private def activeBorderTransportMeansRowsGenerator(answers: Option[SingleSubmissionActiveBorderTransportMeans], submissionId: String)(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
     Seq(
-      singleSubmissionHelper.borderIdHandler(answers.flatMap(_.identificationNumber), submissionId, false)
+      singleSubmissionHelper.transportTypeHandler(answers.flatMap(_.typeOfIdentification), submissionId, false),
+      singleSubmissionHelper.transportIdHandler(answers.flatMap(_.identificationNumber), submissionId, false),
+      singleSubmissionHelper.countryOfRegistrationHandler(answers.flatMap(_.nationality), submissionId, false)
     )
 
 }

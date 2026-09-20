@@ -27,7 +27,8 @@
     customOfficeOfExitList: SummaryList,
     consignment: Option[SummaryList],
     transportEquipmentList: Option[SummaryList],
-    locationOfGoodsList: Option[SummaryList]
+    locationOfGoodsList: Option[SummaryList],
+    activeBorderTranpsortMeans: Option[SummaryList]
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
@@ -63,6 +64,11 @@
     @if(locationOfGoodsList.isDefined) {
         <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
         @govukSummaryList(locationOfGoodsList.get)
+    }
+
+    @if(activeBorderTranpsortMeans.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
+        @govukSummaryList(activeBorderTranpsortMeans.get)
     }
 
 
