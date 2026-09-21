@@ -42,6 +42,10 @@ class AmendNavigator extends Navigator {
     case AmendDiscrepancySealsPage(submissionId)       => _ => amendRoute.AmendDiscrepancySealsController.onPageLoad(NormalMode, submissionId)
     case AmendDiscrepancyTransportMeansPage(submissionId) =>
       _ => amendRoute.AmendDiscrepancyTransportMeansController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyGoodsPage(submissionId) =>
+      _ => amendRoute.AmendDiscrepancyGoodsController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyPackingPage(submissionId) =>
+      _ => amendRoute.AmendDiscrepancyPackingController.onPageLoad(NormalMode, submissionId)
 
   }
 
