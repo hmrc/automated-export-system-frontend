@@ -27,6 +27,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   SingleSubmissionExportOperation,
   SingleSubmissionGoodsShipment,
   SingleSubmissionLocationOfGoods,
+  SingleSubmissionTransportDocument,
   SingleSubmissionTransportEquipment
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
@@ -74,6 +75,8 @@ class ViewSingleSubmissionController @Inject() (
 
       val activeBorderTransportMeans = submission.goodsShipment.flatMap(_.consignment.activeBorderTransportMeans)
 
+      val transportDocument = submission.goodsShipment.flatMap(_.consignment.transportDocument)
+
       Future.successful(
         Ok(
           view(
@@ -82,7 +85,8 @@ class ViewSingleSubmissionController @Inject() (
             Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submission.submissionId).flatten)),
             Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatMap(_.flatten))),
             Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten)),
-            Some(SummaryListViewModel(activeBorderTransportMeansRowsGenerator(activeBorderTransportMeans, submission.submissionId).flatten))
+            Some(SummaryListViewModel(activeBorderTransportMeansRowsGenerator(activeBorderTransportMeans, submission.submissionId).flatten)),
+            Some(SummaryListViewModel(transportDocumentRowsGenerator(transportDocument, submission.submissionId).flatten))
           )
         )
       )
@@ -156,5 +160,18 @@ class ViewSingleSubmissionController @Inject() (
       singleSubmissionHelper.transportIdHandler(answers.flatMap(_.identificationNumber), submissionId, false),
       singleSubmissionHelper.countryOfRegistrationHandler(answers.flatMap(_.nationality), submissionId, false)
     )
+
+  private def transportDocumentRowsGenerator(answers: Option[Seq[SingleSubmissionTransportDocument]], submissionId: String)(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] =
+    answers.toSeq.flatten.flatMap { answer =>
+      Seq(
+        // TODO, commented out until we understand how we are going to display indexed to user
+        // singleSubmissionHelper.sequenceNumberHandler(answer.sequenceNumber, submissionId, false),
+        singleSubmissionHelper.docTypeHandler(answer.`type`, submissionId, false),
+        singleSubmissionHelper.docReferenceHandler(answer.referenceNumber, submissionId, false)
+      )
+
+    }
 
 }
