@@ -43,14 +43,17 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DiscrepancyPackingFormProvider()
   val form: Form[PackingDetails] = formProvider()
 
-  lazy val discrepancyPackingRoute: String = createRoute.DiscrepancyPackingController.onPageLoad(NormalMode).url
+  lazy val discrepancyPackingRoute: String = createRoute.DiscrepancyPackingController.onPageLoad(4, NormalMode).url
 
   val userAnswers =
     UserAnswers(
       userAnswersId,
       Json.obj(
         "standard" -> Json
-          .obj(DiscrepancyPackingPage.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> 123, "shippingMarks" -> "value 3"))
+          .obj(
+            DiscrepancyPackingPage(3).toString -> Json
+              .obj(3.toString -> Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> 123, "shippingMarks" -> "value 3"))
+          )
       )
     )
 

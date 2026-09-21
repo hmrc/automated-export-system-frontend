@@ -23,6 +23,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 class AnyDiscrepanciesPageSpec extends SpecBase {
 
+  val index = 0
+
   "AnyDiscrepanciesPage" - {
     "cleanup" - {
       "when no is selected" - {
@@ -49,7 +51,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
             .success
             .value
-            .set(DiscrepancyPackingPage, PackingDetails("packagingCode", 2, "shippingMarks"))
+            .set(DiscrepancyPackingPage(index), PackingDetails("packagingCode", 2, "shippingMarks"))
             .success
             .value
 
@@ -62,7 +64,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           result.get(DiscrepancyTransportMeansPage) mustNot be(defined)
           result.get(DiscrepancyTransportDocPage) mustNot be(defined)
           result.get(DiscrepancyGoodsPage) mustNot be(defined)
-          result.get(DiscrepancyPackingPage) mustNot be(defined)
+          result.get(DiscrepancyPackingPage(index)) mustNot be(defined)
         }
       }
 
@@ -90,7 +92,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
             .success
             .value
-            .set(DiscrepancyPackingPage, PackingDetails("packagingCode", 2, "shippingMarks"))
+            .set(DiscrepancyPackingPage(index), PackingDetails("packagingCode", 2, "shippingMarks"))
             .success
             .value
 
@@ -103,7 +105,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           result.get(DiscrepancyTransportMeansPage) mustBe defined
           result.get(DiscrepancyTransportDocPage) mustBe defined
           result.get(DiscrepancyGoodsPage) mustBe defined
-          result.get(DiscrepancyPackingPage) mustBe defined
+          result.get(DiscrepancyPackingPage(index)) mustBe defined
         }
       }
 
