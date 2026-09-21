@@ -29,7 +29,8 @@
     transportEquipmentList: Option[SummaryList],
     locationOfGoodsList: Option[SummaryList],
     activeBorderTransportMeans: Option[SummaryList],
-    transportDocument: Option[SummaryList]
+    transportDocument: Option[SummaryList],
+    goodsItem: Option[SummaryList]
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
@@ -77,7 +78,10 @@
         @govukSummaryList(transportDocument.get)
     }
 
-
+    @if(goodsItem.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.goodsItem.subheading")</h2>
+        @govukSummaryList(goodsItem.get)
+    }
 
     <h2 class="govuk-heading-m">@messages("viewSingleSubmission.auth.subheading")</h2>
 
