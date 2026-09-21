@@ -105,6 +105,7 @@ class SubmissionDataService @Inject() extends Logging {
       )
     }
 
+
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
     for {
       mrn <- userAnswers.get(EnterMrnPage)
