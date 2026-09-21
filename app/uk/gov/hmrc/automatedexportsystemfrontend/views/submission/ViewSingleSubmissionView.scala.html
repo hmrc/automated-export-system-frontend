@@ -28,7 +28,8 @@
     consignment: Option[SummaryList],
     transportEquipmentList: Option[SummaryList],
     locationOfGoodsList: Option[SummaryList],
-    activeBorderTranpsortMeans: Option[SummaryList]
+    activeBorderTransportMeans: Option[SummaryList],
+    transportDocument: Option[SummaryList]
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
@@ -66,9 +67,14 @@
         @govukSummaryList(locationOfGoodsList.get)
     }
 
-    @if(activeBorderTranpsortMeans.isDefined) {
-        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
-        @govukSummaryList(activeBorderTranpsortMeans.get)
+    @if(activeBorderTransportMeans.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.activeBorderTransportMeans.subheading")</h2>
+        @govukSummaryList(activeBorderTransportMeans.get)
+    }
+
+    @if(transportDocument.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.transportDoc.subheading")</h2>
+        @govukSummaryList(transportDocument.get)
     }
 
 
