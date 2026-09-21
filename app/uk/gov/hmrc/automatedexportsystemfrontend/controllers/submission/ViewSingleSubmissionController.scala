@@ -25,6 +25,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   SingleSubmissionConsignment,
   SingleSubmissionCustomsOfficeOfExitActual,
   SingleSubmissionExportOperation,
+  SingleSubmissionGoodsItem,
   SingleSubmissionGoodsShipment,
   SingleSubmissionLocationOfGoods,
   SingleSubmissionTransportDocument,
@@ -33,6 +34,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendAnyDiscrepanciesSummary,
   AmendDiscrepancyConsignmentSummary,
+  AmendDiscrepancyGoodsSummary,
   AmendEnterDucrSummary,
   AmendEnterMrnSummary,
   AmendIsSplitExitSummary,
@@ -66,8 +68,7 @@ class ViewSingleSubmissionController @Inject() (
   def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     automatedExportSystemConnector.getSingleSubmissionTestOnly("12345").flatMap { submission =>
 
-      val locationOfGoods =
-        submission.goodsShipment.map(_.consignment.locationOfGoods)
+      val locationOfGoods = submission.goodsShipment.map(_.consignment.locationOfGoods)
 
       val consignment = submission.goodsShipment.map(_.consignment)
 
@@ -76,6 +77,8 @@ class ViewSingleSubmissionController @Inject() (
       val activeBorderTransportMeans = submission.goodsShipment.flatMap(_.consignment.activeBorderTransportMeans)
 
       val transportDocument = submission.goodsShipment.flatMap(_.consignment.transportDocument)
+
+      val goodsItem = submission.goodsShipment.flatMap(_.goodsItems)
 
       Future.successful(
         Ok(
@@ -86,7 +89,8 @@ class ViewSingleSubmissionController @Inject() (
             Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatMap(_.flatten))),
             Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten)),
             Some(SummaryListViewModel(activeBorderTransportMeansRowsGenerator(activeBorderTransportMeans, submission.submissionId).flatten)),
-            Some(SummaryListViewModel(transportDocumentRowsGenerator(transportDocument, submission.submissionId).flatten))
+            Some(SummaryListViewModel(transportDocumentRowsGenerator(transportDocument, submission.submissionId).flatten)),
+            Some(SummaryListViewModel(goodsItemRowsGenerator(goodsItem, submission.submissionId).flatMap(_.flatten)))
           )
         )
       )
@@ -170,6 +174,29 @@ class ViewSingleSubmissionController @Inject() (
         // singleSubmissionHelper.sequenceNumberHandler(answer.sequenceNumber, submissionId, false),
         singleSubmissionHelper.docTypeHandler(answer.`type`, submissionId, false),
         singleSubmissionHelper.docReferenceHandler(answer.referenceNumber, submissionId, false)
+      )
+
+    }
+
+  private def goodsItemRowsGenerator(answers: Option[Seq[SingleSubmissionGoodsItem]], submissionId: String)(
+    implicit messages: Messages
+  ): Seq[Seq[Option[SummaryListRow]]] =
+    answers.toSeq.flatten.flatMap { answer =>
+      Seq(
+        Seq(singleSubmissionHelper.goodsItemNumberHandler(answer.declarationGoodsItemNumber, submissionId, false)),
+        Seq(singleSubmissionHelper.goodsItemDucrHandler(answer.referenceNumberUCR, submissionId, false)),
+        Seq(AmendDiscrepancyGoodsSummary.grossMassRow(answer.commodity.grossMass, submissionId, false)),
+        Seq(AmendDiscrepancyGoodsSummary.netMassRow(answer.commodity.netMass, submissionId, false)),
+        answer.packaging.toSeq.flatten.flatMap { value =>
+          Seq(
+            // TODO, commented out until we understand how we are going to display indexed to user
+            // singleSubmissionHelper.sequenceNumberHandler(answer.sequenceNumber, submissionId, false),
+            singleSubmissionHelper.typeOfPackagesHandler(value.typeOfPackages, submissionId, false),
+            singleSubmissionHelper.numberOfPackagesHandler(value.numberOfPackages, submissionId, false),
+            singleSubmissionHelper.shippingMarksHandler(value.shippingMarks, submissionId, false)
+          )
+
+        }
       )
 
     }

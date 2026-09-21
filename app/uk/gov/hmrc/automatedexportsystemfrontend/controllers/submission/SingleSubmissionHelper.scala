@@ -20,6 +20,8 @@ import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsReference
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
+  AmendDiscrepancyGoodsSummary,
+  AmendDiscrepancyPackingSummary,
   AmendDiscrepancyReferenceSummary,
   AmendDiscrepancySealsSummary,
   AmendDiscrepancyTransportDocSummary,
@@ -155,5 +157,50 @@ class SingleSubmissionHelper {
     docReference match {
       case Some(value) => AmendDiscrepancyTransportDocSummary.docReferenceRow(value, submissionId, withChangeLink)
       case _           => None
+    }
+
+  def goodsItemNumberHandler(goodsItemNumber: Option[Int], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    goodsItemNumber match {
+      case Some(value) => AmendDiscrepancyGoodsSummary.goodsItemNumberRow(value, submissionId, withChangeLink)
+      case _           => None
+    }
+
+  def goodsItemDucrHandler(goodsItemDucr: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    goodsItemDucr match {
+      case Some(value) => AmendDiscrepancyGoodsSummary.goodsItemDucrRow(value, submissionId, withChangeLink)
+      case _           => None
+    }
+//
+//  def goodsItemGrossMassHandler(grossMass: BigDecimal, submissionId: String, withChangeLink: Boolean)(
+//    implicit messages: Messages
+//  ): Option[SummaryListRow] =
+//    grossMass match {
+//      case Some(value) => AmendDiscrepancyGoodsSummary.grossMassRow(value, submissionId, withChangeLink)
+//      case _ => None
+//    }
+
+  def typeOfPackagesHandler(typeOfPackages: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    typeOfPackages.flatMap { value =>
+      AmendDiscrepancyPackingSummary.typeOfPackagesRow(value, submissionId, withChangeLink)
+    }
+
+  def numberOfPackagesHandler(numberOfPackages: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    numberOfPackages.flatMap { value =>
+      AmendDiscrepancyPackingSummary.numberOfPackagesRow(value, submissionId, withChangeLink)
+    }
+
+  def shippingMarksHandler(shippingMarks: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    shippingMarks.flatMap { value =>
+      AmendDiscrepancyPackingSummary.shippingMarksRow(value, submissionId, withChangeLink)
     }
 }
