@@ -27,6 +27,7 @@ class SubmissionDataServiceSpec extends SpecBase {
   "buildStandardSubmission" - {
 
     val service = new SubmissionDataService
+    val index = 0
 
     "must include a GoodsShipment for a split exit when AnyDiscrepanciesPage is not present" in {
       val userAnswers = for {
@@ -44,7 +45,7 @@ class SubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage, "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage, PackingDetails("PK", 1, "marks"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)
@@ -91,7 +92,7 @@ class SubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage, "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage, PackingDetails("PK", 1, "marks"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)

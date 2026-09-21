@@ -427,3 +427,8 @@ viewSingleSubmission.transportDoc.subheading = Document Details
 viewSingleSubmission.goodsItem.subheading = Goods Item
 viewSingleSubmission.auth.subheading = Authorisation
 
+
+
+packagingDetailsCYA.title = Check your answers
+packagingDetailsCYA.heading = Check your answers
+packagingDetailsCYA.caption = Packaging detail {0}

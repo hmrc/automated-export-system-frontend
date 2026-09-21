@@ -163,8 +163,6 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         .get
-        .set(DiscrepancyPackingPage, PackingDetails("BX", 1, "MARKS123"))
-        .get
         .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("2GB647298735290-S569"), "20", "10"))
         .get
 
@@ -220,12 +218,6 @@ class CYASubmissionControllerSpec extends SpecBase {
         body should include("1")
         body should include("Transport document reference")
         body should include("1234")
-        body should include("Package type")
-        body should include("BX")
-        body should include("Number of packages")
-        body should include("1")
-        body should include("Shipping marks")
-        body should include("MARKS123")
         body should include("Declaration goods item number")
         body should include("1")
         body should include("Declaration Unique Consignment Reference (DUCR)")
