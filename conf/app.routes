@@ -172,6 +172,11 @@ POST       /amend/discrepancy-transport-means/:submissionId              uk.gov.
 GET        /amend/change-discrepancy-transport-means/:submissionId       uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportMeansController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
 POST       /amend/change-discrepancy-transport-means/:submissionId       uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportMeansController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
 
+GET        /amend/discrepancy-transport-doc                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportDocController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId)
+POST       /amend/discrepancy-transport-doc                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportDocController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId)
+GET        /amend/change-discrepancy-transport-doc         uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportDocController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
+POST       /amend/change-discrepancy-transport-doc         uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyTransportDocController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
+
 
 GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()
 

@@ -22,6 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
   AmendDiscrepancyReferenceSummary,
   AmendDiscrepancySealsSummary,
+  AmendDiscrepancyTransportDocSummary,
   AmendDiscrepancyTransportMeansSummary,
   AmendDiscrepancyTransportSummary,
   AmendLocationIdSummary,
@@ -139,6 +140,20 @@ class SingleSubmissionHelper {
   ): Option[SummaryListRow] =
     id match {
       case Some(value) => AmendDiscrepancyTransportMeansSummary.countryOfRegistrationRow(value, submissionId, withChangeLink)
+      case _           => None
+    }
+
+  def docTypeHandler(docType: Option[Int], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    docType match {
+      case Some(value) => AmendDiscrepancyTransportDocSummary.transportTypeRow(value, submissionId, withChangeLink)
+      case _           => None
+    }
+
+  def docReferenceHandler(docReference: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    docReference match {
+      case Some(value) => AmendDiscrepancyTransportDocSummary.docReferenceRow(value, submissionId, withChangeLink)
       case _           => None
     }
 }
