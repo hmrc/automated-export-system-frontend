@@ -34,28 +34,31 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
     "must return OK and the correct view for a GET with an existing index" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(3), PackingDetails("BX", 1, "MARKS123"))
-        .get
+        .set(DiscrepancyPackingPage(0), PackingDetails("BX", 1, "MARKS1"))
+        .flatMap(_.set(DiscrepancyPackingPage(1), PackingDetails("CT", 2, "MARKS2")))
+        .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("PK", 3, "MARKS3")))
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(4).url)
+        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(2).url)
 
         val result = route(application, request).value
 
         status(result) mustEqual OK
         val body = contentAsString(result)
-        body should include("Packaging detail 4")
+        body should include("Packaging detail 2")
         body should include("Check your answers")
         body should include("Package type")
-        body should include("BX")
+        body should include("CT")
         body should include("Number of packages")
-        body should include("1")
+        body should include("2")
         body should include("Shipping marks")
-        body should include("MARKS123")
+        body should include("MARKS2")
         body should include(createRoute.CYASubmissionController.onPageLoad().url)
       }
     }
