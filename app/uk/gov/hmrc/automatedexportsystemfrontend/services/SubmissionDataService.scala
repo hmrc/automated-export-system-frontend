@@ -90,7 +90,7 @@ class SubmissionDataService @Inject() extends Logging {
     }
 
   private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
-    userAnswers.get(DiscrepancyPackingPage(0)).toList.map { packing => // TODO: Temp hard coded index - replace with getAll logic
+    userAnswers.get(DiscrepancyPackingPage(1)).toList.map { packing => // TODO: Temp hard coded index - replace with getAll logic
       Packaging(1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
 

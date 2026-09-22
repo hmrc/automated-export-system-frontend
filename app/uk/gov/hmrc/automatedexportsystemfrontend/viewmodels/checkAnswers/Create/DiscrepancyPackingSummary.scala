@@ -40,7 +40,7 @@ object DiscrepancyPackingSummary {
           key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(packagingCode)),
           actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex + 1, CheckMode).url)
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, CheckMode).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.packagingCode.change.hidden"))
           )
         ),
@@ -48,7 +48,7 @@ object DiscrepancyPackingSummary {
           key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(numberOfPackages)),
           actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex + 1, CheckMode).url)
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, CheckMode).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.numberOfPackages.change.hidden"))
           )
         ),
@@ -56,7 +56,7 @@ object DiscrepancyPackingSummary {
           key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(shippingMarks)),
           actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex + 1, CheckMode).url)
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, CheckMode).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.shippingMarks.change.hidden"))
           )
         )

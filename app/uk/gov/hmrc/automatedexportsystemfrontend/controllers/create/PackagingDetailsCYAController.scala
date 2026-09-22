@@ -39,7 +39,7 @@ class PackagingDetailsCYAController @Inject() (
 
   def onPageLoad(packagingDetailIndex: Int): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-    val packagingDetailsRows: Option[Seq[SummaryListRow]] = DiscrepancyPackingSummary.rows(packagingDetailIndex - 1, request.userAnswers)
+    val packagingDetailsRows: Option[Seq[SummaryListRow]] = DiscrepancyPackingSummary.rows(packagingDetailIndex, request.userAnswers)
 
     packagingDetailsRows match {
       case None       => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())

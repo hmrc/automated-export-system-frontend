@@ -34,9 +34,9 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
     "must return OK and the correct view for a GET with an existing index" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(0), PackingDetails("BX", 1, "MARKS1"))
-        .flatMap(_.set(DiscrepancyPackingPage(1), PackingDetails("CT", 2, "MARKS2")))
-        .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("PK", 3, "MARKS3")))
+        .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+        .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+        .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
         .success
         .value
 
@@ -66,7 +66,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a GET if it is an empty index" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(0), PackingDetails("BX", 1, "MARKS123"))
+        .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS123"))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))

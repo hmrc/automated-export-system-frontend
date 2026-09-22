@@ -51,7 +51,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
       Json.obj(
         "standard" -> Json
           .obj(
-            DiscrepancyPackingPage(0).toString -> Json
+            DiscrepancyPackingPage(1).toString -> Json
               .arr(Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> 123, "shippingMarks" -> "value 3"))
           )
       )
