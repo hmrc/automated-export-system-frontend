@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 class AnyDiscrepanciesPageSpec extends SpecBase {
 
-  val index = 0
+  val index = 1
 
   "AnyDiscrepanciesPage" - {
     "cleanup" - {

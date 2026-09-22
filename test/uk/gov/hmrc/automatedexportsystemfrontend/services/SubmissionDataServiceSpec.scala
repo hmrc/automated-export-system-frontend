@@ -27,7 +27,7 @@ class SubmissionDataServiceSpec extends SpecBase {
   "buildStandardSubmission" - {
 
     val service = new SubmissionDataService
-    val index = 0
+    val index = 1
 
     "must include a GoodsShipment for a split exit when AnyDiscrepanciesPage is not present" in {
       val userAnswers = for {

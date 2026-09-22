@@ -35,10 +35,10 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
     "when answered, return the summary rows" in {
       val packingDetails = PackingDetails("BX", 2, "MARKS123")
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyPackingPage(0), packingDetails)
+        .set(DiscrepancyPackingPage(1), packingDetails)
         .get
 
-      DiscrepancyPackingSummary.rows(0, userAnswers) shouldBe Some(
+      DiscrepancyPackingSummary.rows(1, userAnswers) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
@@ -79,7 +79,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyPackingSummary.rows(0, userAnswers) shouldBe None
+      DiscrepancyPackingSummary.rows(1, userAnswers) shouldBe None
     }
   }
 }

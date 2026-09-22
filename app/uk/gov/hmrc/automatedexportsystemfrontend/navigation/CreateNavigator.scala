@@ -42,7 +42,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
     case DiscrepancyTransportDocPage                  => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
     case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
-    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex + 1)
+    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex)
   }
 
   private def partOfConsolidationRoute(answers: UserAnswers): Call =
@@ -75,7 +75,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
-    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex + 1)
+    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
   }
 
@@ -142,7 +142,7 @@ class CreateNavigator extends Navigator {
     }
 
   private def discrepancyGoodsCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyPackingPage(0)) match {
+    answers.get(DiscrepancyPackingPage(1)) match {
       case None => createRoute.DiscrepancyPackingController.onPageLoad(1, CheckMode)
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
