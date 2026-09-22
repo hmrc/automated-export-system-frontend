@@ -78,6 +78,7 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
 
       val submissions = SubmissionSummaryResponseList(
         Seq(
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 0),
           SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
           SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 2),
           SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 3),
@@ -88,10 +89,11 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
       val result = SubmissionViewModelMapper.toViewModel(submissions)
 
       result.summaries.map(_.submissionStatus) shouldBe Seq(
+        SubmissionStatus("viewSubmissions.status.awaitingDecision", "govuk-tag--blue"),
         SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green"),
         SubmissionStatus("viewSubmissions.status.amended", "govuk-tag--yellow"),
         SubmissionStatus("viewSubmissions.status.cancelled", "govuk-tag--red"),
-        SubmissionStatus("viewSubmissions.status.awaitingDecision", "govuk-tag--blue")
+        SubmissionStatus("viewSubmissions.status.rejected", "govuk-tag--red")
       )
     }
   }
