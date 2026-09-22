@@ -22,6 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
 
 class SubmissionDataService @Inject() extends Logging {
@@ -90,8 +91,8 @@ class SubmissionDataService @Inject() extends Logging {
     }
 
   private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
-    userAnswers.get(DiscrepancyPackingPage(1)).toList.map { packing => // TODO: Temp hard coded index - replace with getAll logic
-      Packaging(1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
+    DiscrepancyPacking.getAll(userAnswers).zipWithIndex.map { (packing, index) =>
+      Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
 
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
