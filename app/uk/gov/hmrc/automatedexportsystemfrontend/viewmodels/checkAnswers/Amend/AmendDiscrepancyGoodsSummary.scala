@@ -59,7 +59,7 @@ object AmendDiscrepancyGoodsSummary {
         actions = if (withAmendLink) {
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("discrepancyGoods.goodsItemNumber.change.hidden"))
+              .withVisuallyHiddenText(messages("discrepancyGoods.ducr.change.hidden"))
           )
         } else {
           Seq.empty
