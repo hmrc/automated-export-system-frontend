@@ -28,11 +28,14 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyTransportDocSummary {
 
-  def transportTypeRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  def transportTypeRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+
+    val transportType = HtmlFormat.escape(answerFromXml.toString)
+
     Some(
       SummaryListRowViewModel(
         key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answerFromXml.toString).toString),
+        value = ValueViewModel(HtmlContent(transportType)),
         actions = if (withAmendLink) {
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyTransportDocController.onPageLoad(CheckMode, submissionId).url)
@@ -43,6 +46,7 @@ object AmendDiscrepancyTransportDocSummary {
         }
       )
     )
+  }
 
   def docReferenceRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
