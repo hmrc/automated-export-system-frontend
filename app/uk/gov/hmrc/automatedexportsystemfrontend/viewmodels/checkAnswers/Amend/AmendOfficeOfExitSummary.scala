@@ -31,10 +31,7 @@ object AmendOfficeOfExitSummary {
 
   def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-    val value =
-      if (answerFromXml.nonEmpty) ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answerFromXml"))))
-      else
-        ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"site.notAnswered"))))
+    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answerFromXml"))))
 
     Some(
       SummaryListRowViewModel(
