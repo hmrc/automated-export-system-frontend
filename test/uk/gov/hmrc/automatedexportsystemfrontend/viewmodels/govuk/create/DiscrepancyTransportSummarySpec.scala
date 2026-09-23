@@ -27,7 +27,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
-class AmendDiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Generators {
+class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Generators {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
