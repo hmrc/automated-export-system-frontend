@@ -28,11 +28,17 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendPartOfConsolidationSummary {
 
-  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answerFromXml: Option[String], submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+
+    val value = answerFromXml match {
+      case Some(value) => messages("site.yes") + " - " + messages("site.mucr") + ": " + value
+      case _           => "site.no"
+    }
+
     Some(
       SummaryListRowViewModel(
-        key = "site.mucr",
-        value = ValueViewModel(HtmlContent(answerFromXml)),
+        key = "partOfConsolidation.checkYourAnswersLabel",
+        value = ValueViewModel(value),
         actions = if (withAmendLink) {
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendPartOfConsolidationController.onPageLoad(CheckMode, submissionId).url)

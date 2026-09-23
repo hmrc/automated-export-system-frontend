@@ -37,53 +37,24 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when Yes is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendPartOfConsolidationPage("submissionId"), PartOfConsolidationAnswer(true, Some("mucr")))
-        .get
+    "when Yes is selected, return the summary row with no change link" in {
+      val userAnswers = Some("mucr")
 
-      AmendPartOfConsolidationSummary.row(userAnswers)("submissionId") shouldBe Some(
+      AmendPartOfConsolidationSummary.row(userAnswers, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
           key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.yes - site.mucr: mucr"),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendPartOfConsolidationController
-                .onPageLoad(CheckMode, "submissionId")
-                .url
-            )
-              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
-          )
+          actions = Seq.empty
         )
       )
     }
 
-    "when No is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendPartOfConsolidationPage("submissionId"), PartOfConsolidationAnswer(false, None))
-        .get
+    "when No is selected, return the summary row with no change link" in {
+      val userAnswers = None
 
-      AmendPartOfConsolidationSummary.row(userAnswers)("submissionId") shouldBe Some(
-        SummaryListRowViewModel(
-          key = "partOfConsolidation.checkYourAnswersLabel",
-          value = ValueViewModel("site.no"),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendPartOfConsolidationController
-                .onPageLoad(CheckMode, "submissionId")
-                .url
-            )
-              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
-          )
-        )
+      AmendPartOfConsolidationSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(key = "partOfConsolidation.checkYourAnswersLabel", value = ValueViewModel("site.no"), actions = Seq.empty)
       )
-    }
-
-    "when answer unavailable, return empty" in {
-      val userAnswers = UserAnswers("id")
-      AmendPartOfConsolidationSummary.row(userAnswers)("submissionId") shouldBe None
     }
   }
 }
