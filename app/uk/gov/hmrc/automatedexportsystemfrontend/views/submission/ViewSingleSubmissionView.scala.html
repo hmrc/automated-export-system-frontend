@@ -15,6 +15,8 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionStatus
+@import java.time.LocalDate
 
 @this(
         layout: Layout,
@@ -23,6 +25,9 @@
 )
 
 @(
+    submissionId: String,
+    submissionStatus: SubmissionStatus,
+    updatedAt: LocalDate,
     exportOperationList: SummaryList,
     customOfficeOfExitList: SummaryList,
     consignment: Option[SummaryList],
@@ -35,14 +40,14 @@
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
 
-<!--Replace with dynamic submissionID-->
-    <span class="govuk-caption-l">@messages("viewSingleSubmission.caption") #SUBMISSIONID#</span>
+    <span class="govuk-caption-l">@messages("viewSingleSubmission.caption") @submissionId</span>
     <h1 class="govuk-heading-l">@messages("viewSingleSubmission.heading")</h1>
 
-<!--Replace with dynamic status-->
-    <p class="govuk-body">@messages("site.status"): #STATUS#</p>
-<!--Replace with dynamic date-->
-    <p class="govuk-body">@messages("site.submitted") #DATE OF SUBMISSION#</p>
+    <p class="govuk-body">@messages("site.status"):
+        <strong class="govuk-tag @submissionStatus.cssClass">@messages(submissionStatus.key)</strong></td>
+    </p>
+
+    <p class="govuk-body">@messages("site.submitted") @updatedAt</p>
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
     @govukSummaryList(exportOperationList)
@@ -83,11 +88,9 @@
         @govukSummaryList(goodsItem.get)
     }
 
-    <h2 class="govuk-heading-m">@messages("viewSingleSubmission.auth.subheading")</h2>
-
     <div class="govuk-button-group govuk-!-margin-top-6">
 
-        <!--Update route with amend page-->
+        <!--Update route with amend page when created-->
         <div>
             @govukButton(
             ButtonViewModel(messages("site.amendSubmission"))
@@ -95,11 +98,10 @@
             )
         </div>
 
-        <!--Update route with cancel page-->
         <div>
             @govukButton(
             ButtonViewModel(messages("site.cancelSubmission")).asWarningButton()
-            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.SubmissionController.standardSubmit.url)
+            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.CancelSubmissionController.onPageLoad(submissionId).url)
             )
         </div>
 

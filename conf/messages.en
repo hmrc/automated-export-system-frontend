@@ -421,5 +421,8 @@ viewSingleSubmission.heading = IE507(a) pre-notification details
 viewSingleSubmission.caption = Submission
 viewSingleSubmission.carrier.subheading = Exit carrier
 viewSingleSubmission.loc.subheading = Location of goods
+viewSingleSubmission.activeBorderTransportMeans.subheading = Transport across the border
+viewSingleSubmission.transportDoc.subheading = Document Details
+viewSingleSubmission.goodsItem.subheading = Goods Item
 viewSingleSubmission.auth.subheading = Authorisation
 

@@ -48,6 +48,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingl
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
+import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -68,6 +69,12 @@ class ViewSingleSubmissionController @Inject() (
   def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     automatedExportSystemConnector.getSingleSubmissionTestOnly("12345").flatMap { submission =>
 
+      val submissionId = submission.submissionId
+
+      val submissionStatus = SubmissionLookups.mapStatus(submission.exportOperation.exportOperationType)
+
+      val updatedAt = submission.updatedAt.toLocalDate
+
       val locationOfGoods = submission.goodsShipment.map(_.consignment.locationOfGoods)
 
       val consignment = submission.goodsShipment.map(_.consignment)
@@ -83,14 +90,17 @@ class ViewSingleSubmissionController @Inject() (
       Future.successful(
         Ok(
           view(
-            SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submission.submissionId).flatten),
-            SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submission.submissionId).flatten),
-            Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submission.submissionId).flatten)),
-            Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submission.submissionId).flatMap(_.flatten))),
-            Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submission.submissionId).flatten)),
-            Some(SummaryListViewModel(activeBorderTransportMeansRowsGenerator(activeBorderTransportMeans, submission.submissionId).flatten)),
-            Some(SummaryListViewModel(transportDocumentRowsGenerator(transportDocument, submission.submissionId).flatten)),
-            Some(SummaryListViewModel(goodsItemRowsGenerator(goodsItem, submission.submissionId).flatMap(_.flatten)))
+            submissionId,
+            submissionStatus,
+            updatedAt,
+            SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submissionId).flatten),
+            SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submissionId).flatten),
+            Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submissionId).flatten)),
+            Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submissionId).flatMap(_.flatten))),
+            Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submissionId).flatten)),
+            Some(SummaryListViewModel(activeBorderTransportMeansRowsGenerator(activeBorderTransportMeans, submissionId).flatten)),
+            Some(SummaryListViewModel(transportDocumentRowsGenerator(transportDocument, submissionId).flatten)),
+            Some(SummaryListViewModel(goodsItemRowsGenerator(goodsItem, submissionId).flatMap(_.flatten)))
           )
         )
       )
@@ -102,7 +112,6 @@ class ViewSingleSubmissionController @Inject() (
   ): Seq[Option[SummaryListRow]] =
     Seq(
       AmendEnterMrnSummary.row(answers.mrn, submissionId, false),
-      // TODO Check -> There's apparently a goods being stored but we only have a message file for it I don't know if this even exists
       AmendAnyDiscrepanciesSummary.row(answers.discrepanciesExist, submissionId, false),
       AmendIsSplitExitSummary.row(answers.splitIndicator, submissionId, false)
     )
