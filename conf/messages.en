@@ -181,6 +181,7 @@ viewSubmissions.status.accepted = Accepted
 viewSubmissions.status.awaitingDecision = Awaiting decision
 viewSubmissions.status.cancelled = Cancelled
 viewSubmissions.status.amended = Amended
+viewSubmissions.status.rejected = Rejected
 
 discrepancyConsignment.title = How will the goods cross the border?
 discrepancyConsignment.heading = How will the goods cross the border?
