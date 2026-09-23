@@ -30,7 +30,7 @@ object AmendAnyDiscrepanciesSummary {
 
     val value = answerFromXml match {
       case 1 => "site.yes"
-      case 0 => "site.no" // TODO double check this is correct handling
+      case 0 => "site.no"
     }
 
     Some(

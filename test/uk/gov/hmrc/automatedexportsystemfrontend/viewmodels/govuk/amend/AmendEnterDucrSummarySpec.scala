@@ -37,15 +37,13 @@ class AmendEnterDucrSummarySpec extends AnyFreeSpec with Matchers {
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answered, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendEnterDucrPage("submissionId"), "Ducr")
-        .get
+    "when answered, return the summary row, with change link" in {
+      val userAnswers = "DUCR"
 
-      AmendEnterDucrSummary.row(userAnswers)("submissionId") shouldBe Some(
+      AmendEnterDucrSummary.row(userAnswers, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "enterDucr.checkYourAnswersLabel",
-          value = ValueViewModel("Ducr"),
+          value = ValueViewModel(userAnswers),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
@@ -57,9 +55,12 @@ class AmendEnterDucrSummarySpec extends AnyFreeSpec with Matchers {
       )
     }
 
-    "when answer unavailable, return empty" in {
-      val userAnswers = UserAnswers("id")
-      AmendEnterDucrSummary.row(userAnswers)("submissionId") shouldBe None
+    "when answered, return the summary row without change link" in {
+      val userAnswers = "DUCR"
+
+      AmendEnterDucrSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(key = "enterDucr.checkYourAnswersLabel", value = ValueViewModel(userAnswers), actions = Seq.empty)
+      )
     }
   }
 }
