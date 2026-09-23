@@ -19,6 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 
 import scala.util.Try
 
@@ -39,7 +40,7 @@ case object AnyDiscrepanciesPage extends QuestionPage[Boolean] {
           .flatMap(_.remove(DiscrepancyTransportMeansPage))
           .flatMap(_.remove(DiscrepancyTransportDocPage))
           .flatMap(_.remove(DiscrepancyGoodsPage))
-          .flatMap(_.remove(DiscrepancyPackingPage))
+          .flatMap(_.remove(DiscrepancyPacking))
       case _ => super.cleanup(value, userAnswers)
     }
 }

@@ -76,7 +76,6 @@ class CYASubmissionController @Inject() (
       Seq(DiscrepancyReferenceSummary.row(answers)) ++
       DiscrepancyTransportMeansSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
       DiscrepancyTransportDocSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
-      DiscrepancyGoodsSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
-      DiscrepancyPackingSummary.rows(answers).toSeq.flatten.map(Some(_))
+      DiscrepancyGoodsSummary.rows(answers).toSeq.flatten.map(Some(_))
 
 }

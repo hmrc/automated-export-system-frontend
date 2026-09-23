@@ -404,3 +404,7 @@ cancelSubmission.submissionReference=Submission reference
 cancelSubmission.mrn=MRN
 cancelSubmission.confirmButton=Cancel this submission
 cancelSubmission.backLink=Do not cancel - go back
+
+packagingDetailsCYA.title = Check your answers
+packagingDetailsCYA.heading = Check your answers
+packagingDetailsCYA.caption = Packaging detail {0}

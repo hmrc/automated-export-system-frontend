@@ -35,10 +35,10 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
     "when answered, return the summary rows" in {
       val packingDetails = PackingDetails("BX", 2, "MARKS123")
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyPackingPage, packingDetails)
+        .set(DiscrepancyPackingPage(1), packingDetails)
         .get
 
-      DiscrepancyPackingSummary.rows(userAnswers) shouldBe Some(
+      DiscrepancyPackingSummary.rows(1, userAnswers) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
@@ -46,7 +46,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyPacking.packagingCode.change.hidden")
             )
@@ -57,7 +57,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyPacking.numberOfPackages.change.hidden")
             )
@@ -68,7 +68,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyPacking.shippingMarks.change.hidden")
             )
@@ -79,7 +79,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyPackingSummary.rows(userAnswers) shouldBe None
+      DiscrepancyPackingSummary.rows(1, userAnswers) shouldBe None
     }
   }
 }
