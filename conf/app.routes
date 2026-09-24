@@ -207,4 +207,4 @@ POST  /cancel-submission/:submissionID      uk.gov.hmrc.automatedexportsystemfro
 # Cancellation success page
 GET   /submission-cancelled/:submissionID      uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.CancellationSuccessController.onPageLoad(submissionID: String)
 
-GET        /viewSingleSubmission                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSingleSubmissionController.onPageLoad()
+GET        /submission-detail/:submissionId                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSingleSubmissionController.onPageLoad(submissionId: String)
