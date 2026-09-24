@@ -45,7 +45,9 @@ class AmendDiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Ge
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, "submissionId").url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("discrepancyGoods.goodsItemNumber.change.hidden")
           )
@@ -59,7 +61,9 @@ class AmendDiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Ge
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, "submissionId").url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("discrepancyGoods.ducr.change.hidden")
           )
@@ -73,7 +77,9 @@ class AmendDiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Ge
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, "submissionId").url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("discrepancyGoods.newGrossMass.change.hidden")
           )
@@ -86,7 +92,9 @@ class AmendDiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Ge
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, "submissionId").url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyGoodsController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("discrepancyGoods.newNetMass.change.hidden")
           )
