@@ -24,13 +24,15 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.Enrolments
-import uk.gov.hmrc.auth.core.retrieve.{Credentials, ~}
+import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionResponseParser
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
 import uk.gov.hmrc.http.SessionKeys
+import scala.xml.XML
 
 import scala.concurrent.Future
 
@@ -58,7 +60,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must return OK and the correct view for a parsed XML" in {
+    "must return OK and the correct view for a parsed XML 'full' submission" in {
 
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
       val mockAutomatedExportSystemConnector = mock[AutomatedExportSystemConnector]
@@ -70,7 +72,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase with MockitoSugar {
         Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
 
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
-        .thenReturn(Future.successful(new~(new~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
       val mockResponseBody = """<Submission>
                                          |            <submissionId>12345</submissionId>
@@ -184,8 +186,8 @@ class ViewSingleSubmissionControllerSpec extends SpecBase with MockitoSugar {
                                          |            <updatedAt>2026-08-11T00:00:00</updatedAt>
                                          |          </Submission>""".stripMargin
 
-      when(mockAutomatedExportSystemConnector.getSingleSubmission(any())(any()))
-        .thenReturn(Future.successful(mockResponseBody))
+      when(mockAutomatedExportSystemConnector.getSingleSubmissionTestOnly(any[String])(any()))
+        .thenReturn(Future.successful(SingleSubmissionResponseParser.parse(XML.loadString(mockResponseBody))))
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(
@@ -200,11 +202,89 @@ class ViewSingleSubmissionControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-
         status(result) mustEqual OK
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
         body should include("submission-detail")
+
+        body should include("IE507(a) pre-notification details")
+        body should include("Accepted")
+        body should include("Submitted 2026-08-11")
+
+        body should include("Export operation")
+        body should include("MRN")
+        body should include("mrn12345")
+        body should include("Are there any discrepancies with this consignment?")
+        body should include("Yes")
+        body should include("Is this a split exit?")
+        body should include("Yes")
+
+        body should include("Consignment")
+        body should include("How will the goods cross the border?")
+        body should include("Sea")
+        body should include("DUCR")
+        body should include("referenceNumberUcr")
+        body should include("Is this part of a consolidation?")
+        body should include("Yes - MUCR: parentUcrId")
+
+        body should include("Customs office of exit")
+        body should include("Where do you expect the goods to exit the UK?")
+        body should include("Belfast (GB000051)")
+
+        body should include("Exit carrier")
+
+        body should include("Transport equipment")
+        body should include("Container identification number")
+        body should include("1")
+        body should include("Number of seals")
+        body should include("Seal identifier")
+        body should include("sealIdentifier1")
+        body should include("Declaration Goods Reference")
+
+        body should include("2")
+        body should include("sealIdentifier2")
+
+        body should include("Location of goods")
+        body should include("Type of location")
+        body should include("locationType.")
+        body should include("Location identifier")
+        body should include("qualifierOfIdentification")
+        body should include("Authorisation reference number")
+        body should include("authorisationNumber")
+        body should include("Location additional identifier")
+        body should include("additionalIdentifier")
+        body should include("UN/LOCODE")
+        body should include("unLocode")
+
+        body should include("Transport across the border")
+        body should include("Transport means type")
+        body should include("typeOfIdentification")
+        body should include("Transport means ID")
+        body should include("identificationNumber")
+        body should include("Transport means nationality")
+        body should include("nationality")
+
+        body should include("Document Details")
+        body should include("Transport document type")
+        body should include("Transport document reference")
+        body should include("referenceNumber1")
+        body should include("referenceNumber2")
+
+        body should include("Goods Item")
+        body should include("Declaration goods item number")
+        body should include("Declaration Unique Consignment Reference (DUCR)")
+        body should include("New gross mass")
+        body should include("100.55")
+        body should include("New net mass")
+        body should include("80.45")
+        body should include("Package type")
+        body should include("typeOfPackages")
+        body should include("Number of packages")
+        body should include("Shipping marks")
+        body should include("shippingMarks")
+
+        body should include("Amend this submission")
+        body should include("Cancel this submission")
       }
     }
   }
