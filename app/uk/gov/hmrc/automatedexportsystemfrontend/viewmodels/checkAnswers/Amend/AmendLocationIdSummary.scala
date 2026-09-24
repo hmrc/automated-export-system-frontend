@@ -68,7 +68,7 @@ object AmendLocationIdSummary {
         actions = if (withAmendLink) {
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+              .withVisuallyHiddenText(messages("locationId.authorisationReferenceNumber.change.hidden"))
           )
         } else {
           Seq.empty
@@ -84,7 +84,7 @@ object AmendLocationIdSummary {
         actions = if (withAmendLink) {
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+              .withVisuallyHiddenText(messages("locationId.locationAdditionalIdentifier.change.hidden"))
           )
         } else {
           Seq.empty
