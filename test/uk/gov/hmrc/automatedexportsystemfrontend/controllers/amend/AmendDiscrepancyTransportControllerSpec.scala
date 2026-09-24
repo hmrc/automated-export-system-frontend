@@ -50,8 +50,10 @@ class AmendDiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar
     UserAnswers(
       userAnswersId,
       Json.obj(
-        "standard" ->
-          Json.obj(AmendDiscrepancyTransportPage(submissionId).toString -> Json.obj("containerId" -> "value 1", "numberOfSeals" -> 99))
+        "amend" -> Json.obj(
+          submissionId -> Json
+            .obj(AmendDiscrepancyTransportPage(submissionId).toString -> Json.obj("containerId" -> "value 1", "numberOfSeals" -> 99))
+        )
       )
     )
 
