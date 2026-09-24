@@ -66,7 +66,7 @@ class ViewSingleSubmissionController @Inject() (
     extends FrontendBaseController with I18nSupport {
 
   //  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onPageLoad(submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     automatedExportSystemConnector.getSingleSubmissionTestOnly("12345").flatMap { submission =>
 
       val submissionId = submission.submissionId
