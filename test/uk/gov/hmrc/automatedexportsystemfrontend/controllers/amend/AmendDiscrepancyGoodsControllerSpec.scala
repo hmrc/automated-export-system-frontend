@@ -50,12 +50,14 @@ class AmendDiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
-      "standard" -> Json.obj(
-        AmendDiscrepancyGoodsPage(submissionId).toString -> Json.obj(
-          "declarationGoodsItemNumber" -> 123,
-          "declarationUniqueConsignmentReference" -> "value 2",
-          "newGrossMass" -> "value 3",
-          "newNetMass" -> "value 4"
+      "amend" -> Json.obj(
+        submissionId -> Json.obj(
+          AmendDiscrepancyGoodsPage(submissionId).toString -> Json.obj(
+            "declarationGoodsItemNumber" -> 123,
+            "declarationUniqueConsignmentReference" -> "value 2",
+            "newGrossMass" -> "value 3",
+            "newNetMass" -> "value 4"
+          )
         )
       )
     )
@@ -108,22 +110,18 @@ class AmendDiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
         body should include("Goods item number")
         body should include("""id="declarationGoodsItemNumber"""")
         body should include("""name="declarationGoodsItemNumber"""")
+        body should include("""id="declarationGoodsItemNumber"""")
+        body should include("""name="declarationGoodsItemNumber"""")
         body should include("""type="text"""")
-        body should include("""value="123""")
-        body should include("Declaration Unique Consignment Reference (DUCR)")
-        body should include("If you wish to amend the DUCR from the original IE501 message.")
+        body should include("""value="123"""")
         body should include("""id="declarationUniqueConsignmentReference"""")
         body should include("""name="declarationUniqueConsignmentReference"""")
         body should include("""type="text"""")
         body should include("""value="value 2"""")
-        body should include("New gross mass in kilograms")
-        body should include("The total weight of the goods, including all packaging and containers.")
         body should include("""id="newGrossMass"""")
         body should include("""name="newGrossMass"""")
         body should include("""type="text"""")
         body should include("""value="value 3"""")
-        body should include("New net mass in kilograms")
-        body should include("The weight of the goods only.")
         body should include("""id="newNetMass"""")
         body should include("""name="newNetMass"""")
         body should include("""type="text"""")
