@@ -18,9 +18,8 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
@@ -36,10 +35,14 @@ object AmendDiscrepancyTransportSummary {
       SummaryListRowViewModel(
         key = "discrepancyTransport.containerId.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(containerId)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
-        )
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyTransportController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
       )
     )
 
@@ -53,10 +56,14 @@ object AmendDiscrepancyTransportSummary {
       SummaryListRowViewModel(
         key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(numberOfSeals)),
-        actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
-        )
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyTransportController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
       )
     )
   }
