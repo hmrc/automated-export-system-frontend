@@ -22,8 +22,8 @@ import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, TransportAcrossBorderDetails, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportMeansPage
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyTransportMeansSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyTransportMeansPage
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendDiscrepancyTransportMeansSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
@@ -32,54 +32,81 @@ class AmendDiscrepancyTransportMeansSummarySpec extends AnyFreeSpec with Matcher
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "rows" - {
-    "when answered, return the summary rows" in {
-      val transportAcrossBorderDetails = TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration")
-      val userAnswers = UserAnswers("id")
-        .set(DiscrepancyTransportMeansPage, transportAcrossBorderDetails)
-        .get
+    "when answered, return the summary rows with change links" in {
+      val transportType = "transportType"
+      val transportIdNumber = "transportIdNumber"
+      val countryOfRegistration = "countryOfRegistration"
 
-      DiscrepancyTransportMeansSummary.rows(userAnswers) shouldBe Some(
-        Seq(
+      AmendDiscrepancyTransportMeansSummary.transportTypeRow(transportType, "submissionId", true) shouldBe Some(
           SummaryListRowViewModel(
             key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent("transportType")),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController.onPageLoad(CheckMode, "submissionId").url
               )
                 .withVisuallyHiddenText("discrepancyTransportMeans.transportType.change.hidden")
             )
-          ),
+          )
+      )
+      AmendDiscrepancyTransportMeansSummary.transportIdRow(transportIdNumber, "submissionId", true) shouldBe Some(
           SummaryListRowViewModel(
             key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent("transportIdNumber")),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController.onPageLoad(CheckMode, "submissionId").url
               )
                 .withVisuallyHiddenText("discrepancyTransportMeans.transportIdNumber.change.hidden")
             )
-          ),
-          SummaryListRowViewModel(
+          )
+      )
+
+      AmendDiscrepancyTransportMeansSummary.countryOfRegistrationRow(countryOfRegistration, "submissionId", true) shouldBe Some(
+        SummaryListRowViewModel(
             key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent("countryOfRegistration")),
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController.onPageLoad(CheckMode, "submissionId").url
               )
                 .withVisuallyHiddenText("discrepancyTransportMeans.countryOfRegistration.change.hidden")
             )
           )
         )
+    }
+
+    "when answered, return the summary rows without change links" in {
+      val transportType = "transportType"
+      val transportIdNumber = "transportIdNumber"
+      val countryOfRegistration = "countryOfRegistration"
+
+      AmendDiscrepancyTransportMeansSummary.transportTypeRow(transportType, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("transportType")),
+          actions = Seq.empty
+        )
+      )
+      AmendDiscrepancyTransportMeansSummary.transportIdRow(transportIdNumber, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("transportIdNumber")),
+          actions = Seq.empty
+        )
+      )
+
+      AmendDiscrepancyTransportMeansSummary.countryOfRegistrationRow(countryOfRegistration, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("countryOfRegistration")),
+          actions = Seq.empty
+        )
       )
     }
 
-    "when answer unavailable, return empty" in {
-      val userAnswers = UserAnswers("id")
-      DiscrepancyTransportMeansSummary.rows(userAnswers) shouldBe None
-    }
   }
 }
