@@ -38,45 +38,51 @@ class AmendDiscrepancyTransportMeansSummarySpec extends AnyFreeSpec with Matcher
       val countryOfRegistration = "countryOfRegistration"
 
       AmendDiscrepancyTransportMeansSummary.transportTypeRow(transportType, "submissionId", true) shouldBe Some(
-          SummaryListRowViewModel(
-            key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("transportType")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyTransportMeans.transportType.change.hidden")
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("transportType")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyTransportMeans.transportType.change.hidden")
           )
+        )
       )
       AmendDiscrepancyTransportMeansSummary.transportIdRow(transportIdNumber, "submissionId", true) shouldBe Some(
-          SummaryListRowViewModel(
-            key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("transportIdNumber")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyTransportMeans.transportIdNumber.change.hidden")
+        SummaryListRowViewModel(
+          key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("transportIdNumber")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyTransportMeans.transportIdNumber.change.hidden")
           )
+        )
       )
 
       AmendDiscrepancyTransportMeansSummary.countryOfRegistrationRow(countryOfRegistration, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-            key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("countryOfRegistration")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyTransportMeans.countryOfRegistration.change.hidden")
+          key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("countryOfRegistration")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportMeansController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyTransportMeans.countryOfRegistration.change.hidden")
           )
         )
+      )
     }
 
     "when answered, return the summary rows without change links" in {

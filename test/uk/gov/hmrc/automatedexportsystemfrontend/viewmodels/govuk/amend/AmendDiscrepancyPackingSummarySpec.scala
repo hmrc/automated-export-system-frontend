@@ -38,45 +38,51 @@ class AmendDiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with 
       val shippingMarks = "MARKS123"
 
       AmendDiscrepancyPackingSummary.typeOfPackagesRow(packagingCode, "submissionId", true) shouldBe Some(
-          SummaryListRowViewModel(
-            key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("BX")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyPackingController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyPacking.packagingCode.change.hidden")
+        SummaryListRowViewModel(
+          key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("BX")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyPackingController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyPacking.packagingCode.change.hidden")
           )
+        )
       )
 
       AmendDiscrepancyPackingSummary.numberOfPackagesRow(numberOfPackages, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-            key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("2")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyPackingController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyPacking.numberOfPackages.change.hidden")
+          key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("2")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyPackingController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
-          )
-      )
-      AmendDiscrepancyPackingSummary.shippingMarksRow(shippingMarks, "submissionId", true) shouldBe Some(
-          SummaryListRowViewModel(
-            key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("MARKS123")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyPackingController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyPacking.shippingMarks.change.hidden")
-            )
+              .withVisuallyHiddenText("discrepancyPacking.numberOfPackages.change.hidden")
           )
         )
+      )
+      AmendDiscrepancyPackingSummary.shippingMarksRow(shippingMarks, "submissionId", true) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("MARKS123")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyPackingController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
+            )
+              .withVisuallyHiddenText("discrepancyPacking.shippingMarks.change.hidden")
+          )
+        )
+      )
     }
 
     "when answered, return the summary rows without change links" in {
@@ -88,7 +94,7 @@ class AmendDiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with 
         SummaryListRowViewModel(
           key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("BX")),
-          actions =  Seq.empty
+          actions = Seq.empty
         )
       )
 

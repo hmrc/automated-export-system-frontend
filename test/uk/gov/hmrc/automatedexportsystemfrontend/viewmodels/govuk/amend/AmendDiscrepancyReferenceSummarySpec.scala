@@ -40,7 +40,9 @@ class AmendDiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyReferenceController.onPageLoad(CheckMode, "submissionId").url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyReferenceController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("discrepancyReference.change.hidden")
           )
@@ -52,11 +54,7 @@ class AmendDiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
       val userAnswers = 12345
 
       AmendDiscrepancyReferenceSummary.row(userAnswers, "submissionId", false) shouldBe Some(
-        SummaryListRowViewModel(
-          key = "discrepancyReference.checkYourAnswersLabel",
-          value = ValueViewModel("12345"),
-          actions = Seq.empty
-        )
+        SummaryListRowViewModel(key = "discrepancyReference.checkYourAnswersLabel", value = ValueViewModel("12345"), actions = Seq.empty)
       )
     }
 

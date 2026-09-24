@@ -40,7 +40,9 @@ class AmendDiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancySealsController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("discrepancySeals.change.hidden")
           )
@@ -52,11 +54,7 @@ class AmendDiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
       val userAnswers = "sealIdentifier"
 
       AmendDiscrepancySealsSummary.row(userAnswers, "submissionId", false) shouldBe Some(
-        SummaryListRowViewModel(
-          key = "discrepancySeals.checkYourAnswersLabel",
-          value = ValueViewModel("sealIdentifier"),
-          actions = Seq.empty
-        )
+        SummaryListRowViewModel(key = "discrepancySeals.checkYourAnswersLabel", value = ValueViewModel("sealIdentifier"), actions = Seq.empty)
       )
     }
 

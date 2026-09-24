@@ -41,7 +41,9 @@ class AmendDiscrepancyConsignmentSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyConsignmentController.onPageLoad(CheckMode, "submissionId").url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyConsignmentController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("discrepancyConsignment.change.hidden")
           )

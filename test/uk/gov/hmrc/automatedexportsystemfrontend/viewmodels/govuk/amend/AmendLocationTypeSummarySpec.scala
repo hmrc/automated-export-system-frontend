@@ -41,7 +41,9 @@ class AmendLocationTypeSummarySpec extends AnyFreeSpec with Matchers {
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationTypeController.onPageLoad(CheckMode, "submissisonId").url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationTypeController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
               .withVisuallyHiddenText("locationType.change.hidden")
           )
