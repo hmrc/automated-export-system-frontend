@@ -37,31 +37,35 @@ class AmendDiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers 
       val referenceNumber = "1234"
 
       AmendDiscrepancyTransportDocSummary.transportTypeRow(documentType, "submissionId", true) shouldBe Some(
-          SummaryListRowViewModel(
-            key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("1")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportDocController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
+        SummaryListRowViewModel(
+          key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("1")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportDocController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
           )
+        )
       )
       AmendDiscrepancyTransportDocSummary.docReferenceRow(referenceNumber, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-            key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("1234")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportDocController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyTransportDoc.referenceNumber.change.hidden")
+          key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("1234")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportDocController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyTransportDoc.referenceNumber.change.hidden")
           )
         )
+      )
     }
 
     "when answered, return the both optional summary rows without change links" in {
@@ -72,26 +76,14 @@ class AmendDiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers 
         SummaryListRowViewModel(
           key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("1")),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportDocController.onPageLoad(CheckMode, "submissionId").url
-            )
-              .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
-          )
+          actions = Seq.empty
         )
       )
       AmendDiscrepancyTransportDocSummary.docReferenceRow(referenceNumber, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("1234")),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportDocController.onPageLoad(CheckMode, "submissionId").url
-            )
-              .withVisuallyHiddenText("discrepancyTransportDoc.referenceNumber.change.hidden")
-          )
+          actions = Seq.empty
         )
       )
     }

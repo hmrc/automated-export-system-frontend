@@ -39,57 +39,57 @@ class AmendLocationIdSummarySpec extends AnyFreeSpec with Matchers with Generato
       val authorisationReferenceNumber = "authorisationReferenceNumber"
 
       AmendLocationIdSummary.qualifierRow(qualifier, "submissionId", true) shouldBe Some(
-          SummaryListRowViewModel(
-            key = "locationId.identificationType.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("locationQualifier")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("locationId.identificationType.change.hidden")
+        SummaryListRowViewModel(
+          key = "locationId.identificationType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("locationQualifier")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
             )
+              .withVisuallyHiddenText("locationId.identificationType.change.hidden")
           )
+        )
       )
       AmendLocationIdSummary.unloRow(unlocode, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-            key = "locationId.unlocode.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("unlocode")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("locationId.unlocode.change.hidden")
+          key = "locationId.unlocode.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("unlocode")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
             )
+              .withVisuallyHiddenText("locationId.unlocode.change.hidden")
           )
+        )
       )
       AmendLocationIdSummary.additionalIdRow(locationAdditionalIdentifier, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-            key = "locationId.locationAdditionalIdentifier.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("locationAdditionalIdentifier")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("locationId.locationAdditionalIdentifier.change.hidden")
+          key = "locationId.locationAdditionalIdentifier.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("locationAdditionalIdentifier")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
             )
+              .withVisuallyHiddenText("locationId.locationAdditionalIdentifier.change.hidden")
           )
+        )
       )
       AmendLocationIdSummary.authNumberRow(authorisationReferenceNumber, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-            key = "locationId.authorisationReferenceNumber.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("authorisationReferenceNumber")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("locationId.authorisationReferenceNumber.change.hidden")
+          key = "locationId.authorisationReferenceNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("authorisationReferenceNumber")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendLocationIdController.onPageLoad(CheckMode, "submissionId").url
             )
+              .withVisuallyHiddenText("locationId.authorisationReferenceNumber.change.hidden")
           )
         )
+      )
     }
 
     "when answered, return the summary row without change links" in {

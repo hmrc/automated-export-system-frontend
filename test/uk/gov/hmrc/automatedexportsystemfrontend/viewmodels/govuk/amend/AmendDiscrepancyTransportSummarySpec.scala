@@ -37,32 +37,36 @@ class AmendDiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers wit
       val numberOfSeals = 99
 
       AmendDiscrepancyTransportSummary.containerIdRow(containerId, "submissionId", true) shouldBe Some(
-          SummaryListRowViewModel(
-            key = "discrepancyTransport.containerId.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("containerId")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyTransport.containerId.change.hidden")
+        SummaryListRowViewModel(
+          key = "discrepancyTransport.containerId.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("containerId")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyTransport.containerId.change.hidden")
           )
+        )
       )
 
       AmendDiscrepancyTransportSummary.numberOfSealsRow(numberOfSeals, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-            key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent("99")),
-            actions = Seq(
-              ActionItemViewModel(
-                "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportController.onPageLoad(CheckMode, "submissionId").url
-              )
-                .withVisuallyHiddenText("discrepancyTransport.numberOfSeals.change.hidden")
+          key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("99")),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyTransportController
+                .onPageLoad(CheckMode, "submissionId")
+                .url
             )
+              .withVisuallyHiddenText("discrepancyTransport.numberOfSeals.change.hidden")
           )
         )
+      )
     }
 
     "when answered, return the summary rows without change links" in {
