@@ -67,7 +67,7 @@ class ViewSingleSubmissionController @Inject() (
 
   //  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
   def onPageLoad(submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-    automatedExportSystemConnector.getSingleSubmissionTestOnly("12345").flatMap { submission =>
+    automatedExportSystemConnector.getSingleSubmission(submissionId).flatMap { submission =>
 
       val submissionId = submission.submissionId
 
