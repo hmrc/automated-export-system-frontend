@@ -171,14 +171,6 @@ class SingleSubmissionHelper {
       case Some(value) => AmendDiscrepancyGoodsSummary.goodsItemDucrRow(value, submissionId, withChangeLink)
       case _           => None
     }
-//
-//  def goodsItemGrossMassHandler(grossMass: BigDecimal, submissionId: String, withChangeLink: Boolean)(
-//    implicit messages: Messages
-//  ): Option[SummaryListRow] =
-//    grossMass match {
-//      case Some(value) => AmendDiscrepancyGoodsSummary.grossMassRow(value, submissionId, withChangeLink)
-//      case _ => None
-//    }
 
   def typeOfPackagesHandler(typeOfPackages: Option[String], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
