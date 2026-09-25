@@ -89,11 +89,11 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
       val result = SubmissionViewModelMapper.toViewModel(submissions)
 
       result.summaries.map(_.submissionStatus) shouldBe Seq(
-        SubmissionStatus("viewSubmissions.status.awaitingDecision", "govuk-tag--blue"),
-        SubmissionStatus("viewSubmissions.status.accepted", "govuk-tag--green"),
-        SubmissionStatus("viewSubmissions.status.amended", "govuk-tag--yellow"),
-        SubmissionStatus("viewSubmissions.status.cancelled", "govuk-tag--red"),
-        SubmissionStatus("viewSubmissions.status.rejected", "govuk-tag--red")
+        SubmissionStatus("site.status.awaitingDecision", "govuk-tag--blue"),
+        SubmissionStatus("site.status.accepted", "govuk-tag--green"),
+        SubmissionStatus("site.status.amended", "govuk-tag--yellow"),
+        SubmissionStatus("site.status.cancelled", "govuk-tag--red"),
+        SubmissionStatus("site.status.rejected", "govuk-tag--red")
       )
     }
   }

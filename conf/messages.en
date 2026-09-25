@@ -21,6 +21,7 @@ site.status.accepted = Accepted
 site.status.awaitingDecision = Awaiting decision
 site.status.cancelled = Cancelled
 site.status.amended = Amended
+site.status.rejected = Rejected
 
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
