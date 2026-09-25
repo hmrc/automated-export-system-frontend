@@ -29,18 +29,23 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendOfficeOfExitSummary {
 
-  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendOfficeOfExitPage(submissionId)).map { answer =>
+  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
-      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answer"))))
+    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answerFromXml"))))
 
+    Some(
       SummaryListRowViewModel(
         key = "officeOfExit.checkYourAnswersLabel",
         value = value,
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendOfficeOfExitController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("officeOfExit.change.hidden"))
-        )
+        actions = if (withAmendLink) {
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendOfficeOfExitController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("officeOfExit.change.hidden"))
+          )
+        } else {
+          Seq.empty
+        }
       )
-    }
+    )
+  }
 }

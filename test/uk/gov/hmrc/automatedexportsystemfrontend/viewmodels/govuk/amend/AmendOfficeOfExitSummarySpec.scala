@@ -38,12 +38,10 @@ class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answer is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendOfficeOfExitPage("submissionId"), OfficeOfExit.Belfast)
-        .get
+    "when answer is selected, return the summary row with change link" in {
+      val userAnswers = "GB000051"
 
-      AmendOfficeOfExitSummary.row(userAnswers)("submissionId") shouldBe Some(
+      AmendOfficeOfExitSummary.row(userAnswers, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("officeOfExit.GB000051")),
@@ -58,9 +56,16 @@ class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
       )
     }
 
-    "when answer unavailable, return empty" in {
-      val userAnswers = UserAnswers("id")
-      AmendOfficeOfExitSummary.row(userAnswers)("submissionId") shouldBe None
+    "when answer is selected, return the summary row" in {
+      val userAnswers = "GB000051"
+
+      AmendOfficeOfExitSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "officeOfExit.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent("officeOfExit.GB000051")),
+          actions = Seq.empty
+        )
+      )
     }
   }
 

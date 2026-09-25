@@ -11,11 +11,22 @@ site.startAgain = Start again
 site.signIn = Sign in
 site.govuk = GOV.UK
 site.warning = Warning
+
 site.acceptAndSubmit = Accept and submit
+site.amendSubmission = Amend this submission
+site.cancelSubmission = Cancel this submission
+site.submitted = Submitted
+site.status = Status
+site.status.accepted = Accepted
+site.status.awaitingDecision = Awaiting decision
+site.status.cancelled = Cancelled
+site.status.amended = Amended
+site.status.rejected = Rejected
 
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
 site.kg.suffix = kg
+site.notAnswered = Not answered
 
 date.day = Day
 date.month = Month
@@ -115,6 +126,8 @@ cYASubmission.subHeading.exportOperation = Export operation
 cYASubmission.subHeading.locationOfGoods = Location of goods
 cYASubmission.subHeading.customsOfficeExit = Customs office of exit
 cYASubmission.subHeading.discrepancyDetails = Discrepancy details
+cYASubmission.subHeading.consignment = Consignment
+cYASubmission.subHeading.transportEquipment = Transport equipment
 cYASubmission.warning = By submitting this notification you are confirming that, to the best of your knowledge, the details you are providing are correct.
 
 officeOfExit.title = Where do you expect the goods to exit the UK?
@@ -404,3 +417,13 @@ cancelSubmission.submissionReference=Submission reference
 cancelSubmission.mrn=MRN
 cancelSubmission.confirmButton=Cancel this submission
 cancelSubmission.backLink=Do not cancel - go back
+viewSingleSubmission.title = IE507(a) pre-notification details
+viewSingleSubmission.heading = IE507(a) pre-notification details
+viewSingleSubmission.caption = Submission
+viewSingleSubmission.carrier.subheading = Exit carrier
+viewSingleSubmission.loc.subheading = Location of goods
+viewSingleSubmission.activeBorderTransportMeans.subheading = Transport across the border
+viewSingleSubmission.transportDoc.subheading = Document Details
+viewSingleSubmission.goodsItem.subheading = Goods Item
+viewSingleSubmission.auth.subheading = Authorisation
+
