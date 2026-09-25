@@ -94,6 +94,16 @@ class SubmissionDataService @Inject() extends Logging {
       Packaging(1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
 
+  private def collectGoodsItem(userAnswers: UserAnswers): Option[GoodsItem] =
+    userAnswers.get(DiscrepancyGoodsPage).map { goods =>
+      GoodsItem(
+        goods.declarationGoodsItemNumber,
+        goods.declarationUniqueConsignmentReference,
+        Commodity(goods.newGrossMass, goods.newNetMass),
+        collectPackaging(userAnswers)
+      )
+    }
+
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
     for {
       mrn <- userAnswers.get(EnterMrnPage)
@@ -102,33 +112,32 @@ class SubmissionDataService @Inject() extends Logging {
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
 
       goodsShipment = for {
-        discrepancyConsignment <- userAnswers.get(DiscrepancyConsignmentPage)
-        transportMode = TransportMode.fromUserAnswers(discrepancyConsignment)
         ducr <- userAnswers.get(EnterDucrPage)
-        part = userAnswers.get(PartOfConsolidationPage)
-        mucr = part.flatMap(_.mucr)
-        seals = collectSeals(userAnswers)
-        goodsReference = collectGoodsReference(userAnswers)
-        transportEquipment = collectTransportEquipment(userAnswers, seals, goodsReference)
         location <- collectGoodsLocation(userAnswers)
-        transport = collectActiveBorderTransportMeans(userAnswers)
-        transportDocument = collectTransportDocument(userAnswers)
-        goods <- userAnswers.get(DiscrepancyGoodsPage)
-        declarationGoodsItemNumber = goods.declarationGoodsItemNumber
-        referenceNumberUCR = goods.declarationUniqueConsignmentReference
-        commodity <- collectCommodity(userAnswers)
-        packaging = collectPackaging(userAnswers)
-      } yield GoodsShipment(
-        Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument),
-        GoodsItem(declarationGoodsItemNumber, referenceNumberUCR, commodity, packaging)
-      )
+      } yield {
+        val transportMode =
+          userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.fromUserAnswers)
+
+        val mucr =
+          userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)
+
+        val seals = collectSeals(userAnswers)
+        val goodsReference = collectGoodsReference(userAnswers)
+        val transportEquipment =
+          collectTransportEquipment(userAnswers, seals, goodsReference)
+
+        val transport = collectActiveBorderTransportMeans(userAnswers)
+        val transportDocument = collectTransportDocument(userAnswers)
+        val goodsItem = collectGoodsItem(userAnswers)
+
+        GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
+      }
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
       goodsShipment
     )
-
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""
 

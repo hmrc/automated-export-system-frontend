@@ -20,7 +20,7 @@ import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
 case class Consignment(
-  modeOfTransportAtBorder: TransportMode,
+  modeOfTransportAtBorder: Option[TransportMode],
   referenceNumberUCR: String,
   parentUCRID: Option[String],
   TransportEquipment: List[TransportEquipment],
@@ -35,7 +35,7 @@ object Consignment {
   given xmlWrites: XmlWrites[Consignment] = XmlWrites.instance { c =>
     XmlWrites.elem(
       "Consignment",
-      XmlWrites.textElem("modeOfTransportAtTheBorder", c.modeOfTransportAtBorder.toXml),
+      XmlWrites.optElem("modeOfTransportAtTheBorder", c.modeOfTransportAtBorder.map(_.toXml)),
       XmlWrites.textElem("referenceNumberUCR", c.referenceNumberUCR),
       XmlWrites.optElem("parentUCRID", c.parentUCRID),
       c.TransportEquipment.toXml,
