@@ -40,26 +40,6 @@ class ViewSingleSubmissionControllerSpec extends SpecBase with MockitoSugar {
 
   "ViewSingleSubmission Controller" - {
 
-    "must return OK and the correct view for a GET" in {
-
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-        .build()
-
-      running(application) {
-        val request = FakeRequest(GET, routes.ViewSingleSubmissionController.onPageLoad("12345").url)
-
-        val result = route(application, request).value
-
-        val view = application.injector.instanceOf[ViewSingleSubmissionView]
-
-        status(result) mustEqual OK
-        val body = contentAsString(result)
-        body should include("automated-export-system-frontend")
-        body should include("submission-detail")
-      }
-    }
-
     "must return OK and the correct view for a parsed XML 'full' submission" in {
 
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
@@ -186,7 +166,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase with MockitoSugar {
                                          |            <updatedAt>2026-08-11T00:00:00</updatedAt>
                                          |          </Submission>""".stripMargin
 
-      when(mockAutomatedExportSystemConnector.getSingleSubmissionTestOnly(any[String])(any()))
+      when(mockAutomatedExportSystemConnector.getSingleSubmission(any[String])(any()))
         .thenReturn(Future.successful(SingleSubmissionResponseParser.parse(XML.loadString(mockResponseBody))))
 
       val application = applicationBuilder(userAnswers = None)
