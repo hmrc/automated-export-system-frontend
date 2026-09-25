@@ -22,7 +22,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{PackingDetails, UserAns
 case object DiscrepancyPacking extends Gettable[List[PackingDetails]] with Settable[List[PackingDetails]] {
   override def path: JsPath = JsPath \ "standard" \ "discrepancyPacking"
 
+  val maxPackagingDetails: Int = 99
+
   def getAll(userAnswers: UserAnswers): List[PackingDetails] = userAnswers.get(this).getOrElse(Nil)
 
   def count(userAnswers: UserAnswers): Int = getAll(userAnswers).size
+
+  def remaining(userAnswers: UserAnswers): Int = math.max(0, maxPackagingDetails - count(userAnswers))
 }

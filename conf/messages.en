@@ -407,3 +407,16 @@ cancelSubmission.backLink=Do not cancel - go back
 packagingDetailsCYA.title = Check your answers
 packagingDetailsCYA.heading = Check your answers
 packagingDetailsCYA.caption = Packaging detail {0}
+
+addAnotherPackagingDetail.singular.title = You have added 1 packaging detail
+addAnotherPackagingDetail.plural.title = You have added {0} packaging details
+addAnotherPackagingDetail.singular.heading = You have added 1 packaging detail
+addAnotherPackagingDetail.plural.heading = You have added {0} packaging details
+addAnotherPackagingDetail.key = Packaging detail {0}
+addAnotherPackagingDetail.change.hidden = Change packaging detail {0}
+addAnotherPackagingDetail.remove.hidden = Remove packaging detail {0}
+addAnotherPackagingDetail.singular.remaining = You can add up to 1 more packaging detail.
+addAnotherPackagingDetail.plural.remaining = You can add up to {0} more packaging details.
+addAnotherPackagingDetail.addAnother = Do you need to add another packaging detail?
+addAnotherPackagingDetail.maxLimit = You cannot add any more packaging details. To add another, you need to remove one first.
+addAnotherPackagingDetail.error.required = Select yes if you want to add another packaging detail
