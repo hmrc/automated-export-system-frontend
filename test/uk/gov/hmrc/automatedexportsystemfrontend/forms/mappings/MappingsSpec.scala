@@ -78,6 +78,47 @@ class MappingsSpec extends SpecBase with OptionValues with Mappings:
     }
   }
 
+  "mandatoryIfBoolean" - {
+
+    def testForm(condition: Boolean, defaultValue: Boolean = false): Form[Boolean] =
+      Form("value" -> mandatoryIfBoolean(condition = condition, defaultValue))
+
+    "must bind true when condition is true" in {
+      val result = testForm(true).bind(Map("value" -> "true"))
+      result.get shouldBe true
+    }
+
+    "must bind false when condition is false" in {
+      val result = testForm(false).bind(Map("value" -> "false"))
+      result.get shouldBe false
+    }
+
+    "must not bind a non-boolean" in {
+      val result = testForm(true).bind(Map("value" -> "not a boolean"))
+      result.errors should contain(FormError("value", "error.boolean"))
+    }
+
+    "must not bind an empty value when condition is true" in {
+      val result = testForm(true).bind(Map("value" -> ""))
+      result.errors should contain(FormError("value", "error.required"))
+    }
+
+    "must bind an empty value that resolves to the defaultValue when condition is false" in {
+      val result = testForm(false).bind(Map("value" -> ""))
+      result.get shouldBe false
+    }
+
+    "must not bind an empty map" in {
+      val result = testForm(true).bind(Map.empty[String, String])
+      result.errors should contain(FormError("value", "error.required"))
+    }
+
+    "must unbind" in {
+      val result = testForm(true).fill(true)
+      result.apply("value").value.value shouldBe "true"
+    }
+  }
+
   "boolean" - {
 
     val testForm: Form[Boolean] =
