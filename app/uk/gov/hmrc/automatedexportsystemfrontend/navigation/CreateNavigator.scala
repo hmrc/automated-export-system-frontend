@@ -27,22 +27,22 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 class CreateNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case EnterMrnPage                  => _ => createRoute.EnterDucrController.onPageLoad(NormalMode)
-    case EnterDucrPage                 => _ => createRoute.PartOfConsolidationController.onPageLoad(NormalMode)
-    case PartOfConsolidationPage       => partOfConsolidationRoute
-    case LocationTypePage              => _ => createRoute.LocationIdController.onPageLoad(NormalMode)
-    case LocationIdPage                => _ => createRoute.OfficeOfExitController.onPageLoad(NormalMode)
-    case OfficeOfExitPage              => _ => createRoute.IsSplitExitController.onPageLoad(NormalMode)
-    case IsSplitExitPage               => isSplitExitRoute
-    case AnyDiscrepanciesPage          => anyDiscrepanciesRoute
-    case DiscrepancyConsignmentPage    => _ => createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
-    case DiscrepancyTransportPage      => _ => createRoute.DiscrepancySealsController.onPageLoad(NormalMode)
-    case DiscrepancySealsPage          => _ => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
-    case DiscrepancyReferencePage      => _ => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
-    case DiscrepancyTransportMeansPage => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
-    case DiscrepancyTransportDocPage   => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
-    case DiscrepancyGoodsPage          => _ => createRoute.DiscrepancyPackingController.onPageLoad(NormalMode)
-    case DiscrepancyPackingPage        => _ => createRoute.CYASubmissionController.onPageLoad()
+    case EnterMrnPage                                 => _ => createRoute.EnterDucrController.onPageLoad(NormalMode)
+    case EnterDucrPage                                => _ => createRoute.PartOfConsolidationController.onPageLoad(NormalMode)
+    case PartOfConsolidationPage                      => partOfConsolidationRoute
+    case LocationTypePage                             => _ => createRoute.LocationIdController.onPageLoad(NormalMode)
+    case LocationIdPage                               => _ => createRoute.OfficeOfExitController.onPageLoad(NormalMode)
+    case OfficeOfExitPage                             => _ => createRoute.IsSplitExitController.onPageLoad(NormalMode)
+    case IsSplitExitPage                              => isSplitExitRoute
+    case AnyDiscrepanciesPage                         => anyDiscrepanciesRoute
+    case DiscrepancyConsignmentPage                   => _ => createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
+    case DiscrepancyTransportPage                     => _ => createRoute.DiscrepancySealsController.onPageLoad(NormalMode)
+    case DiscrepancySealsPage                         => _ => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
+    case DiscrepancyReferencePage                     => _ => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
+    case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
+    case DiscrepancyTransportDocPage                  => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+    case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
+    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex)
   }
 
   private def partOfConsolidationRoute(answers: UserAnswers): Call =
@@ -66,16 +66,17 @@ class CreateNavigator extends Navigator {
     }
 
   override val checkRoutes: Page => UserAnswers => Call = {
-    case IsSplitExitPage               => isSplitExitCheckRoute
-    case AnyDiscrepanciesPage          => anyDiscrepanciesCheckRoute
-    case DiscrepancyConsignmentPage    => discrepancyConsignmentCheckRoute
-    case DiscrepancyTransportPage      => discrepancyTransportCheckRoute
-    case DiscrepancySealsPage          => discrepancySealsCheckRoute
-    case DiscrepancyReferencePage      => discrepancyReferenceCheckRoute
-    case DiscrepancyTransportMeansPage => discrepancyTransportMeansCheckRoute
-    case DiscrepancyTransportDocPage   => discrepancyTransportDocCheckRoute
-    case DiscrepancyGoodsPage          => discrepancyGoodsCheckRoute
-    case _                             => _ => createRoute.CYASubmissionController.onPageLoad()
+    case IsSplitExitPage                              => isSplitExitCheckRoute
+    case AnyDiscrepanciesPage                         => anyDiscrepanciesCheckRoute
+    case DiscrepancyConsignmentPage                   => discrepancyConsignmentCheckRoute
+    case DiscrepancyTransportPage                     => discrepancyTransportCheckRoute
+    case DiscrepancySealsPage                         => discrepancySealsCheckRoute
+    case DiscrepancyReferencePage                     => discrepancyReferenceCheckRoute
+    case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
+    case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
+    case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
+    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex)
+    case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
   }
 
   private def isSplitExitCheckRoute(answers: UserAnswers): Call =
@@ -141,8 +142,8 @@ class CreateNavigator extends Navigator {
     }
 
   private def discrepancyGoodsCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyPackingPage) match {
-      case None => createRoute.DiscrepancyPackingController.onPageLoad(CheckMode)
+    answers.get(DiscrepancyPackingPage(1)) match {
+      case None => createRoute.DiscrepancyPackingController.onPageLoad(1, CheckMode)
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 }
