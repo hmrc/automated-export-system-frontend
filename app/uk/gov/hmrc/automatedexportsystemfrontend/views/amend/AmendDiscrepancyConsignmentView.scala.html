@@ -14,7 +14,7 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => createRoute}
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
 @import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.LegendSize
 
@@ -26,11 +26,11 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode, submissionId: String)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("discrepancyConsignment.title"))) {
 
-    @formHelper(action = createRoute.DiscrepancyConsignmentController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = amendRoute.AmendDiscrepancyConsignmentController.onSubmit(mode, submissionId), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form,  errorLinkOverrides = Map("value" -> "value_0")))

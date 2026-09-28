@@ -52,14 +52,14 @@ class AmendDiscrepancyPackingController @Inject() (
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, mode, submissionId))
   }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, submissionId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendDiscrepancyPackingPage(submissionId), value))
