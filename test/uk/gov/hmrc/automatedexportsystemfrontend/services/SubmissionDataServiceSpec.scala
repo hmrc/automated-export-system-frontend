@@ -27,6 +27,7 @@ class SubmissionDataServiceSpec extends SpecBase {
   "buildStandardSubmission" - {
 
     val service = new SubmissionDataService
+    val index = 1
 
     "must include a GoodsShipment for a split exit when AnyDiscrepanciesPage is not present" in {
       val userAnswers = for {
@@ -44,7 +45,7 @@ class SubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage, "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage, PackingDetails("PK", 1, "marks"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)
@@ -91,7 +92,7 @@ class SubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage, "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage, PackingDetails("PK", 1, "marks"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)
@@ -152,6 +153,30 @@ class SubmissionDataServiceSpec extends SpecBase {
       result.value should include("<typeOfPackages>PK</typeOfPackages>")
       result.value should include("<numberOfPackages>1</numberOfPackages>")
       result.value should include("<shippingMarks>marks</shippingMarks>")
+    }
+
+    "must include the DUCR in GoodsShipment when there are no discrepancies" in {
+      val userAnswers = for {
+        answers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
+        answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
+        answers <- answers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None))
+        answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
+        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        answers <- answers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
+        answers <- answers.set(IsSplitExitPage, false)
+        answers <- answers.set(AnyDiscrepanciesPage, false)
+      } yield answers
+
+      val result = service.buildStandardSubmission(userAnswers.get)
+
+      result shouldBe defined
+      result.value should include("<discrepanciesExist>0</discrepanciesExist>")
+      result.value should include("<splitIndicator>0</splitIndicator>")
+      result.value should include("<GoodsShipment>")
+      result.value should include("<Consignment>")
+      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
+      result.value shouldNot include("<modeOfTransportAtTheBorder>")
+      result.value shouldNot include("<GoodsItem>")
     }
 
     "must return a None when all required answers not present" in {

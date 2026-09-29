@@ -14,24 +14,15 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
+package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{PackingDetails, UserAnswers}
 
-import scala.util.Try
+case object DiscrepancyPacking extends Gettable[List[PackingDetails]] with Settable[List[PackingDetails]] {
+  override def path: JsPath = JsPath \ "standard" \ "discrepancyPacking"
 
-case object IsSplitExitPage extends QuestionPage[Boolean] {
+  def getAll(userAnswers: UserAnswers): List[PackingDetails] = userAnswers.get(this).getOrElse(Nil)
 
-  override def path: JsPath = JsPath \ "standard" \ toString
-
-  override def toString: String = "isSplitExit"
-
-  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
-    value match {
-      case Some(true) =>
-        userAnswers.remove(AnyDiscrepanciesPage)
-      case _ => super.cleanup(value, userAnswers)
-    }
+  def count(userAnswers: UserAnswers): Int = getAll(userAnswers).size
 }

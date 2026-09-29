@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
@@ -29,21 +29,19 @@ class NavigatorSpec extends SpecBase {
 
     "in Normal mode" - {
 
-      // TODO readd when mongo set up
+      "must go from a page that doesn't exist in the normal route map to the journey recovery" in {
 
-      //      "must go from a page that doesn't exist in the route map to Index" in {
-//
-//        case object UnknownPage extends Page
-//        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) mustBe appRoute.IndexController.onPageLoad()
-//      }
+        case object UnknownPage extends Page
+        navigator.nextPage(UnknownPage, NormalMode, UserAnswers("id")) shouldBe problemRoute.JourneyRecoveryController.onPageLoad()
+      }
     }
 
     "in Check mode" - {
 
-      "must go from a page that doesn't exist in the edit route map to CheckYourAnswers" in {
+      "must go from a page that doesn't exist in the check route map to the journey recovery" in {
 
         case object UnknownPage extends Page
-        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) shouldBe happyRoute.CYASubmissionController.onPageLoad()
+        navigator.nextPage(UnknownPage, CheckMode, UserAnswers("id")) shouldBe problemRoute.JourneyRecoveryController.onPageLoad()
       }
     }
   }
