@@ -59,7 +59,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("2")
         body should include("Shipping marks")
         body should include("MARKS2")
-        body should include(createRoute.CYASubmissionController.onPageLoad().url)
+        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad().url}"""")
       }
     }
 
