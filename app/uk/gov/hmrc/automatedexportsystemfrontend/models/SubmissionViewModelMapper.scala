@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.DateTimeFormats
 import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
-import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionError
 
 object SubmissionViewModelMapper {
 
@@ -31,7 +30,11 @@ object SubmissionViewModelMapper {
         officeOfExit = SubmissionLookups.mapOfficeOfExit(submission.officeOfExitCode),
         submittedDate = submission.updatedAt.format(DateTimeFormats.shortDateFormat),
         submissionStatus = SubmissionLookups.mapStatus(submission.status),
-        errors = submission.errors
+        errors = SubmissionErrorMapper.toMessageKeys(
+          submission.metadata
+            .map(_.errors)
+            .getOrElse(Seq.empty)
+        )
       )
     })
 
