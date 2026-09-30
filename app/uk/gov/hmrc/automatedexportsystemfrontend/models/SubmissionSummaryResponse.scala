@@ -26,7 +26,7 @@ case class SubmissionSummaryResponse(
   officeOfExitCode: String,
   updatedAt: LocalDateTime,
   status: Int,
-  errors: Seq[String] = Seq.empty
+  metadata: Option[SingleSubmissionMetadata] = None
 )
 
 case class SubmissionSummaryResponseList(submissions: Seq[SubmissionSummaryResponse])
