@@ -189,5 +189,44 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
       packaging.numberOfPackages shouldBe Some("10")
       packaging.shippingMarks shouldBe Some("MARK123")
     }
+
+    "parse submission metadata errors" in {
+
+      val xml =
+        XML.loadString("""
+                         |<Submission>
+                         |  <submissionId>123</submissionId>
+                         |  <ExportOperation>
+                         |    <type>1</type>
+                         |    <MRN>26GB0000X6524786A9</MRN>
+                         |    <discrepanciesExist>0</discrepanciesExist>
+                         |    <splitIndicator>0</splitIndicator>
+                         |  </ExportOperation>
+                         |  <CustomsOfficeOfExitActual>
+                         |    <referenceNumber>GB000051</referenceNumber>
+                         |  </CustomsOfficeOfExitActual>
+                         |  <updatedAt>2026-08-03T00:00:00</updatedAt>
+                         |  <metadata>
+                         |    <error>
+                         |      <code>INVALID_MRN</code>
+                         |      <description>Invalid MRN</description>
+                         |      <path>mrn</path>
+                         |      <originalValue>ABC123</originalValue>
+                         |    </error>
+                         |  </metadata>
+                         |</Submission>
+                         |""".stripMargin)
+
+      val result = SingleSubmissionResponseParser.parse(xml)
+
+      result.metadata shouldBe defined
+
+      val error = result.metadata.get.errors.head
+
+      error.code shouldBe "INVALID_MRN"
+      error.description shouldBe Some("Invalid MRN")
+      error.path shouldBe Some("mrn")
+      error.originalValue shouldBe Some("ABC123")
+    }
   }
 }
