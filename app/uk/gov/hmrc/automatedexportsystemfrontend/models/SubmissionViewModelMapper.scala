@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.DateTimeFormats
 import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionError
 
 object SubmissionViewModelMapper {
 
