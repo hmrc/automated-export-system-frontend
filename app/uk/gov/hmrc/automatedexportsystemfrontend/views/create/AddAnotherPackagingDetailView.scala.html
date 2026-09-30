@@ -15,7 +15,6 @@
  *@
 
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => createRoute}
-@import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherPackagingDetailViewModel
 
 @this(
@@ -26,7 +25,7 @@
         govukRadios: GovukRadios
 )
 
-@(form: Form[_], viewModel: AddAnotherPackagingDetailViewModel)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], viewModel: AddAnotherPackagingDetailViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfPackagingDetails))) {
 
@@ -45,8 +44,8 @@
           </dt>
           <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
             <ul class="govuk-summary-list__actions-list">
-              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailNumber, CheckMode).url}><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.change.hidden", packagingDetailNumber)}</span></a></li>
-              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber)}</span></a></li>
+              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailNumber, mode).url}><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.change.hidden", packagingDetailNumber)}</span></a></li>
+              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailNumber, mode).url}><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber)}</span></a></li>
             </ul>
           </dd>
         </div>
@@ -54,7 +53,7 @@
     </dl>
   </div>
 
-  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(), Symbol("autoComplete") -> "off") {
+  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

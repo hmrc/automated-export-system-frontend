@@ -20,49 +20,36 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyPackingFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PackingDetails, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.RemovePackagingDetailFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyPackingView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.RemovePackagingDetailView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
-class DiscrepancyPackingController @Inject() (
+class RemovePackagingDetailController @Inject() (
   override val messagesApi: MessagesApi,
   sessionRepository: SessionRepository,
-  createNavigator: CreateNavigator,
   val actionBuilder: AesAuthRequestActionBuilder,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
-  formProvider: DiscrepancyPackingFormProvider,
+  formProvider: RemovePackagingDetailFormProvider,
   val controllerComponents: MessagesControllerComponents,
-  view: DiscrepancyPackingView
+  view: RemovePackagingDetailView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form: Form[PackingDetails] = formProvider()
+  def form(packagingDetailIndex: Int): Form[Boolean] = formProvider(packagingDetailIndex)
 
   def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
     implicit request =>
-      val userAnswers: UserAnswers = request.userAnswers
-      val nextIndex: Int = DiscrepancyPacking.nextIndex(userAnswers)
-
-      if (
-        DiscrepancyPacking
-          .exists(userAnswers, packagingDetailIndex) || packagingDetailIndex == nextIndex
-      ) {
-        val preparedForm = userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)) match {
-          case None        => form
-          case Some(value) => form.fill(value)
-        }
-
-        Ok(view(preparedForm, packagingDetailIndex, mode))
+      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex)) {
+        Ok(view(form(packagingDetailIndex), packagingDetailIndex, mode))
       } else {
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
@@ -70,15 +57,18 @@ class DiscrepancyPackingController @Inject() (
 
   def onSubmit(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
     implicit request =>
-      form
+      form(packagingDetailIndex)
         .bindFromRequest()
         .fold(
           formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyPackingPage(packagingDetailIndex), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(createNavigator.nextPage(DiscrepancyPackingPage(packagingDetailIndex), mode, updatedAnswers))
+          {
+            case true =>
+              for {
+                updatedAnswers <- Future.fromTry(DiscrepancyPacking.removeOne(request.userAnswers, packagingDetailIndex))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(mode))
+            case false => Future.successful(Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(mode)))
+          }
         )
   }
 }

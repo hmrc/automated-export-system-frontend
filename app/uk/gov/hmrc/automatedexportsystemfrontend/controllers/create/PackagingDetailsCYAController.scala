@@ -20,6 +20,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyPackingSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.PackagingDetailsCYAView
@@ -37,13 +38,14 @@ class PackagingDetailsCYAController @Inject() (
   view: PackagingDetailsCYAView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(packagingDetailIndex: Int): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
+    implicit request =>
 
-    val packagingDetailsRows: Option[Seq[SummaryListRow]] = DiscrepancyPackingSummary.rows(packagingDetailIndex, request.userAnswers)
+      val packagingDetailsRows: Option[Seq[SummaryListRow]] = DiscrepancyPackingSummary.rows(packagingDetailIndex, request.userAnswers, mode)
 
-    packagingDetailsRows match {
-      case None       => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-      case Some(rows) => Ok(view(packagingDetailIndex, SummaryListViewModel(rows)))
-    }
+      packagingDetailsRows match {
+        case None       => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+        case Some(rows) => Ok(view(packagingDetailIndex, SummaryListViewModel(rows), mode))
+      }
   }
 }
