@@ -14,16 +14,16 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionViewModel
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukWarningText
 @this(
-layout: Layout,
-govukButton: GovukButton,
-govukWarningText: GovukWarningText
+ layout: Layout,
+ govukButton: GovukButton,
+ govukWarningText: GovukWarningText
 )
 
-@(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
+@(submission: SingleSubmissionViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(
 pageTitle = titleNoForm(messages("cancelSubmission.heading"))
@@ -60,7 +60,7 @@ pageTitle = titleNoForm(messages("cancelSubmission.heading"))
 <div class="govuk-button-group">
 
  @helper.form(
- action = routes.CancelSubmissionController.onSubmit(submission.reference)
+ action = routes.CancelSubmissionController.onSubmit(submission.submissionId)
  ) {
   @helper.CSRF.formField
 
@@ -74,7 +74,7 @@ pageTitle = titleNoForm(messages("cancelSubmission.heading"))
 
   <p class="govuk-body">
    <a
-           href="@routes.ViewSubmissionController.onPageLoad(submission.reference)"
+           href="@routes.ViewSubmissionController.onPageLoad(submission.submissionId)"
            class="govuk-link govuk-link--no-visited-state">
     @messages("cancelSubmission.backLink")
    </a>
