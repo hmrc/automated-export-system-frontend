@@ -32,10 +32,12 @@ import scala.concurrent.Future
 class CancellationSuccessControllerSpec extends SpecBase {
   private val submissionId = UUID.randomUUID().toString
   private val connector = mock[AutomatedExportSystemConnector]
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(connector)
   }
+
   private def buildApp() = applicationBuilder(userAnswers = Some(emptyUserAnswers))
     .overrides(
       bind[uk.gov.hmrc.auth.core.AuthConnector]
@@ -44,6 +46,7 @@ class CancellationSuccessControllerSpec extends SpecBase {
         .toInstance(connector)
     )
     .build()
+
   "CancellationSuccessController" - {
 
     "must return OK when the submission exists" in {

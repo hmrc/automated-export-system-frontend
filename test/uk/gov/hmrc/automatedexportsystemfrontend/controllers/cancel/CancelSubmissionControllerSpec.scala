@@ -24,8 +24,8 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.http.{SessionKeys, UpstreamErrorResponse}
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{singleSubmission, testMrn}
+import uk.gov.hmrc.http.{SessionKeys, UpstreamErrorResponse}
 
 import java.util.UUID
 import scala.concurrent.Future
@@ -34,10 +34,12 @@ class CancelSubmissionControllerSpec extends SpecBase {
 
   private val submissionId = UUID.randomUUID().toString
   private val connector = mock[AutomatedExportSystemConnector]
+
   override def beforeEach(): Unit = {
     super.beforeEach()
     reset(connector)
   }
+
   private def buildApp() = applicationBuilder(userAnswers = Some(emptyUserAnswers))
     .overrides(
       bind[uk.gov.hmrc.auth.core.AuthConnector]
