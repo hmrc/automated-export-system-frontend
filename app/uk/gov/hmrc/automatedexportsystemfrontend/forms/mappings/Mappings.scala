@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings
 
 import play.api.data.FieldMapping
 import play.api.data.Forms.of
+import play.api.data.format.Formats.ignoredFormat
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Enumerable
 
@@ -35,6 +36,9 @@ trait Mappings extends Formatters with Constraints {
     args: Seq[String] = Seq.empty
   ): FieldMapping[Int] =
     of(intFormatter(requiredKey, wholeNumberKey, nonNumericKey, args))
+
+  protected def mandatoryIfBoolean(errorKey: String = "error.required", condition: Boolean, defaultValue: Boolean): FieldMapping[Boolean] =
+    if (condition) boolean(errorKey) else of(ignoredFormat(defaultValue))
 
   protected def boolean(
     requiredKey: String = "error.required",

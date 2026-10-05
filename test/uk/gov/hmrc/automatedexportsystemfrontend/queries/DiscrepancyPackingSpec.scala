@@ -24,31 +24,53 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 class DiscrepancyPackingSpec extends SpecBase {
 
   "DiscrepancyPacking" - {
-    "must getAll DiscrepancyPacking data" in {
-      val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-        .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-        .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-        .success
-        .value
+    ".getAll" - {
+      "must get all of the DiscrepancyPacking data" in {
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+          .success
+          .value
 
-      val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("CT", 2, "MARKS2"), PackingDetails("PK", 3, "MARKS3"))
+        val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("CT", 2, "MARKS2"), PackingDetails("PK", 3, "MARKS3"))
 
-      DiscrepancyPacking.getAll(userAnswers) mustBe expected
+        DiscrepancyPacking.getAll(userAnswers) mustBe expected
+      }
     }
 
-    "must count how many DiscrepancyPacking data items" in {
-      val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-        .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-        .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-        .success
-        .value
+    ".count" - {
+      "must return how many DiscrepancyPacking data items have been added" in {
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+          .success
+          .value
 
-      DiscrepancyPacking.count(userAnswers) mustBe 3
+        DiscrepancyPacking.count(userAnswers) mustBe 3
+      }
     }
 
-    "must remove DiscrepancyPacking data" in {
+    ".remaining" - {
+      "must return how many remaining DiscrepancyPacking data items can be added" in {
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+          .success
+          .value
+
+        DiscrepancyPacking.remaining(userAnswers) mustBe 96
+      }
+    }
+    ".maxPackagingDetails" - {
+      "must have a maximum of 99" in {
+        DiscrepancyPacking.maxPackagingDetails mustBe 99
+      }
+    }
+
+    "must be able to remove all DiscrepancyPacking data from user answers" in {
       val userAnswers = emptyUserAnswers
         .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
         .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))

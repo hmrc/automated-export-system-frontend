@@ -106,6 +106,9 @@ POST       /change-discrepancy-packing/:packagingDetailIndex               uk.go
 
 GET        /packaging-details-check-answers/:packagingDetailIndex          uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex: Int)
 
+GET        /add-another-packaging-detail                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.AddAnotherPackagingDetailController.onPageLoad()
+POST       /add-another-packaging-detail                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.AddAnotherPackagingDetailController.onSubmit()
+
 #AMEND
 GET        /amend/mrn/:submissionId                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendEnterMrnController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId: String)
 POST       /amend/mrn/:submissionId                        uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendEnterMrnController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode, submissionId: String)

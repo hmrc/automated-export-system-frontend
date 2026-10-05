@@ -1,0 +1,78 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.{routes => createRoute}
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
+@import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherPackagingDetailViewModel
+
+@this(
+        layout: Layout,
+        formHelper: FormWithCSRF,
+        govukButton: GovukButton,
+        govukErrorSummary: GovukErrorSummary,
+        govukRadios: GovukRadios
+)
+
+@(form: Form[_], viewModel: AddAnotherPackagingDetailViewModel)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfPackagingDetails))) {
+
+  @if(form.errors.nonEmpty) {
+    @govukErrorSummary(ErrorSummaryViewModel(form))
+  }
+
+  <h1 class="govuk-heading-l">@messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfPackagingDetails)</h1>
+
+  <div class="govuk-form-group">
+    <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
+      @((1 to viewModel.numberOfPackagingDetails).map { packagingDetailNumber =>
+        <div class="govuk-summary-list__row">
+          <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
+            {messages("addAnotherPackagingDetail.key", packagingDetailNumber)}
+          </dt>
+          <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
+            <ul class="govuk-summary-list__actions-list">
+              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailNumber, CheckMode).url}><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.change.hidden", packagingDetailNumber)}</span></a></li>
+              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href="#"><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber)}</span></a></li>
+            </ul>
+          </dd>
+        </div>
+      })
+    </dl>
+  </div>
+
+  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(), Symbol("autoComplete") -> "off") {
+
+    @if(viewModel.allowMore) {
+      <p class="govuk-body">
+        @Html(messages(s"addAnotherPackagingDetail.${viewModel.remainingSingularOrPlural}.remaining", <strong>{viewModel.remainingPackagingDetails}</strong>))
+      </p>
+
+      @govukRadios(
+        RadiosViewModel.yesNo(
+          field = form("value"),
+          legend = LegendViewModel(HtmlContent(s"<strong>${messages("addAnotherPackagingDetail.addAnother")}</strong>"))
+        )
+      )
+    } else {
+      <p class="govuk-body">@messages("addAnotherPackagingDetail.maxLimit")</p>
+    }
+
+    @govukButton(
+      ButtonViewModel(messages("site.continue"))
+    )
+  }
+}
