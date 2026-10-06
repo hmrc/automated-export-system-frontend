@@ -29,21 +29,21 @@ class PartOfConsolidationFormProvider @Inject() extends Mappings {
   def apply(): Form[PartOfConsolidationAnswer] =
     Form(
       mapping("boolean" -> boolean("partOfConsolidation.error.required"), "mucr" -> optional(text()))(PartOfConsolidationAnswer.apply)(answer =>
-        Some((answer.boolean, answer.mucr))
+        Some((answer.boolean, answer.partOfConsolidation))
       )
     )
 
   def validateAnswer(answer: PartOfConsolidationAnswer): Form[PartOfConsolidationAnswer] = {
     val form: Form[PartOfConsolidationAnswer] = apply().fill(answer)
-    val mucr: String = answer.mucr.getOrElse("")
+    val partOfConsolidation: String = answer.partOfConsolidation.getOrElse("")
 
     if (!answer.boolean) {
       form
-    } else if (mucr.trim.isEmpty) {
-      form.withError("mucr", "partOfConsolidation.mucr.required")
-    } else if (mucr.length > mucrMaxLength) {
+    } else if (partOfConsolidation.trim.isEmpty) {
+      form.withError("partOfConsolidation", "partOfConsolidation.partOfConsolidation.required")
+    } else if (partOfConsolidation.length > mucrMaxLength) {
       form.withError("mucr", "partOfConsolidation.mucr.length")
-    } else if (!mucr.matches(mucrRegex)) {
+    } else if (!partOfConsolidation.matches(mucrRegex)) {
       form.withError("mucr", "partOfConsolidation.mucr.invalid")
     } else {
       form

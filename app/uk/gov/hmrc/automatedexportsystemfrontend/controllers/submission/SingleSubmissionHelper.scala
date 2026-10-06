@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsReference
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, SingleSubmissionGoodsReference}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
   AmendDiscrepancyGoodsSummary,
@@ -38,10 +38,9 @@ class SingleSubmissionHelper {
   def modeOfTransportAtBorderHandler(modeOfTransport: Option[Int], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
   ): Option[SummaryListRow] =
-    modeOfTransport match {
-      case Some(mode) => AmendDiscrepancyConsignmentSummary.row(mode, submissionId, withChangeLink)
-      case _          => None
-    }
+    modeOfTransport
+      .flatMap(ModeOfTransportAtBorder.fromCode)
+      .flatMap(AmendDiscrepancyConsignmentSummary.row(_, submissionId, withChangeLink))
 
   def parentUCRIDHandler(referenceNumber: Option[String], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
@@ -64,15 +63,6 @@ class SingleSubmissionHelper {
       case Some(number) => AmendDiscrepancyTransportSummary.numberOfSealsRow(number, submissionId, withChangeLink)
       case _            => None
     }
-
-  // TODO, not sure if we've got the designs to handle how we display the indexed items to the user, this can maybe
-  // TODO be updated to a generic index handler and be reused, for now will leave commented out and we can revisit
-//  def sequenceNumberHandler(sequenceNumber: Option[Int], submissionId: String, withChangeLink: Boolean)(
-//    implicit messages: Messages
-//  ): Option[SummaryListRow] =
-//    sequenceNumber.flatMap { value =>
-//      AmendDiscrepancyTransportSummary.numberOfSealsRow(value, submissionId, withChangeLink)
-//    }
 
   def sealIdentifierHandler(numberOfSeals: Option[String], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages

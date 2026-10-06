@@ -26,26 +26,29 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendIsSplitExitSummary {
 
-  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
-
-    val value = answerFromXml match {
-      case 1 => "site.yes"
-      case 0 => "site.no" // TODO double check this is correct handling
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendIsSplitExitPage(submissionId)).map { answer =>
+      build(answer, submissionId, withChangeLink = true)
     }
 
-    Some(
-      SummaryListRowViewModel(
-        key = "isSplitExit.checkYourAnswersLabel",
-        value = ValueViewModel(value),
-        actions = if (withAmendLink) {
+  def row(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
+
+  private def build(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow = {
+    val display =
+      if (value) s"${messages("site.yes")} - ${messages("site.isSplitExit")}: 1"
+      else s"${messages("site.no")} - ${messages("site.isSplitExit")}: 0"
+
+    SummaryListRowViewModel(
+      key = "isSplitDiscrepancy.checkYourAnswersLabel",
+      value = ValueViewModel(display),
+      actions =
+        if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendIsSplitExitController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
   }
 }

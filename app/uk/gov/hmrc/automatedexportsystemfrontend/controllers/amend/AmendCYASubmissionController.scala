@@ -16,18 +16,26 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.Logger
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.services.SubmissionDataService
+import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
-import scala.concurrent.Future
+import scala.concurrent.{ExecutionContext, Future}
+import scala.util.control.NonFatal
 
 class AmendCYASubmissionController @Inject() (
   override val messagesApi: MessagesApi,
@@ -35,38 +43,70 @@ class AmendCYASubmissionController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
-  view: AmendCYASubmissionView
-) extends FrontendBaseController with I18nSupport {
+  view: AmendCYASubmissionView,
+  amendNavigator: AmendNavigator,
+  submissionDataService: SubmissionDataService,
+  automatedExportSystemConnector: AutomatedExportSystemConnector,
+  sessionRepository: SessionRepository,
+  userAnswerHelper: UserAnswerHelper
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  // TODO
-  // UNSURE IF NEEDED FOR AMEND JOURNEY, WILL LEAVE COMMENTED OUT UNTIL DECISIONS ARE FINALISED
+  val logger: Logger = Logger(this.getClass.getName)
 
-//  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-//
-//    val userAnswers = request.userAnswers
-//
-//    Future.successful(
-//      Ok(
-//        view(
-//          SummaryListViewModel(exportOperationRowsGenerator(userAnswers).flatten),
-//          SummaryListViewModel(consignmentRowsGenerator(userAnswers).flatten),
-//          SummaryListViewModel(customsOfficeExitRowGenerator(userAnswers).flatten),
-//          SummaryListViewModel(extraRowsGenerator(userAnswers).flatten)
-//        )
-//      )
-//    )
-//  }
-//
-//  private def exportOperationRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-//    Seq(AmendEnterMrnSummary.row(answers), AmendIsSplitExitSummary.row(answers))
-//
-//  private def consignmentRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-//    Seq(AmendEnterDucrSummary.row(answers), AmendPartOfConsolidationSummary.row(answers))
-//
-//  private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-//    Seq(AmendOfficeOfExitSummary.row(answers))
-//
-//  private def extraRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
-//    Seq(AmendAnyDiscrepanciesSummary.row(answers))
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
 
+      val answers = request.userAnswers
+
+      val exportOperationList =
+        SummaryListViewModel(Seq(AmendEnterMrnSummary.row(answers)(submissionId), AmendIsSplitExitSummary.row(answers)(submissionId)).flatten)
+
+      val consignmentList = SummaryListViewModel(
+        Seq(
+          AmendEnterDucrSummary.row(answers)(submissionId),
+          AmendPartOfConsolidationSummary.row(answers)(submissionId),
+          AmendOfficeOfExitSummary.row(answers)(submissionId),
+          AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
+          AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)
+        ).flatten
+      )
+
+      val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
+
+      val extraRowsList = SummaryListViewModel(
+        Seq(AmendAnyDiscrepanciesSummary.row(answers)(submissionId), AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten
+      )
+
+      val preparedView = view(mode, submissionId, exportOperationList, consignmentList)
+      Future.successful(Ok(preparedView))
+    }
+
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      submissionDataService.buildAmendSubmission(request.userAnswers, submissionId) match {
+        case Some(xmlSubmission) =>
+          automatedExportSystemConnector
+            .submitIE507a(xmlSubmission.toString)
+            .flatMap { _ =>
+              sessionRepository.set(userAnswerHelper.removeAmendSubmissionAnswers(submissionId, request.userAnswers)).map { _ =>
+                Redirect(submissionRoute.StandardSubmissionConfirmationController.onPageLoad().url)
+              }
+            }
+            .recoverWith { case NonFatal(ex) =>
+              logger.warn("Unexpected error from amend submission", ex)
+              sessionRepository.set(userAnswerHelper.removeAmendSubmissionAnswers(submissionId, request.userAnswers)).map { _ =>
+                Redirect(problemRoute.JourneyRecoveryController.onPageLoad().url)
+              }
+            }
+
+        case None =>
+          logger.error(s"Failed to build XML due to missing user answers when submitting amend IE507a. submissionId=$submissionId")
+          sessionRepository
+            .set(userAnswerHelper.removeAmendSubmissionAnswers(submissionId, request.userAnswers))
+            .map { _ =>
+              Redirect(problemRoute.JourneyRecoveryController.onPageLoad().url)
+            }
+      }
+    }
 }

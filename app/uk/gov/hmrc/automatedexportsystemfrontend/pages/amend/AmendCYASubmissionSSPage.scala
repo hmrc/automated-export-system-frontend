@@ -14,17 +14,10 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.utils
+package uk.gov.hmrc.automatedexportsystemfrontend.pages.amend
 
-import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 
-class UserAnswerHelper {
-
-  def removeStandardSubmissionAnswers(answers: UserAnswers): UserAnswers =
-    answers.removePath(JsPath \ "standard").get
-
-  def removeAmendSubmissionAnswers(submissionId: String, answers: UserAnswers): UserAnswers =
-    answers.removePath(JsPath \ submissionId \ "amend").get
-
+case class AmendCYASubmissionPage(submissionId: String) extends Page {
+  override def toString: String = "amendCYASubmission"
 }

@@ -18,27 +18,23 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.libs.json.{Format, Json}
 
-case class ViewSubmissionsViewModel(summaries: Seq[SubmissionSummary])
-
-case class SubmissionSummary(
-  reference: String,
+case class ViewSubmissionViewModel(
+  submissionId: String,
   mrn: String,
   ducr: String,
-  officeOfExit: OfficeOfExit,
+  officeOfExit: String,
   submittedDate: String,
-  submissionStatus: SubmissionStatus
+  status: String,
+  discrepancyConsignment: Option[String],
+  locationType: Option[String],
+  locationUnlocode: Option[String],
+  locationAdditionalIdentifier: Option[String],
+  locationAuthorisationReferenceNumber: Option[String],
+  partOfConsolidation: Option[Boolean],
+  anyDiscrepancies: Option[Boolean],
+  isSplitExit: Option[Boolean]
 )
 
-case class SubmissionStatus(key: String, cssClass: String)
-
-object ViewSubmissionsViewModel {
-  implicit val format: Format[ViewSubmissionsViewModel] = Json.format[ViewSubmissionsViewModel]
-}
-
-object SubmissionSummary {
-  implicit val format: Format[SubmissionSummary] = Json.format[SubmissionSummary]
-}
-
-object SubmissionStatus {
-  implicit val format: Format[SubmissionStatus] = Json.format[SubmissionStatus]
+object ViewSubmissionViewModel {
+  implicit val format: Format[ViewSubmissionViewModel] = Json.format[ViewSubmissionViewModel]
 }
