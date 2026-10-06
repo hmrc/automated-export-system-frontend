@@ -16,8 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase

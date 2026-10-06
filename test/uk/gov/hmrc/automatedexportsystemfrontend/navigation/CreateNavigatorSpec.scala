@@ -135,10 +135,10 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyPackingPage" - {
         "to PackagingDetailsCYA" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage(0), PackingDetails("packagingCode", 1, "shippingMarks"))
+            .set(DiscrepancyPackingPage(1), PackingDetails("packagingCode", 1, "shippingMarks"))
             .success
             .value
-          navigator.nextPage(DiscrepancyPackingPage(0), NormalMode, userAnswers) shouldBe
+          navigator.nextPage(DiscrepancyPackingPage(1), NormalMode, userAnswers) shouldBe
             createRoute.PackagingDetailsCYAController.onPageLoad(1)
         }
       }
@@ -356,7 +356,7 @@ class CreateNavigatorSpec extends SpecBase {
 
         "to CYASubmissionPage when DiscrepancyPackingPage is answered" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage(0), PackingDetails("packagingCode", 2, "shippingMarks"))
+            .set(DiscrepancyPackingPage(1), PackingDetails("packagingCode", 2, "shippingMarks"))
             .success
             .value
           navigator.nextPage(DiscrepancyGoodsPage, CheckMode, userAnswers) shouldBe
@@ -367,10 +367,10 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyPackingPage" - {
         "to PackagingDetailsCYA" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage(0), PackingDetails("packagingCode", 2, "shippingMarks"))
+            .set(DiscrepancyPackingPage(1), PackingDetails("packagingCode", 2, "shippingMarks"))
             .success
             .value
-          navigator.nextPage(DiscrepancyPackingPage(0), CheckMode, userAnswers) shouldBe
+          navigator.nextPage(DiscrepancyPackingPage(1), CheckMode, userAnswers) shouldBe
             createRoute.PackagingDetailsCYAController.onPageLoad(1)
         }
       }

@@ -75,7 +75,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
-    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex + 1)
+    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
   }
 

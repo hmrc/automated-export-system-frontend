@@ -46,7 +46,7 @@ class AmendPartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers
     "return an error when no boolean selected" in {
       val result = form().bind(Map.empty)
 
-      result.errors must contain(FormError("boolean", "mucr.error.required"))
+      result.errors must contain(FormError("boolean", "partOfConsolidation.error.required"))
     }
 
     "allow no selected with MUCR omitted" in {
