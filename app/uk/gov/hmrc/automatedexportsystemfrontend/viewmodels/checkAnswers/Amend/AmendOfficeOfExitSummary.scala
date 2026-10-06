@@ -28,24 +28,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendOfficeOfExitSummary {
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendOfficeOfExitPage(submissionId)).map { answer =>
+      build(answer.toString, submissionId, withChangeLink = true)
+    }
 
-  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
 
-    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"officeOfExit.$answerFromXml"))))
-
-    Some(
-      SummaryListRowViewModel(
-        key = "officeOfExit.checkYourAnswersLabel",
-        value = value,
-        actions = if (withAmendLink) {
+  private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "officeOfExit.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(value).toString),
+      actions =
+        if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendOfficeOfExitController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("officeOfExit.change.hidden"))
+              .withVisuallyHiddenText(messages("AmendOfficOfExit.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
-  }
 }
