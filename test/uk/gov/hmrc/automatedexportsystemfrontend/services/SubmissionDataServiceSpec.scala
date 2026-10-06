@@ -62,6 +62,7 @@ class SubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(AnyDiscrepanciesPage, false)
         userAnswers <- userAnswers.set(IsSplitExitPage, false)
         userAnswers <- userAnswers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
+        userAnswers <- userAnswers.set(EnterDucrPage, "someDUCR")
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)

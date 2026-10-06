@@ -22,7 +22,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendIsSplitExitSummary
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{ActionItemViewModel, FluentActionItem, SummaryListRowViewModel, ValueViewModel, stringToKey, stringToText}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
+  stringToKey,
+  stringToText,
+  ActionItemViewModel,
+  FluentActionItem,
+  SummaryListRowViewModel,
+  ValueViewModel
+}
 
 class AmendIsSplitExitSummarySpec extends SpecBase {
 
@@ -30,27 +37,24 @@ class AmendIsSplitExitSummarySpec extends SpecBase {
 
   "row" - {
     "when Yes is selected, return the summary row with change link" in {
-      val userAnswers = 1
 
       AmendIsSplitExitSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-          key = "isSplitDiscrepancy.checkYourAnswersLabel",
+          key = "isSplitExit.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
               uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendIsSplitExitController.onPageLoad(CheckMode, "submissionId").url
             )
-              .withVisuallyHiddenText("isSplitDiscrepancy.change.hidden")
+              .withVisuallyHiddenText("isSplitExit.change.hidden")
           )
         )
       )
     }
 
     "when No is selected, return the summary row" in {
-      val userAnswers = 0
-
-      AmendIsSplitExitSummary.row(true, "submissionId", false) shouldBe Some(
+      AmendIsSplitExitSummary.row(false, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "isSplitExit.checkYourAnswersLabel", value = ValueViewModel("site.no"), actions = Seq.empty)
       )
     }

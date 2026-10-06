@@ -35,7 +35,7 @@ class AmendDiscrepancyConsignmentSummarySpec extends SpecBase {
     "when answered, return the summary row with change link" in {
       AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-          key = "consignment.checkYourAnswersLabel",
+          key = "discrepancyConsignment.checkYourAnswersLabel",
           value = ValueViewModel(Text("discrepancyConsignment.air")),
           actions = Seq(
             ActionItemViewModel(
@@ -53,7 +53,7 @@ class AmendDiscrepancyConsignmentSummarySpec extends SpecBase {
     "when answered, return the summary row without change link" in {
       AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
-          key = "consignment.checkYourAnswersLabel",
+          key = "discrepancyConsignment.checkYourAnswersLabel",
           value = ValueViewModel(Text("discrepancyConsignment.air")),
           actions = Seq.empty
         )

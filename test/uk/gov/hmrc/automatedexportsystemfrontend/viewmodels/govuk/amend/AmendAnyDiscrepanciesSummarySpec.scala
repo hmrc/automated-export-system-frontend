@@ -38,10 +38,6 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
 
   "row" - {
     "when Yes is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendAnyDiscrepanciesPage("submissionId"), true)
-        .get
-
       AmendAnyDiscrepanciesSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
@@ -60,11 +56,7 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
     }
 
     "when No is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendAnyDiscrepanciesPage("submissionId"), false)
-        .get
-
-      AmendAnyDiscrepanciesSummary.row(true, "submissionId", true) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(false, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
@@ -82,17 +74,13 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
     }
 
     "when Yes is selected, return the summary row with no change link" in {
-      val userAnswers = 1
-
       AmendAnyDiscrepanciesSummary.row(true, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "anyDiscrepancies.checkYourAnswersLabel", value = ValueViewModel("site.yes"), actions = Seq.empty)
       )
     }
 
     "when No is selected, return the summary row with no change link" in {
-      val userAnswers = 0
-
-      AmendAnyDiscrepanciesSummary.row(true, "submissionId", false) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(false, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "anyDiscrepancies.checkYourAnswersLabel", value = ValueViewModel("site.no"), actions = Seq.empty)
       )
     }

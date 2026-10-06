@@ -37,14 +37,17 @@ object AmendOfficeOfExitSummary {
     Some(build(value, submissionId, withChangeLink))
 
   private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    val officeName = messages(s"officeOfExit.$value")
+    val display = s"$officeName ($value)"
+
     SummaryListRowViewModel(
       key = "officeOfExit.checkYourAnswersLabel",
-      value = ValueViewModel(HtmlFormat.escape(value).toString),
+      value = ValueViewModel(display),
       actions =
         if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendOfficeOfExitController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("AmendOfficOfExit.change.hidden"))
+              .withVisuallyHiddenText(messages("amendOfficeOfExit.change.hidden"))
           )
         else Seq.empty
     )

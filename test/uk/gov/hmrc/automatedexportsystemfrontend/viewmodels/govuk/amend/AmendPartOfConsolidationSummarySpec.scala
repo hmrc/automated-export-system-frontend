@@ -38,9 +38,7 @@ class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
   "row" - {
     "when Yes is selected, return the summary row with no change link" in {
-      val userAnswers = Some("mucr")
-
-      AmendPartOfConsolidationSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+      AmendPartOfConsolidationSummary.row(Some("mucr"), "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
           key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.yes - site.mucr: mucr"),

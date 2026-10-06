@@ -45,7 +45,10 @@ class SingleSubmissionHelper {
   def parentUCRIDHandler(referenceNumber: Option[String], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
   ): Option[SummaryListRow] =
-    AmendPartOfConsolidationSummary.row(referenceNumber, submissionId, withChangeLink)
+    referenceNumber match {
+      case Some(mucr) => AmendPartOfConsolidationSummary.row(Some(mucr), submissionId, withChangeLink)
+      case _          => AmendPartOfConsolidationSummary.row(None, submissionId, withChangeLink)
+    }
 
   def containerIdHandler(containerId: Option[String], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages

@@ -40,8 +40,8 @@ object AmendPartOfConsolidationSummary {
     val value =
       if (isPartOfConsolidation) {
         parentUcr match {
-          case Some(mucr) => s"${messages("site.yes")} - ${messages("site.parOfConsolidation")}: $mucr"
-          case None       => messages("site.yes")
+          case Some(mucr) => s"${messages("site.yes")} - ${messages("site.mucr")}: $mucr"
+          case None       => messages("site.no")
         }
       } else {
         messages("site.no")

@@ -17,6 +17,10 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.services
 
 import com.google.inject.Inject
+import play.api.Logging
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendAnyDiscrepanciesPage,
   AmendDiscrepancyConsignmentPage,
@@ -34,13 +38,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendOfficeOfExitPage,
   AmendPartOfConsolidationPage
 }
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
-import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
-import play.api.Logging
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
@@ -240,12 +237,11 @@ class SubmissionDataService @Inject() extends Logging {
       discrepanciesExist <- collectDiscrepanciesExist(userAnswers)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
-      goodsShipment <- collectGoodsShipment(userAnswers)
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
-      Some(goodsShipment)
+      collectGoodsShipment(userAnswers)
     )
 
   private def collectAmendUserAnswers(userAnswers: UserAnswers, submissionId: String): Option[Submission] =
@@ -254,12 +250,11 @@ class SubmissionDataService @Inject() extends Logging {
       discrepanciesExist <- userAnswers.get(AmendAnyDiscrepanciesPage(submissionId))
       splitIndicator <- userAnswers.get(AmendIsSplitExitPage(submissionId))
       referenceNumber <- userAnswers.get(AmendOfficeOfExitPage(submissionId))
-      goodsShipment <- collectAmendGoodsShipment(userAnswers, submissionId)
     } yield Submission(
       Some(submissionId),
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
-      Some(goodsShipment)
+      collectAmendGoodsShipment(userAnswers, submissionId)
     )
 
   private def buildXmlWithDeclaration(submission: Submission): String =
