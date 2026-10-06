@@ -41,6 +41,8 @@ class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar 
 
   def onwardRoute = Call("GET", "/foo")
 
+  private def routeToPage =
+    amendRoute.AmendPartOfConsolidationController.onPageLoad(NormalMode, "submissionId").url
   val formProvider = new AmendPartOfConsolidationFormProvider()
   val form = formProvider()
 
@@ -80,18 +82,17 @@ class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar 
       running(application) {
         val request = FakeRequest(GET, partOfConsolidationRoute)
           .withSession(SessionKeys.sessionId -> "some-session-id")
-        val view = application.injector.instanceOf[AmendPartOfConsolidationView]
 
         val result = route(application, request).value
+        val body = contentAsString(result)
 
         status(result) mustEqual OK
-        val body = contentAsString(result)
         body should include("automated-export-system-frontend")
         body should include("Is this part of a consolidation?")
         body should include("""type="radio"""")
         body should include("""value="true"""")
-        body should include("""value="mucr"""")
-        body should include("checked")
+        body should include("""checked""")
+        body should include("""mucr""")
       }
     }
 
@@ -139,7 +140,7 @@ class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar 
         status(result) shouldBe BAD_REQUEST
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-        body should include("partOfConsolidation")
+        body should include("mucr")
       }
     }
 

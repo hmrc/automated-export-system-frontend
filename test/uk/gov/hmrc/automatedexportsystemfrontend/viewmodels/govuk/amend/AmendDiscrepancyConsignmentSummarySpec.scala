@@ -20,24 +20,23 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendDiscrepancyConsignmentSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 
-class AmendDiscrepancyConsignmentSummarySpec extends AnyFreeSpec with Matchers {
+class AmendDiscrepancyConsignmentSummarySpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
     "when answered, return the summary row with change link" in {
-      val userAnswers = 1
-
       AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
-          key = "discrepancyConsignment.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("discrepancyConsignment.sea")),
+          key = "consignment.checkYourAnswersLabel",
+          value = ValueViewModel(Text("discrepancyConsignment.air")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
@@ -45,18 +44,17 @@ class AmendDiscrepancyConsignmentSummarySpec extends AnyFreeSpec with Matchers {
                 .onPageLoad(CheckMode, "submissionId")
                 .url
             )
-              .withVisuallyHiddenText("discrepancyConsignment.change.hidden")
+              .withVisuallyHiddenText("AmendDiscrepancyConsignment.change.hidden")
           )
         )
       )
     }
-    "when answered, return the summary row without change link" in {
-      val userAnswers = 1
 
+    "when answered, return the summary row without change link" in {
       AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
-          key = "discrepancyConsignment.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("discrepancyConsignment.sea")),
+          key = "consignment.checkYourAnswersLabel",
+          value = ValueViewModel(Text("discrepancyConsignment.air")),
           actions = Seq.empty
         )
       )

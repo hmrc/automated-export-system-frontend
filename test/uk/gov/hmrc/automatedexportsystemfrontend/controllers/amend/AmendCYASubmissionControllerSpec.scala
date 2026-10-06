@@ -29,9 +29,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
@@ -57,7 +54,7 @@ class AmendCYASubmissionControllerSpec extends SpecBase {
         .get
         .set(AmendEnterDucrPage(submissionId), "DUCR")
         .get
-        .set(AmendPartOfConsolidationPage(submissionId), PartOfConsolidationAnswer(boolean = true, partOfConsolidation = Some("123")))
+        .set(AmendPartOfConsolidationPage(submissionId), PartOfConsolidationAnswer(boolean = true, mucr = Some("123")))
         .get
         .set(AmendOfficeOfExitPage(submissionId), OfficeOfExit.Belfast)
         .get

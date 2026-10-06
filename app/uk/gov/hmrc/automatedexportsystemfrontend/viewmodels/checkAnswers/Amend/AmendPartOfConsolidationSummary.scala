@@ -16,20 +16,18 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
-import controllers.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
-import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendPartOfConsolidationSummary {
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendPartOfConsolidationPage(submissionId)).map { answer =>
-      build(answer.boolean, answer.partOfConsolidation, submissionId, withChangeLink = true)
+      build(answer.boolean, answer.mucr, submissionId, withChangeLink = true)
     }
 
   def row(referenceNumber: Option[String], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =

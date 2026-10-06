@@ -37,8 +37,10 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when Yes is selected, return the summary row with change link" in {
-      val userAnswers = 1
+    "when Yes is selected, return the summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(AmendAnyDiscrepanciesPage("submissionId"), true)
+        .get
 
       AmendAnyDiscrepanciesSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
@@ -57,8 +59,10 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
       )
     }
 
-    "when No is selected, return the summary row with change link" in {
-      val userAnswers = 0
+    "when No is selected, return the summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(AmendAnyDiscrepanciesPage("submissionId"), false)
+        .get
 
       AmendAnyDiscrepanciesSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(

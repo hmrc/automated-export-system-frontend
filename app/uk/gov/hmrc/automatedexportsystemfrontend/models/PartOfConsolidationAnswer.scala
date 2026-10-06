@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.libs.json.{Format, Json}
 
-case class PartOfConsolidationAnswer(boolean: Boolean, partOfConsolidation: Option[String])
+case class PartOfConsolidationAnswer(boolean: Boolean, mucr: Option[String])
 
 object PartOfConsolidationAnswer {
   implicit val format: Format[PartOfConsolidationAnswer] = Json.format[PartOfConsolidationAnswer]

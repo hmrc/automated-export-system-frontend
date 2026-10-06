@@ -202,7 +202,7 @@ class SubmissionDataService @Inject() extends Logging {
         userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.fromUserAnswers)
 
       val mucr =
-        userAnswers.get(PartOfConsolidationPage).flatMap(_.partOfConsolidation)
+        userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)
       val seals = collectSeals(userAnswers)
       val goodsReference = collectGoodsReference(userAnswers)
       val transportEquipment =
@@ -224,7 +224,7 @@ class SubmissionDataService @Inject() extends Logging {
         userAnswers.get(AmendDiscrepancyConsignmentPage(submissionId)).map(TransportMode.fromUserAnswers)
 
       val mucr =
-        userAnswers.get(AmendPartOfConsolidationPage(submissionId)).flatMap(_.partOfConsolidation)
+        userAnswers.get(AmendPartOfConsolidationPage(submissionId)).flatMap(_.mucr)
 
       val seals = collectAmendSeals(userAnswers, submissionId)
       val goodsReference = collectAmendGoodsReference(userAnswers, submissionId)

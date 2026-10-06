@@ -26,6 +26,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendEnterMrnSummary {
+
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendEnterMrnPage(submissionId)).map { answer =>
       build(answer, submissionId, withChangeLink = true)
