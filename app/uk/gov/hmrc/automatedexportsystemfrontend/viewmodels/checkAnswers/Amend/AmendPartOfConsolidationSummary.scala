@@ -48,13 +48,13 @@ object AmendPartOfConsolidationSummary {
       }
 
     SummaryListRowViewModel(
-      key = "partOfConsolidation.checkYourAnswersLabel",
+      key = "mucr.checkYourAnswersLabel",
       value = ValueViewModel(value),
       actions =
         if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendPartOfConsolidationController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("partOfConsolidation.change.hidden"))
+              .withVisuallyHiddenText(messages("mucr.change.hidden"))
           )
         else Seq.empty
     )

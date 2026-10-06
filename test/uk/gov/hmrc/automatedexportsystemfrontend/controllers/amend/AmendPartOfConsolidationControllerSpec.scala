@@ -37,7 +37,7 @@ import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
-class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
+class AmendPartOfConsolidationControllerSpec extends SpecBase {
 
   def onwardRoute = Call("GET", "/foo")
 
@@ -155,10 +155,6 @@ class AmendPartOfConsolidationControllerSpec extends SpecBase with MockitoSugar 
           FakeRequest(POST, partOfConsolidationRoute)
             .withFormUrlEncodedBody("boolean" -> "true", "mucr" -> "")
             .withSession(SessionKeys.sessionId -> "some-session-id")
-
-        val boundForm = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[AmendPartOfConsolidationView]
 
         val result = route(application, request).value
 

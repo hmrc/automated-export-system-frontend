@@ -56,13 +56,13 @@ class AmendPartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers
     }
 
     "must not bind when true and MUCR larger than max length" in {
-      val result = form.validateAnswer(PartOfConsolidationAnswer(boolean = true, partOfConsolidation = Some("abcdefghijklmnopqr123456789012345678")))
+      val result = form.validateAnswer(PartOfConsolidationAnswer(boolean = true, mucr = Some("abcdefghijklmnopqr123456789012345678")))
 
       result.errors must contain(FormError("mucr", "partOfConsolidation.mucr.length"))
     }
 
     "must not bind invalid data" in {
-      val result = form.validateAnswer(PartOfConsolidationAnswer(boolean = true, partOfConsolidation = Some("abc!123?")))
+      val result = form.validateAnswer(PartOfConsolidationAnswer(boolean = true, mucr = Some("abc!123?")))
 
       result.errors must contain(FormError("mucr", "partOfConsolidation.mucr.invalid"))
     }

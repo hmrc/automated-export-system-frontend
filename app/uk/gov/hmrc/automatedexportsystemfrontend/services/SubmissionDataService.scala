@@ -62,15 +62,6 @@ class SubmissionDataService @Inject() extends Logging {
         None
     }
 
-  def buildAmendSubmission(userAnswers: UserAnswers, submissionId: String): Option[String] =
-    collectAmendUserAnswers(userAnswers, submissionId) match {
-      case Some(submission) =>
-        Some(buildXmlWithDeclaration(submission))
-      case None =>
-        logger.error(s"Could not gather required user answers to create amend IE507a submission for $submissionId")
-        None
-    }
-
   private def collectDiscrepanciesExist(userAnswers: UserAnswers): Option[Boolean] =
     userAnswers
       .get(AnyDiscrepanciesPage)
@@ -82,18 +73,6 @@ class SubmissionDataService @Inject() extends Logging {
     goodsReferences: List[GoodsReference]
   ): List[TransportEquipment] = {
     val discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
-    discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
-      TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
-    }
-  }
-
-  private def collectAmendTransportEquipment(
-    userAnswers: UserAnswers,
-    seals: List[Seal],
-    goodsReferences: List[GoodsReference],
-    submissionId: String
-  ): List[TransportEquipment] = {
-    val discrepancyTransport = userAnswers.get(AmendDiscrepancyTransportPage(submissionId)).toList
     discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
       TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
     }
@@ -167,18 +146,8 @@ class SubmissionDataService @Inject() extends Logging {
       ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
     }
 
-  private def collectAmendActiveBorderTransportMeans(userAnswers: UserAnswers, submissionId: String): Option[ActiveBorderTransportMeans] =
-    userAnswers.get(AmendDiscrepancyTransportMeansPage(submissionId)).map { transport =>
-      ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
-    }
-
   private def collectTransportDocument(userAnswers: UserAnswers): List[TransportDocument] =
     userAnswers.get(DiscrepancyTransportDocPage).toList.zipWithIndex.map { case (document, index) =>
-      TransportDocument(index + 1, document.documentType, document.referenceNumber)
-    }
-
-  private def collectAmendTransportDocument(userAnswers: UserAnswers, submissionId: String): List[TransportDocument] =
-    userAnswers.get(AmendDiscrepancyTransportDocPage(submissionId)).toList.zipWithIndex.map { case (document, index) =>
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 
@@ -268,7 +237,6 @@ class SubmissionDataService @Inject() extends Logging {
       discrepanciesExist <- collectDiscrepanciesExist(userAnswers)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
-      goodsShipment <- collectGoodsShipment(userAnswers)
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
@@ -287,24 +255,8 @@ class SubmissionDataService @Inject() extends Logging {
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
       collectAmendGoodsShipment(userAnswers, submissionId)
-      Some(goodsShipment)
-    )
-
-  private def collectAmendUserAnswers(userAnswers: UserAnswers, submissionId: String): Option[Submission] =
-    for {
-      mrn <- userAnswers.get(AmendEnterMrnPage(submissionId))
-      discrepanciesExist <- userAnswers.get(AmendAnyDiscrepanciesPage(submissionId))
-      splitIndicator <- userAnswers.get(AmendIsSplitExitPage(submissionId))
-      referenceNumber <- userAnswers.get(AmendOfficeOfExitPage(submissionId))
-      goodsShipment <- collectAmendGoodsShipment(userAnswers, submissionId)
-    } yield Submission(
-      Some(submissionId),
-      ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
-      CustomsOfficeOfExitActual(referenceNumber.toString),
-      Some(goodsShipment)
     )
 
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""
-
 }
