@@ -35,6 +35,14 @@ object ModeOfTransportAtBorder extends Enumerable.Implicits {
     RadioItem(content = Text(messages(s"discrepancyConsignment.${value.toString}")), value = Some(value.toString), id = Some(s"value_$index"))
   }
 
+  def fromCode(code: Int): Option[ModeOfTransportAtBorder] = code match {
+    case 1 => Some(Sea)
+    case 2 => Some(Rail)
+    case 3 => Some(Road)
+    case 4 => Some(Air)
+    case _ => None
+  }
+
   implicit val enumerable: Enumerable[ModeOfTransportAtBorder] =
     Enumerable(values.map(v => v.toString -> v): _*)
 }

@@ -34,7 +34,7 @@ class AmendDiscrepancyConsignmentSummarySpec extends AnyFreeSpec with Matchers {
     "when answered, return the summary row with change link" in {
       val userAnswers = 1
 
-      AmendDiscrepancyConsignmentSummary.row(userAnswers, "submissionId", true) shouldBe Some(
+      AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyConsignment.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("discrepancyConsignment.sea")),
@@ -53,7 +53,7 @@ class AmendDiscrepancyConsignmentSummarySpec extends AnyFreeSpec with Matchers {
     "when answered, return the summary row without change link" in {
       val userAnswers = 1
 
-      AmendDiscrepancyConsignmentSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+      AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyConsignment.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("discrepancyConsignment.sea")),

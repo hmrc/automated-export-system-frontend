@@ -20,35 +20,28 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  NormalMode,
   SingleSubmissionActiveBorderTransportMeans,
   SingleSubmissionConsignment,
   SingleSubmissionCustomsOfficeOfExitActual,
   SingleSubmissionExportOperation,
   SingleSubmissionGoodsItem,
-  SingleSubmissionGoodsShipment,
   SingleSubmissionLocationOfGoods,
   SingleSubmissionTransportDocument,
   SingleSubmissionTransportEquipment
 }
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
-  AmendAnyDiscrepanciesSummary,
-  AmendDiscrepancyConsignmentSummary,
-  AmendDiscrepancyGoodsSummary,
-  AmendEnterDucrSummary,
-  AmendEnterMrnSummary,
-  AmendIsSplitExitSummary,
-  AmendLocationIdSummary,
-  AmendLocationTypeSummary,
-  AmendOfficeOfExitSummary
-}
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{AnyDiscrepanciesSummary, EnterMrnSummary}
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.utils.AmendmentAnswersMapper
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
-import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -61,11 +54,12 @@ class ViewSingleSubmissionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: ViewSingleSubmissionView,
   automatedExportSystemConnector: AutomatedExportSystemConnector,
-  singleSubmissionHelper: SingleSubmissionHelper
+  singleSubmissionHelper: SingleSubmissionHelper,
+  amendmentAnswersMapper: AmendmentAnswersMapper,
+  sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  //  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
   def onPageLoad(submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     automatedExportSystemConnector.getSingleSubmission(submissionId).flatMap { submission =>
 
@@ -112,8 +106,8 @@ class ViewSingleSubmissionController @Inject() (
   ): Seq[Option[SummaryListRow]] =
     Seq(
       AmendEnterMrnSummary.row(answers.mrn, submissionId, false),
-      AmendAnyDiscrepanciesSummary.row(answers.discrepanciesExist, submissionId, false),
-      AmendIsSplitExitSummary.row(answers.splitIndicator, submissionId, false)
+      AmendAnyDiscrepanciesSummary.row(answers.discrepanciesExist == 1, submissionId, false),
+      AmendIsSplitExitSummary.row(answers.splitIndicator == 1, submissionId, false)
     )
 
   private def consignmentRowsGenerator(answers: Option[SingleSubmissionConsignment], submissionId: String)(
@@ -133,18 +127,10 @@ class ViewSingleSubmissionController @Inject() (
         Seq(singleSubmissionHelper.containerIdHandler(answer.containerIdentificationNumber, submissionId, false)),
         Seq(singleSubmissionHelper.numberOfSealsHandler(answer.numberOfSeals, submissionId, false)),
         answer.seal.toSeq.flatten.flatMap { value =>
-          Seq(
-            // TODO, commented out until we understand how we are going to display indexed to user
-            // singleSubmissionHelper.sequenceNumberHandler(value.sequenceNumber, submissionId, false),
-            singleSubmissionHelper.sealIdentifierHandler(value.identifier, submissionId, false)
-          )
+          Seq(singleSubmissionHelper.sealIdentifierHandler(value.identifier, submissionId, false))
         },
         answer.goodsReference.toSeq.flatten.flatMap { value =>
-          Seq(
-            // TODO, commented out until we understand how we are going to display indexed to user
-            // singleSubmissionHelper.sequenceNumberHandler(value.sequenceNumber, submissionId, false),
-            singleSubmissionHelper.declarationGoodsItemNumberHandler(value.declarationGoodsItemNumber, submissionId, false)
-          )
+          Seq(singleSubmissionHelper.declarationGoodsItemNumberHandler(value.declarationGoodsItemNumber, submissionId, false))
         }
       )
     }
@@ -179,8 +165,6 @@ class ViewSingleSubmissionController @Inject() (
   ): Seq[Option[SummaryListRow]] =
     answers.toSeq.flatten.flatMap { answer =>
       Seq(
-        // TODO, commented out until we understand how we are going to display indexed to user
-        // singleSubmissionHelper.sequenceNumberHandler(answer.sequenceNumber, submissionId, false),
         singleSubmissionHelper.docTypeHandler(answer.`type`, submissionId, false),
         singleSubmissionHelper.docReferenceHandler(answer.referenceNumber, submissionId, false)
       )
@@ -198,8 +182,6 @@ class ViewSingleSubmissionController @Inject() (
         Seq(AmendDiscrepancyGoodsSummary.netMassRow(answer.commodity.netMass, submissionId, false)),
         answer.packaging.toSeq.flatten.flatMap { value =>
           Seq(
-            // TODO, commented out until we understand how we are going to display indexed to user
-            // singleSubmissionHelper.sequenceNumberHandler(answer.sequenceNumber, submissionId, false),
             singleSubmissionHelper.typeOfPackagesHandler(value.typeOfPackages, submissionId, false),
             singleSubmissionHelper.numberOfPackagesHandler(value.numberOfPackages, submissionId, false),
             singleSubmissionHelper.shippingMarksHandler(value.shippingMarks, submissionId, false)
@@ -208,6 +190,17 @@ class ViewSingleSubmissionController @Inject() (
         }
       )
 
+    }
+
+  def startAmend(submissionId: String): Action[AnyContent] =
+    (actionBuilder andThen getData).async { implicit request =>
+      automatedExportSystemConnector.getSingleSubmission(submissionId).flatMap { submission =>
+        val maybeAnswers = amendmentAnswersMapper.toUserAnswers(request.sessionId, submission)
+        maybeAnswers.fold(
+          _ => Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad())),
+          answers => sessionRepository.set(answers).map(_ => Redirect(amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, submissionId)))
+        )
+      }
     }
 
 }

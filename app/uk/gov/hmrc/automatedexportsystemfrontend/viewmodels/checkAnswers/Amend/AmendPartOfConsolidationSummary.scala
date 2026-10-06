@@ -27,26 +27,38 @@ import uk.gov.hmrc.govukfrontend.views.Aliases.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendPartOfConsolidationSummary {
-
-  def row(answerFromXml: Option[String], submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-
-    val value = answerFromXml match {
-      case Some(value) => messages("site.yes") + " - " + messages("site.mucr") + ": " + value
-      case _           => "site.no"
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendPartOfConsolidationPage(submissionId)).map { answer =>
+      build(answer.boolean, answer.partOfConsolidation, submissionId, withChangeLink = true)
     }
 
-    Some(
-      SummaryListRowViewModel(
-        key = "partOfConsolidation.checkYourAnswersLabel",
-        value = ValueViewModel(value),
-        actions = if (withAmendLink) {
+  def row(referenceNumber: Option[String], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(referenceNumber.isDefined, referenceNumber, submissionId, withChangeLink))
+
+  private def build(isPartOfConsolidation: Boolean, parentUcr: Option[String], submissionId: String, withChangeLink: Boolean)(
+    implicit messages: Messages
+  ): SummaryListRow = {
+
+    val value =
+      if (isPartOfConsolidation) {
+        parentUcr match {
+          case Some(mucr) => s"${messages("site.yes")} - ${messages("site.parOfConsolidation")}: $mucr"
+          case None       => messages("site.yes")
+        }
+      } else {
+        messages("site.no")
+      }
+
+    SummaryListRowViewModel(
+      key = "partOfConsolidation.checkYourAnswersLabel",
+      value = ValueViewModel(value),
+      actions =
+        if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendPartOfConsolidationController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("partOfConsolidation.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
+  }
 }
