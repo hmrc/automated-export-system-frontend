@@ -17,6 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.i18n.Messages
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TypeOfLocation
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
@@ -30,6 +31,14 @@ object LocationType extends Enumerable.Implicits {
   case object Other extends WithName("other") with LocationType
 
   val values: Seq[LocationType] = Seq(DesignatedLocation, AuthorisedPlace, ApprovedPlace, Other)
+
+  def mapLocationType(value: String): LocationType =
+    value match {
+      case "designatedLocation" => LocationType.DesignatedLocation
+      case "authorisedPlace"    => LocationType.AuthorisedPlace
+      case "approvedPlace"      => LocationType.ApprovedPlace
+      case _                    => LocationType.Other
+    }
 
   def options(implicit messages: Messages): Seq[RadioItem] = values.zipWithIndex.map { case (value, index) =>
     RadioItem(content = Text(messages(s"locationType.${value.toString}")), value = Some(value.toString), id = Some(s"value_$index"))

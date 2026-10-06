@@ -40,7 +40,7 @@ class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
     "when Yes is selected, return the summary row with change link" in {
       val userAnswers = 1
 
-      AmendIsSplitExitSummary.row(userAnswers, "submissionId", true) shouldBe Some(
+      AmendIsSplitExitSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "isSplitExit.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
@@ -58,7 +58,7 @@ class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
     "when No is selected, return the summary row" in {
       val userAnswers = 0
 
-      AmendIsSplitExitSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+      AmendIsSplitExitSummary.row(true, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "isSplitExit.checkYourAnswersLabel", value = ValueViewModel("site.no"), actions = Seq.empty)
       )
     }
