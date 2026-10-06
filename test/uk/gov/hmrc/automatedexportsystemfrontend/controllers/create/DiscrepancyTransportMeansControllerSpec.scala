@@ -154,7 +154,7 @@ class DiscrepancyTransportMeansControllerSpec extends SpecBase with MockitoSugar
       running(application) {
         val request =
           FakeRequest(POST, discrepancyTransportMeansRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            .withFormUrlEncodedBody(("transportType", "x" * 101))
 
         val result = route(application, request).value
 
@@ -162,6 +162,32 @@ class DiscrepancyTransportMeansControllerSpec extends SpecBase with MockitoSugar
 
         val body = contentAsString(result)
         body should include("There is a problem")
+      }
+    }
+
+    "must redirect to the next page when all fields are blank" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, discrepancyTransportMeansRoute)
+            .withFormUrlEncodedBody(("transportType", ""), ("transportIdNumber", ""), ("countryOfRegistration", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe onwardRoute.url
       }
     }
 

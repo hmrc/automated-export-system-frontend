@@ -100,9 +100,9 @@ trait ModelGenerators {
   given arbitraryTransportAcrossBorderDetails: Arbitrary[TransportAcrossBorderDetails] =
     Arbitrary {
       for {
-        transportType <- arbitrary[String]
-        transportIdNumber <- arbitrary[String]
-        countryOfRegistration <- arbitrary[String]
+        transportType <- arbitrary[Option[String]]
+        transportIdNumber <- arbitrary[Option[String]]
+        countryOfRegistration <- arbitrary[Option[String]]
       } yield TransportAcrossBorderDetails(transportType, transportIdNumber, countryOfRegistration)
     }
 
@@ -124,8 +124,8 @@ trait ModelGenerators {
   given arbitraryContainerDetails: Arbitrary[ContainerDetails] =
     Arbitrary {
       for {
-        containerId <- arbitrary[String]
-        numberOfSeals <- arbitrary[Int]
+        containerId <- arbitrary[Option[String]]
+        numberOfSeals <- arbitrary[Option[Int]]
       } yield ContainerDetails(containerId, numberOfSeals)
     }
 
