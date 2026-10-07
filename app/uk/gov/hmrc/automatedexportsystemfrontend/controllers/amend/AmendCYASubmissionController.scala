@@ -65,21 +65,17 @@ class AmendCYASubmissionController @Inject() (
       val consignmentList = SummaryListViewModel(
         Seq(
           AmendEnterDucrSummary.row(answers)(submissionId),
-          AmendPartOfConsolidationSummary.row(answers)(submissionId),
-          AmendOfficeOfExitSummary.row(answers)(submissionId),
-          AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
-          AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)
+          AmendDiscrepancyConsignmentSummary.row(answers)(submissionId),
+          AmendPartOfConsolidationSummary.row(answers)(submissionId)
         ).flatten
       )
 
       val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
 
-      val extraRowsList = SummaryListViewModel(
+      val discrepancyList = SummaryListViewModel(
         Seq(AmendAnyDiscrepanciesSummary.row(answers)(submissionId), AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten
       )
-
-      val preparedView = view(mode, submissionId, exportOperationList, consignmentList)
-      Future.successful(Ok(preparedView))
+      Future.successful(Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, discrepancyList)))
     }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] =

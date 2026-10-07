@@ -16,6 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
+import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
+
 import java.time.format.DateTimeFormatter
 
 object ViewSubmissionViewModelMapper {
@@ -27,7 +29,7 @@ object ViewSubmissionViewModelMapper {
       ducr = response.goodsShipment.map(_.consignment.referenceNumberUCR).getOrElse(""),
       officeOfExit = response.customsOfficeOfExitActual.referenceNumber,
       submittedDate = response.updatedAt.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME),
-      status = response.exportOperation.exportOperationType,
+      status = SubmissionLookups.mapStatus(response.exportOperation.exportOperationType),
       discrepancyConsignment = response.goodsShipment.flatMap(_.consignment.modeOfTransportAtTheBorder.map(_.toString)),
       locationType = response.goodsShipment.map(_.consignment.locationOfGoods.typeOfLocation),
       locationUnlocode = response.goodsShipment.flatMap(_.consignment.locationOfGoods.UNLocode),

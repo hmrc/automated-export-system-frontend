@@ -24,7 +24,7 @@ case class ViewSubmissionViewModel(
   ducr: String,
   officeOfExit: String,
   submittedDate: String,
-  status: String,
+  status: SubmissionStatus,
   discrepancyConsignment: Option[String],
   locationType: Option[String],
   locationUnlocode: Option[String],

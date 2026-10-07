@@ -54,11 +54,12 @@ class SubmissionDataService @Inject() extends Logging {
     }
 
   def buildAmendSubmission(userAnswers: UserAnswers, submissionId: String): Option[String] =
-    collectAmendUserAnswers(userAnswers, submissionId) match {
+    val maybeSubmission = collectAmendUserAnswers(userAnswers, submissionId)
+    maybeSubmission match {
       case Some(submission) =>
         Some(buildXmlWithDeclaration(submission))
       case None =>
-        logger.error(s"Could not gather required user answers to create amend IE507a submission for $submissionId")
+        logger.warn(s"Could not gather required user answers to create amend IE507a submission for $submissionId")
         None
     }
 
