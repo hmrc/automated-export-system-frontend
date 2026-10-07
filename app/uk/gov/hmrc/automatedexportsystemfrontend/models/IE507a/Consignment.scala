@@ -36,7 +36,7 @@ object Consignment {
     XmlWrites.elem(
       "Consignment",
       XmlWrites.optElem("modeOfTransportAtTheBorder", c.modeOfTransportAtBorder.map(_.toXml)),
-      XmlWrites.textElem("referenceNumberUCR", c.referenceNumberUCR),
+      XmlWrites.textElem("ducr", c.referenceNumberUCR),
       XmlWrites.optElem("parentUCRID", c.parentUCRID),
       c.TransportEquipment.toXml,
       c.LocationOfGoods.toXml,
