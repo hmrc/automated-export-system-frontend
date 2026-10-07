@@ -31,6 +31,7 @@ case class ViewSubmissionViewModel(
   locationAdditionalIdentifier: Option[String],
   locationAuthorisationReferenceNumber: Option[String],
   partOfConsolidation: Option[Boolean],
+  mucr: Option[String],
   anyDiscrepancies: Option[Boolean],
   isSplitExit: Option[Boolean]
 )

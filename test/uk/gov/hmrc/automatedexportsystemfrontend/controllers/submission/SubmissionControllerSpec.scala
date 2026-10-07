@@ -27,7 +27,7 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.services.SubmissionDataService
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CreateSubmissionDataService
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
@@ -39,7 +39,7 @@ import scala.concurrent.Future
 class SubmissionControllerSpec extends SpecBase with MockitoSugar {
 
   private val mockAutomatedExportSystemConnector = mock[AutomatedExportSystemConnector]
-  private val mockSubmissionDataService = mock[SubmissionDataService]
+  private val mockSubmissionDataService = mock[CreateSubmissionDataService]
   private val mockSessionRepository = mock[SessionRepository]
   private val userAnswersCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
 
@@ -67,7 +67,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar {
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
-            bind[SubmissionDataService].toInstance(mockSubmissionDataService),
+            bind[CreateSubmissionDataService].toInstance(mockSubmissionDataService),
             bind[AutomatedExportSystemConnector].toInstance(mockAutomatedExportSystemConnector)
           )
           .build()
@@ -99,7 +99,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar {
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
-            bind[SubmissionDataService].toInstance(mockSubmissionDataService)
+            bind[CreateSubmissionDataService].toInstance(mockSubmissionDataService)
           )
           .build()
 
@@ -137,7 +137,7 @@ class SubmissionControllerSpec extends SpecBase with MockitoSugar {
           .overrides(
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
-            bind[SubmissionDataService].toInstance(mockSubmissionDataService),
+            bind[CreateSubmissionDataService].toInstance(mockSubmissionDataService),
             bind[AutomatedExportSystemConnector].toInstance(mockAutomatedExportSystemConnector)
           )
           .build()

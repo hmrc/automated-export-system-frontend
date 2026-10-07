@@ -42,7 +42,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
 
-class SubmissionDataService @Inject() extends Logging {
+class CreateSubmissionDataService @Inject() extends Logging {
 
   def buildStandardSubmission(userAnswers: UserAnswers): Option[String] =
     collectUserAnswers(userAnswers) match {
@@ -50,16 +50,6 @@ class SubmissionDataService @Inject() extends Logging {
         Some(buildXmlWithDeclaration(submission))
       case None =>
         logger.error("Could not gather required user answers to create standard IE507a submission")
-        None
-    }
-
-  def buildAmendSubmission(userAnswers: UserAnswers, submissionId: String): Option[String] =
-    val maybeSubmission = collectAmendUserAnswers(userAnswers, submissionId)
-    maybeSubmission match {
-      case Some(submission) =>
-        Some(buildXmlWithDeclaration(submission))
-      case None =>
-        logger.warn(s"Could not gather required user answers to create amend IE507a submission for $submissionId")
         None
     }
 
@@ -96,18 +86,8 @@ class SubmissionDataService @Inject() extends Logging {
       Seal(index + 1, seal)
     }
 
-  private def collectAmendSeals(userAnswers: UserAnswers, submissionId: String): List[Seal] =
-    userAnswers.get(AmendDiscrepancySealsPage(submissionId)).toList.zipWithIndex.map { case (seal, index) =>
-      Seal(index + 1, seal)
-    }
-
   private def collectGoodsReference(userAnswers: UserAnswers): List[GoodsReference] =
     userAnswers.get(DiscrepancyReferencePage).toList.zipWithIndex.map { case (reference, index) =>
-      GoodsReference(index + 1, reference.toInt)
-    }
-
-  private def collectAmendGoodsReference(userAnswers: UserAnswers, submissionId: String): List[GoodsReference] =
-    userAnswers.get(AmendDiscrepancyReferencePage(submissionId)).toList.zipWithIndex.map { case (reference, index) =>
       GoodsReference(index + 1, reference.toInt)
     }
 
@@ -124,36 +104,13 @@ class SubmissionDataService @Inject() extends Logging {
       locationDetails.unlocode
     )
 
-  private def collectAmendGoodsLocation(userAnswers: UserAnswers, submissionId: String): Option[LocationOfGoods] =
-    for {
-      locationType <- userAnswers.get(AmendLocationTypePage(submissionId))
-      typeOfLocation = TypeOfLocation.fromUserAnswers(locationType)
-      locationDetails <- userAnswers.get(AmendLocationIdPage(submissionId))
-    } yield LocationOfGoods(
-      typeOfLocation,
-      QualifierOfTheIdentification.UnLocode,
-      locationDetails.authorisationReferenceNumber,
-      locationDetails.locationAdditionalIdentifier,
-      locationDetails.unlocode
-    )
-
   private def collectActiveBorderTransportMeans(userAnswers: UserAnswers): Option[ActiveBorderTransportMeans] =
     userAnswers.get(DiscrepancyTransportMeansPage).map { transport =>
       ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
     }
 
-  private def collectAmendActiveBorderTransportMeans(userAnswers: UserAnswers, submissionId: String): Option[ActiveBorderTransportMeans] =
-    userAnswers.get(AmendDiscrepancyTransportMeansPage(submissionId)).map { transport =>
-      ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
-    }
-
   private def collectTransportDocument(userAnswers: UserAnswers): List[TransportDocument] =
     userAnswers.get(DiscrepancyTransportDocPage).toList.zipWithIndex.map { case (document, index) =>
-      TransportDocument(index + 1, document.documentType, document.referenceNumber)
-    }
-
-  private def collectAmendTransportDocument(userAnswers: UserAnswers, submissionId: String): List[TransportDocument] =
-    userAnswers.get(AmendDiscrepancyTransportDocPage(submissionId)).toList.zipWithIndex.map { case (document, index) =>
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 
@@ -169,16 +126,6 @@ class SubmissionDataService @Inject() extends Logging {
 
   private def collectGoodsItem(userAnswers: UserAnswers): Option[GoodsItem] =
     userAnswers.get(DiscrepancyGoodsPage).map { goods =>
-      GoodsItem(
-        goods.declarationGoodsItemNumber,
-        goods.declarationUniqueConsignmentReference,
-        Commodity(goods.newGrossMass, goods.newNetMass),
-        collectPackaging(userAnswers)
-      )
-    }
-
-  private def collectAmendGoodsItem(userAnswers: UserAnswers, submissionId: String): Option[GoodsItem] =
-    userAnswers.get(AmendDiscrepancyGoodsPage(submissionId)).map { goods =>
       GoodsItem(
         goods.declarationGoodsItemNumber,
         goods.declarationUniqueConsignmentReference,
@@ -209,29 +156,6 @@ class SubmissionDataService @Inject() extends Logging {
       GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
     }
 
-  private def collectAmendGoodsShipment(userAnswers: UserAnswers, submissionId: String): Option[GoodsShipment] =
-    for {
-      ducr <- userAnswers.get(AmendEnterDucrPage(submissionId))
-      location <- collectAmendGoodsLocation(userAnswers, submissionId)
-    } yield {
-      val transportMode =
-        userAnswers.get(AmendDiscrepancyConsignmentPage(submissionId)).map(TransportMode.fromUserAnswers)
-
-      val mucr =
-        userAnswers.get(AmendPartOfConsolidationPage(submissionId)).flatMap(_.mucr)
-
-      val seals = collectAmendSeals(userAnswers, submissionId)
-      val goodsReference = collectAmendGoodsReference(userAnswers, submissionId)
-      val transportEquipment =
-        collectAmendTransportEquipment(userAnswers, seals, goodsReference, submissionId)
-
-      val transport = collectAmendActiveBorderTransportMeans(userAnswers, submissionId)
-      val transportDocument = collectAmendTransportDocument(userAnswers, submissionId)
-      val goodsItem = collectAmendGoodsItem(userAnswers, submissionId)
-
-      GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
-    }
-
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
     for {
       mrn <- userAnswers.get(EnterMrnPage)
@@ -243,19 +167,6 @@ class SubmissionDataService @Inject() extends Logging {
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
       collectGoodsShipment(userAnswers)
-    )
-
-  private def collectAmendUserAnswers(userAnswers: UserAnswers, submissionId: String): Option[Submission] =
-    for {
-      mrn <- userAnswers.get(AmendEnterMrnPage(submissionId))
-      discrepanciesExist <- userAnswers.get(AmendAnyDiscrepanciesPage(submissionId))
-      splitIndicator <- userAnswers.get(AmendIsSplitExitPage(submissionId))
-      referenceNumber <- userAnswers.get(AmendOfficeOfExitPage(submissionId))
-    } yield Submission(
-      Some(submissionId),
-      ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
-      CustomsOfficeOfExitActual(referenceNumber.toString),
-      collectAmendGoodsShipment(userAnswers, submissionId)
     )
 
   private def buildXmlWithDeclaration(submission: Submission): String =

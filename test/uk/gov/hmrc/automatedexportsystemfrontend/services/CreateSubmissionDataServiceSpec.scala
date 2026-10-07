@@ -22,11 +22,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 import scala.language.postfixOps
 
-class SubmissionDataServiceSpec extends SpecBase {
+class CreateSubmissionDataServiceSpec extends SpecBase {
 
   "buildStandardSubmission" - {
 
-    val service = new SubmissionDataService
+    val service = new CreateSubmissionDataService
     val index = 1
 
     "must include a GoodsShipment for a split exit when AnyDiscrepanciesPage is not present" in {

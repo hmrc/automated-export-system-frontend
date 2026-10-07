@@ -35,7 +35,8 @@ object ViewSubmissionViewModelMapper {
       locationUnlocode = response.goodsShipment.flatMap(_.consignment.locationOfGoods.UNLocode),
       locationAdditionalIdentifier = response.goodsShipment.flatMap(_.consignment.locationOfGoods.additionalIdentifier),
       locationAuthorisationReferenceNumber = response.goodsShipment.flatMap(_.consignment.locationOfGoods.authorisationNumber),
-      partOfConsolidation = None,
+      partOfConsolidation = response.goodsShipment.map(_.consignment.parentUCRID.isDefined),
+      mucr = response.goodsShipment.flatMap(_.consignment.parentUCRID),
       anyDiscrepancies = Some(response.exportOperation.discrepanciesExist == 1),
       isSplitExit = Some(response.exportOperation.splitIndicator == 1)
     )

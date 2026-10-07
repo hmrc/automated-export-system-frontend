@@ -87,6 +87,8 @@ enterDucr.error.invalid = EnterDucr must only include letters and numbers
 enterDucr.change.hidden = EnterDucr
 enterDucr.caption = Consignment details
 
+mucr.checkYourAnswersLabel = Is this part of a consolidation?
+
 partOfConsolidation.title = Is this part of a consolidation?
 partOfConsolidation.heading = Is this part of a consolidation?
 partOfConsolidation.hint = If this consignment is grouped under a Master UCR (MUCR) with other declarations, select yes. Otherwise, select no.
