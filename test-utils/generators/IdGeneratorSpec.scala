@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
+import org.mockito.Mockito.{spy, when}
 
 import java.util.UUID
 
@@ -28,15 +29,12 @@ class IdGeneratorSpec extends AnyFreeSpec with Matchers {
     "return the generated UUID without hyphens" in {
       val uuid = UUID.fromString("8f3c2a19-7d2b-4b74-a9f0-123456789012")
 
-      val idGenerator = new IdGenerator:
-        override def generate: UUID = uuid
+      val idGenerator = spy(new IdGeneratorImpl)
 
-        override def generateNoHyphen: String =
-          generate.toString.filter(_ != '-')
+      when(idGenerator.generate).thenReturn(uuid)
 
       idGenerator.generateNoHyphen mustBe "8f3c2a197d2b4b74a9f0123456789012"
     }
-
     "return a 32-character value" in {
       val idGenerator = new IdGeneratorImpl
 
