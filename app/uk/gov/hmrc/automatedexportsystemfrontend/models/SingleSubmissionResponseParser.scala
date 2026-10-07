@@ -68,7 +68,7 @@ object SingleSubmissionResponseParser {
       SingleSubmissionConsignment(
         modeOfTransportAtTheBorder = (consignmentXml \ "modeOfTransportAtTheBorder").headOption
           .map(_.text.trim.toInt),
-        referenceNumberUCR = (consignmentXml \ "referenceNumberUCR").text.trim,
+        referenceNumberUCR = (consignmentXml \ "ducr").text.trim,
         parentUCRID = (consignmentXml \ "parentUCRID").headOption
           .map(_.text.trim)
           .filter(_.nonEmpty),
@@ -151,7 +151,7 @@ object SingleSubmissionResponseParser {
     SingleSubmissionGoodsItem(
       declarationGoodsItemNumber = (xml \ "declarationGoodsItemNumber").headOption
         .map(_.text.trim.toInt),
-      referenceNumberUCR = (xml \ "referenceNumberUCR").headOption
+      referenceNumberUCR = (xml \ "ducr").headOption
         .map(_.text.trim)
         .filter(_.nonEmpty),
       commodity = parseCommodity(

@@ -14,14 +14,14 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.ViewSingleSubmissionViewModel
 
 @this(
 layout: Layout,
 govukButton: GovukButton
 )
 
-@(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
+@(submission: ViewSingleSubmissionViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(
 pageTitle = titleNoForm(messages("viewSubmission.title"))
