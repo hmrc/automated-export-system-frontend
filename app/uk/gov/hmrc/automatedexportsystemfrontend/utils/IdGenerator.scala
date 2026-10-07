@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.utils
+package uk.gov.hmrc.automatedexportsystem.util
 
 import com.google.inject.ImplementedBy
 
@@ -25,9 +25,10 @@ import javax.inject.Singleton
 trait IdGenerator:
   def generate: UUID
 
-  def generate35Char: String
+  def generateNoHyphen: String
+
 @Singleton
 class IdGeneratorImpl extends IdGenerator:
   def generate: UUID = UUID.randomUUID()
 
-  def generate35Char: String = generate.toString.init
+  def generateNoHyphen: String = generate.toString.filter(_ != '-')
