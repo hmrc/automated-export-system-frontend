@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystem.util
+package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
 import com.google.inject.ImplementedBy
 

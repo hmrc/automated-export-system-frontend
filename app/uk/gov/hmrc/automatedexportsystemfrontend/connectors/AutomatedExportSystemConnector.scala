@@ -43,12 +43,13 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
 ) extends Logging {
 
   private def requestHeaders: Seq[(String, String)] =
-    Seq("x-correlation-id" -> idGenerator.generate35Char, "source" -> "UI")
+    Seq("x-correlation-id" -> idGenerator.generateNoHyphen, "source" -> "UI")
 
   def submitIE507a(submission: String)(implicit hc: HeaderCarrier): Future[Done] =
     httpClient
       .post(url"${frontendAppConfig.automatedExportSystemApi}/message")
-      .setHeader("Content-Type" -> "application/xml; charset=UTF-8", "x-correlation-id" -> idGenerator.generate35Char, "source" -> "UI")
+      .setHeader("Content-Type" -> "application/xml; charset=UTF-8")
+      .setHeader(requestHeaders*)
       .withBody(submission)
       .execute[HttpResponse]
       .flatMap { response =>
