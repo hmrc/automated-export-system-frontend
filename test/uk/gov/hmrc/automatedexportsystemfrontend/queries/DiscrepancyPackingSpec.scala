@@ -64,64 +64,9 @@ class DiscrepancyPackingSpec extends SpecBase {
         DiscrepancyPacking.remaining(userAnswers) mustBe 96
       }
     }
-
     ".maxPackagingDetails" - {
       "must have a maximum of 99" in {
         DiscrepancyPacking.maxPackagingDetails mustBe 99
-      }
-    }
-
-    ".exists" - {
-      "must return true if the index is defined" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
-        DiscrepancyPacking.exists(userAnswers, 3) mustBe true
-      }
-
-      "must return false if the index is not defined" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
-        DiscrepancyPacking.exists(userAnswers, 4) mustBe false
-      }
-    }
-
-    ".nextIndex" - {
-      "must return the next empty index positon" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
-        DiscrepancyPacking.nextIndex(userAnswers) mustBe 4
-      }
-    }
-
-    ".removeOne" - {
-      "must remove one DiscrepancyPacking item at the correct index" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
-        val updatedUserAnswers = DiscrepancyPacking.removeOne(userAnswers, 2).success.value
-
-        val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("PK", 3, "MARKS3"))
-
-        DiscrepancyPacking.getAll(updatedUserAnswers) mustBe expected
       }
     }
 

@@ -36,11 +36,11 @@ object AmendIsSplitExitSummary {
 
   private def build(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow = {
     val display =
-      if (value) s"${messages("site.yes")} - ${messages("site.isSplitExit")}: 1"
-      else s"${messages("site.no")} - ${messages("site.isSplitExit")}: 0"
+      if (value) s"${messages("site.yes")}"
+      else s"${messages("site.no")}"
 
     SummaryListRowViewModel(
-      key = "isSplitDiscrepancy.checkYourAnswersLabel",
+      key = "isSplitExit.checkYourAnswersLabel",
       value = ValueViewModel(display),
       actions =
         if (withChangeLink)

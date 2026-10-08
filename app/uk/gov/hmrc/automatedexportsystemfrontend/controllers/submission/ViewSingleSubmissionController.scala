@@ -115,7 +115,7 @@ class ViewSingleSubmissionController @Inject() (
   ): Seq[Option[SummaryListRow]] =
     Seq(
       singleSubmissionHelper.modeOfTransportAtBorderHandler(answers.flatMap(_.modeOfTransportAtTheBorder), submissionId, false),
-      AmendEnterDucrSummary.row(answers.map(_.referenceNumberUCR).get, submissionId, false),
+      answers.flatMap(l => AmendEnterDucrSummary.row(l.referenceNumberUCR, submissionId, false)),
       singleSubmissionHelper.parentUCRIDHandler(answers.flatMap(_.parentUCRID), submissionId, false)
     )
 
@@ -144,8 +144,8 @@ class ViewSingleSubmissionController @Inject() (
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
     Seq(
-      AmendLocationTypeSummary.row(answers.map(_.typeOfLocation).get, submissionId, false),
-      AmendLocationIdSummary.qualifierRow(answers.map(_.qualifierOfIdentification).get, submissionId, false),
+      answers.flatMap(l => AmendLocationTypeSummary.row(l.typeOfLocation, submissionId, false)),
+      answers.flatMap(l => AmendLocationIdSummary.qualifierRow(l.qualifierOfIdentification, submissionId, false)),
       singleSubmissionHelper.authorisationNumberHandler(answers.flatMap(_.authorisationNumber), submissionId, false),
       singleSubmissionHelper.additionalIdHandler(answers.flatMap(_.additionalIdentifier), submissionId, false),
       singleSubmissionHelper.unloHandler(answers.flatMap(_.UNLocode), submissionId, false)

@@ -22,7 +22,6 @@ import play.api.Logging
 import play.api.http.Status.{ACCEPTED, OK}
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.automatedexportsystemfrontend.utils.IdGenerator
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 import play.api.libs.ws.writeableOf_String
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
@@ -38,18 +37,13 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML
 
 @Singleton
-class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2, idGenerator: IdGenerator)(
-  implicit ec: ExecutionContext
-) extends Logging {
-
-  private def requestHeaders: Seq[(String, String)] =
-    Seq("x-correlation-id" -> idGenerator.generateNoHyphen, "source" -> "UI")
+class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2)(implicit ec: ExecutionContext)
+    extends Logging {
 
   def submitIE507a(submission: String)(implicit hc: HeaderCarrier): Future[Done] =
     httpClient
       .post(url"${frontendAppConfig.automatedExportSystemApi}/message")
       .setHeader("Content-Type" -> "application/xml; charset=UTF-8")
-      .setHeader(requestHeaders*)
       .withBody(submission)
       .execute[HttpResponse]
       .flatMap { response =>
@@ -65,7 +59,6 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
   def getSubmissionSummaryResponses()(implicit hc: HeaderCarrier): Future[SubmissionSummaryResponseList] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submissions")
-      .setHeader(requestHeaders*)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
@@ -80,7 +73,6 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
   def getSingleSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[SingleSubmissionResponse] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submission/$submissionId")
-      .setHeader(requestHeaders*)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
@@ -95,7 +87,6 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
   def cancelSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[Done] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/cancel/$submissionId")
-      .setHeader(requestHeaders*)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {

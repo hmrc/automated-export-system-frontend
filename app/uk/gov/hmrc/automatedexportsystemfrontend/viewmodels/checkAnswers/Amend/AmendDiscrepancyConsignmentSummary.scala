@@ -40,7 +40,7 @@ object AmendDiscrepancyConsignmentSummary {
 
   private def build(value: ModeOfTransportAtBorder, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
-      key = "consignment.checkYourAnswersLabel",
+      key = "discrepancyConsignment.checkYourAnswersLabel",
       value = ValueViewModel(HtmlFormat.escape(messages(s"discrepancyConsignment.${value.toString}")).toString),
       actions =
         if (withChangeLink)

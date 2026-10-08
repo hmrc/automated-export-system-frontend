@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthReq
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.services.SubmissionDataService
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CreateSubmissionDataService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
@@ -37,7 +37,7 @@ class SubmissionController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   automatedExportSystemConnector: AutomatedExportSystemConnector,
-  submissionDataService: SubmissionDataService,
+  submissionDataService: CreateSubmissionDataService,
   userAnswerHelper: UserAnswerHelper,
   sessionRepository: SessionRepository,
   val controllerComponents: MessagesControllerComponents

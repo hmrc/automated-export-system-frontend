@@ -93,7 +93,7 @@ class AmendmentAnswersMapper {
           b2 <- setAmendLocation(b1, submissionId, consignment.locationOfGoods)
           b3 <- b2.set(
             AmendPartOfConsolidationPage(submissionId),
-            PartOfConsolidationAnswer(boolean = consignment.parentUCRID.isDefined, partOfConsolidation = consignment.parentUCRID)
+            PartOfConsolidationAnswer(boolean = consignment.parentUCRID.isDefined, mucr = consignment.parentUCRID)
           )
           b4 <- consignment.modeOfTransportAtTheBorder match {
             case Some(modeCode) =>

@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherPackagingDetailFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherPackagingDetailViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AddAnotherPackagingDetailView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -41,25 +41,25 @@ class AddAnotherPackagingDetailController @Inject() (
 
   def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers)
 
     if (viewModel.numberOfPackagingDetails > 0) {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
+      Ok(view(form(viewModel.allowMore), viewModel))
     } else {
-      Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode).url)
+      Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url)
     }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onSubmit(): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers)
 
     formProvider(viewModel.allowMore)
       .bindFromRequest()
       .fold(
-        formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
+        formWithErrors => BadRequest(view(formWithErrors, viewModel)),
         {
-          case true  => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(viewModel.numberOfPackagingDetails + 1, mode))
+          case true  => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(viewModel.numberOfPackagingDetails + 1, NormalMode))
           case false => Redirect(createRoute.CYASubmissionController.onPageLoad())
         }
       )

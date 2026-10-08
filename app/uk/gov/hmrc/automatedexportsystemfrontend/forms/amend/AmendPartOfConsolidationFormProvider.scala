@@ -28,14 +28,14 @@ class AmendPartOfConsolidationFormProvider @Inject() extends Mappings {
 
   def apply(): Form[PartOfConsolidationAnswer] =
     Form(
-      mapping("boolean" -> boolean("partOfConsolidation.error.required"), "partOfConsolidation" -> optional(text()))(PartOfConsolidationAnswer.apply)(
-        answer => Some((answer.boolean, answer.partOfConsolidation))
+      mapping("boolean" -> boolean("mucr.error.required"), "mucr" -> optional(text()))(PartOfConsolidationAnswer.apply)(answer =>
+        Some((answer.boolean, answer.mucr))
       )
     )
 
   def validateAnswer(answer: PartOfConsolidationAnswer): Form[PartOfConsolidationAnswer] = {
     val form: Form[PartOfConsolidationAnswer] = apply().fill(answer)
-    val mucr: String = answer.partOfConsolidation.getOrElse("")
+    val mucr: String = answer.mucr.getOrElse("")
 
     if (!answer.boolean) {
       form

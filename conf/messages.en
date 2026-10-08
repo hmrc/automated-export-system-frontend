@@ -87,6 +87,8 @@ enterDucr.error.invalid = EnterDucr must only include letters and numbers
 enterDucr.change.hidden = EnterDucr
 enterDucr.caption = Consignment details
 
+mucr.checkYourAnswersLabel = Is this part of a consolidation?
+
 partOfConsolidation.title = Is this part of a consolidation?
 partOfConsolidation.heading = Is this part of a consolidation?
 partOfConsolidation.hint = If this consignment is grouped under a Master UCR (MUCR) with other declarations, select yes. Otherwise, select no.
@@ -445,7 +447,3 @@ addAnotherPackagingDetail.plural.remaining = You can add up to {0} more packagin
 addAnotherPackagingDetail.addAnother = Do you need to add another packaging detail?
 addAnotherPackagingDetail.maxLimit = You cannot add any more packaging details. To add another, you need to remove one first.
 addAnotherPackagingDetail.error.required = Select yes if you want to add another packaging detail
-
-removePackagingDetail.title = Are you sure you want to remove packaging detail {0}
-removePackagingDetail.heading = Are you sure you want to remove packaging detail {0}
-removePackagingDetail.error.required = Select yes if you want to remove packaging detail {0}
