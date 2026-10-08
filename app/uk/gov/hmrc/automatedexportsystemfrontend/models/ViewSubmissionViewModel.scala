@@ -24,13 +24,14 @@ case class ViewSubmissionViewModel(
   ducr: String,
   officeOfExit: String,
   submittedDate: String,
-  status: String,
+  status: SubmissionStatus,
   discrepancyConsignment: Option[String],
   locationType: Option[String],
   locationUnlocode: Option[String],
   locationAdditionalIdentifier: Option[String],
   locationAuthorisationReferenceNumber: Option[String],
   partOfConsolidation: Option[Boolean],
+  mucr: Option[String],
   anyDiscrepancies: Option[Boolean],
   isSplitExit: Option[Boolean]
 )

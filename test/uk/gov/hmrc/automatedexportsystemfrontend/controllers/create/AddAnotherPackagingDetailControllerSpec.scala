@@ -24,7 +24,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, PackingDetails}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 
@@ -32,24 +32,24 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
   val maxPackagingDetails: Int = DiscrepancyPacking.maxPackagingDetails
 
-  val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-    .success
-    .value
-
   "AddAnotherPackagingDetail Controller" - {
 
     "onPageLoad" - {
       "must return OK and the correct view for a GET when allowed to add more items" in {
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad().url)
 
           val result = route(application, request).value
 
@@ -89,7 +89,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad().url)
 
           val result = route(application, request).value
 
@@ -111,13 +111,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       }
 
       "must redirect to DiscrepancyPackingPage at the first index if zero items added" in {
-
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad().url)
 
           val result = route(application, request).value
 
@@ -127,13 +126,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       }
 
       "must redirect to Journey Recovery when there are no user answers data" in {
-
         val application = applicationBuilder(userAnswers = None)
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad().url)
 
           val result = route(application, request).value
 
@@ -145,36 +143,24 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
     "onSubmit" - {
       "must redirect to next DiscrepancyPackingPage at the correct index when Yes is selected" in {
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url).withFormUrlEncodedBody("value" -> "true")
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit().url).withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(4, NormalMode).url
-        }
-      }
-
-      "must redirect to next DiscrepancyPackingPage at the correct index and preserve mode in CheckMode" in {
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-          .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(CheckMode).url).withFormUrlEncodedBody("value" -> "true")
-
-          val result = route(application, request).value
-
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(4, CheckMode).url
         }
       }
 
@@ -191,8 +177,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url).withFormUrlEncodedBody("value" -> "false")
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit().url).withFormUrlEncodedBody("value" -> "false")
 
           val result = route(application, request).value
 
@@ -201,31 +186,20 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }
       }
 
-      "must redirect to next DiscrepancyPackingPage at the correct index and preserve the mode in CheckMode" in {
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-          .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url).withFormUrlEncodedBody("value" -> "true")
-
-          val result = route(application, request).value
-
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(4, NormalMode).url
-        }
-      }
-
       "must return a Bad Request when no option chosen and max limit not reached" in {
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit().url)
 
           val result = route(application, request).value
 
@@ -235,7 +209,6 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       }
 
       "must redirect to CYASubmission when maximum items reached" in {
-
         val packingDetailsList = (1 to maxPackagingDetails).map { number =>
           PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
         }.toList
@@ -250,7 +223,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit().url)
 
           val result = route(application, request).value
 
@@ -260,13 +233,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       }
 
       "must redirect to Journey Recovery when there are no user answers data" in {
-
         val application = applicationBuilder(userAnswers = None)
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit().url)
 
           val result = route(application, request).value
 

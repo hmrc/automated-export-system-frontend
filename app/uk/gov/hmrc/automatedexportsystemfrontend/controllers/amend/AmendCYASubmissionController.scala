@@ -26,7 +26,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes a
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.services.SubmissionDataService
+import uk.gov.hmrc.automatedexportsystemfrontend.services.{AmendSubmissionDataService, CreateSubmissionDataService}
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
@@ -45,7 +45,7 @@ class AmendCYASubmissionController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: AmendCYASubmissionView,
   amendNavigator: AmendNavigator,
-  submissionDataService: SubmissionDataService,
+  submissionDataService: AmendSubmissionDataService,
   automatedExportSystemConnector: AutomatedExportSystemConnector,
   sessionRepository: SessionRepository,
   userAnswerHelper: UserAnswerHelper
@@ -65,21 +65,17 @@ class AmendCYASubmissionController @Inject() (
       val consignmentList = SummaryListViewModel(
         Seq(
           AmendEnterDucrSummary.row(answers)(submissionId),
-          AmendPartOfConsolidationSummary.row(answers)(submissionId),
-          AmendOfficeOfExitSummary.row(answers)(submissionId),
-          AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
-          AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)
+          AmendDiscrepancyConsignmentSummary.row(answers)(submissionId),
+          AmendPartOfConsolidationSummary.row(answers)(submissionId)
         ).flatten
       )
 
       val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
 
-      val extraRowsList = SummaryListViewModel(
+      val discrepancyList = SummaryListViewModel(
         Seq(AmendAnyDiscrepanciesSummary.row(answers)(submissionId), AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten
       )
-
-      val preparedView = view(mode, submissionId, exportOperationList, consignmentList)
-      Future.successful(Ok(preparedView))
+      Future.successful(Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, discrepancyList)))
     }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] =

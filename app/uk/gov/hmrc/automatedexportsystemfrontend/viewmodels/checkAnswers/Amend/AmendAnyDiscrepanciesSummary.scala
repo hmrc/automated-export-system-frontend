@@ -35,10 +35,7 @@ object AmendAnyDiscrepanciesSummary {
     Some(build(value, submissionId, withChangeLink))
 
   private def build(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow = {
-    val display =
-      if (value) s"${messages("site.yes")} - ${messages("site.anyDiscrepancies")}: 1"
-      else s"${messages("site.no")} - ${messages("site.anyDiscrepancies")}: 0"
-
+    val display = if (value) messages("site.yes") else messages("site.no")
     SummaryListRowViewModel(
       key = "anyDiscrepancies.checkYourAnswersLabel",
       value = ValueViewModel(display),

@@ -69,7 +69,7 @@ class PartOfConsolidationController @Inject() (
             val errorPage: play.twirl.api.HtmlFormat.Appendable = view(validatedForm, mode)
             Future.successful(BadRequest(errorPage))
           } else {
-            val cleanedValue = if (!value.boolean) value.copy(partOfConsolidation = None) else value
+            val cleanedValue = if (!value.boolean) value.copy(mucr = None) else value
             for {
               updatedAnswers <- Future.fromTry(request.userAnswers.set(PartOfConsolidationPage, value))
               _ <- sessionRepository.set(updatedAnswers)

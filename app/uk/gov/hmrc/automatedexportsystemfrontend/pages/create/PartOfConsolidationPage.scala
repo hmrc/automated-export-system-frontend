@@ -24,5 +24,5 @@ case object PartOfConsolidationPage extends QuestionPage[PartOfConsolidationAnsw
 
   override def path: JsPath = JsPath \ "standard" \ toString
 
-  override def toString: String = "partOfConsolidation"
+  override def toString: String = "mucr"
 }

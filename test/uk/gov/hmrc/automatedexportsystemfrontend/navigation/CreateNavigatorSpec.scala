@@ -139,7 +139,7 @@ class CreateNavigatorSpec extends SpecBase {
             .success
             .value
           navigator.nextPage(DiscrepancyPackingPage(1), NormalMode, userAnswers) shouldBe
-            createRoute.PackagingDetailsCYAController.onPageLoad(1, NormalMode)
+            createRoute.PackagingDetailsCYAController.onPageLoad(1)
         }
       }
     }
@@ -371,7 +371,7 @@ class CreateNavigatorSpec extends SpecBase {
             .success
             .value
           navigator.nextPage(DiscrepancyPackingPage(1), CheckMode, userAnswers) shouldBe
-            createRoute.PackagingDetailsCYAController.onPageLoad(1, CheckMode)
+            createRoute.PackagingDetailsCYAController.onPageLoad(1)
         }
       }
 

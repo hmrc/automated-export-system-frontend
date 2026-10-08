@@ -36,11 +36,11 @@ object PartOfConsolidationSummary {
       }
 
       SummaryListRowViewModel(
-        key = "partOfConsolidation.checkYourAnswersLabel",
+        key = "mucr.checkYourAnswersLabel",
         value = ValueViewModel(value),
         actions = Seq(
           ActionItemViewModel("site.change", happyRoute.PartOfConsolidationController.onPageLoad(CheckMode).url)
-            .withVisuallyHiddenText(messages("partOfConsolidation.change.hidden"))
+            .withVisuallyHiddenText(messages("mucr.change.hidden"))
         )
       )
     }

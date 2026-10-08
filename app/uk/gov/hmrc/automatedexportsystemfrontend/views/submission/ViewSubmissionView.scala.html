@@ -40,8 +40,8 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
 
 <p class="govuk-body">
  @messages("viewSubmission.status.label")
- <strong class="govuk-tag ">
-  @messages(submission.status)
+ <strong class="govuk-tag @submission.status.cssClass">
+  @messages(submission.status.key)
  </strong>
 </p>
 
@@ -73,13 +73,13 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   <th scope="row" class="govuk-table__header">
    @messages("viewSubmission.exportOperation.discrepancies")
   </th>
-  <td class="govuk-table__cell">@submission.</td>
+  <td class="govuk-table__cell">@submission.anyDiscrepancies</td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header">
    @messages("viewSubmission.exportOperation.splitExit")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.anyDiscrepancies</td>
  </tr>
  </tbody>
 </table>
@@ -159,13 +159,13 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("viewSubmission.location.type")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.locationAuthorisationReferenceNumber</td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("viewSubmission.location.identifiedBy")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.locationAdditionalIdentifier</td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
@@ -191,7 +191,7 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("viewSubmission.authorisation.referenceNumber")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.locationAuthorisationReferenceNumber</td>
  </tr>
  </tbody>
 </table>
