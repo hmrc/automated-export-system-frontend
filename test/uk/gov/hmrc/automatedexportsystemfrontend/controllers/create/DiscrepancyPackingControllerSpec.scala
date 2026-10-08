@@ -59,7 +59,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
 
   "DiscrepancyPacking Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET at the next index" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -81,7 +81,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered at an existing index" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -159,6 +159,22 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
 
         val body = contentAsString(result)
         body should include("There is a problem")
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET where the index doesn't exist and is not the next index" in {
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, createRoute.DiscrepancyPackingController.onPageLoad(5, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
       }
     }
 
