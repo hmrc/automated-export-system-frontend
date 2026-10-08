@@ -27,15 +27,22 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendEnterMrnSummary {
 
-  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendEnterMrnPage(submissionId)).map { answer =>
-      SummaryListRowViewModel(
-        key = "enterMrn.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
-        actions = Seq(
+  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = Some(
+    SummaryListRowViewModel(
+      key = "enterMrn.checkYourAnswersLabel",
+      value = if (answerFromXml.nonEmpty) {
+        ValueViewModel(HtmlFormat.escape(answerFromXml).toString)
+      } else {
+        ValueViewModel(HtmlFormat.escape(messages("site.notAnswered")).toString)
+      },
+      actions = if (withAmendLink) {
+        Seq(
           ActionItemViewModel("site.change", amendRoute.AmendEnterMrnController.onPageLoad(CheckMode, submissionId).url)
             .withVisuallyHiddenText(messages("enterMrn.change.hidden"))
         )
-      )
-    }
+      } else {
+        Seq.empty
+      }
+    )
+  )
 }

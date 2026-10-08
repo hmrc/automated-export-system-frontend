@@ -33,4 +33,25 @@ object SubmissionViewModelMapper {
       )
     })
 
+  private def mapOfficeOfExit(code: String): OfficeOfExit =
+    code match {
+      case "GB000051" => OfficeOfExit.Belfast
+      case "GB000142" => OfficeOfExit.Larne
+      case "GB000244" => OfficeOfExit.Warrenpoint
+      case "GB000411" => OfficeOfExit.Foyle
+      case _          => throw new IllegalArgumentException(s"Unknown office of exit code: $code")
+    }
+
+  private def mapStatus(status: Int): SubmissionStatus =
+    status match {
+      case 1 => SubmissionStatus("site.status.accepted", "govuk-tag--green")
+
+      case 2 => SubmissionStatus("site.status.amended", "govuk-tag--yellow")
+
+      case 3 => SubmissionStatus("site.status.cancelled", "govuk-tag--red")
+
+      case 4 => SubmissionStatus("site.status.awaitingDecision", "govuk-tag--blue")
+
+      case _ => throw new IllegalArgumentException(s"Unknown submission status: $status")
+    }
 }

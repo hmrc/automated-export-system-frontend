@@ -38,8 +38,8 @@
         HeadCell(content = Text(messages("viewSubmissions.mrn"))),
         HeadCell(content = Text(messages("viewSubmissions.ducr"))),
         HeadCell(content = Text(messages("viewSubmissions.officeOfExit"))),
-        HeadCell(content = Text(messages("viewSubmissions.submitted"))),
-        HeadCell(content = Text(messages("viewSubmissions.status")))
+        HeadCell(content = Text(messages("site.submitted"))),
+        HeadCell(content = Text(messages("site.status")))
       )),
       rows = viewSubmissionsViewModel.map(_.summaries.map { summary =>
         Seq(
