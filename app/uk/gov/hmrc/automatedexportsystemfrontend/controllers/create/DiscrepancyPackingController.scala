@@ -16,13 +16,16 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyPackingFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyPackingView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -43,17 +46,26 @@ class DiscrepancyPackingController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form = formProvider()
+  val form: Form[PackingDetails] = formProvider()
 
   def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
     implicit request =>
+      val userAnswers: UserAnswers = request.userAnswers
+      val nextIndex: Int = DiscrepancyPacking.nextIndex(userAnswers)
 
-      val preparedForm = request.userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(value)
+      if (
+        DiscrepancyPacking
+          .exists(userAnswers, packagingDetailIndex) || packagingDetailIndex == nextIndex
+      ) {
+        val preparedForm = userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(value)
+        }
+
+        Ok(view(preparedForm, packagingDetailIndex, mode))
+      } else {
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
-
-      Ok(view(preparedForm, packagingDetailIndex, mode))
   }
 
   def onSubmit(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {

@@ -28,12 +28,25 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 class AmendNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case AmendEnterMrnPage(submissionId)            => _ => amendRoute.AmendEnterDucrController.onPageLoad(NormalMode, submissionId)
-    case AmendEnterDucrPage(submissionId)           => _ => amendRoute.AmendPartOfConsolidationController.onPageLoad(NormalMode, submissionId)
-    case AmendPartOfConsolidationPage(submissionId) => amendPartOfConsolidationRoute(submissionId)
-    case AmendOfficeOfExitPage(submissionId)        => _ => amendRoute.AmendIsSplitExitController.onPageLoad(NormalMode, submissionId)
-    case AmendIsSplitExitPage(submissionId)         => amendIsSplitExitRoute(submissionId)
-    case AmendAnyDiscrepanciesPage(submissionId)    => amendAnyDiscrepanciesRoute(submissionId)
+    case AmendEnterMrnPage(submissionId)               => _ => amendRoute.AmendEnterDucrController.onPageLoad(NormalMode, submissionId)
+    case AmendEnterDucrPage(submissionId)              => _ => amendRoute.AmendPartOfConsolidationController.onPageLoad(NormalMode, submissionId)
+    case AmendPartOfConsolidationPage(submissionId)    => amendPartOfConsolidationRoute(submissionId)
+    case AmendOfficeOfExitPage(submissionId)           => _ => amendRoute.AmendIsSplitExitController.onPageLoad(NormalMode, submissionId)
+    case AmendIsSplitExitPage(submissionId)            => amendIsSplitExitRoute(submissionId)
+    case AmendAnyDiscrepanciesPage(submissionId)       => amendAnyDiscrepanciesRoute(submissionId)
+    case AmendLocationTypePage(submissionId)           => _ => amendRoute.AmendLocationTypeController.onPageLoad(NormalMode, submissionId)
+    case AmendLocationIdPage(submissionId)             => _ => amendRoute.AmendLocationIdController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyConsignmentPage(submissionId) => _ => amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyTransportPage(submissionId)   => _ => amendRoute.AmendDiscrepancyTransportController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyReferencePage(submissionId)   => _ => amendRoute.AmendDiscrepancyReferenceController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancySealsPage(submissionId)       => _ => amendRoute.AmendDiscrepancySealsController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyTransportMeansPage(submissionId) =>
+      _ => amendRoute.AmendDiscrepancyTransportMeansController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyGoodsPage(submissionId) =>
+      _ => amendRoute.AmendDiscrepancyGoodsController.onPageLoad(NormalMode, submissionId)
+    case AmendDiscrepancyPackingPage(submissionId) =>
+      _ => amendRoute.AmendDiscrepancyPackingController.onPageLoad(NormalMode, submissionId)
+
   }
 
   private def amendPartOfConsolidationRoute(submissionId: String)(answers: UserAnswers): Call =

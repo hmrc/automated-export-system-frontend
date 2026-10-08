@@ -22,6 +22,7 @@ import play.api.Logging
 import play.api.http.Status.{ACCEPTED, OK}
 import uk.gov.hmrc.http.HttpReads.Implicits.*
 import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.automatedexportsystemfrontend.utils.IdGenerator
 import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 import play.api.libs.ws.writeableOf_String
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
@@ -37,13 +38,18 @@ import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML
 
 @Singleton
-class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2)(implicit ec: ExecutionContext)
-    extends Logging {
+class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpClient: HttpClientV2, idGenerator: IdGenerator)(
+  implicit ec: ExecutionContext
+) extends Logging {
+
+  private def requestHeaders: Seq[(String, String)] =
+    Seq("x-correlation-id" -> idGenerator.generateNoHyphen, "source" -> "UI")
 
   def submitIE507a(submission: String)(implicit hc: HeaderCarrier): Future[Done] =
     httpClient
       .post(url"${frontendAppConfig.automatedExportSystemApi}/message")
       .setHeader("Content-Type" -> "application/xml; charset=UTF-8")
+      .setHeader(requestHeaders*)
       .withBody(submission)
       .execute[HttpResponse]
       .flatMap { response =>
@@ -59,6 +65,7 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
   def getSubmissionSummaryResponses()(implicit hc: HeaderCarrier): Future[SubmissionSummaryResponseList] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submissions")
+      .setHeader(requestHeaders*)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
@@ -73,6 +80,7 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
   def getSingleSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[SingleSubmissionResponse] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/submission/$submissionId")
+      .setHeader(requestHeaders*)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
@@ -84,9 +92,125 @@ class AutomatedExportSystemConnector @Inject() (frontendAppConfig: FrontendAppCo
         }
       }
 
+  def getSingleSubmissionTestOnly(submissionId: String)(implicit hc: HeaderCarrier): Future[SingleSubmissionResponse] =
+    val body = """<Submission>
+                      |            <submissionId>12345</submissionId>
+                      |            <ExportOperation>
+                      |              <type>1</type>
+                      |              <MRN>mrn12345</MRN>
+                      |              <discrepanciesExist>1</discrepanciesExist>
+                      |              <splitIndicator>1</splitIndicator>
+                      |            </ExportOperation>
+                      |            <CustomsOfficeOfExitActual>
+                      |              <referenceNumber>GB000051</referenceNumber>
+                      |            </CustomsOfficeOfExitActual>
+                      |            <GoodsShipment>
+                      |              <Consignment>
+                      |                <modeOfTransportAtTheBorder>1</modeOfTransportAtTheBorder>
+                      |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
+                      |                <parentUCRID>parentUcrId</parentUCRID>
+                      |                <TransportEquipment>
+                      |                  <sequenceNumber>1</sequenceNumber>
+                      |                  <containerIdentificationNumber>1</containerIdentificationNumber>
+                      |                  <numberOfSeals>1</numberOfSeals>
+                      |                  <Seal>
+                      |                    <sequenceNumber>1</sequenceNumber>
+                      |                    <identifier>sealIdentifier1</identifier>
+                      |                  </Seal>
+                      |                  <GoodsReference>
+                      |                    <sequenceNumber>1</sequenceNumber>
+                      |                    <declarationGoodsItemNumber>1</declarationGoodsItemNumber>
+                      |                  </GoodsReference>
+                      |                </TransportEquipment>
+                      |                <TransportEquipment>
+                      |                  <sequenceNumber>2</sequenceNumber>
+                      |                  <containerIdentificationNumber>2</containerIdentificationNumber>
+                      |                  <numberOfSeals>1</numberOfSeals>
+                      |                  <Seal>
+                      |                    <sequenceNumber>2</sequenceNumber>
+                      |                    <identifier>sealIdentifier2</identifier>
+                      |                  </Seal>
+                      |                  <GoodsReference>
+                      |                    <sequenceNumber>2</sequenceNumber>
+                      |                    <declarationGoodsItemNumber>2</declarationGoodsItemNumber>
+                      |                  </GoodsReference>
+                      |                </TransportEquipment>
+                      |                <LocationOfGoods>
+                      |                  <qualifierOfIdentification>qualifierOfIdentification</qualifierOfIdentification>
+                      |                  <authorisationNumber>authorisationNumber</authorisationNumber>
+                      |                  <additionalIdentifier>additionalIdentifier</additionalIdentifier>
+                      |                  <UNLocode>unLocode</UNLocode>
+                      |                </LocationOfGoods>
+                      |                <ActiveBorderTransportMeans>
+                      |                  <typeOfIdentification>typeOfIdentification</typeOfIdentification>
+                      |                  <identificationNumber>identificationNumber</identificationNumber>
+                      |                  <nationality>nationality</nationality>
+                      |                </ActiveBorderTransportMeans>
+                      |                <TransportDocument>
+                      |                  <sequenceNumber>1</sequenceNumber>
+                      |                  <type>1</type>
+                      |                  <referenceNumber>referenceNumber1</referenceNumber>
+                      |                </TransportDocument>
+                      |                <TransportDocument>
+                      |                  <sequenceNumber>2</sequenceNumber>
+                      |                  <type>2</type>
+                      |                  <referenceNumber>referenceNumber2</referenceNumber>
+                      |                </TransportDocument>
+                      |              </Consignment>
+                      |              <GoodsItem>
+                      |                <declarationGoodsItemNumber>1</declarationGoodsItemNumber>
+                      |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
+                      |                <Commodity>
+                      |                  <GoodsMeasure>
+                      |                    <grossMass>100.55</grossMass>
+                      |                    <netMass>80.45</netMass>
+                      |                  </GoodsMeasure>
+                      |                </Commodity>
+                      |                <Packaging>
+                      |                  <sequenceNumber>1</sequenceNumber>
+                      |                  <typeOfPackages>typeOfPackages</typeOfPackages>
+                      |                  <numberOfPackages>1</numberOfPackages>
+                      |                  <shippingMarks>shippingMarks</shippingMarks>
+                      |                </Packaging>
+                      |                <Packaging>
+                      |                  <sequenceNumber>2</sequenceNumber>
+                      |                  <typeOfPackages>typeOfPackages</typeOfPackages>
+                      |                  <numberOfPackages>1</numberOfPackages>
+                      |                  <shippingMarks>shippingMarks</shippingMarks>
+                      |                </Packaging>
+                      |              </GoodsItem>
+                      |              <GoodsItem>
+                      |                <declarationGoodsItemNumber>2</declarationGoodsItemNumber>
+                      |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
+                      |                <Commodity>
+                      |                  <GoodsMeasure>
+                      |                    <grossMass>100.55</grossMass>
+                      |                    <netMass>80.45</netMass>
+                      |                  </GoodsMeasure>
+                      |                </Commodity>
+                      |                <Packaging>
+                      |                  <sequenceNumber>3</sequenceNumber>
+                      |                  <typeOfPackages>typeOfPackages</typeOfPackages>
+                      |                  <numberOfPackages>1</numberOfPackages>
+                      |                  <shippingMarks>shippingMarks</shippingMarks>
+                      |                </Packaging>
+                      |                <Packaging>
+                      |                  <sequenceNumber>4</sequenceNumber>
+                      |                  <typeOfPackages>typeOfPackages</typeOfPackages>
+                      |                  <numberOfPackages>1</numberOfPackages>
+                      |                  <shippingMarks>shippingMarks</shippingMarks>
+                      |                </Packaging>
+                      |              </GoodsItem>
+                      |            </GoodsShipment>
+                      |            <updatedAt>2026-08-11T00:00:00</updatedAt>
+                      |          </Submission>""".stripMargin
+
+    Future.successful(SingleSubmissionResponseParser.parse(XML.loadString(body)))
+
   def cancelSubmission(submissionId: String)(implicit hc: HeaderCarrier): Future[Done] =
     httpClient
       .get(url"${frontendAppConfig.automatedExportSystemApi}/cancel/$submissionId")
+      .setHeader(requestHeaders*)
       .execute[HttpResponse]
       .flatMap { response =>
         response.status match {
