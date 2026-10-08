@@ -36,7 +36,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   LocationType,
   ModeOfTransportAtBorder,
   OfficeOfExit,
-  PackingDetails,
   PartOfConsolidationAnswer,
   TransportAcrossBorderDetails,
   WhatHasChangedDetails
@@ -76,7 +75,7 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(LocationTypePage, LocationType.DesignatedLocation)
         .get
-        .set(LocationIdPage, LocationDetails(AuthorisationNumber, "unlocode", "1234", "authorisationReferenceNumber"))
+        .set(LocationIdPage, LocationDetails(AuthorisationNumber, Some("unlocode"), Some("1234"), Some("authorisationReferenceNumber")))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -149,7 +148,7 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(LocationTypePage, LocationType.DesignatedLocation)
         .get
-        .set(LocationIdPage, LocationDetails(AuthorisationNumber, "unlocode", "1234", "authorisationReferenceNumber"))
+        .set(LocationIdPage, LocationDetails(AuthorisationNumber, Some("unlocode"), Some("1234"), Some("authorisationReferenceNumber")))
         .get
         .set(DiscrepancyConsignmentPage, Sea)
         .get

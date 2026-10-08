@@ -40,7 +40,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
         userAnswers <- userAnswers.set(DiscrepancySealsPage, Some("sealId"))
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
-        userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("locationId"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage, Some("1"))
@@ -56,24 +56,40 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<GoodsShipment>")
     }
 
-    "must return an String of XML with no GoodsShipment when the minimal set of required answers are present " in {
-      val userAnswers = for {
-        userAnswers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
-        userAnswers <- userAnswers.set(AnyDiscrepanciesPage, false)
-        userAnswers <- userAnswers.set(IsSplitExitPage, false)
-        userAnswers <- userAnswers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
-        // userAnswers <- userAnswers.set(EnterDucrPage, "someDUCR")
-      } yield userAnswers
+    "must include DUCR and required location properties with minimal answers" in {
+      Seq(LocationQualifier.UnLocode -> "U", LocationQualifier.AuthorisationNumber -> "Y").foreach { case (qualifier, expectedCode) =>
+        val answers = (for {
+          answers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
+          answers <- answers.set(AnyDiscrepanciesPage, false)
+          answers <- answers.set(IsSplitExitPage, false)
+          answers <- answers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
+          answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
+          answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
+          answers <- answers.set(LocationIdPage, LocationDetails(qualifier, None, None, None))
+        } yield answers).get
 
-      val result = service.buildStandardSubmission(userAnswers.get)
+        val result = service.buildStandardSubmission(answers)
 
-      result shouldBe an[Option[String]]
-      result.value should include("<MRN>MRN</MRN>")
-      result.value should include("<type>1</type>")
-      result.value should include("<discrepanciesExist>0</discrepanciesExist>")
-      result.value should include("<splitIndicator>0</splitIndicator>")
-      result.value should include("<referenceNumber>GB000051</referenceNumber>")
-      result.value shouldNot include("<GoodsShipment>")
+        result shouldBe defined
+
+        val consignment = scala.xml.XML.loadString(result.value) \ "GoodsShipment" \ "Consignment"
+        val location = consignment \ "LocationOfGoods"
+
+        consignment.size shouldBe 1
+        (consignment \ "referenceNumberUCR").text shouldBe "5GB000000000000-12345"
+        location.size shouldBe 1
+        (location \ "typeOfLocation").text shouldBe "B"
+        (location \ "qualifierOfIdentification").text shouldBe expectedCode
+        (location \ "authorisationNumber") shouldBe empty
+        (location \ "additionalIdentifier") shouldBe empty
+        (location \ "UNLocode") shouldBe empty
+
+        Seq(EnterDucrPage, LocationTypePage, LocationIdPage).foreach { page =>
+          val incompleteAnswers = answers.remove(page).get
+
+          service.buildStandardSubmission(incompleteAnswers) shouldBe None
+        }
+      }
     }
 
     "must include a GoodsShipment when all the required answers are present" in {
@@ -88,7 +104,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
         userAnswers <- userAnswers.set(DiscrepancySealsPage, Some("sealId"))
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
-        userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage, Some("1"))
@@ -127,7 +143,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<typeOfLocation>B</typeOfLocation>")
       result.value should include("<qualifierOfIdentification>U</qualifierOfIdentification>")
       result.value should include("<authorisationNumber>abc123</authorisationNumber>")
-      result.value should include("<additionalIdentifier>locationId</additionalIdentifier>")
+      result.value should include("<additionalIdentifier>1234</additionalIdentifier>")
       result.value should include("<UNLocode>GBBEL</UNLocode>")
 
       result.value should include("<ActiveBorderTransportMeans>")
@@ -164,7 +180,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
-        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         answers <- answers.set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
         answers <- answers.set(DiscrepancyReferencePage, Option.empty[String])
       } yield answers).get
@@ -188,7 +204,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
-        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         answers <- answers.set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
         answers <- answers.set(DiscrepancySealsPage, Option.empty[String])
       } yield answers).get
@@ -212,7 +228,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
-        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
       } yield answers).get
 
       val cases = Seq(
@@ -249,7 +265,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(false, None))
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
-        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         answers <- answers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
         answers <- answers.set(IsSplitExitPage, false)
         answers <- answers.set(AnyDiscrepanciesPage, false)
@@ -275,7 +291,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(OfficeOfExitPage, OfficeOfExit.Belfast)
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
-        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, "GBBEL", "locationId", "abc123"))
+        answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         answers <- answers.set(DiscrepancySealsPage, Some("sealId"))
       } yield answers).get
 

@@ -33,7 +33,8 @@ class LocationIdSummarySpec extends AnyFreeSpec with Matchers with Generators {
 
   "row" - {
     "when answered, return the summary row" in {
-      val locationDetails = LocationDetails(LocationQualifier.UnLocode, "unlocode", "locationAdditionalIdentifier", "authorisationReferenceNumber")
+      val locationDetails =
+        LocationDetails(LocationQualifier.UnLocode, Some("unlocode"), Some("locationAdditionalIdentifier"), Some("authorisationReferenceNumber"))
       val userAnswers = UserAnswers("id")
         .set(LocationIdPage, locationDetails)
         .get
@@ -86,6 +87,18 @@ class LocationIdSummarySpec extends AnyFreeSpec with Matchers with Generators {
           )
         )
       )
+    }
+
+    "when optional fields are blank, return all rows with empty optional values in {" in {
+      val userAnswers = UserAnswers("id")
+        .set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, None, None, None))
+        .get
+      val rows = LocationIdSummary.row(userAnswers).get
+
+      rows.size shouldBe 4
+      rows.drop(1).foreach { row =>
+        row.value shouldBe ValueViewModel(HtmlContent(""))
+      }
     }
 
     "when answer unavailable, return empty" in {

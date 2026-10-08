@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
 import play.api.libs.json.{Format, Json}
-import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
+import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
 case class GoodsReference(
   sequenceNumber: Int, // Note: optional in the schema but we can easily provide it on behalf of the user

@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendAnyDiscrepanciesPage,
@@ -97,9 +98,16 @@ class CreateSubmissionDataService @Inject() extends Logging {
       locationType <- userAnswers.get(LocationTypePage)
       typeOfLocation = TypeOfLocation.fromUserAnswers(locationType)
       locationDetails <- userAnswers.get(LocationIdPage)
+
+      qualifier = locationDetails.locationType match {
+        case LocationQualifier.UnLocode =>
+          QualifierOfTheIdentification.UnLocode
+        case LocationQualifier.AuthorisationNumber =>
+          QualifierOfTheIdentification.AuthorisationNumber
+      }
     } yield LocationOfGoods(
       typeOfLocation,
-      QualifierOfTheIdentification.UnLocode,
+      qualifier,
       locationDetails.authorisationReferenceNumber,
       locationDetails.locationAdditionalIdentifier,
       locationDetails.unlocode
@@ -179,4 +187,5 @@ class CreateSubmissionDataService @Inject() extends Logging {
 
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""
+
 }

@@ -110,9 +110,9 @@ trait ModelGenerators {
     Arbitrary {
       for {
         locationType <- arbitrary[LocationQualifier]
-        unlocode <- arbitrary[String]
-        locationAdditionalIdentifier <- arbitrary[String]
-        authorisationReferenceNumber <- arbitrary[String]
+        unlocode <- arbitrary[Option[String]]
+        locationAdditionalIdentifier <- arbitrary[Option[String]]
+        authorisationReferenceNumber <- arbitrary[Option[String]]
       } yield LocationDetails(locationType, unlocode, locationAdditionalIdentifier, authorisationReferenceNumber)
     }
 

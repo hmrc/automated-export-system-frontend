@@ -20,7 +20,7 @@ import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{additionalIdentifierRegex, authorisationNumberRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.LocationIdFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier}
 
 class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehaviours {
 
@@ -36,26 +36,25 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
       validValues = LocationQualifier.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
+
+    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, "locationId.error.locationType.required"))
+
   }
 
   ".unlocode" - {
 
     val fieldName = "unlocode"
-    val requiredKey = "locationId.error.unlocode.required"
     val lengthKey = "locationId.error.unlocode.length"
     val maxLength = 17
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
   }
 
   ".locationAdditionalIdentifier" - {
 
     val fieldName = "locationAdditionalIdentifier"
-    val requiredKey = "locationId.error.locationAdditionalIdentifier.required"
     val lengthKey = "locationId.error.locationAdditionalIdentifier.length"
     val invalidKey = "locationId.error.locationAdditionalIdentifier.invalid"
     val maxLength = 4
@@ -63,8 +62,6 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
     behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
 
     "must not bind invalid data" in {
 
@@ -82,7 +79,6 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
   ".authorisationReferenceNumber" - {
 
     val fieldName = "authorisationReferenceNumber"
-    val requiredKey = "locationId.error.authorisationReferenceNumber.required"
     val lengthKey = "locationId.error.authorisationReferenceNumber.length"
     val invalidKey = "locationId.error.authorisationReferenceNumber.invalid"
     val maxLength = 35
@@ -90,8 +86,6 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
     behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
 
     "must not bind invalid data" in {
 
@@ -103,6 +97,18 @@ class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehav
         val result = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
         result.errors must contain(expectedError)
       }
+    }
+
+    "must accept a qualifier with the optional fields missing" in {
+      form.bind(Map("locationType" -> "unlocode")).value mustBe
+        Some(LocationDetails(LocationQualifier.UnLocode, None, None, None))
+    }
+
+    "must accept a qualifier with the optional fields blank" in {
+      form
+        .bind(Map("locationType" -> "authnumber", "unlocode" -> "", "locationAdditionalIdentifier" -> "", "authorisationReferenceNumber" -> ""))
+        .value mustBe
+        Some(LocationDetails(LocationQualifier.AuthorisationNumber, None, None, None))
     }
   }
 }
