@@ -14,14 +14,18 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
+package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.maxNumberOfSealsInList
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 
-case class DiscrepancySealsPage(sealsIndex: Int) extends QuestionPage[String] {
+case object DiscrepancySeals extends Gettable[List[String]] with Settable[List[String]] {
+  override def path: JsPath = JsPath \ "standard" \ "discrepancySeals"
 
-  override def path: JsPath = JsPath \ "standard" \ toString \ (sealsIndex - 1)
+  def getAll(userAnswers: UserAnswers): List[String] = userAnswers.get(this).getOrElse(Nil)
 
-  override def toString: String = "discrepancySeals"
+  def count(userAnswers: UserAnswers): Int = getAll(userAnswers).size
+
+  def remaining(userAnswers: UserAnswers): Int = math.max(0, maxNumberOfSealsInList - count(userAnswers))
 }

@@ -23,17 +23,18 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancySealsSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancySealsPage).map { answer =>
+  def row(sealsIndex: Int, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(DiscrepancySealsPage(sealsIndex)).map { answer =>
       SummaryListRowViewModel(
         key = "discrepancySeals.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
+        value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer).toString)),
         actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancySealsController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", createRoute.DiscrepancySealsController.onPageLoad(sealsIndex, CheckMode).url)
             .withVisuallyHiddenText(messages("discrepancySeals.change.hidden"))
         )
       )

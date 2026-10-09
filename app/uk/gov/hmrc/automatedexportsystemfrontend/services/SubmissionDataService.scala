@@ -22,7 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyPacking, DiscrepancySeals}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
 
 class SubmissionDataService @Inject() extends Logging {
@@ -53,8 +53,8 @@ class SubmissionDataService @Inject() extends Logging {
   }
 
   private def collectSeals(userAnswers: UserAnswers): List[Seal] =
-    userAnswers.get(DiscrepancySealsPage).toList.zipWithIndex.map { case (seal, index) =>
-      Seal(index + 1, seal)
+    DiscrepancySeals.getAll(userAnswers).zipWithIndex.map { (sealIdentifier, index) =>
+      Seal(index + 1, sealIdentifier)
     }
 
   private def collectGoodsReference(userAnswers: UserAnswers): List[GoodsReference] =

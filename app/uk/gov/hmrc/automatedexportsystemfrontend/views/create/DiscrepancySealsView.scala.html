@@ -26,7 +26,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], sealsIndex: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @content = {
     <div id="discrepancySealsHint" class="govuk-hint">
@@ -36,7 +36,7 @@
 
 @layout(pageTitle = title(form, messages("discrepancySeals.title"))) {
 
-    @formHelper(action = createRoute.DiscrepancySealsController.onSubmit(mode)) {
+    @formHelper(action = createRoute.DiscrepancySealsController.onSubmit(sealsIndex, mode)) {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

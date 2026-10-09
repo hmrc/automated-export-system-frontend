@@ -213,10 +213,10 @@ discrepancySeals.title = What is the seal identifier?
 discrepancySeals.heading = What is the seal identifier?
 discrepancySeals.hint = For example, GB12345678.
 discrepancySeals.checkYourAnswersLabel = Seal identifier
-discrepancySeals.error.required = Enter the seal identifier
 discrepancySeals.error.length = The seal identifier must be 20 characters or less
 discrepancySeals.error.invalid = The seal identifier must be in the correct format, for example SEAL123
 discrepancySeals.change.hidden = seal identifier
+sealsCYA.caption = Seal {0}
 
 discrepancyReference.title = What is the Declaration Goods Reference?
 discrepancyReference.heading = What is the Declaration Goods Reference?

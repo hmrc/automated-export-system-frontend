@@ -44,28 +44,36 @@ class DiscrepancySealsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider()
+  val form: Form[Option[String]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-    val preparedForm = request.userAnswers.get(DiscrepancySealsPage) match {
+    val preparedForm = request.userAnswers.get(DiscrepancySealsPage(sealsIndex)) match {
       case None        => form
-      case Some(value) => form.fill(value)
+      case Some(value) => form.fill(Some(value))
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, sealsIndex, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, sealsIndex, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancySealsPage, value))
+            updatedAnswers <- value match {
+              case Some(sealIdentifier) =>
+                Future
+                  .fromTry(request.userAnswers.set(DiscrepancySealsPage(sealsIndex), sealIdentifier))
+              case None =>
+                Future.fromTry(
+                  request.userAnswers.remove(DiscrepancySealsPage(sealsIndex))
+                ) // TODO: discuss with BA if this is okay, also discuss the implications on check route
+            }
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancySealsPage, mode, updatedAnswers))
+          } yield Redirect(createNavigator.nextPage(DiscrepancySealsPage(sealsIndex), mode, updatedAnswers))
       )
   }
 }
