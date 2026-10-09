@@ -38,7 +38,7 @@ class PartOfConsolidationFormProvider @Inject() extends Mappings {
     val mucr: String = answer.mucr.getOrElse("")
 
     if (!answer.boolean) {
-      form
+      form.fill(answer.copy(mucr = None))
     } else if (mucr.trim.isEmpty) {
       form.withError("mucr", "partOfConsolidation.mucr.required")
     } else if (mucr.length > mucrMaxLength) {
