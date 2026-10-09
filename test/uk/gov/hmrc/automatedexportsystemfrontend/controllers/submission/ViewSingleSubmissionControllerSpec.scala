@@ -56,6 +56,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
 
       val mockResponseBody = """<Submission>
                                          |            <submissionId>12345</submissionId>
+                                         |            <status>1</status>
                                          |            <ExportOperation>
                                          |              <type>1</type>
                                          |              <MRN>mrn12345</MRN>

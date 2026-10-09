@@ -45,7 +45,7 @@ class AmendOfficeOfExitSummarySpec extends SpecBase {
       AmendOfficeOfExitSummary.row(userAnswers, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
-          value = ValueViewModel(Text("officeOfExit.GB000051 (GB000051)")),
+          value = ValueViewModel(Text("officeOfExit.GB000051")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
@@ -63,7 +63,7 @@ class AmendOfficeOfExitSummarySpec extends SpecBase {
       AmendOfficeOfExitSummary.row(userAnswers, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
-          value = ValueViewModel(Text("officeOfExit.GB000051 (GB000051)")),
+          value = ValueViewModel(Text("officeOfExit.GB000051")),
           actions = Seq.empty
         )
       )

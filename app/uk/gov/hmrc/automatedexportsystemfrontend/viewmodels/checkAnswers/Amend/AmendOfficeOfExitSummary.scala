@@ -37,8 +37,7 @@ object AmendOfficeOfExitSummary {
     Some(build(value, submissionId, withChangeLink))
 
   private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
-    val officeName = messages(s"officeOfExit.$value")
-    val display = s"$officeName ($value)"
+    val display = messages(s"officeOfExit.$value")
 
     SummaryListRowViewModel(
       key = "officeOfExit.checkYourAnswersLabel",

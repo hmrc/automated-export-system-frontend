@@ -39,6 +39,7 @@ class ViewSubmissionControllerSpec extends SpecBase {
   private val xml =
     """<Submission>
       |  <submissionId>12345</submissionId>
+      |  <status>1</status>
       |  <ExportOperation>
       |    <type>1</type>
       |    <MRN>mrn12345</MRN>

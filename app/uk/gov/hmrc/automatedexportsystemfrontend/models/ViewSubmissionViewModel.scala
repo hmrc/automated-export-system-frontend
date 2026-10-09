@@ -32,8 +32,8 @@ case class ViewSubmissionViewModel(
   locationAuthorisationReferenceNumber: Option[String],
   partOfConsolidation: Option[Boolean],
   mucr: Option[String],
-  anyDiscrepancies: Option[Boolean],
-  isSplitExit: Option[Boolean]
+  anyDiscrepancies: String,
+  isSplitExit: String
 )
 
 object ViewSubmissionViewModel {

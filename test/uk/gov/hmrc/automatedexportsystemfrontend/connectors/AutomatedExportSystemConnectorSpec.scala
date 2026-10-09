@@ -95,6 +95,7 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
                 .withBody("""
                     |<Submission>
                     |  <submissionId>test-submission-id</submissionId>
+                    |  <status>1</status>
                     |  <ExportOperation>
                     |    <type>1</type>
                     |    <MRN>26GB0000X6524786A9</MRN>

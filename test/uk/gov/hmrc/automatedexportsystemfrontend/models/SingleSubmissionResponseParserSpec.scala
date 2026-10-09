@@ -31,6 +31,7 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
         XML.loadString("""
             |<Submission>
             |  <submissionId>6fb33641-6dc7-4a4f-adef-06238c13a317</submissionId>
+            |  <status>1</status>
             |  <ExportOperation>
             |    <type>1</type>
             |    <MRN>26GB0000X6524786A9</MRN>
@@ -62,6 +63,7 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
         XML.loadString("""
             |<Submission>
             |  <submissionId>6fb33641-6dc7-4a4f-adef-06238c13a317</submissionId>
+            |  <status>1</status>
             |  <ExportOperation>
             |    <type>1</type>
             |    <MRN>26GB0000X6524786A9</MRN>

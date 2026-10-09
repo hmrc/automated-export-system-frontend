@@ -33,9 +33,9 @@
     discrepancyList: SummaryList
 )(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("cYASubmission.title"))) {
+@layout(pageTitle = titleNoForm(messages("amendCheckYourAnswers.title"))) {
 
-    <h1 class="govuk-heading-l">@messages("cYASubmission.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("amendCheckYourAnswers.heading")</h1>
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
     @govukSummaryList(customsOfficeExitList)
