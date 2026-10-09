@@ -44,14 +44,14 @@ class PartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
       PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "mucr.checkYourAnswersLabel",
+          key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.yes - site.mucr: mucr"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
               uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("mucr.change.hidden")
+              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )
         )
       )
@@ -64,14 +64,14 @@ class PartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 
       PartOfConsolidationSummary.row(userAnswers) shouldBe Some(
         SummaryListRowViewModel(
-          key = "mucr.checkYourAnswersLabel",
+          key = "partOfConsolidation.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
               uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.PartOfConsolidationController.onPageLoad(CheckMode).url
             )
-              .withVisuallyHiddenText("mucr.change.hidden")
+              .withVisuallyHiddenText("partOfConsolidation.change.hidden")
           )
         )
       )

@@ -138,7 +138,7 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe BAD_REQUEST
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-        body should include("mucr")
+        body should include("partOfConsolidation")
       }
     }
 
@@ -153,6 +153,10 @@ class PartOfConsolidationControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, partOfConsolidationRoute)
             .withFormUrlEncodedBody("boolean" -> "true", "mucr" -> "")
             .withSession(SessionKeys.sessionId -> "some-session-id")
+
+        val boundForm = form.bind(Map("value" -> ""))
+
+        val view = application.injector.instanceOf[PartOfConsolidationView]
 
         val result = route(application, request).value
 
