@@ -23,7 +23,8 @@ case class SingleSubmissionResponse(
   exportOperation: SingleSubmissionExportOperation,
   customsOfficeOfExitActual: SingleSubmissionCustomsOfficeOfExitActual,
   goodsShipment: Option[SingleSubmissionGoodsShipment],
-  updatedAt: LocalDateTime
+  updatedAt: LocalDateTime,
+  metadata: Option[SingleSubmissionMetadata]
 )
 
 case class SingleSubmissionExportOperation(exportOperationType: String, mrn: String, discrepanciesExist: Int, splitIndicator: Int)
@@ -85,3 +86,7 @@ case class SingleSubmissionPackaging(
   numberOfPackages: Option[String],
   shippingMarks: Option[String]
 )
+
+case class SingleSubmissionMetadata(errors: Seq[SingleSubmissionError])
+
+case class SingleSubmissionError(code: String, description: Option[String], path: Option[String], originalValue: Option[String])

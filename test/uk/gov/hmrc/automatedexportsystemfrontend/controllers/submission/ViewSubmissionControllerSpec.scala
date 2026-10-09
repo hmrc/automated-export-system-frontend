@@ -26,14 +26,54 @@ import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponse, SubmissionSummaryResponseList}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  SingleSubmissionConsignment,
+  SingleSubmissionCustomsOfficeOfExitActual,
+  SingleSubmissionExportOperation,
+  SingleSubmissionGoodsShipment,
+  SingleSubmissionLocationOfGoods,
+  SingleSubmissionResponse,
+  SubmissionSummaryResponse,
+  SubmissionSummaryResponseList
+}
 import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import java.time.LocalDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
 class ViewSubmissionControllerSpec extends SpecBase {
+
+  private def singleSubmissionResponse(submissionId: String): SingleSubmissionResponse =
+    SingleSubmissionResponse(
+      submissionId = submissionId,
+      exportOperation =
+        SingleSubmissionExportOperation(exportOperationType = "1", mrn = "24GB12345678901234", discrepanciesExist = 0, splitIndicator = 0),
+      customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual(referenceNumber = "GB000051"),
+      goodsShipment = Some(
+        SingleSubmissionGoodsShipment(
+          consignment = SingleSubmissionConsignment(
+            modeOfTransportAtTheBorder = None,
+            referenceNumberUCR = "8GB1234567890123456",
+            parentUCRID = None,
+            transportEquipment = None,
+            locationOfGoods = SingleSubmissionLocationOfGoods(
+              typeOfLocation = "A",
+              qualifierOfIdentification = "B",
+              authorisationNumber = None,
+              additionalIdentifier = None,
+              UNLocode = None
+            ),
+            activeBorderTransportMeans = None,
+            transportDocument = None
+          ),
+          goodsItems = None
+        )
+      ),
+      updatedAt = LocalDateTime.of(2026, 8, 17, 10, 30),
+      metadata = None
+    )
 
   "ViewSubmissionController" - {
 
@@ -53,8 +93,8 @@ class ViewSubmissionControllerSpec extends SpecBase {
 
       val submission = SubmissionSummaryResponse(
         submissionId = UUID.randomUUID(),
-        mrn = "24GB12345678901234",
-        ducr = Some("8GB1234567890123456"),
+        mrn = "SUMMARYMRN",
+        ducr = Some("SUMMARYDUCR"),
         officeOfExitCode = "GB000051",
         updatedAt = LocalDateTime.of(2026, 8, 17, 10, 30),
         status = 1
@@ -62,6 +102,12 @@ class ViewSubmissionControllerSpec extends SpecBase {
 
       when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
         .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission))))
+
+      when(
+        mockAutomatedExportSystemConnector
+          .getSingleSubmission(org.mockito.ArgumentMatchers.eq(submission.submissionId.toString))(any())
+      )
+        .thenReturn(Future.successful(singleSubmissionResponse(submission.submissionId.toString)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
@@ -84,13 +130,21 @@ class ViewSubmissionControllerSpec extends SpecBase {
 
         body should include("24GB12345678901234")
         body should include("8GB1234567890123456")
+        body should not include "SUMMARYMRN"
+        body should not include "SUMMARYDUCR"
       }
     }
 
     "must return NOT_FOUND when the submission does not exist" in {
 
-      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
-      val mockAutomatedExportSystemConnector = mock[AutomatedExportSystemConnector]
+      val mockAuthConnector =
+        mock[uk.gov.hmrc.auth.core.AuthConnector]
+
+      val mockAutomatedExportSystemConnector =
+        mock[AutomatedExportSystemConnector]
+
+      val missingSubmissionId =
+        UUID.randomUUID().toString
 
       val enrolmentIdentifier =
         uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
@@ -101,15 +155,20 @@ class ViewSubmissionControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
-        .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq.empty)))
+      when(
+        mockAutomatedExportSystemConnector
+          .getSingleSubmission(org.mockito.ArgumentMatchers.eq(missingSubmissionId))(any())
+      ).thenReturn(Future.failed(UpstreamErrorResponse(s"Unexpected response from /submission/$missingSubmissionId", NOT_FOUND)))
 
-      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
-        .overrides(
-          bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
-          bind[AutomatedExportSystemConnector].toInstance(mockAutomatedExportSystemConnector)
-        )
-        .build()
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[uk.gov.hmrc.auth.core.AuthConnector]
+              .toInstance(mockAuthConnector),
+            bind[AutomatedExportSystemConnector]
+              .toInstance(mockAutomatedExportSystemConnector)
+          )
+          .build()
 
       running(application) {
 
@@ -117,11 +176,12 @@ class ViewSubmissionControllerSpec extends SpecBase {
           FakeRequest(
             GET,
             routes.ViewSubmissionController
-              .onPageLoad(UUID.randomUUID().toString)
+              .onPageLoad(missingSubmissionId)
               .url
           ).withSession(SessionKeys.sessionId -> "some-session-id")
 
-        val result = route(application, request).value
+        val result =
+          route(application, request).value
 
         status(result) shouldBe NOT_FOUND
       }

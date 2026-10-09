@@ -108,7 +108,7 @@ class SubmissionDataServiceSpec extends SpecBase {
       result.value should include("<Consignment>")
 
       result.value should include("<modeOfTransportAtTheBorder>1</modeOfTransportAtTheBorder>")
-      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
+      result.value should include("<ducr>5GB000000000000-12345</ducr>")
       result.value should include("<parentUCRID>GB/000000000000-12345</parentUCRID>")
 
       result.value should include("<TransportEquipment>")
@@ -141,7 +141,7 @@ class SubmissionDataServiceSpec extends SpecBase {
 
       result.value should include("<GoodsItem>")
       result.value should include("<declarationGoodsItemNumber>1</declarationGoodsItemNumber>")
-      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
+      result.value should include("<ducr>5GB000000000000-12345</ducr>")
 
       result.value should include("<Commodity>")
       result.value should include("<GoodsMeasure>")
@@ -174,7 +174,7 @@ class SubmissionDataServiceSpec extends SpecBase {
       result.value should include("<splitIndicator>0</splitIndicator>")
       result.value should include("<GoodsShipment>")
       result.value should include("<Consignment>")
-      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
+      result.value should include("<ducr>5GB000000000000-12345</ducr>")
       result.value shouldNot include("<modeOfTransportAtTheBorder>")
       result.value shouldNot include("<GoodsItem>")
     }
