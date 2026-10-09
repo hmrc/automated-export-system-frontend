@@ -21,7 +21,6 @@ import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendAnyDiscrepanciesPage,
   AmendDiscrepancyConsignmentPage,
@@ -178,11 +177,12 @@ class CreateSubmissionDataService @Inject() extends Logging {
       discrepanciesExist <- collectDiscrepanciesExist(userAnswers)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
+      goodsShipment <- collectGoodsShipment(userAnswers)
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
-      collectGoodsShipment(userAnswers)
+      Some(goodsShipment)
     )
 
   private def buildXmlWithDeclaration(submission: Submission): String =

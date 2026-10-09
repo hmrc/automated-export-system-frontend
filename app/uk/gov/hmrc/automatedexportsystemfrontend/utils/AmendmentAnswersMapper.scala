@@ -38,6 +38,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendOfficeOfExitPage,
   AmendPartOfConsolidationPage
 }
+import play.api.data.Forms.*
 
 import scala.util.Try
 
@@ -70,9 +71,9 @@ class AmendmentAnswersMapper {
         AmendLocationIdPage(submissionId),
         LocationDetails(
           locationType = mapLocationQualifier(loc.qualifierOfIdentification),
-          unlocode = loc.UNLocode.getOrElse(""),
-          locationAdditionalIdentifier = loc.additionalIdentifier.getOrElse(""),
-          authorisationReferenceNumber = loc.authorisationNumber.getOrElse("")
+          unlocode = loc.UNLocode,
+          locationAdditionalIdentifier = loc.additionalIdentifier,
+          authorisationReferenceNumber = loc.authorisationNumber
         )
       )
     } yield a2

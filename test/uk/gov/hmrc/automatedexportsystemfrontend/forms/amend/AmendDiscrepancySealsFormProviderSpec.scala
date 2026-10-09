@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.sealIdentifierRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancySealsFormProvider
 
 class AmendDiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
 
@@ -28,7 +27,7 @@ class AmendDiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
   val invalidKey = "discrepancySeals.error.invalid"
   val maxLength = 20
 
-  val form = new DiscrepancySealsFormProvider()()
+  val form = new AmendDiscrepancySealsFormProvider()()
 
   ".value" - {
 
