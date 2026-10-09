@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.libs.json.*
 
-case class ContainerDetails(containerId: String, numberOfSeals: Int)
+case class ContainerDetails(containerId: Option[String], numberOfSeals: Option[Int])
 
 object ContainerDetails {
 

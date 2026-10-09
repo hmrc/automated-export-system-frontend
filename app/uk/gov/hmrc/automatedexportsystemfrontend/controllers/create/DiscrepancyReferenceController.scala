@@ -27,6 +27,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferen
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyReferenceView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +45,7 @@ class DiscrepancyReferenceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form: Form[String] = formProvider()
+  val form: Form[Option[String]] = formProvider()
 
   def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 

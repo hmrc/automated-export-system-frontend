@@ -32,7 +32,7 @@ class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answered, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancySealsPage, "sealIdentifier")
+        .set(DiscrepancySealsPage, Some("sealIdentifier"))
         .get
 
       DiscrepancySealsSummary.row(userAnswers) shouldBe Some(
@@ -48,6 +48,14 @@ class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
           )
         )
       )
+    }
+
+    "when the identifier is blank, return no summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancySealsPage, Option.empty[String])
+        .get
+
+      DiscrepancySealsSummary.row(userAnswers) shouldBe None
     }
 
     "when answer unavailable, return empty" in {

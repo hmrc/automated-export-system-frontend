@@ -36,7 +36,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   LocationType,
   ModeOfTransportAtBorder,
   OfficeOfExit,
-  PackingDetails,
   PartOfConsolidationAnswer,
   TransportAcrossBorderDetails,
   WhatHasChangedDetails
@@ -76,7 +75,7 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(LocationTypePage, LocationType.DesignatedLocation)
         .get
-        .set(LocationIdPage, LocationDetails(AuthorisationNumber, "unlocode", "1234", "authorisationReferenceNumber"))
+        .set(LocationIdPage, LocationDetails(AuthorisationNumber, Some("unlocode"), Some("1234"), Some("authorisationReferenceNumber")))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -149,17 +148,20 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(LocationTypePage, LocationType.DesignatedLocation)
         .get
-        .set(LocationIdPage, LocationDetails(AuthorisationNumber, "unlocode", "1234", "authorisationReferenceNumber"))
+        .set(LocationIdPage, LocationDetails(AuthorisationNumber, Some("unlocode"), Some("1234"), Some("authorisationReferenceNumber")))
         .get
         .set(DiscrepancyConsignmentPage, Sea)
         .get
-        .set(DiscrepancyTransportPage, ContainerDetails("containerId123", 99))
+        .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId123"), Some(99)))
         .get
-        .set(DiscrepancySealsPage, "GB12345678")
+        .set(DiscrepancySealsPage, Some("GB12345678"))
         .get
-        .set(DiscrepancyReferencePage, "12")
+        .set(DiscrepancyReferencePage, Some("12"))
         .get
-        .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration"))
+        .set(
+          DiscrepancyTransportMeansPage,
+          TransportAcrossBorderDetails(Some("transportType"), Some("transportIdNumber"), Some("countryOfRegistration"))
+        )
         .get
         .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         .get

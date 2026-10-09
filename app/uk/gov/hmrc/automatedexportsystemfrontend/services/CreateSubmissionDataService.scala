@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendAnyDiscrepanciesPage,
   AmendDiscrepancyConsignmentPage,
@@ -41,6 +41,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
 class CreateSubmissionDataService @Inject() extends Logging {
 
@@ -82,12 +83,12 @@ class CreateSubmissionDataService @Inject() extends Logging {
   }
 
   private def collectSeals(userAnswers: UserAnswers): List[Seal] =
-    userAnswers.get(DiscrepancySealsPage).toList.zipWithIndex.map { case (seal, index) =>
+    userAnswers.get(DiscrepancySealsPage).flatten.toList.zipWithIndex.map { case (seal, index) =>
       Seal(index + 1, seal)
     }
 
   private def collectGoodsReference(userAnswers: UserAnswers): List[GoodsReference] =
-    userAnswers.get(DiscrepancyReferencePage).toList.zipWithIndex.map { case (reference, index) =>
+    userAnswers.get(DiscrepancyReferencePage).flatten.toList.zipWithIndex.map { case (reference, index) =>
       GoodsReference(index + 1, reference.toInt)
     }
 
@@ -96,18 +97,32 @@ class CreateSubmissionDataService @Inject() extends Logging {
       locationType <- userAnswers.get(LocationTypePage)
       typeOfLocation = TypeOfLocation.fromUserAnswers(locationType)
       locationDetails <- userAnswers.get(LocationIdPage)
+
+      qualifier = locationDetails.locationType match {
+        case LocationQualifier.UnLocode =>
+          QualifierOfTheIdentification.UnLocode
+        case LocationQualifier.AuthorisationNumber =>
+          QualifierOfTheIdentification.AuthorisationNumber
+      }
     } yield LocationOfGoods(
       typeOfLocation,
-      QualifierOfTheIdentification.UnLocode,
+      qualifier,
       locationDetails.authorisationReferenceNumber,
       locationDetails.locationAdditionalIdentifier,
       locationDetails.unlocode
     )
 
   private def collectActiveBorderTransportMeans(userAnswers: UserAnswers): Option[ActiveBorderTransportMeans] =
-    userAnswers.get(DiscrepancyTransportMeansPage).map { transport =>
-      ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
-    }
+    userAnswers
+      .get(DiscrepancyTransportMeansPage)
+      .filter(transport =>
+        transport.transportType.isDefined ||
+          transport.transportIdNumber.isDefined ||
+          transport.countryOfRegistration.isDefined
+      )
+      .map { transport =>
+        ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
+      }
 
   private def collectTransportDocument(userAnswers: UserAnswers): List[TransportDocument] =
     userAnswers.get(DiscrepancyTransportDocPage).toList.zipWithIndex.map { case (document, index) =>
@@ -162,13 +177,15 @@ class CreateSubmissionDataService @Inject() extends Logging {
       discrepanciesExist <- collectDiscrepanciesExist(userAnswers)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
+      goodsShipment <- collectGoodsShipment(userAnswers)
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
-      collectGoodsShipment(userAnswers)
+      Some(goodsShipment)
     )
 
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""
+
 }

@@ -33,7 +33,7 @@ class DiscrepancyTransportMeansSummarySpec extends AnyFreeSpec with Matchers wit
 
   "rows" - {
     "when answered, return the summary rows" in {
-      val transportAcrossBorderDetails = TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration")
+      val transportAcrossBorderDetails = TransportAcrossBorderDetails(Some("transportType"), Some("transportIdNumber"), Some("countryOfRegistration"))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportMeansPage, transportAcrossBorderDetails)
         .get
@@ -80,6 +80,25 @@ class DiscrepancyTransportMeansSummarySpec extends AnyFreeSpec with Matchers wit
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
       DiscrepancyTransportMeansSummary.rows(userAnswers) shouldBe None
+    }
+
+    "when all fields are blank, return no summary rows" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(None, None, None))
+        .get
+
+      DiscrepancyTransportMeansSummary.rows(userAnswers) shouldBe Some(Seq.empty)
+    }
+
+    "when only one field is entered, return only its summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(None, None, Some("GB")))
+        .get
+
+      val rows = DiscrepancyTransportMeansSummary.rows(userAnswers).get
+
+      rows.size shouldBe 1
+      rows.head.value.content shouldBe HtmlContent("GB")
     }
   }
 }

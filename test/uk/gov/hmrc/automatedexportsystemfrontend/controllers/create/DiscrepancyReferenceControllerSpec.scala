@@ -33,6 +33,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, Fa
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyReferenceView
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 import scala.concurrent.Future
 
@@ -41,7 +42,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new DiscrepancyReferenceFormProvider()
-  val form: Form[String] = formProvider()
+  val form: Form[Option[String]] = formProvider()
 
   lazy val discrepancyReferenceRoute: String = createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode).url
 
@@ -70,7 +71,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReferencePage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReferencePage, Some("answer")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -131,9 +132,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyReferenceRoute)
-            .withFormUrlEncodedBody(("value", ""))
-
-        val boundForm: Form[String] = form.bind(Map("value" -> ""))
+            .withFormUrlEncodedBody(("value", "12345 "))
 
         val view = application.injector.instanceOf[DiscrepancyReferenceView]
 
@@ -143,6 +142,36 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         val body = contentAsString(result)
         body should include("There is a problem")
+      }
+    }
+
+    "must save a blank answer and redirect to the next page" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, discrepancyReferenceRoute)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe onwardRoute.url
+
+        org.mockito.Mockito
+          .verify(mockSessionRepository)
+          .set(org.mockito.ArgumentMatchers.argThat[UserAnswers](answers => answers.get(DiscrepancyReferencePage).contains(None)))
       }
     }
 

@@ -20,6 +20,7 @@ import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.containerIdRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyTransportFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.ContainerDetails
 
 class AmendDiscrepancyTransportFormProviderSpec extends StringFieldBehaviours {
 
@@ -28,7 +29,6 @@ class AmendDiscrepancyTransportFormProviderSpec extends StringFieldBehaviours {
   ".containerId" - {
 
     val fieldName = "containerId"
-    val requiredKey = "discrepancyTransport.error.containerId.required"
     val lengthKey = "discrepancyTransport.error.containerId.length"
     val invalidKey = "discrepancyTransport.error.containerId.invalid"
     val maxLength = 17
@@ -36,8 +36,6 @@ class AmendDiscrepancyTransportFormProviderSpec extends StringFieldBehaviours {
     behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
 
     "must not bind invalid data" in {
 
@@ -55,14 +53,23 @@ class AmendDiscrepancyTransportFormProviderSpec extends StringFieldBehaviours {
   ".numberOfSeals" - {
 
     val fieldName = "numberOfSeals"
-    val requiredKey = "discrepancyTransport.error.numberOfSeals.required"
     val minimum = 0
     val maximum = 99
 
     val validDataGenerator = intsInRangeWithCommas(minimum, maximum)
 
     behave like fieldThatBindsValidData(form, fieldName, validDataGenerator)
+  }
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+  "must accept both fields missing" in {
+    val result = form.bind(Map.empty[String, String])
+
+    assert(result.value.contains(ContainerDetails(None, None)))
+  }
+
+  "must accept both fields blank" in {
+    val result = form.bind(Map("containerId" -> "", "numberOfSeals" -> ""))
+
+    assert(result.value.contains(ContainerDetails(None, None)))
   }
 }

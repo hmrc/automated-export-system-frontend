@@ -28,17 +28,23 @@ class DiscrepancyTransportMeansFormProvider @Inject() extends Mappings {
 
   def apply(): Form[TransportAcrossBorderDetails] = Form(
     mapping(
-      "transportType" -> text("discrepancyTransportMeans.error.transportType.required")
-        .verifying(maxLength(100, "discrepancyTransportMeans.error.transportType.length")),
-      "transportIdNumber" -> text("discrepancyTransportMeans.error.transportIdNumber.required")
-        .verifying(
-          firstError(
-            maxLength(35, "discrepancyTransportMeans.error.transportIdNumber.length"),
-            regexp(identificationNumberRegex, "discrepancyTransportMeans.error.transportIdNumber.invalid")
+      "transportType" -> optional(
+        text()
+          .verifying(maxLength(100, "discrepancyTransportMeans.error.transportType.length"))
+      ),
+      "transportIdNumber" -> optional(
+        text()
+          .verifying(
+            firstError(
+              maxLength(35, "discrepancyTransportMeans.error.transportIdNumber.length"),
+              regexp(identificationNumberRegex, "discrepancyTransportMeans.error.transportIdNumber.invalid")
+            )
           )
-        ),
-      "countryOfRegistration" -> text("discrepancyTransportMeans.error.countryOfRegistration.required")
-        .verifying(maxLength(100, "discrepancyTransportMeans.error.countryOfRegistration.length"))
+      ),
+      "countryOfRegistration" -> optional(
+        text()
+          .verifying(maxLength(100, "discrepancyTransportMeans.error.countryOfRegistration.length"))
+      )
     )(TransportAcrossBorderDetails.apply)(x => Some((x.transportType, x.transportIdNumber, x.countryOfRegistration)))
   )
 }

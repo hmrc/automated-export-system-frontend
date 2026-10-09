@@ -144,7 +144,7 @@ class AmendDiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar
       running(application) {
         val request =
           FakeRequest(POST, discrepancyTransportRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            .withFormUrlEncodedBody(("containerId", "CONT123"), ("numberOfSeals", "-1"))
 
         val result = route(application, request).value
 

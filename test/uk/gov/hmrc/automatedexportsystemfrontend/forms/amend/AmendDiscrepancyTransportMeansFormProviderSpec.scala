@@ -20,6 +20,7 @@ import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.identificationNumberRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyTransportMeansFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.TransportAcrossBorderDetails
 
 class AmendDiscrepancyTransportMeansFormProviderSpec extends StringFieldBehaviours {
 
@@ -28,21 +29,17 @@ class AmendDiscrepancyTransportMeansFormProviderSpec extends StringFieldBehaviou
   ".transportType" - {
 
     val fieldName = "transportType"
-    val requiredKey = "discrepancyTransportMeans.error.transportType.required"
     val lengthKey = "discrepancyTransportMeans.error.transportType.length"
     val maxLength = 100
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
   }
 
   ".transportIdNumber" - {
 
     val fieldName = "transportIdNumber"
-    val requiredKey = "discrepancyTransportMeans.error.transportIdNumber.required"
     val lengthKey = "discrepancyTransportMeans.error.transportIdNumber.length"
     val invalidKey = "discrepancyTransportMeans.error.transportIdNumber.invalid"
     val maxLength = 35
@@ -50,8 +47,6 @@ class AmendDiscrepancyTransportMeansFormProviderSpec extends StringFieldBehaviou
     behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
 
     "must not bind invalid data" in {
 
@@ -69,14 +64,23 @@ class AmendDiscrepancyTransportMeansFormProviderSpec extends StringFieldBehaviou
   ".countryOfRegistration" - {
 
     val fieldName = "countryOfRegistration"
-    val requiredKey = "discrepancyTransportMeans.error.countryOfRegistration.required"
     val lengthKey = "discrepancyTransportMeans.error.countryOfRegistration.length"
     val maxLength = 100
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
+  }
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+  "must accept all fields missing" in {
+    val result = form.bind(Map.empty[String, String])
+
+    assert(result.value.contains(TransportAcrossBorderDetails(None, None, None)))
+  }
+
+  "must accept all fields blank" in {
+    val result = form.bind(Map("transportType" -> "", "transportIdNumber" -> "", "countryOfRegistration" -> ""))
+
+    assert(result.value.contains(TransportAcrossBorderDetails(None, None, None)))
   }
 }

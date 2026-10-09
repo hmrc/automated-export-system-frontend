@@ -28,18 +28,22 @@ class AmendDiscrepancyTransportFormProvider @Inject() extends Mappings {
 
   def apply(): Form[ContainerDetails] = Form(
     mapping(
-      "containerId" -> text("discrepancyTransport.error.containerId.required")
-        .verifying(
-          firstError(
-            maxLength(containerIdMaxLength, "discrepancyTransport.error.containerId.length"),
-            regexp(containerIdRegex, "discrepancyTransport.error.containerId.invalid")
+      "containerId" -> optional(
+        text()
+          .verifying(
+            firstError(
+              maxLength(containerIdMaxLength, "discrepancyTransport.error.containerId.length"),
+              regexp(containerIdRegex, "discrepancyTransport.error.containerId.invalid")
+            )
           )
-        ),
-      "numberOfSeals" -> int("discrepancyTransport.error.numberOfSeals.required")
-        .verifying(
-          minimumValue(0, "discrepancyTransport.error.numberOfSeals.negative"),
-          maximumValue(numberOfSealsMaxValue, "discrepancyTransport.error.numberOfSeals.maximum")
-        )
+      ),
+      "numberOfSeals" -> optional(
+        int()
+          .verifying(
+            minimumValue(0, "discrepancyTransport.error.numberOfSeals.negative"),
+            maximumValue(numberOfSealsMaxValue, "discrepancyTransport.error.numberOfSeals.maximum")
+          )
+      )
     )(ContainerDetails.apply)(x => Some((x.containerId, x.numberOfSeals)))
   )
 }

@@ -90,9 +90,9 @@ class AmendLocationIdControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val locationDetails = LocationDetails(
         locationType = LocationQualifier.UnLocode,
-        unlocode = "value 2",
-        locationAdditionalIdentifier = "value 3",
-        authorisationReferenceNumber = "value 4"
+        unlocode = Some("value 2"),
+        locationAdditionalIdentifier = Some("value 3"),
+        authorisationReferenceNumber = Some("value 4")
       )
 
       val userAnswers = UserAnswers(userAnswersId).set(AmendLocationIdPage(submissionId), locationDetails).success.value

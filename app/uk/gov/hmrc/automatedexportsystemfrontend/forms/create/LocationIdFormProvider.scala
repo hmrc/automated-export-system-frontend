@@ -29,22 +29,28 @@ class LocationIdFormProvider @Inject() extends Mappings {
   def apply(): Form[LocationDetails] = Form(
     mapping(
       "locationType" -> enumerable[LocationQualifier]("locationId.error.locationType.required"),
-      "unlocode" -> text("locationId.error.unlocode.required")
-        .verifying(maxLength(unlocodeMaxLength, "locationId.error.unlocode.length")),
-      "locationAdditionalIdentifier" -> text("locationId.error.locationAdditionalIdentifier.required")
-        .verifying(
-          firstError(
-            maxLength(additionalIdentifierMaxLength, "locationId.error.locationAdditionalIdentifier.length"),
-            regexp(additionalIdentifierRegex, "locationId.error.locationAdditionalIdentifier.invalid")
+      "unlocode" -> optional(
+        text()
+          .verifying(maxLength(unlocodeMaxLength, "locationId.error.unlocode.length"))
+      ),
+      "locationAdditionalIdentifier" -> optional(
+        text()
+          .verifying(
+            firstError(
+              maxLength(additionalIdentifierMaxLength, "locationId.error.locationAdditionalIdentifier.length"),
+              regexp(additionalIdentifierRegex, "locationId.error.locationAdditionalIdentifier.invalid")
+            )
           )
-        ),
-      "authorisationReferenceNumber" -> text("locationId.error.authorisationReferenceNumber.required")
-        .verifying(
-          firstError(
-            maxLength(authorisationNumberMaxLength, "locationId.error.authorisationReferenceNumber.length"),
-            regexp(authorisationNumberRegex, "locationId.error.authorisationReferenceNumber.invalid")
+      ),
+      "authorisationReferenceNumber" -> optional(
+        text()
+          .verifying(
+            firstError(
+              maxLength(authorisationNumberMaxLength, "locationId.error.authorisationReferenceNumber.length"),
+              regexp(authorisationNumberRegex, "locationId.error.authorisationReferenceNumber.invalid")
+            )
           )
-        )
+      )
     )(LocationDetails.apply)(x => Some((x.locationType, x.unlocode, x.locationAdditionalIdentifier, x.authorisationReferenceNumber)))
   )
 }

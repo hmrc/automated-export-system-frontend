@@ -20,7 +20,7 @@ import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{additionalIdentifierRegex, authorisationNumberRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendLocationIdFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier}
 
 class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehaviours {
 
@@ -36,26 +36,24 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
       validValues = LocationQualifier.values,
       invalidError = FormError(fieldName, "error.invalid")
     )
+
+    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, "locationId.error.locationType.required"))
   }
 
   ".unlocode" - {
 
     val fieldName = "unlocode"
-    val requiredKey = "locationId.error.unlocode.required"
     val lengthKey = "locationId.error.unlocode.length"
     val maxLength = 17
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
   }
 
   ".locationAdditionalIdentifier" - {
 
     val fieldName = "locationAdditionalIdentifier"
-    val requiredKey = "locationId.error.locationAdditionalIdentifier.required"
     val lengthKey = "locationId.error.locationAdditionalIdentifier.length"
     val invalidKey = "locationId.error.locationAdditionalIdentifier.invalid"
     val maxLength = 4
@@ -63,8 +61,6 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
 
     "must not bind invalid data" in {
 
@@ -82,7 +78,6 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
   ".authorisationReferenceNumber" - {
 
     val fieldName = "authorisationReferenceNumber"
-    val requiredKey = "locationId.error.authorisationReferenceNumber.required"
     val lengthKey = "locationId.error.authorisationReferenceNumber.length"
     val invalidKey = "locationId.error.authorisationReferenceNumber.invalid"
     val maxLength = 35
@@ -90,8 +85,6 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
 
     "must not bind invalid data" in {
 
@@ -104,5 +97,18 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
         result.errors must contain(expectedError)
       }
     }
+  }
+
+  "must accept a qualifier with optional fields missing" in {
+    val result = form.bind(Map("locationType" -> "unlocode"))
+
+    assert(result.value.contains(LocationDetails(LocationQualifier.UnLocode, None, None, None)))
+  }
+
+  "must accept a qualifier with optional fields blank" in {
+    val result =
+      form.bind(Map("locationType" -> "authnumber", "unlocode" -> "", "locationAdditionalIdentifier" -> "", "authorisationReferenceNumber" -> ""))
+
+    assert(result.value.contains(LocationDetails(LocationQualifier.AuthorisationNumber, None, None, None)))
   }
 }

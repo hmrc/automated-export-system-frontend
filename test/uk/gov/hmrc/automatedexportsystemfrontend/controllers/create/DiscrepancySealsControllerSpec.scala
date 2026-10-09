@@ -33,6 +33,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, Fa
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancySealsView
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
 import scala.concurrent.Future
 
@@ -41,7 +42,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val formProvider = new DiscrepancySealsFormProvider()
-  val form: Form[String] = formProvider()
+  val form: Form[Option[String]] = formProvider()
 
   lazy val discrepancySealsRoute: String = createRoute.DiscrepancySealsController.onPageLoad(NormalMode).url
 
@@ -70,7 +71,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
 
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage, "answer").success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage, Some("answer")).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -131,9 +132,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancySealsRoute)
-            .withFormUrlEncodedBody(("value", ""))
-
-        val boundForm: Form[String] = form.bind(Map("value" -> ""))
+            .withFormUrlEncodedBody(("value", "abc123 "))
 
         val view = application.injector.instanceOf[DiscrepancySealsView]
 
@@ -159,6 +158,36 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must save a blank answer and redirect to the next page" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, discrepancySealsRoute)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe onwardRoute.url
+
+        org.mockito.Mockito
+          .verify(mockSessionRepository)
+          .set(org.mockito.ArgumentMatchers.argThat[UserAnswers](answers => answers.get(DiscrepancySealsPage).contains(None)))
       }
     }
 

@@ -33,6 +33,10 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, TransportAc
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportMeansPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyTransportMeansFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{AmendNavigator, FakeAmendNavigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyTransportMeansPage
 
 import scala.concurrent.Future
 
@@ -40,19 +44,25 @@ class AmendDiscrepancyTransportMeansControllerSpec extends SpecBase with Mockito
 
   def onwardRoute = Call("GET", "/foo")
 
-  val formProvider = new DiscrepancyTransportMeansFormProvider()
+  val submissionId = "12345"
+
+  val formProvider = new AmendDiscrepancyTransportMeansFormProvider()
   val form: Form[TransportAcrossBorderDetails] = formProvider()
 
-  lazy val discrepancyTransportMeansRoute: String = createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
+  lazy val discrepancyTransportMeansRoute: String =
+    amendRoute.AmendDiscrepancyTransportMeansController
+      .onPageLoad(NormalMode, submissionId)
+      .url
 
   val userAnswers = UserAnswers(
     userAnswersId,
     Json.obj(
-      "standard" ->
-        Json.obj(
-          DiscrepancyTransportMeansPage.toString -> Json
+      "amend" -> Json.obj(
+        submissionId -> Json.obj(
+          AmendDiscrepancyTransportMeansPage(submissionId).toString -> Json
             .obj("transportType" -> "value 1", "transportIdNumber" -> "value 2", "countryOfRegistration" -> "value 3")
         )
+      )
     )
   )
 
@@ -127,7 +137,7 @@ class AmendDiscrepancyTransportMeansControllerSpec extends SpecBase with Mockito
       val application =
         applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
-            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[AmendNavigator].toInstance(new FakeAmendNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
             bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
           )
@@ -154,7 +164,7 @@ class AmendDiscrepancyTransportMeansControllerSpec extends SpecBase with Mockito
       running(application) {
         val request =
           FakeRequest(POST, discrepancyTransportMeansRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            .withFormUrlEncodedBody(("transportIdNumber", "A" * 36))
 
         val result = route(application, request).value
 
