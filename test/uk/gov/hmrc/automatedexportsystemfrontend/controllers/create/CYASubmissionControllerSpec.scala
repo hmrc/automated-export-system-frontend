@@ -36,7 +36,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   LocationType,
   ModeOfTransportAtBorder,
   OfficeOfExit,
-  PackingDetails,
   PartOfConsolidationAnswer,
   TransportAcrossBorderDetails,
   WhatHasChangedDetails

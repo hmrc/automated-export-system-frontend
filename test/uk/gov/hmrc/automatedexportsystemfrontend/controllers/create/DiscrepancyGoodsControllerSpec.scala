@@ -33,7 +33,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyGoodsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyGoodsView
 
 import scala.concurrent.Future
 
@@ -95,8 +94,6 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyGoodsRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyGoodsView]
 
         val result = route(application, request).value
 

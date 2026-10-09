@@ -37,7 +37,7 @@
 
   <div class="govuk-form-group">
     <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
-      @((1 to viewModel.numberOfPackagingDetails).map { packagingDetailNumber =>
+      @((viewModel.packagingDetailNumbers).map { packagingDetailNumber =>
         <div class="govuk-summary-list__row">
           <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
             {messages("addAnotherPackagingDetail.key", packagingDetailNumber)}
@@ -45,7 +45,7 @@
           <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
             <ul class="govuk-summary-list__actions-list">
               <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailNumber, mode).url}><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.change.hidden", packagingDetailNumber)}</span></a></li>
-              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailNumber, mode).url}><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber)}</span></a></li>
+              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailNumber, viewModel.currentPage, mode).url}><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber)}</span></a></li>
             </ul>
           </dd>
         </div>
@@ -53,7 +53,50 @@
     </dl>
   </div>
 
-  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+  @if(viewModel.totalPages > 1) {
+
+    <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstPackagingDetail, viewModel.lastPackagingDetail, viewModel.numberOfPackagingDetails)</p>
+
+    <nav class="govuk-pagination" aria-label="Pagination">
+      @if(viewModel.hasPreviousPage) {
+        <div class="govuk-pagination__prev">
+          <a class="govuk-link govuk-pagination__link" href="@createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(viewModel.previousPage), mode).url" rel="prev">
+            <svg class="govuk-pagination__icon govuk-pagination__icon--prev" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+              <path d="m6.5938-0.0078125-6.7266 6.7266 6.7441 6.4062 1.377-1.449-4.1856-3.9768h12.896v-2h-12.984l4.2931-4.293-1.414-1.414z"></path>
+            </svg>
+            <span class="govuk-pagination__link-title">
+              @messages("site.pagination.previous")<span class="govuk-visually-hidden"> @messages("site.pagination.hidden.page")</span>
+            </span>
+          </a>
+        </div>
+      }
+
+      <ul class="govuk-pagination__list">
+        @viewModel.pageNumbers.map { pageNumber =>
+          <li class="govuk-pagination__item @if(pageNumber == viewModel.currentPage) {govuk-pagination__item--current}">
+            <a class="govuk-link govuk-pagination__link" href="@createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(pageNumber), mode).url" aria-label="Page @pageNumber" @if(pageNumber == viewModel.currentPage) {aria-current="page"}>
+              @pageNumber
+            </a>
+          </li>
+        }
+      </ul>
+
+      @if(viewModel.hasNextPage) {
+        <div class="govuk-pagination__next">
+          <a class="govuk-link govuk-pagination__link" href="@createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(viewModel.nextPage), mode).url" rel="next">
+            <span class="govuk-pagination__link-title">
+              @messages("site.pagination.next")<span class="govuk-visually-hidden"> @messages("site.pagination.hidden.page")</span>
+            </span>
+            <svg class="govuk-pagination__icon govuk-pagination__icon--next" xmlns="http://www.w3.org/2000/svg" height="13" width="15" aria-hidden="true" focusable="false" viewBox="0 0 15 13">
+              <path d="m8.107-0.0078125-1.4136 1.414 4.2926 4.293h-12.986v2h12.896l-4.1855 3.9766 1.377 1.4492 6.7441-6.4062-6.7246-6.7266z"></path>
+            </svg>
+          </a>
+        </div>
+      }
+    </nav>
+  }
+
+  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(Some(viewModel.currentPage), mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

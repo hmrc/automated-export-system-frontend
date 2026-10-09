@@ -178,6 +178,22 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
+    "must redirect to Journey Recovery for a POST where the index doesn't exist and is not the next index" in {
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, createRoute.DiscrepancyPackingController.onPageLoad(5, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None)

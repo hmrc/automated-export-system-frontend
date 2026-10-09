@@ -32,7 +32,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyReferenceView
 
 import scala.concurrent.Future
 
@@ -58,8 +57,6 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DiscrepancyReferenceView]
-
         status(result) shouldBe OK
 
         val body = contentAsString(result)
@@ -78,8 +75,6 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyReferenceRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyReferenceView]
 
         val result = route(application, request).value
 
@@ -132,10 +127,6 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancyReferenceRoute)
             .withFormUrlEncodedBody(("value", ""))
-
-        val boundForm: Form[String] = form.bind(Map("value" -> ""))
-
-        val view = application.injector.instanceOf[DiscrepancyReferenceView]
 
         val result = route(application, request).value
 

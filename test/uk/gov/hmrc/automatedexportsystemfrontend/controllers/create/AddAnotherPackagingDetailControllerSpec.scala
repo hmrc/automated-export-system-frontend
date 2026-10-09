@@ -49,7 +49,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -73,9 +73,9 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }
       }
 
-      "must return OK and the correct view for a GET when the max limit of items has been reached" in {
+      "must return OK and the correct view for a GET without pagination" in {
 
-        val packingDetailsList = (1 to maxPackagingDetails).map { number =>
+        val packingDetailsList = (1 to 25).map { number =>
           PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
         }.toList
 
@@ -89,40 +89,262 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) mustEqual OK
           val body = contentAsString(result)
-          body should include("You have added 99 packaging details")
-          (1 to maxPackagingDetails).foreach { number =>
+          body should include("You have added 25 packaging details")
+          (1 to 25).foreach { number =>
             body should include(s"Packaging detail $number")
             body should include(s"Change packaging detail $number")
             body should include(s"Remove packaging detail $number")
           }
-          body should not include "You can add up to"
-          body should not include "<strong>Do you need to add another packaging detail?</strong>"
-          body should not include "Yes"
-          body should not include "No"
-          body should include("You cannot add any more packaging details. To add another, you need to remove one first.")
+          body should not include "Showing 1-25 of 25 items"
+          body should not include "Previous"
+          body should not include s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}""""
+          body should not include s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}""""
+          body should not include "Next"
+          body should include("You can add up to <strong>74</strong> more packaging details.")
+          body should include("<strong>Do you need to add another packaging detail?</strong>")
+          body should include("Yes")
+          body should include("No")
           body should include("Continue")
         }
       }
 
-      "must redirect to DiscrepancyPackingPage at the first index if zero items added" in {
+      "must return OK and the correct view for a GET with pagination" in {
+
+        val packingDetailsList = (1 to 26).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          val body = contentAsString(result)
+          body should include("You have added 26 packaging details")
+          (1 to 25).foreach { number =>
+            body should include(s"Packaging detail $number")
+            body should include(s"Change packaging detail $number")
+            body should include(s"Remove packaging detail $number")
+          }
+          body should not include "Packaging detail 26"
+          body should not include "Change packaging detail 26"
+          body should not include "Remove packaging detail 26"
+          body should include("Showing 1-25 of 26 items")
+          body should not include "Previous"
+          body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}"""")
+          body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
+          body should include("Next")
+          body should include("You can add up to <strong>73</strong> more packaging details.")
+          body should include("<strong>Do you need to add another packaging detail?</strong>")
+          body should include("Yes")
+          body should include("No")
+          body should include("Continue")
+        }
+      }
+
+      "must return OK and the correct view for a GET when the max limit of items has been reached" - {
+
+        val packingDetailsList = (1 to maxPackagingDetails).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        "on page 1" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 packaging details")
+            (1 to 25).foreach { number =>
+              body should include(s"Packaging detail $number")
+              body should include(s"Change packaging detail $number")
+              body should include(s"Remove packaging detail $number")
+            }
+            body should not include "Packaging detail 26"
+            body should not include "Change packaging detail 26"
+            body should not include "Remove packaging detail 26"
+            body should include("Showing 1-25 of 99 items")
+            body should not include "Previous"
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include("Next")
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another packaging detail?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more packaging details. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+
+        "on page 2" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 packaging details")
+            (26 to 50).foreach { number =>
+              body should include(s"Packaging detail $number")
+              body should include(s"Change packaging detail $number")
+              body should include(s"Remove packaging detail $number")
+            }
+            body should not include "Packaging detail 51"
+            body should not include "Change packaging detail 51"
+            body should not include "Remove packaging detail 51"
+            body should include("Showing 26-50 of 99 items")
+            body should include("Previous")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include("Next")
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another packaging detail?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more packaging details. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+
+        "on page 3" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 packaging details")
+            (51 to 75).foreach { number =>
+              body should include(s"Packaging detail $number")
+              body should include(s"Change packaging detail $number")
+              body should include(s"Remove packaging detail $number")
+            }
+            body should not include "Packaging detail 76"
+            body should not include "Change packaging detail 76"
+            body should not include "Remove packaging detail 76"
+            body should include("Showing 51-75 of 99 items")
+            body should include("Previous")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should include("Next")
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another packaging detail?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more packaging details. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+
+        "on page 4" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 packaging details")
+            (76 to 99).foreach { number =>
+              body should include(s"Packaging detail $number")
+              body should include(s"Change packaging detail $number")
+              body should include(s"Remove packaging detail $number")
+            }
+            body should not include "Packaging detail 100"
+            body should not include "Change packaging detail 100"
+            body should not include "Remove packaging detail 100"
+            body should include("Showing 76-99 of 99 items")
+            body should include("Previous")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should not include "Next"
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another packaging detail?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more packaging details. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+      }
+
+      "must redirect to DiscrepancyPackingPage at the first index if zero items added for a GET" in {
 
         val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+        }
+      }
+
+      "must redirect to Journey Recovery if the page doesn't exist for a GET" in {
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(0), NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
         }
       }
 
@@ -133,7 +355,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -152,7 +374,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url).withFormUrlEncodedBody("value" -> "true")
+            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
+              .withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
@@ -169,7 +392,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(CheckMode).url).withFormUrlEncodedBody("value" -> "true")
+            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, CheckMode).url).withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
@@ -192,7 +415,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url).withFormUrlEncodedBody("value" -> "false")
+            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
+              .withFormUrlEncodedBody("value" -> "false")
 
           val result = route(application, request).value
 
@@ -209,7 +433,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url).withFormUrlEncodedBody("value" -> "true")
+            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
+              .withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
@@ -218,19 +443,33 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }
       }
 
-      "must return a Bad Request when no option chosen and max limit not reached" in {
+      "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
+
+        val packingDetailsList = (1 to 51).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(Some(2), NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe BAD_REQUEST
-          contentAsString(result) should include("Select yes if you want to add another packaging detail")
+          val body = contentAsString(result)
+          body should include("Select yes if you want to add another packaging detail")
+          body should not include "Packaging detail 25"
+          body should include("Packaging detail 26")
+          body should include("Packaging detail 50")
+          body should not include "Packaging detail 51"
         }
       }
 
@@ -250,12 +489,44 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+        }
+      }
+
+      "must redirect to DiscrepancyPackingPage at the first index if zero items added for a POST" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+        }
+      }
+
+      "must redirect to Journey Recovery if the page doesn't exist for a POST" in {
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
         }
       }
 
@@ -266,7 +537,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
 
           val result = route(application, request).value
 

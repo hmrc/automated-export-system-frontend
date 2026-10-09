@@ -32,7 +32,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyConsignmentView
 
 import scala.concurrent.Future
 
@@ -55,8 +54,6 @@ class DiscrepancyConsignmentControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyConsignmentRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyConsignmentView]
 
         val result = route(application, request).value
 
@@ -81,8 +78,6 @@ class DiscrepancyConsignmentControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancyConsignmentRoute)
-
-        val view = application.injector.instanceOf[DiscrepancyConsignmentView]
 
         val result = route(application, request).value
 
@@ -135,10 +130,6 @@ class DiscrepancyConsignmentControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancyConsignmentRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[DiscrepancyConsignmentView]
 
         val result = route(application, request).value
 
