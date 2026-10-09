@@ -20,7 +20,7 @@ import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TransportMode
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.ValueViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
@@ -30,26 +30,24 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyConsignmentSummary {
 
-  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyConsignmentPage(submissionId)).map { answer =>
+      build(answer, submissionId, withChangeLink = true)
+    }
 
-    // TODO this is a little jank might need to see a better way of handling this
-    val mode = TransportMode.fromXmlPayload(answerFromXml).toString.toLowerCase()
+  def row(value: ModeOfTransportAtBorder, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
 
-    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"discrepancyConsignment.$mode"))))
-
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancyConsignment.checkYourAnswersLabel",
-        value = value,
-        actions = if (withAmendLink) {
+  private def build(value: ModeOfTransportAtBorder, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancyConsignment.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(messages(s"discrepancyConsignment.${value.toString}")).toString),
+      actions =
+        if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("discrepancyConsignment.change.hidden"))
+              .withVisuallyHiddenText(messages("AmendDiscrepancyConsignment.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
-  }
 }

@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendIsSplitExitSummary
@@ -32,15 +31,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   ValueViewModel
 }
 
-class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
+class AmendIsSplitExitSummarySpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
     "when Yes is selected, return the summary row with change link" in {
-      val userAnswers = 1
 
-      AmendIsSplitExitSummary.row(userAnswers, "submissionId", true) shouldBe Some(
+      AmendIsSplitExitSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "isSplitExit.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
@@ -56,9 +54,7 @@ class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
     }
 
     "when No is selected, return the summary row" in {
-      val userAnswers = 0
-
-      AmendIsSplitExitSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+      AmendIsSplitExitSummary.row(false, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "isSplitExit.checkYourAnswersLabel", value = ValueViewModel("site.no"), actions = Seq.empty)
       )
     }

@@ -16,16 +16,18 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
+import com.google.inject.Inject
 import play.api.mvc.Call
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 
-class AmendNavigator extends Navigator {
+class AmendNavigator @Inject() () extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
     case AmendEnterMrnPage(submissionId)               => _ => amendRoute.AmendEnterDucrController.onPageLoad(NormalMode, submissionId)
@@ -46,13 +48,44 @@ class AmendNavigator extends Navigator {
       _ => amendRoute.AmendDiscrepancyGoodsController.onPageLoad(NormalMode, submissionId)
     case AmendDiscrepancyPackingPage(submissionId) =>
       _ => amendRoute.AmendDiscrepancyPackingController.onPageLoad(NormalMode, submissionId)
+    case AmendCYASubmissionPage(submissionId) =>
+      _ => submissionRoute.ViewSubmissionsController.onPageLoad()
 
+  }
+
+  override val checkRoutes: Page => UserAnswers => Call = {
+    case AmendEnterMrnPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendEnterDucrPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendPartOfConsolidationPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendOfficeOfExitPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendIsSplitExitPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendAnyDiscrepanciesPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendDiscrepancyConsignmentPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendCYASubmissionPage(submissionId) =>
+      _ => submissionRoute.ViewSubmissionsController.onPageLoad()
+
+    case _ =>
+      _ => problemRoute.JourneyRecoveryController.onPageLoad()
   }
 
   private def amendPartOfConsolidationRoute(submissionId: String)(answers: UserAnswers): Call =
     answers.get(AmendPartOfConsolidationPage(submissionId)) match {
-      case Some(_, _) => amendRoute.AmendOfficeOfExitController.onPageLoad(NormalMode, submissionId)
-      case None       => problemRoute.JourneyRecoveryController.onPageLoad()
+      case Some(_) => amendRoute.AmendOfficeOfExitController.onPageLoad(NormalMode, submissionId)
+      case None    => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 
   private def amendIsSplitExitRoute(submissionId: String)(answers: UserAnswers): Call =
@@ -63,9 +96,9 @@ class AmendNavigator extends Navigator {
     }
   private def amendAnyDiscrepanciesRoute(submissionId: String)(answers: UserAnswers): Call =
     answers.get(AmendAnyDiscrepanciesPage(submissionId)) match {
-      case Some(true) => createRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
-      // case Some(false) => amendRoute.AmendCYASubmissionController.onPageLoad()
-      case None => problemRoute.JourneyRecoveryController.onPageLoad()
+      case Some(true)  => createRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+      case Some(false) => amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, submissionId)
+      case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 
 }

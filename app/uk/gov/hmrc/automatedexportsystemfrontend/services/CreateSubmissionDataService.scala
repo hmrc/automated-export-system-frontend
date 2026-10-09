@@ -21,11 +21,28 @@ import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
+  AmendAnyDiscrepanciesPage,
+  AmendDiscrepancyConsignmentPage,
+  AmendDiscrepancyGoodsPage,
+  AmendDiscrepancyReferencePage,
+  AmendDiscrepancySealsPage,
+  AmendDiscrepancyTransportDocPage,
+  AmendDiscrepancyTransportMeansPage,
+  AmendDiscrepancyTransportPage,
+  AmendEnterDucrPage,
+  AmendEnterMrnPage,
+  AmendIsSplitExitPage,
+  AmendLocationIdPage,
+  AmendLocationTypePage,
+  AmendOfficeOfExitPage,
+  AmendPartOfConsolidationPage
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
 
-class SubmissionDataService @Inject() extends Logging {
+class CreateSubmissionDataService @Inject() extends Logging {
 
   def buildStandardSubmission(userAnswers: UserAnswers): Option[String] =
     collectUserAnswers(userAnswers) match {
@@ -47,6 +64,18 @@ class SubmissionDataService @Inject() extends Logging {
     goodsReferences: List[GoodsReference]
   ): List[TransportEquipment] = {
     val discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
+    discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
+      TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
+    }
+  }
+
+  private def collectAmendTransportEquipment(
+    userAnswers: UserAnswers,
+    seals: List[Seal],
+    goodsReferences: List[GoodsReference],
+    submissionId: String
+  ): List[TransportEquipment] = {
+    val discrepancyTransport = userAnswers.get(AmendDiscrepancyTransportPage(submissionId)).toList
     discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
       TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
     }
@@ -105,41 +134,41 @@ class SubmissionDataService @Inject() extends Logging {
       )
     }
 
+  private def collectGoodsShipment(userAnswers: UserAnswers): Option[GoodsShipment] =
+    for {
+      ducr <- userAnswers.get(EnterDucrPage)
+      location <- collectGoodsLocation(userAnswers)
+    } yield {
+      val transportMode =
+        userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.fromUserAnswers)
+
+      val mucr =
+        userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)
+      val seals = collectSeals(userAnswers)
+      val goodsReference = collectGoodsReference(userAnswers)
+      val transportEquipment =
+        collectTransportEquipment(userAnswers, seals, goodsReference)
+
+      val transport = collectActiveBorderTransportMeans(userAnswers)
+      val transportDocument = collectTransportDocument(userAnswers)
+      val goodsItem = collectGoodsItem(userAnswers)
+
+      GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
+    }
+
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
     for {
       mrn <- userAnswers.get(EnterMrnPage)
       discrepanciesExist <- collectDiscrepanciesExist(userAnswers)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
-
-      goodsShipment = for {
-        ducr <- userAnswers.get(EnterDucrPage)
-        location <- collectGoodsLocation(userAnswers)
-      } yield {
-        val transportMode =
-          userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.fromUserAnswers)
-
-        val mucr =
-          userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)
-
-        val seals = collectSeals(userAnswers)
-        val goodsReference = collectGoodsReference(userAnswers)
-        val transportEquipment =
-          collectTransportEquipment(userAnswers, seals, goodsReference)
-
-        val transport = collectActiveBorderTransportMeans(userAnswers)
-        val transportDocument = collectTransportDocument(userAnswers)
-        val goodsItem = collectGoodsItem(userAnswers)
-
-        GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
-      }
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
-      goodsShipment
+      collectGoodsShipment(userAnswers)
     )
+
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""
-
 }

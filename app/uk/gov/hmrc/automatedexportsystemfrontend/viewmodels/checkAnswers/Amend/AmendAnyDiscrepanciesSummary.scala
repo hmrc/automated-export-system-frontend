@@ -26,26 +26,26 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendAnyDiscrepanciesSummary {
 
-  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
-
-    val value = answerFromXml match {
-      case 1 => "site.yes"
-      case 0 => "site.no"
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendAnyDiscrepanciesPage(submissionId)).map { answer =>
+      build(answer, submissionId, withChangeLink = true)
     }
 
-    Some(
-      SummaryListRowViewModel(
-        key = "anyDiscrepancies.checkYourAnswersLabel",
-        value = ValueViewModel(value),
-        actions = if (withAmendLink) {
+  def row(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
+
+  private def build(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow = {
+    val display = if (value) messages("site.yes") else messages("site.no")
+    SummaryListRowViewModel(
+      key = "anyDiscrepancies.checkYourAnswersLabel",
+      value = ValueViewModel(display),
+      actions =
+        if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendAnyDiscrepanciesController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("anyDiscrepancies.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
   }
 }

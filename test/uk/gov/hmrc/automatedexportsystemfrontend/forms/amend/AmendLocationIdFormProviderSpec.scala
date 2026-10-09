@@ -60,7 +60,7 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
     val invalidKey = "locationId.error.locationAdditionalIdentifier.invalid"
     val maxLength = 4
 
-    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
@@ -87,7 +87,7 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
     val invalidKey = "locationId.error.authorisationReferenceNumber.invalid"
     val maxLength = 35
 
-    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 

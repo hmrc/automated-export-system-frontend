@@ -37,10 +37,8 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when Yes is selected, return the summary row with change link" in {
-      val userAnswers = 1
-
-      AmendAnyDiscrepanciesSummary.row(userAnswers, "submissionId", true) shouldBe Some(
+    "when Yes is selected, return the summary row" in {
+      AmendAnyDiscrepanciesSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
@@ -57,10 +55,8 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
       )
     }
 
-    "when No is selected, return the summary row with change link" in {
-      val userAnswers = 0
-
-      AmendAnyDiscrepanciesSummary.row(userAnswers, "submissionId", true) shouldBe Some(
+    "when No is selected, return the summary row" in {
+      AmendAnyDiscrepanciesSummary.row(false, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "anyDiscrepancies.checkYourAnswersLabel",
           value = ValueViewModel("site.no"),
@@ -78,17 +74,13 @@ class AmendAnyDiscrepanciesSummarySpec extends AnyFreeSpec with Matchers {
     }
 
     "when Yes is selected, return the summary row with no change link" in {
-      val userAnswers = 1
-
-      AmendAnyDiscrepanciesSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(true, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "anyDiscrepancies.checkYourAnswersLabel", value = ValueViewModel("site.yes"), actions = Seq.empty)
       )
     }
 
     "when No is selected, return the summary row with no change link" in {
-      val userAnswers = 0
-
-      AmendAnyDiscrepanciesSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+      AmendAnyDiscrepanciesSummary.row(false, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "anyDiscrepancies.checkYourAnswersLabel", value = ValueViewModel("site.no"), actions = Seq.empty)
       )
     }

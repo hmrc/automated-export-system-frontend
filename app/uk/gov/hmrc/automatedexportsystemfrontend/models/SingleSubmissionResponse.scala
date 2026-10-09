@@ -20,6 +20,7 @@ import java.time.LocalDateTime
 
 case class SingleSubmissionResponse(
   submissionId: String,
+  status: Int,
   exportOperation: SingleSubmissionExportOperation,
   customsOfficeOfExitActual: SingleSubmissionCustomsOfficeOfExitActual,
   goodsShipment: Option[SingleSubmissionGoodsShipment],
