@@ -69,7 +69,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
                                          |            <GoodsShipment>
                                          |              <Consignment>
                                          |                <modeOfTransportAtTheBorder>1</modeOfTransportAtTheBorder>
-                                         |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
+                                         |                <ducr>referenceNumberUcr</ducr>
                                          |                <parentUCRID>parentUcrId</parentUCRID>
                                          |                <TransportEquipment>
                                          |                  <sequenceNumber>1</sequenceNumber>
@@ -121,7 +121,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
                                          |              </Consignment>
                                          |              <GoodsItem>
                                          |                <declarationGoodsItemNumber>1</declarationGoodsItemNumber>
-                                         |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
+                                         |                <ducr>referenceNumberUcr</ducr>
                                          |                <Commodity>
                                          |                  <GoodsMeasure>
                                          |                    <grossMass>100.55</grossMass>
@@ -143,7 +143,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
                                          |              </GoodsItem>
                                          |              <GoodsItem>
                                          |                <declarationGoodsItemNumber>2</declarationGoodsItemNumber>
-                                         |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
+                                         |                <ducr>referenceNumberUcr</ducr>
                                          |                <Commodity>
                                          |                  <GoodsMeasure>
                                          |                    <grossMass>100.55</grossMass>
