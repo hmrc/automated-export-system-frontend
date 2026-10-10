@@ -42,3 +42,12 @@ object SubmissionSummary {
 object SubmissionStatus {
   implicit val format: Format[SubmissionStatus] = Json.format[SubmissionStatus]
 }
+
+case class SingleSubmissionViewModel(submissionId: String, mrn: String)
+
+object SingleSubmissionViewModel {
+  def from(submission: SingleSubmissionResponse): SingleSubmissionViewModel =
+    SingleSubmissionViewModel(submissionId = submission.submissionId, mrn = submission.exportOperation.mrn)
+
+  implicit val format: Format[SingleSubmissionViewModel] = Json.format[SingleSubmissionViewModel]
+}
