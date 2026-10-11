@@ -20,11 +20,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as ame
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, OfficeOfExit, PartOfConsolidationAnswer}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 
-class AmendSpec extends SpecBase {
+class AmendNavigatorSpec extends SpecBase {
 
   val navigator = new AmendNavigator
 
@@ -108,6 +108,23 @@ class AmendSpec extends SpecBase {
         val userAnswers = emptyUserAnswers
         navigator.nextPage(AmendPartOfConsolidationPage("submissionId"), NormalMode, userAnswers) shouldBe
           problemRoute.JourneyRecoveryController.onPageLoad()
+      }
+    }
+
+    "in Check mode" - {
+
+      "must return to the review page after changing the location type" in {
+        val submissionId = "submissionId"
+
+        navigator.nextPage(AmendLocationTypePage(submissionId), CheckMode, emptyUserAnswers) shouldBe amendRoute.AmendCYASubmissionController
+          .onPageLoad(CheckMode, submissionId)
+      }
+
+      "must return to the review page after changing the location identification" in {
+        val submissionId = "submissionId"
+
+        navigator.nextPage(AmendLocationIdPage(submissionId), CheckMode, emptyUserAnswers) shouldBe amendRoute.AmendCYASubmissionController
+          .onPageLoad(CheckMode, submissionId)
       }
     }
   }

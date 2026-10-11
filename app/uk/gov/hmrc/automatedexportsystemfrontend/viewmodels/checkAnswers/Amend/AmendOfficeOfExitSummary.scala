@@ -36,6 +36,9 @@ object AmendOfficeOfExitSummary {
   def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(build(value, submissionId, withChangeLink))
 
+  def reviewRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    row(answers)(submissionId).map(_.copy(key = "viewSubmission.customsOfficeOfExit.office"))
+
   private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
     val display = messages(s"officeOfExit.$value")
 

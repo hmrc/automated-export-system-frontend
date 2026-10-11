@@ -34,6 +34,9 @@ object AmendIsSplitExitSummary {
   def row(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(build(value, submissionId, withChangeLink))
 
+  def reviewRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    row(answers)(submissionId).map(_.copy(key = "viewSubmission.exportOperation.splitExit"))
+
   private def build(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow = {
     val display =
       if (value) s"${messages("site.yes")}"

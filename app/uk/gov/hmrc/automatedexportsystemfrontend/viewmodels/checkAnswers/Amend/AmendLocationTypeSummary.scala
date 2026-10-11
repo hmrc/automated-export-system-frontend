@@ -47,4 +47,9 @@ object AmendLocationTypeSummary {
       )
     )
   }
+
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendLocationTypePage(submissionId)).flatMap { answer =>
+      row(answer.toString, submissionId, withAmendLink = true)
+    }
 }

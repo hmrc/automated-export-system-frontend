@@ -24,6 +24,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterMrnPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object AmendEnterMrnSummary {
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
@@ -33,6 +34,15 @@ object AmendEnterMrnSummary {
 
   def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(build(value, submissionId, withChangeLink))
+
+  def lockedRow(value: String, submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    row(value, submissionId, withChangeLink = false).map { summaryRow =>
+      summaryRow.copy(value =
+        ValueViewModel(
+          HtmlContent(HtmlFormat.raw(s"${HtmlFormat.escape(value)}<br>${HtmlFormat.escape(messages("amendCheckYourAnswers.cannotBeAmended"))}"))
+        )
+      )
+    }
 
   private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(

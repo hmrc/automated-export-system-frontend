@@ -78,6 +78,12 @@ class AmendNavigator @Inject() () extends Navigator {
     case AmendCYASubmissionPage(submissionId) =>
       _ => submissionRoute.ViewSubmissionsController.onPageLoad()
 
+    case AmendLocationTypePage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
+    case AmendLocationIdPage(submissionId) =>
+      _ => amendRoute.AmendCYASubmissionController.onPageLoad(CheckMode, submissionId)
+
     case _ =>
       _ => problemRoute.JourneyRecoveryController.onPageLoad()
   }

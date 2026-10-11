@@ -53,6 +53,13 @@ checkYourAnswers.heading = Check your answers
 
 amendCheckYourAnswers.title = Review and amend your submission
 amendCheckYourAnswers.heading = Review and amend your submission
+amendCheckYourAnswers.caption = Amending {0}
+amendCheckYourAnswers.cannotBeAmended = Cannot be amended
+amendCheckYourAnswers.guidance = Change any details that need updating. Fields marked as locked cannot be amended - you would need to cancel this submission and start a new one.
+amendCheckYourAnswers.notApplicable = Not applicable
+amendCheckYourAnswers.warning = By submitting this amendment you are confirming that, to the best of your knowledge, the updated details are correct. The amendment will be revalidated by the Customs Declaration Service.
+amendCheckYourAnswers.submit = Submit amendment
+amendCheckYourAnswers.cancel = Cancel and go back
 
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service

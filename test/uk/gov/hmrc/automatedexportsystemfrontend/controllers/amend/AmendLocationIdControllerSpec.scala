@@ -19,6 +19,8 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
+import org.jsoup.Jsoup
+import org.mockito.ArgumentCaptor
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.Json
@@ -29,12 +31,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as ame
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendLocationIdFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier, NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, LocationDetails, LocationQualifier, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{AmendNavigator, FakeAmendNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendLocationIdPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendLocationIdView
-import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -78,6 +79,10 @@ class AmendLocationIdControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        val document = Jsoup.parse(body)
+
+        document.select("form").attr("action") shouldBe
+          amendRoute.AmendLocationIdController.onSubmit(NormalMode, submissionId).url
         body should include("Identify the location")
         body should include("These are placeholder location codes for the prototype. The actual list will come from the CL327 and CL244 codelists.")
         body should include("Location type")
@@ -162,6 +167,55 @@ class AmendLocationIdControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe onwardRoute.url
+      }
+    }
+
+    "must save location changes and return to the review page in CheckMode" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any()))
+        .thenReturn(Future.successful(true))
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        .overrides(bind[SessionRepository].toInstance(mockSessionRepository), bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, amendRoute.AmendLocationIdController.onSubmit(CheckMode, submissionId).url).withFormUrlEncodedBody(
+          "locationType" -> "authnumber",
+          "unlocode" -> "value 2",
+          "locationAdditionalIdentifier" -> "ABCD",
+          "authorisationReferenceNumber" -> "value4"
+        )
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe
+          amendRoute.AmendCYASubmissionController
+            .onPageLoad(CheckMode, submissionId)
+            .url
+
+        val expectedAnswers = emptyUserAnswers
+          .set(
+            AmendLocationIdPage(submissionId),
+            LocationDetails(
+              locationType = LocationQualifier.AuthorisationNumber,
+              unlocode = Some("value 2"),
+              locationAdditionalIdentifier = Some("ABCD"),
+              authorisationReferenceNumber = Some("value4")
+            )
+          )
+          .success
+          .value
+
+        val answersCaptor = ArgumentCaptor.forClass(classOf[UserAnswers])
+
+        org.mockito.Mockito.verify(mockSessionRepository).set(answersCaptor.capture())
+
+        val savedAnswers = answersCaptor.getValue
+        savedAnswers.id shouldBe expectedAnswers.id
+        savedAnswers.data shouldBe expectedAnswers.data
       }
     }
 
