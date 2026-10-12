@@ -17,19 +17,28 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
 import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.services.AmendSubmissionDataService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{
+  DiscrepancyConsignmentSummary,
+  DiscrepancyGoodsSummary,
+  DiscrepancyReferenceSummary,
+  DiscrepancySealsSummary,
+  DiscrepancyTransportDocSummary,
+  DiscrepancyTransportMeansSummary,
+  DiscrepancyTransportSummary
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
