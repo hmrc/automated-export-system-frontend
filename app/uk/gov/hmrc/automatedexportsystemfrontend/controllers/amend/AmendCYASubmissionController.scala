@@ -17,20 +17,30 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
 import play.api.Logger
-import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.services.{AmendSubmissionDataService, CreateSubmissionDataService}
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{
+  DiscrepancyConsignmentSummary,
+  DiscrepancyGoodsSummary,
+  DiscrepancyReferenceSummary,
+  DiscrepancySealsSummary,
+  DiscrepancyTransportDocSummary,
+  DiscrepancyTransportMeansSummary,
+  DiscrepancyTransportSummary
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -65,15 +75,22 @@ class AmendCYASubmissionController @Inject() (
       val consignmentList = SummaryListViewModel(
         Seq(
           AmendEnterDucrSummary.row(answers)(submissionId),
-          AmendDiscrepancyConsignmentSummary.row(answers)(submissionId),
+          // AmendDiscrepancyConsignmentSummary.row(answers)(submissionId),
           AmendPartOfConsolidationSummary.row(answers)(submissionId)
         ).flatten
       )
 
       val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
 
-      val discrepancyList = SummaryListViewModel(
+      def discrepancyList(implicit messages: Messages) = SummaryListViewModel(
         Seq(AmendAnyDiscrepanciesSummary.row(answers)(submissionId), AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten
+        //  Seq(AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten // ++
+        // AmendDiscrepancyTransportSummary.rows(answers)(submissionId).toSeq.flatten.map(Some(_)) ++
+        // Seq(AmendDiscrepancySealsSummary.row(answers)(submissionId)) ++
+        // Seq(AmendDiscrepancyReferenceSummary.row(answers)(submissionId)) ++
+        // AmendDiscrepancyTransportMeansSummary.rows(answers)(submissionId).toSeq.flatten.map(Some(_)) ++
+        // AmendDiscrepancyTransportDocSummary.rows(answers)(submissionId).toSeq.flatten.map(Some(_)) ++
+        //  AmendDiscrepancyGoodsSummary.rows(answers)(submisisonId).toSeq.flatten.map(Some(_))
       )
       Future.successful(Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, discrepancyList)))
     }

@@ -36,6 +36,7 @@ class AmendNavigator @Inject() () extends Navigator {
     case AmendOfficeOfExitPage(submissionId)           => _ => amendRoute.AmendIsSplitExitController.onPageLoad(NormalMode, submissionId)
     case AmendIsSplitExitPage(submissionId)            => amendIsSplitExitRoute(submissionId)
     case AmendAnyDiscrepanciesPage(submissionId)       => amendAnyDiscrepanciesRoute(submissionId)
+    case AmendDiscrepancyGoodsPage(submissionId)       => amendDiscrepancyGoodsRoute(submissionId)
     case AmendLocationTypePage(submissionId)           => _ => amendRoute.AmendLocationTypeController.onPageLoad(NormalMode, submissionId)
     case AmendLocationIdPage(submissionId)             => _ => amendRoute.AmendLocationIdController.onPageLoad(NormalMode, submissionId)
     case AmendDiscrepancyConsignmentPage(submissionId) => _ => amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(NormalMode, submissionId)
@@ -44,8 +45,7 @@ class AmendNavigator @Inject() () extends Navigator {
     case AmendDiscrepancySealsPage(submissionId)       => _ => amendRoute.AmendDiscrepancySealsController.onPageLoad(NormalMode, submissionId)
     case AmendDiscrepancyTransportMeansPage(submissionId) =>
       _ => amendRoute.AmendDiscrepancyTransportMeansController.onPageLoad(NormalMode, submissionId)
-    case AmendDiscrepancyGoodsPage(submissionId) =>
-      _ => amendRoute.AmendDiscrepancyGoodsController.onPageLoad(NormalMode, submissionId)
+
     case AmendDiscrepancyPackingPage(submissionId) =>
       _ => amendRoute.AmendDiscrepancyPackingController.onPageLoad(NormalMode, submissionId)
     case AmendCYASubmissionPage(submissionId) =>
@@ -88,15 +88,20 @@ class AmendNavigator @Inject() () extends Navigator {
       case None    => problemRoute.JourneyRecoveryController.onPageLoad()
     }
 
+  private def amendDiscrepancyGoodsRoute(submissionId: String)(answers: UserAnswers): Call =
+    answers.get(AmendDiscrepancyGoodsPage(submissionId)) match {
+      case None => amendRoute.AmendDiscrepancyPackingController.onPageLoad(CheckMode, submissionId)
+      case _    => amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, submissionId)
+    }
   private def amendIsSplitExitRoute(submissionId: String)(answers: UserAnswers): Call =
     answers.get(AmendIsSplitExitPage(submissionId)) match {
-      case Some(true)  => createRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+      case Some(true)  => amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(NormalMode, submissionId)
       case Some(false) => amendRoute.AmendAnyDiscrepanciesController.onPageLoad(NormalMode, submissionId)
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
   private def amendAnyDiscrepanciesRoute(submissionId: String)(answers: UserAnswers): Call =
     answers.get(AmendAnyDiscrepanciesPage(submissionId)) match {
-      case Some(true)  => createRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+      case Some(true)  => amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(NormalMode, submissionId)
       case Some(false) => amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, submissionId)
       case None        => problemRoute.JourneyRecoveryController.onPageLoad()
     }
