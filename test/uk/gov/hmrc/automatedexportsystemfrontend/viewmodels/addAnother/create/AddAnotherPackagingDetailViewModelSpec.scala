@@ -105,6 +105,37 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
     }
 
     "when calculating pagination" - {
+      "must provide the correct model before pagination starts" in {
+        val packingDetailsList = (1 to 25).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None)
+
+        result mustBe AddAnotherPackagingDetailViewModel(
+          numberOfPackagingDetails = 25,
+          remainingPackagingDetails = 74,
+          allowMore = true,
+          addedSingularOrPlural = "plural",
+          remainingSingularOrPlural = "plural",
+          currentPage = 1,
+          totalPages = 1,
+          firstPackagingDetail = 1,
+          lastPackagingDetail = 25,
+          packagingDetailNumbers = 1 to 25,
+          pageNumbers = 1 to 1
+        )
+
+        result.hasPreviousPage mustBe false
+        result.hasNextPage mustBe false
+        result.pageParam mustBe None
+      }
+
       "must provide the correct model for when pagination starts at 26 items added" in {
         val packingDetailsList = (1 to 26).map { number =>
           PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
@@ -134,6 +165,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.hasPreviousPage mustBe false
         result.hasNextPage mustBe true
         result.nextPage mustBe 2
+        result.pageParam mustBe Some(1)
       }
 
       "must provide the correct model for a final but partially completed page" in {
@@ -165,6 +197,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe false
         result.previousPage mustBe 1
+        result.pageParam mustBe Some(2)
       }
 
       "must provide the correct model for page 2 at max" in {

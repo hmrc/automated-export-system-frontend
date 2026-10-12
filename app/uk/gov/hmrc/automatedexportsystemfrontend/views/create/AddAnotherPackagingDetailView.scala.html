@@ -96,7 +96,7 @@
     </nav>
   }
 
-  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(Some(viewModel.currentPage), mode), Symbol("autoComplete") -> "off") {
+  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

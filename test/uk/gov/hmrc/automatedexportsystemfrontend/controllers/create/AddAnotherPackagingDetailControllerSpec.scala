@@ -130,7 +130,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -345,6 +345,56 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+        }
+      }
+
+      "must redirect back to AddAnother without a page when pagination has not started but page 1 is provided for a GET" in {
+
+        val packingDetailsList = (1 to 25).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url
+        }
+      }
+
+      "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
+
+        val packingDetailsList = (1 to 26).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url
         }
       }
 

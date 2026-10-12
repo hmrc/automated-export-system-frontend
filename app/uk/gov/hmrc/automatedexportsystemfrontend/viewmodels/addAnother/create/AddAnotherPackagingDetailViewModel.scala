@@ -40,6 +40,8 @@ case class AddAnotherPackagingDetailViewModel(
   def previousPage: Int = currentPage - 1
 
   def nextPage: Int = currentPage + 1
+
+  def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
 }
 
 object AddAnotherPackagingDetailViewModel {
