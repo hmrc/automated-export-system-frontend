@@ -32,6 +32,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -59,23 +61,42 @@ class AmendCYASubmissionController @Inject() (
 
       val answers = request.userAnswers
 
-      val exportOperationList =
-        SummaryListViewModel(Seq(AmendEnterMrnSummary.row(answers)(submissionId), AmendIsSplitExitSummary.row(answers)(submissionId)).flatten)
-
-      val consignmentList = SummaryListViewModel(
+      val exportOperationList = SummaryListViewModel(
         Seq(
-          AmendEnterDucrSummary.row(answers)(submissionId),
-          AmendDiscrepancyConsignmentSummary.row(answers)(submissionId),
-          AmendPartOfConsolidationSummary.row(answers)(submissionId)
+          answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
+            AmendEnterMrnSummary.lockedRow(answer, submissionId)
+          },
+          AmendAnyDiscrepanciesSummary.reviewRow(answers)(submissionId),
+          AmendIsSplitExitSummary.reviewRow(answers)(submissionId)
         ).flatten
       )
 
-      val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
-
-      val discrepancyList = SummaryListViewModel(
-        Seq(AmendAnyDiscrepanciesSummary.row(answers)(submissionId), AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten
+      val consignmentList = SummaryListViewModel(
+        Seq(
+          answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
+            AmendEnterDucrSummary.lockedRow(answer, submissionId)
+          },
+          AmendPartOfConsolidationSummary.mucrRow(answers)(submissionId)
+        ).flatten
       )
-      Future.successful(Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, discrepancyList)))
+
+      val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.reviewRow(answers)(submissionId)).flatten)
+
+      val locationOfGoodsList = SummaryListViewModel(
+        Seq(
+          AmendLocationTypeSummary.row(answers)(submissionId),
+          AmendLocationIdSummary.identifiedByRow(answers)(submissionId),
+          AmendLocationIdSummary.contactRow
+        ).flatten
+      )
+
+      val authorisationList = SummaryListViewModel(
+        Seq(AmendLocationIdSummary.authorisationTypeRow, AmendLocationIdSummary.referenceNumberRow(answers)(submissionId)).flatten
+      )
+
+      Future.successful(
+        Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, locationOfGoodsList, authorisationList))
+      )
     }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] =

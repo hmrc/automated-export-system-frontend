@@ -59,4 +59,22 @@ object AmendPartOfConsolidationSummary {
         else Seq.empty
     )
   }
+
+  def mucrRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendPartOfConsolidationPage(submissionId)).map { answer =>
+      val value =
+        if (answer.boolean)
+          answer.mucr.getOrElse(messages("amendCheckYourAnswers.notApplicable"))
+        else
+          messages("amendCheckYourAnswers.notApplicable")
+
+      SummaryListRowViewModel(
+        key = "viewSubmission.consignment.mucr",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel("site.change", amendRoute.AmendPartOfConsolidationController.onPageLoad(CheckMode, submissionId).url)
+            .withVisuallyHiddenText(messages("viewSubmission.consignment.mucr"))
+        )
+      )
+    }
 }

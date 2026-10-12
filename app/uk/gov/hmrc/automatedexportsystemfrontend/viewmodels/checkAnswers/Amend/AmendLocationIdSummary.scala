@@ -41,8 +41,34 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
 object AmendLocationIdSummary {
+
+  def identifiedByRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendLocationIdPage(submissionId)).map { answer =>
+      val identifier = answer.locationType match {
+        case LocationQualifier.UnLocode =>
+          answer.unlocode
+        case LocationQualifier.AuthorisationNumber =>
+          answer.authorisationReferenceNumber
+      }
+
+      val value = Seq(
+        Some(messages(s"locationId.${answer.locationType}")),
+        identifier.filter(_.nonEmpty),
+        answer.locationAdditionalIdentifier.filter(_.nonEmpty)
+      ).flatten.mkString(": ")
+
+      SummaryListRowViewModel(
+        key = "viewSubmission.location.identifiedBy",
+        value = ValueViewModel(value),
+        actions = Seq(
+          ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+            .withVisuallyHiddenText(messages("viewSubmission.location.identifiedBy"))
+        )
+      )
+    }
 
   def qualifierRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(
@@ -107,4 +133,22 @@ object AmendLocationIdSummary {
         }
       )
     )
+
+  def contactRow(implicit messages: Messages): Option[SummaryListRow] =
+    Some(SummaryListRowViewModel(key = "viewSubmission.location.contact", value = ValueViewModel(""), actions = Seq.empty))
+
+  def referenceNumberRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendLocationIdPage(submissionId)).map { answer =>
+      SummaryListRowViewModel(
+        key = "viewSubmission.authorisation.referenceNumber",
+        value = ValueViewModel(answer.authorisationReferenceNumber.getOrElse("")),
+        actions = Seq(
+          ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+            .withVisuallyHiddenText(messages("viewSubmission.authorisation.referenceNumber"))
+        )
+      )
+    }
+
+  def authorisationTypeRow(implicit messages: Messages): Option[SummaryListRow] =
+    Some(SummaryListRowViewModel(key = "viewSubmission.authorisation.type", value = ValueViewModel(""), actions = Seq.empty))
 }

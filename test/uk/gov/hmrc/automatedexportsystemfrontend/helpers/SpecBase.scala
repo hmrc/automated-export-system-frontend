@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.helpers
 
-//import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
