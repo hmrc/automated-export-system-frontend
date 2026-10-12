@@ -202,6 +202,35 @@ object AmendDiscrepancyGoodsSummary {
       )
     }
 
+  }
+
+  def goodsItemNumberRow(answers: UserAnswers, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyGoodsPage(submissionId)).flatMap(_.declarationGoodsItemNumber).map { answer =>
+      SummaryListRowViewModel(
+        key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer.toString))),
+        actions = amendmentActions(submissionId, withAmendLink, "discrepancyGoods.goodsItemNumber.change.hidden")
+      )
+    }
+
+  def goodsItemDucrRow(answers: UserAnswers, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyGoodsPage(submissionId)).flatMap(_.declarationUniqueConsignmentReference).map { answer =>
+      SummaryListRowViewModel(
+        key = "discrepancyGoods.ducr.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer))),
+        actions = amendmentActions(submissionId, withAmendLink, "discrepancyGoods.ducr.change.hidden")
+      )
+    }
+
+  def grossMassRow(answers: UserAnswers, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyGoodsPage(submissionId)).map { answer =>
+      SummaryListRowViewModel(
+        key = "discrepancyGoods.newGrossMass.checkYourAnswersLabel",
+        value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer.newGrossMass.toString))),
+        actions = amendmentActions(submissionId, withAmendLink, "discrepancyGoods.newGrossMass.change.hidden")
+      )
+    }
+
   def netMassRow(answers: UserAnswers, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendDiscrepancyGoodsPage(submissionId)).map { answer =>
       SummaryListRowViewModel(
@@ -212,10 +241,12 @@ object AmendDiscrepancyGoodsSummary {
     }
 
   private def amendmentActions(submissionId: String, withAmendLink: Boolean, hiddenTextKey: String)(implicit messages: Messages) =
-    if (withAmendLink)
+    if (withAmendLink) {
       Seq(
         ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, submissionId).url)
           .withVisuallyHiddenText(messages(hiddenTextKey))
       )
-    else Seq.empty
+    } else {
+      Seq.empty
+    }
 }
