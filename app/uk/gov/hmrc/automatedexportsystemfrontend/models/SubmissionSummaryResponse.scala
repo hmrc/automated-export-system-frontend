@@ -20,12 +20,13 @@ import java.time.LocalDateTime
 import java.util.UUID
 
 case class SubmissionSummaryResponse(
-                                      submissionId: UUID,
-                                      mrn: String,
-                                      ducr: Option[String],
-                                      officeOfExitCode: String,
-                                      updatedAt: LocalDateTime,
-                                      status: Int
-                                    )
+  submissionId: UUID,
+  mrn: String,
+  ducr: Option[String],
+  officeOfExitCode: String,
+  updatedAt: LocalDateTime,
+  status: Int,
+  metadata: Option[SingleSubmissionMetadata] = None
+)
 
 case class SubmissionSummaryResponseList(submissions: Seq[SubmissionSummaryResponse])
