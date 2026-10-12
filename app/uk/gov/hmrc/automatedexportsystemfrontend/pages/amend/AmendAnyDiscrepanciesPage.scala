@@ -18,10 +18,28 @@ package uk.gov.hmrc.automatedexportsystemfrontend.pages.amend
 
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+
+import scala.util.Try
 
 case class AmendAnyDiscrepanciesPage(submissionId: String) extends QuestionPage[Boolean] {
 
   override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
 
   override def toString: String = "amendAnyDiscrepancies"
+
+  override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
+    value match {
+      case Some(false) => // and split indicator //TODO
+        userAnswers
+          .remove(AmendDiscrepancyConsignmentPage(submissionId))
+          .flatMap(_.remove(AmendDiscrepancyTransportPage(submissionId)))
+          .flatMap(_.remove(AmendDiscrepancySealsPage(submissionId)))
+          .flatMap(_.remove(AmendDiscrepancyReferencePage(submissionId)))
+          .flatMap(_.remove(AmendDiscrepancyTransportMeansPage(submissionId)))
+          .flatMap(_.remove(AmendDiscrepancyTransportDocPage(submissionId)))
+          .flatMap(_.remove(AmendDiscrepancyGoodsPage(submissionId)))
+          .flatMap(_.remove(AmendDiscrepancyPackingPage(submissionId)))
+      case _ => super.cleanup(value, userAnswers)
+    }
 }

@@ -46,13 +46,10 @@ class AmendAnyDiscrepanciesController @Inject() (
     extends FrontendBaseController with I18nSupport {
 
   val form = formProvider()
-
-  //  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
   def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
 
-    //      val preparedForm = request.userAnswers.get(AmendAnyDiscrepanciesPage) match {
     val preparedForm: Form[Boolean] =
       answers.get(AmendAnyDiscrepanciesPage(submissionId)).fold(form)(form.fill)
 
@@ -60,10 +57,9 @@ class AmendAnyDiscrepanciesController @Inject() (
     Future.successful(Ok(preparedView))
   }
 
-  //  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
 
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
+    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
 
     form
       .bindFromRequest()
@@ -74,7 +70,6 @@ class AmendAnyDiscrepanciesController @Inject() (
         },
         value =>
           for {
-            //            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendAnyDiscrepanciesPage(submissionId, value))
             updatedAnswers <- Future.fromTry(answers.set(AmendAnyDiscrepanciesPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(amendNavigator.nextPage(AmendAnyDiscrepanciesPage(submissionId), mode, updatedAnswers))
