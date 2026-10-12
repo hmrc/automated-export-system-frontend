@@ -20,12 +20,30 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
+  AmendAnyDiscrepanciesPage,
+  AmendDiscrepancyConsignmentPage,
+  AmendDiscrepancyGoodsPage,
+  AmendDiscrepancyReferencePage,
+  AmendDiscrepancySealsPage,
+  AmendDiscrepancyTransportDocPage,
+  AmendDiscrepancyTransportMeansPage,
+  AmendDiscrepancyTransportPage,
+  AmendEnterDucrPage,
+  AmendEnterMrnPage,
+  AmendIsSplitExitPage,
+  AmendLocationIdPage,
+  AmendLocationTypePage,
+  AmendOfficeOfExitPage,
+  AmendPartOfConsolidationPage
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
-class SubmissionDataService @Inject() extends Logging {
+class CreateSubmissionDataService @Inject() extends Logging {
 
   def buildStandardSubmission(userAnswers: UserAnswers): Option[String] =
     collectUserAnswers(userAnswers) match {
@@ -52,13 +70,25 @@ class SubmissionDataService @Inject() extends Logging {
     }
   }
 
+  private def collectAmendTransportEquipment(
+    userAnswers: UserAnswers,
+    seals: List[Seal],
+    goodsReferences: List[GoodsReference],
+    submissionId: String
+  ): List[TransportEquipment] = {
+    val discrepancyTransport = userAnswers.get(AmendDiscrepancyTransportPage(submissionId)).toList
+    discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
+      TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
+    }
+  }
+
   private def collectSeals(userAnswers: UserAnswers): List[Seal] =
-    userAnswers.get(DiscrepancySealsPage).toList.zipWithIndex.map { case (seal, index) =>
+    userAnswers.get(DiscrepancySealsPage).flatten.toList.zipWithIndex.map { case (seal, index) =>
       Seal(index + 1, seal)
     }
 
   private def collectGoodsReference(userAnswers: UserAnswers): List[GoodsReference] =
-    userAnswers.get(DiscrepancyReferencePage).toList.zipWithIndex.map { case (reference, index) =>
+    userAnswers.get(DiscrepancyReferencePage).flatten.toList.zipWithIndex.map { case (reference, index) =>
       GoodsReference(index + 1, reference.toInt)
     }
 
@@ -67,18 +97,32 @@ class SubmissionDataService @Inject() extends Logging {
       locationType <- userAnswers.get(LocationTypePage)
       typeOfLocation = TypeOfLocation.fromUserAnswers(locationType)
       locationDetails <- userAnswers.get(LocationIdPage)
+
+      qualifier = locationDetails.locationType match {
+        case LocationQualifier.UnLocode =>
+          QualifierOfTheIdentification.UnLocode
+        case LocationQualifier.AuthorisationNumber =>
+          QualifierOfTheIdentification.AuthorisationNumber
+      }
     } yield LocationOfGoods(
       typeOfLocation,
-      QualifierOfTheIdentification.UnLocode,
+      qualifier,
       locationDetails.authorisationReferenceNumber,
       locationDetails.locationAdditionalIdentifier,
       locationDetails.unlocode
     )
 
   private def collectActiveBorderTransportMeans(userAnswers: UserAnswers): Option[ActiveBorderTransportMeans] =
-    userAnswers.get(DiscrepancyTransportMeansPage).map { transport =>
-      ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
-    }
+    userAnswers
+      .get(DiscrepancyTransportMeansPage)
+      .filter(transport =>
+        transport.transportType.isDefined ||
+          transport.transportIdNumber.isDefined ||
+          transport.countryOfRegistration.isDefined
+      )
+      .map { transport =>
+        ActiveBorderTransportMeans(transport.transportType, transport.transportIdNumber, transport.countryOfRegistration)
+      }
 
   private def collectTransportDocument(userAnswers: UserAnswers): List[TransportDocument] =
     userAnswers.get(DiscrepancyTransportDocPage).toList.zipWithIndex.map { case (document, index) =>
@@ -105,40 +149,42 @@ class SubmissionDataService @Inject() extends Logging {
       )
     }
 
+  private def collectGoodsShipment(userAnswers: UserAnswers): Option[GoodsShipment] =
+    for {
+      ducr <- userAnswers.get(EnterDucrPage)
+      location <- collectGoodsLocation(userAnswers)
+    } yield {
+      val transportMode =
+        userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.fromUserAnswers)
+
+      val mucr =
+        userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)
+      val seals = collectSeals(userAnswers)
+      val goodsReference = collectGoodsReference(userAnswers)
+      val transportEquipment =
+        collectTransportEquipment(userAnswers, seals, goodsReference)
+
+      val transport = collectActiveBorderTransportMeans(userAnswers)
+      val transportDocument = collectTransportDocument(userAnswers)
+      val goodsItem = collectGoodsItem(userAnswers)
+
+      GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
+    }
+
   private def collectUserAnswers(userAnswers: UserAnswers): Option[Submission] =
     for {
       mrn <- userAnswers.get(EnterMrnPage)
       discrepanciesExist <- collectDiscrepanciesExist(userAnswers)
       splitIndicator <- userAnswers.get(IsSplitExitPage)
       referenceNumber <- userAnswers.get(OfficeOfExitPage)
-
-      goodsShipment = for {
-        ducr <- userAnswers.get(EnterDucrPage)
-        location <- collectGoodsLocation(userAnswers)
-      } yield {
-        val transportMode =
-          userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.fromUserAnswers)
-
-        val mucr =
-          userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)
-
-        val seals = collectSeals(userAnswers)
-        val goodsReference = collectGoodsReference(userAnswers)
-        val transportEquipment =
-          collectTransportEquipment(userAnswers, seals, goodsReference)
-
-        val transport = collectActiveBorderTransportMeans(userAnswers)
-        val transportDocument = collectTransportDocument(userAnswers)
-        val goodsItem = collectGoodsItem(userAnswers)
-
-        GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
-      }
+      goodsShipment <- collectGoodsShipment(userAnswers)
     } yield Submission(
       None,
       ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
-      goodsShipment
+      Some(goodsShipment)
     )
+
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""
 

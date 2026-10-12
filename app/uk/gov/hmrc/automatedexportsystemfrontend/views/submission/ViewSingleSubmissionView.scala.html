@@ -1,0 +1,111 @@
+@*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *@
+
+@import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionStatus
+@import java.time.LocalDate
+
+@this(
+        layout: Layout,
+        govukButton: GovukButton,
+        govukSummaryList: GovukSummaryList
+)
+
+@(
+    submissionId: String,
+    submissionStatus: SubmissionStatus,
+    updatedAt: LocalDate,
+    exportOperationList: SummaryList,
+    customOfficeOfExitList: SummaryList,
+    consignment: Option[SummaryList],
+    transportEquipmentList: Option[SummaryList],
+    locationOfGoodsList: Option[SummaryList],
+    activeBorderTransportMeans: Option[SummaryList],
+    transportDocument: Option[SummaryList],
+    goodsItem: Option[SummaryList]
+)(implicit request: Request[_], messages: Messages)
+
+@layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
+
+    <span class="govuk-caption-l">@messages("viewSingleSubmission.caption") @submissionId</span>
+    <h1 class="govuk-heading-l">@messages("viewSingleSubmission.heading")</h1>
+
+    <p class="govuk-body">@messages("site.status"):
+        <strong class="govuk-tag @submissionStatus.cssClass">@messages(submissionStatus.key)</strong></td>
+    </p>
+
+    <p class="govuk-body">@messages("site.submitted") @updatedAt</p>
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
+    @govukSummaryList(exportOperationList)
+
+    @if(consignment.isDefined) {
+        <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
+        @govukSummaryList(consignment.get)
+    }
+
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
+    @govukSummaryList(customOfficeOfExitList)
+
+    <h2 class="govuk-heading-m">@messages("viewSingleSubmission.carrier.subheading")</h2>
+
+    @if(transportEquipmentList.isDefined) {
+        <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.transportEquipment")</h2>
+        @govukSummaryList(transportEquipmentList.get)
+    }
+
+    @if(locationOfGoodsList.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
+        @govukSummaryList(locationOfGoodsList.get)
+    }
+
+    @if(activeBorderTransportMeans.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.activeBorderTransportMeans.subheading")</h2>
+        @govukSummaryList(activeBorderTransportMeans.get)
+    }
+
+    @if(transportDocument.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.transportDoc.subheading")</h2>
+        @govukSummaryList(transportDocument.get)
+    }
+
+    @if(goodsItem.isDefined) {
+        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.goodsItem.subheading")</h2>
+        @govukSummaryList(goodsItem.get)
+    }
+
+    <div class="govuk-button-group govuk-!-margin-top-6">
+
+        <!--Update route with amend page when created-->
+        <div>
+            @govukButton(
+            ButtonViewModel(messages("site.amendSubmission"))
+            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.SubmissionController.standardSubmit.url)
+            )
+        </div>
+
+        <div>
+            @govukButton(
+            ButtonViewModel(messages("site.cancelSubmission")).asWarningButton()
+            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.CancelSubmissionController.onPageLoad(submissionId).url)
+            )
+        </div>
+
+    </div>
+
+
+}

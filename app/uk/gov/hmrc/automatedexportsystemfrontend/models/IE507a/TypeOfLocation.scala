@@ -41,6 +41,12 @@ object TypeOfLocation {
       case LocationType.Other              => TypeOfLocation.Other
     }
 
+  def toLocationTypeKey(value: String): String = value match
+    case "A" => LocationType.DesignatedLocation.toString
+    case "B" => LocationType.AuthorisedPlace.toString
+    case "C" => LocationType.ApprovedPlace.toString
+    case _   => LocationType.Other.toString
+
   given reads: Reads[TypeOfLocation] = Reads.of[String].flatMapResult { value =>
     if (nameMap.contains(value)) JsSuccess(nameMap(value))
     else JsError(s"Invalid TypeOfLocation: $value")

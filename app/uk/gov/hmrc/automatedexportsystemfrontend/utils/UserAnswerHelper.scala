@@ -24,4 +24,7 @@ class UserAnswerHelper {
   def removeStandardSubmissionAnswers(answers: UserAnswers): UserAnswers =
     answers.removePath(JsPath \ "standard").get
 
+  def removeAmendSubmissionAnswers(submissionId: String, answers: UserAnswers): UserAnswers =
+    answers.removePath(JsPath \ "amend" \ submissionId).getOrElse(answers)
+
 }

@@ -77,7 +77,7 @@ class CreateNavigatorSpec extends SpecBase {
 
       "navigate from DiscrepancyTransportPage" - {
         "to DiscrepancySealsPage" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails("containerId", 99)).success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99))).success.value
           navigator.nextPage(DiscrepancyTransportPage, NormalMode, userAnswers) shouldBe
             createRoute.DiscrepancySealsController.onPageLoad(NormalMode)
         }
@@ -85,7 +85,7 @@ class CreateNavigatorSpec extends SpecBase {
 
       "navigate from DiscrepancySealsPage" - {
         "to DiscrepancyReferencePage" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage, "sealId").success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage, Some("sealId")).success.value
           navigator.nextPage(DiscrepancySealsPage, NormalMode, userAnswers) shouldBe
             createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
         }
@@ -93,7 +93,7 @@ class CreateNavigatorSpec extends SpecBase {
 
       "navigate from DiscrepancyReferencePage" - {
         "to DiscrepancyTransportMeansPage" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage, "reference").success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage, Some("reference")).success.value
           navigator.nextPage(DiscrepancyReferencePage, NormalMode, userAnswers) shouldBe
             createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
         }
@@ -102,7 +102,10 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyTransportMeansPage" - {
         "to DiscrepancyTransportDocPage" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration"))
+            .set(
+              DiscrepancyTransportMeansPage,
+              TransportAcrossBorderDetails(Some("transportType"), Some("transportIdNumber"), Some("countryOfRegistration"))
+            )
             .success
             .value
           navigator.nextPage(DiscrepancyTransportMeansPage, NormalMode, userAnswers) shouldBe
@@ -268,7 +271,7 @@ class CreateNavigatorSpec extends SpecBase {
         }
 
         "to CYASubmissionPage when DiscrepancyTransportPage is answered" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails("containerId", 99)).success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99))).success.value
           navigator.nextPage(DiscrepancyConsignmentPage, CheckMode, userAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }
@@ -281,7 +284,7 @@ class CreateNavigatorSpec extends SpecBase {
         }
 
         "to CYASubmissionPage when DiscrepancySealsPage is answered" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage, "sealIdentifier").success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage, Some("sealIdentifier")).success.value
           navigator.nextPage(DiscrepancyTransportPage, CheckMode, userAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }
@@ -294,7 +297,7 @@ class CreateNavigatorSpec extends SpecBase {
         }
 
         "to CYASubmissionPage when DiscrepancyReferencePage is answered" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage, "reference").success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage, Some("reference")).success.value
           navigator.nextPage(DiscrepancySealsPage, CheckMode, userAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }
@@ -308,7 +311,10 @@ class CreateNavigatorSpec extends SpecBase {
 
         "to CYASubmissionPage when DiscrepancyTransportMeans is answered" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportIdNum", "countryOfRegistration"))
+            .set(
+              DiscrepancyTransportMeansPage,
+              TransportAcrossBorderDetails(Some("transportType"), Some("transportIdNum"), Some("countryOfRegistration"))
+            )
             .success
             .value
           navigator.nextPage(DiscrepancyReferencePage, CheckMode, userAnswers) shouldBe

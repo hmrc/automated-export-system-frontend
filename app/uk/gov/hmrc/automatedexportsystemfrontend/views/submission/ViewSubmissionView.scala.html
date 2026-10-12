@@ -14,21 +14,24 @@
  * limitations under the License.
  *@
 
-@import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionSummary
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.ViewSubmissionViewModel
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
+@import uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode
+
 
 @this(
 layout: Layout,
 govukButton: GovukButton
 )
 
-@(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
+@(submission: ViewSubmissionViewModel)(implicit request: Request[_], messages: Messages)
 
 @layout(
 pageTitle = titleNoForm(messages("viewSubmission.title"))
 ) {
 
 <span class="govuk-caption-l">
-@messages("viewSubmission.caption", submission.reference)
+@messages("viewSubmission.caption", submission.submissionId)
 </span>
 
 <h1 class="govuk-heading-l">
@@ -37,8 +40,8 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
 
 <p class="govuk-body">
  @messages("viewSubmission.status.label")
- <strong class="govuk-tag @submission.submissionStatus.cssClass">
-  @messages(submission.submissionStatus.key)
+ <strong class="govuk-tag @submission.status.cssClass">
+  @messages(submission.status.key)
  </strong>
 </p>
 
@@ -62,21 +65,15 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header">
-   @messages("viewSubmission.exportOperation.goodsBeingStored")
-  </th>
-  <td class="govuk-table__cell"></td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header">
    @messages("viewSubmission.exportOperation.discrepancies")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.anyDiscrepancies</td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header">
    @messages("viewSubmission.exportOperation.splitExit")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.isSplitExit</td>
  </tr>
  </tbody>
 </table>
@@ -156,13 +153,13 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("viewSubmission.location.type")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.locationType.fold("")(lt => messages(s"locationType.$lt"))</td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("viewSubmission.location.identifiedBy")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.locationAdditionalIdentifier</td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
@@ -188,21 +185,19 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("viewSubmission.authorisation.referenceNumber")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">@submission.locationAuthorisationReferenceNumber</td>
  </tr>
  </tbody>
 </table>
 
 <div class="govuk-button-group">
 
- <button
-         type="submit"
-         class="govuk-button"
-         data-module="govuk-button">
-  @messages("viewSubmission.amendButton")
- </button>
 
- <a href="/automated-export-system/cancel-submission/@submission.reference"
+@govukButton(
+ ButtonViewModel(messages("viewSubmission.amendButton"))
+ .asLink(routes.ViewSingleSubmissionController.startAmend(submission.submissionId).url))
+
+ <a href="/automated-export-system/cancel-submission/@submission.submissionId"
     role="button"
     draggable="false"
     class="govuk-button govuk-button--warning"

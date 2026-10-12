@@ -31,7 +31,7 @@ case class SubmissionSummary(
 
 case class SubmissionStatus(key: String, cssClass: String)
 
-object ViewSubmissionViewModel {
+object ViewSubmissionsViewModel {
   implicit val format: Format[ViewSubmissionsViewModel] = Json.format[ViewSubmissionsViewModel]
 }
 

@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions
 
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.*
-import play.api.{Environment, Logger, Logging}
+import play.api.{Environment, Logger}
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.v2.*
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}

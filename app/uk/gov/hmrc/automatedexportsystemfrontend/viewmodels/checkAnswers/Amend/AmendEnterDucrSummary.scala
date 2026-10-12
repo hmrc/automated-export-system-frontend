@@ -29,13 +29,22 @@ object AmendEnterDucrSummary {
 
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendEnterDucrPage(submissionId)).map { answer =>
-      SummaryListRowViewModel(
-        key = "enterDucr.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendEnterDucrController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("enterDucr.change.hidden"))
-        )
-      )
+      build(answer, submissionId, withChangeLink = true)
     }
+
+  def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
+
+  private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "enterDucr.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(value).toString),
+      actions =
+        if (withChangeLink)
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendEnterDucrController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("enterDucr.change.hidden"))
+          )
+        else Seq.empty
+    )
 }

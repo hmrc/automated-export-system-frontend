@@ -16,10 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 
-import play.api.libs.json.JsPath
+import play.api.libs.json.{JsPath, Reads}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
-case object DiscrepancySealsPage extends QuestionPage[String] {
+case object DiscrepancySealsPage extends QuestionPage[Option[String]] {
+
+  implicit val reads: Reads[Option[String]] = Reads.optionWithNull[String]
 
   override def path: JsPath = JsPath \ "standard" \ toString
 

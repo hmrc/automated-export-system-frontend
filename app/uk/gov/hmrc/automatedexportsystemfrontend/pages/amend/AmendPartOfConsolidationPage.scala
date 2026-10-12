@@ -24,5 +24,5 @@ case class AmendPartOfConsolidationPage(submissionId: String) extends QuestionPa
 
   override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
 
-  override def toString: String = "partOfConsolidation"
+  override def toString: String = "mucr"
 }

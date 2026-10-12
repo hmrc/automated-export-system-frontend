@@ -48,6 +48,7 @@ object SingleSubmissionResponseParser {
 
     SingleSubmissionResponse(
       submissionId = (submission \ "submissionId").text.trim,
+      status = (submission \ "status").text.trim.toInt,
       exportOperation = exportOperation,
       customsOfficeOfExitActual = customsOfficeOfExitActual,
       goodsShipment = goodsShipment,

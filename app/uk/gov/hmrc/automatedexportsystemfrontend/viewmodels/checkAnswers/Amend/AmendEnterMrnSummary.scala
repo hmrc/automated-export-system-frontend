@@ -26,16 +26,24 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendEnterMrnSummary {
-
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendEnterMrnPage(submissionId)).map { answer =>
-      SummaryListRowViewModel(
-        key = "enterMrn.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendEnterMrnController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("enterMrn.change.hidden"))
-        )
-      )
+      build(answer, submissionId, withChangeLink = true)
     }
+
+  def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
+
+  private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "enterMrn.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(value).toString),
+      actions =
+        if (withChangeLink)
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendEnterMrnController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("enterMrn.change.hidden"))
+          )
+        else Seq.empty
+    )
 }

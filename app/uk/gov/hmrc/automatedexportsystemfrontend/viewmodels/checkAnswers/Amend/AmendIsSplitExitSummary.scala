@@ -28,16 +28,27 @@ object AmendIsSplitExitSummary {
 
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendIsSplitExitPage(submissionId)).map { answer =>
-
-      val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = "isSplitExit.checkYourAnswersLabel",
-        value = ValueViewModel(value),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendIsSplitExitController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
-        )
-      )
+      build(answer, submissionId, withChangeLink = true)
     }
+
+  def row(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
+
+  private def build(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow = {
+    val display =
+      if (value) s"${messages("site.yes")}"
+      else s"${messages("site.no")}"
+
+    SummaryListRowViewModel(
+      key = "isSplitExit.checkYourAnswersLabel",
+      value = ValueViewModel(display),
+      actions =
+        if (withChangeLink)
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendIsSplitExitController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("isSplitExit.change.hidden"))
+          )
+        else Seq.empty
+    )
+  }
 }

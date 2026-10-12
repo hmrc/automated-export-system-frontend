@@ -20,6 +20,7 @@ import org.scalatest.matchers.must.Matchers.{mustBe, mustNot}
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
 class AnyDiscrepanciesPageSpec extends SpecBase {
 
@@ -33,16 +34,16 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
             .success
             .value
-            .set(DiscrepancyTransportPage, ContainerDetails("containerId", 99))
+            .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
-            .set(DiscrepancySealsPage, "sealsIdentifier")
+            .set(DiscrepancySealsPage, Some("sealsIdentifier"))
             .success
             .value
-            .set(DiscrepancyReferencePage, "goodsRef")
+            .set(DiscrepancyReferencePage, Some("goodsRef"))
             .success
             .value
-            .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportId", "countryOfReg"))
+            .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
             .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
@@ -74,16 +75,16 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
             .success
             .value
-            .set(DiscrepancyTransportPage, ContainerDetails("containerId", 99))
+            .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
-            .set(DiscrepancySealsPage, "sealsIdentifier")
+            .set(DiscrepancySealsPage, Some("sealsIdentifier"))
             .success
             .value
-            .set(DiscrepancyReferencePage, "goodsRef")
+            .set(DiscrepancyReferencePage, Some("goodsRef"))
             .success
             .value
-            .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportId", "countryOfReg"))
+            .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
             .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))

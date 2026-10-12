@@ -16,10 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendIsSplitExitSummary
@@ -32,17 +31,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   ValueViewModel
 }
 
-class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
+class AmendIsSplitExitSummarySpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when Yes is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendIsSplitExitPage("submissionId"), true)
-        .get
+    "when Yes is selected, return the summary row with change link" in {
 
-      AmendIsSplitExitSummary.row(userAnswers)("submissionId") shouldBe Some(
+      AmendIsSplitExitSummary.row(true, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "isSplitExit.checkYourAnswersLabel",
           value = ValueViewModel("site.yes"),
@@ -58,28 +54,9 @@ class AmendIsSplitExitSummarySpec extends AnyFreeSpec with Matchers {
     }
 
     "when No is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendIsSplitExitPage("submissionId"), false)
-        .get
-
-      AmendIsSplitExitSummary.row(userAnswers)("submissionId") shouldBe Some(
-        SummaryListRowViewModel(
-          key = "isSplitExit.checkYourAnswersLabel",
-          value = ValueViewModel("site.no"),
-          actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendIsSplitExitController.onPageLoad(CheckMode, "submissionId").url
-            )
-              .withVisuallyHiddenText("isSplitExit.change.hidden")
-          )
-        )
+      AmendIsSplitExitSummary.row(false, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(key = "isSplitExit.checkYourAnswersLabel", value = ValueViewModel("site.no"), actions = Seq.empty)
       )
-    }
-
-    "when answer unavailable, return empty" in {
-      val userAnswers = UserAnswers("id")
-      AmendIsSplitExitSummary.row(userAnswers)("submissionId") shouldBe None
     }
   }
 }

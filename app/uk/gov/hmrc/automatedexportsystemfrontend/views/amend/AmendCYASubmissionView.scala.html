@@ -15,36 +15,39 @@
  *@
 
 @import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryList
+@import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 
 @this(
-        layout: Layout,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList,
-        govukWarningText: GovukWarningText)
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    govukButton: GovukButton,
+    govukSummaryList: GovukSummaryList,
+    govukWarningText: GovukWarningText)
 
 @(
+    mode: Mode,
+    submissionId: String,
     exportOperationList: SummaryList,
     consignmentList: SummaryList,
     customsOfficeExitList: SummaryList,
-    extraRowsList: SummaryList
-    )(implicit request: Request[_], messages: Messages)
+    discrepancyList: SummaryList
+)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("cYASubmission.title"))) {
+@layout(pageTitle = titleNoForm(messages("amendCheckYourAnswers.title"))) {
 
-    <h1 class="govuk-heading-l">@messages("cYASubmission.heading")</h1>
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
-
-    @govukSummaryList(exportOperationList)
-
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.locationOfGoods")</h2>
-
-    @govukSummaryList(consignmentList)
+    <h1 class="govuk-heading-l">@messages("amendCheckYourAnswers.heading")</h1>
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
-
     @govukSummaryList(customsOfficeExitList)
 
-    @govukSummaryList(extraRowsList)
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.locationOfGoods")</h2>
+    @govukSummaryList(consignmentList)
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.discrepancyDetails")</h2>
+    @govukSummaryList(discrepancyList)
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
+    @govukSummaryList(exportOperationList)
 
     @govukWarningText(
         WarningText(
@@ -53,11 +56,7 @@
         )
     )
 
-
-    <div>
-        @govukButton(
-        ButtonViewModel(messages("site.acceptAndSubmit"))
-        .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.SubmissionController.standardSubmit.url)
-        )
-    </div>
+    @formHelper(action = amendRoute.AmendCYASubmissionController.onSubmit(mode, submissionId), Symbol("autoComplete") -> "off") {
+        @govukButton(ButtonViewModel(messages("site.acceptAndSubmit")))
     }
+}

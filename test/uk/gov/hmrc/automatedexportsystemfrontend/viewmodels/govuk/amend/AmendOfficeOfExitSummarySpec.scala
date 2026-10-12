@@ -20,6 +20,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, OfficeOfExit, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendOfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendOfficeOfExitSummary
@@ -31,36 +32,41 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   SummaryListRowViewModel,
   ValueViewModel
 }
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
 
-class AmendOfficeOfExitSummarySpec extends AnyFreeSpec with Matchers {
+class AmendOfficeOfExitSummarySpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answer is selected, return the summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(AmendOfficeOfExitPage("submissionId"), OfficeOfExit.Belfast)
-        .get
+    "when answer is selected, return the summary row with change link" in {
+      val userAnswers = "GB000051"
 
-      AmendOfficeOfExitSummary.row(userAnswers)("submissionId") shouldBe Some(
+      AmendOfficeOfExitSummary.row(userAnswers, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("officeOfExit.GB000051")),
+          value = ValueViewModel(Text("officeOfExit.GB000051")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
               uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendOfficeOfExitController.onPageLoad(CheckMode, "submissionId").url
             )
-              .withVisuallyHiddenText("officeOfExit.change.hidden")
+              .withVisuallyHiddenText("amendOfficeOfExit.change.hidden")
           )
         )
       )
     }
 
-    "when answer unavailable, return empty" in {
-      val userAnswers = UserAnswers("id")
-      AmendOfficeOfExitSummary.row(userAnswers)("submissionId") shouldBe None
+    "when answer is selected, return the summary row" in {
+      val userAnswers = "GB000051"
+
+      AmendOfficeOfExitSummary.row(userAnswers, "submissionId", false) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "officeOfExit.checkYourAnswersLabel",
+          value = ValueViewModel(Text("officeOfExit.GB000051")),
+          actions = Seq.empty
+        )
+      )
     }
   }
 

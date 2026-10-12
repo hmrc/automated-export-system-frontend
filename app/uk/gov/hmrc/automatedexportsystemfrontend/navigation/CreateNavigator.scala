@@ -23,6 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, 
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
 class CreateNavigator extends Navigator {
 

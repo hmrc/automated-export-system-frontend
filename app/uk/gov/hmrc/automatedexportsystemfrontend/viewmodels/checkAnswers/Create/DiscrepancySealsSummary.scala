@@ -24,11 +24,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPa
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
 object DiscrepancySealsSummary {
 
   def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancySealsPage).map { answer =>
+    answers.get(DiscrepancySealsPage).flatten.map { answer =>
       SummaryListRowViewModel(
         key = "discrepancySeals.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
