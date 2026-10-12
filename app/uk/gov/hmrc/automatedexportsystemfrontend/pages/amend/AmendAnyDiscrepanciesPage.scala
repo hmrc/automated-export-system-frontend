@@ -30,7 +30,7 @@ case class AmendAnyDiscrepanciesPage(submissionId: String) extends QuestionPage[
 
   override def cleanup(value: Option[Boolean], userAnswers: UserAnswers): Try[UserAnswers] =
     value match {
-      case Some(false) =>
+      case Some(false) => // and split indicator //TODO
         userAnswers
           .remove(AmendDiscrepancyConsignmentPage(submissionId))
           .flatMap(_.remove(AmendDiscrepancyTransportPage(submissionId)))
