@@ -198,6 +198,7 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
         XML.loadString("""
                          |<Submission>
                          |  <submissionId>123</submissionId>
+                         |  <status>1</status>
                          |  <ExportOperation>
                          |    <type>1</type>
                          |    <MRN>26GB0000X6524786A9</MRN>
