@@ -154,7 +154,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<TransportDocument>")
       result.value should include("<type>1</type>")
       result.value should include("<typeOfIdentification>road</typeOfIdentification>")
-      result.value should include("<ducr>1234</ducr>")
+      result.value should include("<ducr>5GB000000000000-12345</ducr>")
 
       result.value should include("<GoodsItem>")
       result.value should include("<declarationGoodsItemNumber>1</declarationGoodsItemNumber>")
