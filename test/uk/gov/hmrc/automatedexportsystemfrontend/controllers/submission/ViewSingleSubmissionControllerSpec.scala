@@ -121,7 +121,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
                                          |              </Consignment>
                                          |              <GoodsItem>
                                          |                <declarationGoodsItemNumber>1</declarationGoodsItemNumber>
-                                         |                <ducr>referenceNumberUcr</ducr>
+                                         |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
                                          |                <Commodity>
                                          |                  <GoodsMeasure>
                                          |                    <grossMass>100.55</grossMass>
