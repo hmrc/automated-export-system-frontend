@@ -69,7 +69,7 @@ object SingleSubmissionResponseParser {
       SingleSubmissionConsignment(
         modeOfTransportAtTheBorder = (consignmentXml \ "modeOfTransportAtTheBorder").headOption
           .map(_.text.trim.toInt),
-        referenceNumberUCR = (consignmentXml \ "ducr").text.trim,
+        referenceNumberUCR = (consignmentXml \ "referenceNumberUCR").text.trim,
         parentUCRID = (consignmentXml \ "parentUCRID").headOption
           .map(_.text.trim)
           .filter(_.nonEmpty),
