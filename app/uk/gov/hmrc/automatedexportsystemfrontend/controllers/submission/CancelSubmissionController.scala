@@ -21,8 +21,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponseList, SubmissionViewModelMapper}
+import uk.gov.hmrc.automatedexportsystemfrontend.handlers.ErrorHandler
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.CancelSubmissionView
+import uk.gov.hmrc.http.UpstreamErrorResponse
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
@@ -33,30 +35,21 @@ class CancelSubmissionController @Inject() (
   val actionBuilder: AesAuthRequestActionBuilder,
   override val controllerComponents: MessagesControllerComponents,
   view: CancelSubmissionView,
-  automatedExportSystemConnector: AutomatedExportSystemConnector
+  automatedExportSystemConnector: AutomatedExportSystemConnector,
+  errorHandler: ErrorHandler
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(submissionId: String): Action[AnyContent] =
     actionBuilder.async { implicit request =>
       automatedExportSystemConnector
-        .getSubmissionSummaryResponses()
-        .map[Result] { response =>
-          response.submissions
-            .find(_.submissionId.toString == submissionId)
-            .map { submission =>
-              val summary =
-                SubmissionViewModelMapper
-                  .toViewModel(SubmissionSummaryResponseList(Seq(submission)))
-                  .summaries
-                  .head
-
-              Ok(view(summary))
-            }
-            .getOrElse {
-              logger.warn(s"No submission found for submission ID $submissionId")
-              NotFound("Not Found")
-            }
+        .getSingleSubmission(submissionId)
+        .map { submission =>
+          Ok(view(SingleSubmissionViewModel.from(submission)))
+        }
+        .recoverWith { case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+          logger.warn(s"No submission found for submission ID $submissionId")
+          errorHandler.notFoundTemplate.map(NotFound(_))
         }
     }
 

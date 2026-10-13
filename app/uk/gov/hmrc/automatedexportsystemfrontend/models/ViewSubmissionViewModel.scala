@@ -33,7 +33,8 @@ case class ViewSubmissionViewModel(
   partOfConsolidation: Option[Boolean],
   mucr: Option[String],
   anyDiscrepancies: String,
-  isSplitExit: String
+  isSplitExit: String,
+  errors: Seq[String] = Seq.empty
 )
 
 object ViewSubmissionViewModel {

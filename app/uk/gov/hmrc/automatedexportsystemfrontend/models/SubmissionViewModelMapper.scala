@@ -29,7 +29,12 @@ object SubmissionViewModelMapper {
         ducr = submission.ducr.getOrElse(""),
         officeOfExit = SubmissionLookups.mapOfficeOfExit(submission.officeOfExitCode),
         submittedDate = submission.updatedAt.format(DateTimeFormats.shortDateFormat),
-        submissionStatus = SubmissionLookups.mapStatus(submission.status)
+        submissionStatus = SubmissionLookups.mapStatus(submission.status),
+        errors = SubmissionErrorMapper.toMessageKeys(
+          submission.metadata
+            .map(_.errors)
+            .getOrElse(Seq.empty)
+        )
       )
     })
 

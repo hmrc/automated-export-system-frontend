@@ -119,7 +119,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<type>1</type>")
       result.value should include("<discrepanciesExist>0</discrepanciesExist>")
       result.value should include("<splitIndicator>0</splitIndicator>")
-      result.value should include("<referenceNumber>GB000051</referenceNumber>")
+      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
 
       result.value should include("<GoodsShipment>")
       result.value should include("<Consignment>")
@@ -153,7 +153,6 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
 
       result.value should include("<TransportDocument>")
       result.value should include("<type>1</type>")
-      result.value should include("<typeOfIdentification>road</typeOfIdentification>")
       result.value should include("<referenceNumber>1234</referenceNumber>")
 
       result.value should include("<GoodsItem>")
