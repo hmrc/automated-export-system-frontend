@@ -76,7 +76,7 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
             |  <GoodsShipment>
             |    <Consignment>
             |      <modeOfTransportAtTheBorder>1</modeOfTransportAtTheBorder>
-            |      <ducr>UCR123</ducr>
+            |      <referenceNumberUCR>UCR123</referenceNumberUCR>
             |      <parentUCRID>PARENT123</parentUCRID>
             |      <TransportEquipment>
             |        <sequenceNumber>1</sequenceNumber>
