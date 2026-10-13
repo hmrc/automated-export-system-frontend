@@ -111,7 +111,7 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
             |    </Consignment>
             |    <GoodsItem>
             |      <declarationGoodsItemNumber>1</declarationGoodsItemNumber>
-            |      <ducr>UCR123</ducr>
+            |      <referenceNumberUCR>UCR123</referenceNumberUCR>
             |      <Commodity>
             |        <GoodsMeasure>
             |          <grossMass>100.50</grossMass>
