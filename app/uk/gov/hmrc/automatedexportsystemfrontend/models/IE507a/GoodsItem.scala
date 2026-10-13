@@ -28,7 +28,7 @@ object GoodsItem {
     XmlWrites.elem(
       "GoodsItem",
       XmlWrites.optElem("declarationGoodsItemNumber", g.declarationGoodsItemNumber),
-      XmlWrites.optElem("ducr", g.referenceNumberUCR),
+      XmlWrites.optElem("referenceNumberUCR", g.referenceNumberUCR),
       g.commodity.toXml,
       g.packaging.flatMap(_.toXml)
     )
