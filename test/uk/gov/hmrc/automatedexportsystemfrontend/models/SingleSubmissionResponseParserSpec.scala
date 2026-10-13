@@ -230,7 +230,7 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
       error.description shouldBe Some("Invalid MRN")
       error.path shouldBe Some("mrn")
       error.originalValue shouldBe Some("ABC123")
-      
+
     }
   }
 }

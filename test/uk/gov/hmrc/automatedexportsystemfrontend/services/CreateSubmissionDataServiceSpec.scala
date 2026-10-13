@@ -76,7 +76,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         val location = consignment \ "LocationOfGoods"
 
         consignment.size shouldBe 1
-        (consignment \ "ducr").text shouldBe "5GB000000000000-12345"
+        (consignment \ "referenceNumberUCR").text shouldBe "5GB000000000000-12345"
         location.size shouldBe 1
         (location \ "typeOfLocation").text shouldBe "B"
         (location \ "qualifierOfIdentification").text shouldBe expectedCode
@@ -119,13 +119,13 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<type>1</type>")
       result.value should include("<discrepanciesExist>0</discrepanciesExist>")
       result.value should include("<splitIndicator>0</splitIndicator>")
-      result.value should include("<ducr>5GB000000000000-12345</ducr>")
+      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
 
       result.value should include("<GoodsShipment>")
       result.value should include("<Consignment>")
 
       result.value should include("<modeOfTransportAtTheBorder>1</modeOfTransportAtTheBorder>")
-      result.value should include("<ducr>5GB000000000000-12345</ducr>")
+      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
       result.value should include("<parentUCRID>GB/000000000000-12345</parentUCRID>")
 
       result.value should include("<TransportEquipment>")
@@ -153,12 +153,11 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
 
       result.value should include("<TransportDocument>")
       result.value should include("<type>1</type>")
-      result.value should include("<typeOfIdentification>road</typeOfIdentification>")
-      result.value should include("<ducr>5GB000000000000-12345</ducr>")
+      result.value should include("<referenceNumber>1234</referenceNumber>")
 
       result.value should include("<GoodsItem>")
       result.value should include("<declarationGoodsItemNumber>1</declarationGoodsItemNumber>")
-      result.value should include("<ducr>5GB000000000000-12345</ducr>")
+      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
 
       result.value should include("<Commodity>")
       result.value should include("<GoodsMeasure>")
@@ -278,7 +277,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<splitIndicator>0</splitIndicator>")
       result.value should include("<GoodsShipment>")
       result.value should include("<Consignment>")
-      result.value should include("<ducr>5GB000000000000-12345</ducr>")
+      result.value should include("<referenceNumberUCR>5GB000000000000-12345</referenceNumberUCR>")
       result.value shouldNot include("<modeOfTransportAtTheBorder>")
       result.value shouldNot include("<GoodsItem>")
     }
