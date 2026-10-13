@@ -34,8 +34,26 @@ case class ViewSubmissionViewModel(
   mucr: Option[String],
   anyDiscrepancies: String,
   isSplitExit: String,
-  errors: Seq[String] = Seq.empty
-)
+  errors: Seq[String] = Seq.empty,
+  locationQualifier: Option[String] = None
+) {
+  def identifiedBy(implicit messages: play.api.i18n.Messages): String = {
+    val identification = locationQualifier.map(_.trim.toLowerCase).map {
+      case "u" | "unlocode" =>
+        (messages("locationId.unlocode"), locationUnlocode)
+
+      case "y" | "authorisationnumber" | "authnumber" =>
+        (messages("locationId.authnumber"), locationAuthorisationReferenceNumber)
+
+      case other =>
+        (other, Option.empty[String])
+    }
+
+    identification.fold(locationAdditionalIdentifier.getOrElse("")) { case (label, reference) =>
+      Seq(Some(label), reference.filter(_.nonEmpty), locationAdditionalIdentifier.filter(_.nonEmpty)).flatten.mkString(": ")
+    }
+  }
+}
 
 object ViewSubmissionViewModel {
   implicit val format: Format[ViewSubmissionViewModel] = Json.format[ViewSubmissionViewModel]

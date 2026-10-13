@@ -27,6 +27,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
+import org.jsoup.Jsoup
 
 class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
@@ -103,8 +104,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           }
           body should not include "You can add up to"
           body should not include "<strong>Do you need to add another packaging detail?</strong>"
-          body should not include "Yes"
-          body should not include "No"
+          val document = Jsoup.parse(body)
+          document.select("""input[type="radio"][name="value"]""").isEmpty shouldBe true
           body should include("You cannot add any more packaging details. To add another, you need to remove one first.")
           body should include("Continue")
         }
