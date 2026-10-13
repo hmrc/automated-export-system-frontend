@@ -20,10 +20,11 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancySealsSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
 
@@ -32,17 +33,17 @@ class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answered, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancySealsPage, "sealIdentifier")
+        .set(DiscrepancySealsPage(1), "sealIdentifier")
         .get
 
-      DiscrepancySealsSummary.row(userAnswers) shouldBe Some(
+      DiscrepancySealsSummary.row(1, userAnswers) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancySeals.checkYourAnswersLabel",
-          value = ValueViewModel("sealIdentifier"),
+          value = ValueViewModel(HtmlContent("sealIdentifier")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController.onPageLoad(1, NormalMode).url
             )
               .withVisuallyHiddenText("discrepancySeals.change.hidden")
           )
@@ -52,7 +53,7 @@ class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancySealsSummary.row(userAnswers) shouldBe None
+      DiscrepancySealsSummary.row(1, userAnswers) shouldBe None
     }
   }
 }

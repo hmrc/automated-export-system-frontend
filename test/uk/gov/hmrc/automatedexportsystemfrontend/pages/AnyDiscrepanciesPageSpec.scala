@@ -36,7 +36,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportPage, ContainerDetails("containerId", 99))
             .success
             .value
-            .set(DiscrepancySealsPage, "sealsIdentifier")
+            .set(DiscrepancySealsPage(index), "sealsIdentifier")
             .success
             .value
             .set(DiscrepancyReferencePage, "goodsRef")
@@ -59,7 +59,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
 
           result.get(DiscrepancyConsignmentPage) mustNot be(defined)
           result.get(DiscrepancyTransportPage) mustNot be(defined)
-          result.get(DiscrepancySealsPage) mustNot be(defined)
+          result.get(DiscrepancySealsPage(index)) mustNot be(defined)
           result.get(DiscrepancyReferencePage) mustNot be(defined)
           result.get(DiscrepancyTransportMeansPage) mustNot be(defined)
           result.get(DiscrepancyTransportDocPage) mustNot be(defined)
@@ -77,7 +77,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportPage, ContainerDetails("containerId", 99))
             .success
             .value
-            .set(DiscrepancySealsPage, "sealsIdentifier")
+            .set(DiscrepancySealsPage(index), "sealsIdentifier")
             .success
             .value
             .set(DiscrepancyReferencePage, "goodsRef")
@@ -100,7 +100,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
 
           result.get(DiscrepancyConsignmentPage) mustBe defined
           result.get(DiscrepancyTransportPage) mustBe defined
-          result.get(DiscrepancySealsPage) mustBe defined
+          result.get(DiscrepancySealsPage(index)) mustBe defined
           result.get(DiscrepancyReferencePage) mustBe defined
           result.get(DiscrepancyTransportMeansPage) mustBe defined
           result.get(DiscrepancyTransportDocPage) mustBe defined

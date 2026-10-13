@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
@@ -38,7 +38,7 @@ class CreateNavigator extends Navigator {
     case AnyDiscrepanciesPage                         => anyDiscrepanciesRoute
     case DiscrepancyConsignmentPage                   => _ => createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
     case DiscrepancyTransportPage                     => _ => createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode)
-    case DiscrepancySealsPage(sealsIndex)             => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, NormalMode)
+    case DiscrepancySealsPage(sealsIndex)             => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex)
     case DiscrepancyReferencePage                     => _ => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
     case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
     case DiscrepancyTransportDocPage                  => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
@@ -51,12 +51,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyConsignmentPage => discrepancyConsignmentCheckRoute
     case DiscrepancyTransportPage   => discrepancyTransportCheckRoute
     case DiscrepancySealsPage(sealsIndex) =>
-      userAnswers =>
-        discrepancySealsRoute(
-          userAnswers,
-          sealsIndex,
-          CheckMode
-        ) // TODO: discussion pending with BA map the commented route correctly discrepancySealsCheckRoute, mostly take it out
+      discrepancySealsCheckRoute // TODO: discussion pending with team this will need to be addressed in future tickets
     case DiscrepancyReferencePage                     => discrepancyReferenceCheckRoute
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
@@ -118,16 +113,17 @@ class CreateNavigator extends Navigator {
     }
 
   private def discrepancyTransportCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancySealsPage(1)) match { // TODO: what to do with this route here
-      case None => createRoute.DiscrepancySealsController.onPageLoad(1, CheckMode)
-      case _    => createRoute.CYASubmissionController.onPageLoad()
+    answers.get(DiscrepancySealsPage(1)) match {
+      case None =>
+        createRoute.DiscrepancySealsController.onPageLoad(1, CheckMode) // TODO: navigation in check mode will be handled in future tickets
+      case _ => createRoute.CYASubmissionController.onPageLoad()
     }
 
-//  private def discrepancySealsCheckRoute(answers: UserAnswers): Call =
-//    answers.get(DiscrepancyReferencePage) match {
-//      case None => createRoute.DiscrepancyReferenceController.onPageLoad(CheckMode)
-//      case _    => createRoute.CYASubmissionController.onPageLoad()
-//    }
+  private def discrepancySealsCheckRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyReferencePage) match {
+      case None => createRoute.DiscrepancyReferenceController.onPageLoad(CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
 
   private def discrepancyReferenceCheckRoute(answers: UserAnswers): Call =
     answers.get(DiscrepancyTransportMeansPage) match {
@@ -153,23 +149,13 @@ class CreateNavigator extends Navigator {
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
-//  private def discrepancySealsRoute(userAnswers: UserAnswers, sealsIndex: Int, mode: Mode): Call =
-//    (userAnswers.get(DiscrepancySealsPage(sealsIndex)), mode) match {
-//      case (Some(_), _) =>
-//        createRoute.SealsCYAController.onPageLoad(sealsIndex) // TODO: if I submit a seal as blank like seal 1 it;s going to seal2 cya and
-//      case (None, _) if hasExistingSeals(userAnswers) =>
-//        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with seals list page
-//      case (None, NormalMode) => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
-//      // case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad() TODO: confirm edge case behaviour, this was causing the normal flow to go directly to final submit page when blank submit was done.
-//    }
-  private def discrepancySealsRoute(userAnswers: UserAnswers, sealsIndex: Int, mode: Mode): Call =
+  private def discrepancySealsRoute(userAnswers: UserAnswers, sealsIndex: Int): Call =
     userAnswers.get(DiscrepancySealsPage(sealsIndex)) match {
       case Some(_) =>
-        createRoute.SealsCYAController.onPageLoad(sealsIndex) // TODO: if I submit a seal as blank like seal 1 it;s going to seal2 cya and
+        createRoute.SealsCYAController.onPageLoad(sealsIndex)
       case None if hasExistingSeals(userAnswers) =>
         problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with seals list page
       case None => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
-      // case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad() TODO: confirm edge case behaviour
     }
 
   private def hasExistingSeals(userAnswers: UserAnswers): Boolean =

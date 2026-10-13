@@ -155,8 +155,6 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(DiscrepancyTransportPage, ContainerDetails("containerId123", 99))
         .get
-        .set(DiscrepancySealsPage, "GB12345678")
-        .get
         .set(DiscrepancyReferencePage, "12")
         .get
         .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails("transportType", "transportIdNumber", "countryOfRegistration"))
@@ -204,8 +202,6 @@ class CYASubmissionControllerSpec extends SpecBase {
         body should include("containerId123")
         body should include("Number of seals")
         body should include("99")
-        body should include("Seal identifier")
-        body should include("GB12345678")
         body should include("Declaration Goods Reference")
         body should include("12")
         body should include("Transport means type")

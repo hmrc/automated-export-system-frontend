@@ -23,7 +23,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancySealsFo
 
 class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
 
-  val requiredKey = "discrepancySeals.error.required"
   val lengthKey = "discrepancySeals.error.length"
   val invalidKey = "discrepancySeals.error.invalid"
   val maxLength = 20
@@ -38,7 +37,11 @@ class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+    "must bind to None when the field is missing" in {
+      val result = form.bind(Map.empty[String, String])
+      result.errors mustBe empty
+      result.value.value mustBe None
+    }
 
     "must not bind invalid data" in {
 
@@ -50,6 +53,10 @@ class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
         val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
         result.errors must contain(expectedError)
       }
+    }
+
+    "must bind an entered value as Some" in {
+      form.bind(Map(fieldName -> "SEAL123")).value mustBe Some(Some("SEAL123"))
     }
   }
 }
