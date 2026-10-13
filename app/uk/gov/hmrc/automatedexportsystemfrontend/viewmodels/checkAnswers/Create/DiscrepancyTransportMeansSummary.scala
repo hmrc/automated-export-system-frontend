@@ -30,36 +30,37 @@ object DiscrepancyTransportMeansSummary {
 
   def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportMeansPage).map { answer =>
-
-      val transportType = HtmlFormat.escape(answer.transportType)
-      val transportIdNumber = HtmlFormat.escape(answer.transportIdNumber)
-      val countryOfRegistration = HtmlFormat.escape(answer.countryOfRegistration)
-
       Seq(
-        SummaryListRowViewModel(
-          key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(transportType)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransportMeans.transportType.change.hidden"))
+        answer.transportType.map { transportType =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransportMeans.transportType.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(HtmlFormat.escape(transportType))),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransportMeans.transportType.change.hidden"))
+            )
           )
-        ),
-        SummaryListRowViewModel(
-          key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(transportIdNumber)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransportMeans.transportIdNumber.change.hidden"))
+        },
+        answer.transportIdNumber.map { transportIdNumber =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransportMeans.transportIdNumber.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(HtmlFormat.escape(transportIdNumber))),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransportMeans.transportIdNumber.change.hidden"))
+            )
           )
-        ),
-        SummaryListRowViewModel(
-          key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(countryOfRegistration)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransportMeans.countryOfRegistration.change.hidden"))
+        },
+        answer.countryOfRegistration.map { countryOfRegistration =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransportMeans.countryOfRegistration.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(HtmlFormat.escape(countryOfRegistration))),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransportMeans.countryOfRegistration.change.hidden"))
+            )
           )
-        )
-      )
+        }
+      ).flatten
     }
 }

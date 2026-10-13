@@ -21,7 +21,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
 case class Seal(
   sequenceNumber: Int, // Note: optional in the schema but we can easily provide it on behalf of the user
-  identifier: String // Note: optional in the schema but mandatory in the journey
+  identifier: String
 )
 
 object Seal {

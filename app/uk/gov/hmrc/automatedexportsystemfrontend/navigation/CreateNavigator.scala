@@ -24,6 +24,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 class CreateNavigator extends Navigator {
 
@@ -43,7 +44,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
     case DiscrepancyTransportDocPage                  => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
     case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
-    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex)
+    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
   override val checkRoutes: Page => UserAnswers => Call = {
     case IsSplitExitPage            => isSplitExitCheckRoute
@@ -56,7 +57,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
-    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex)
+    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, CheckMode)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
   }
 

@@ -123,7 +123,33 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyTransportRoute)
-            .withFormUrlEncodedBody(("containerId", "value 1"), ("numberOfSeals", "99"))
+            .withFormUrlEncodedBody(("containerId", "CONT123"), ("numberOfSeals", "99"))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe onwardRoute.url
+      }
+    }
+
+    "must redirect to the next page when both fields are blank" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, discrepancyTransportRoute)
+            .withFormUrlEncodedBody(("containerId", ""), ("numberOfSeals", ""))
 
         val result = route(application, request).value
 
@@ -141,7 +167,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyTransportRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            .withFormUrlEncodedBody(("containerId", "abc123 "), ("numberOfSeals", "99"))
 
         val result = route(application, request).value
 

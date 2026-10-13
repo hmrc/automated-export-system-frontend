@@ -34,7 +34,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, Fa
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.LocationIdPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.LocationIdView
-import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
@@ -89,9 +88,9 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
     "must populate the view correctly on a GET when the question has previously been answered" in {
       val locationDetails = LocationDetails(
         locationType = LocationQualifier.UnLocode,
-        unlocode = "value 2",
-        locationAdditionalIdentifier = "value 3",
-        authorisationReferenceNumber = "value 4"
+        unlocode = Some("value 2"),
+        locationAdditionalIdentifier = Some("value 3"),
+        authorisationReferenceNumber = Some("value 4")
       )
 
       val userAnswers = UserAnswers(userAnswersId).set(LocationIdPage, locationDetails).success.value
@@ -155,6 +154,38 @@ class LocationIdControllerSpec extends SpecBase with MockitoSugar {
               ("unlocode", "value 2"),
               ("locationAdditionalIdentifier", "ABCD"),
               ("authorisationReferenceNumber", "value4")
+            )
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe onwardRoute.url
+      }
+    }
+
+    "must redirect when a qualifier is selected and optional fields are blank" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, locationIdRoute)
+            .withFormUrlEncodedBody(
+              ("locationType", "unlocode"),
+              ("unlocode", ""),
+              ("locationAdditionalIdentifier", ""),
+              ("authorisationReferenceNumber", "")
             )
 
         val result = route(application, request).value

@@ -30,27 +30,27 @@ object DiscrepancyTransportSummary {
 
   def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyTransportPage).map { answer =>
-
-      val containerId = HtmlFormat.escape(answer.containerId)
-      val numberOfSeals = answer.numberOfSeals.toString
-
       Seq(
-        SummaryListRowViewModel(
-          key = "discrepancyTransport.containerId.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(containerId)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
+        answer.containerId.map { containerId =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransport.containerId.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(HtmlFormat.escape(containerId))),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
+            )
           )
-        ),
-        SummaryListRowViewModel(
-          key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(numberOfSeals)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-              .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
+        },
+        answer.numberOfSeals.map { numberOfSeals =>
+          SummaryListRowViewModel(
+            key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(numberOfSeals.toString)),
+            actions = Seq(
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
+                .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
+            )
           )
-        )
-      )
+        }
+      ).flatten
     }
 }

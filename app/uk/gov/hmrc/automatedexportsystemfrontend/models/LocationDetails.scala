@@ -20,9 +20,9 @@ import play.api.libs.json.*
 
 case class LocationDetails(
   locationType: LocationQualifier,
-  unlocode: String,
-  locationAdditionalIdentifier: String,
-  authorisationReferenceNumber: String
+  unlocode: Option[String],
+  locationAdditionalIdentifier: Option[String],
+  authorisationReferenceNumber: Option[String]
 )
 
 object LocationDetails {

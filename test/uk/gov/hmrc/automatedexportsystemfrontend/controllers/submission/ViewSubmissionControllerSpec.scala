@@ -26,14 +26,39 @@ import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponse, SubmissionSummaryResponseList}
-import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SingleSubmissionResponseParser, SubmissionSummaryResponse, SubmissionSummaryResponseList}
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.http.{SessionKeys, UpstreamErrorResponse}
 
 import java.time.LocalDateTime
 import java.util.UUID
 import scala.concurrent.Future
 
 class ViewSubmissionControllerSpec extends SpecBase {
+
+  private val xml =
+    """<Submission>
+      |  <submissionId>12345</submissionId>
+      |  <status>1</status>
+      |  <ExportOperation>
+      |    <type>1</type>
+      |    <MRN>mrn12345</MRN>
+      |    <discrepanciesExist>1</discrepanciesExist>
+      |    <splitIndicator>1</splitIndicator>
+      |  </ExportOperation>
+      |  <CustomsOfficeOfExitActual>
+      |    <referenceNumber>GB000051</referenceNumber>
+      |  </CustomsOfficeOfExitActual>
+      |  <GoodsShipment>
+      |    <Consignment>
+      |      <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
+      |      <LocationOfGoods>
+      |        <qualifierOfIdentification>q</qualifierOfIdentification>
+      |      </LocationOfGoods>
+      |    </Consignment>
+      |  </GoodsShipment>
+      |  <updatedAt>2026-08-11T00:00:00</updatedAt>
+      |</Submission>""".stripMargin
 
   "ViewSubmissionController" - {
 
@@ -42,6 +67,7 @@ class ViewSubmissionControllerSpec extends SpecBase {
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
       val mockAutomatedExportSystemConnector = mock[AutomatedExportSystemConnector]
 
+      val mockSessionRepository = mock[SessionRepository]
       val enrolmentIdentifier =
         uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
 
@@ -51,39 +77,28 @@ class ViewSubmissionControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      val submission = SubmissionSummaryResponse(
-        submissionId = UUID.randomUUID(),
-        mrn = "24GB12345678901234",
-        ducr = Some("8GB1234567890123456"),
-        officeOfExitCode = "GB000051",
-        updatedAt = LocalDateTime.of(2026, 8, 17, 10, 30),
-        status = 1
-      )
-
-      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
-        .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq(submission))))
+      when(mockAutomatedExportSystemConnector.getSingleSubmission(any[String])(any()))
+        .thenReturn(Future.successful(SingleSubmissionResponseParser.parse(scala.xml.XML.loadString(xml))))
+      when(mockSessionRepository.set(any())).thenReturn(Future.successful(true))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(
           bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
-          bind[AutomatedExportSystemConnector].toInstance(mockAutomatedExportSystemConnector)
+          bind[AutomatedExportSystemConnector].toInstance(mockAutomatedExportSystemConnector),
+          bind[SessionRepository].toInstance(mockSessionRepository)
         )
         .build()
 
       running(application) {
-
-        val request =
-          FakeRequest(GET, routes.ViewSubmissionController.onPageLoad(submission.submissionId.toString).url)
-            .withSession(SessionKeys.sessionId -> "some-session-id")
+        val request = FakeRequest(GET, routes.ViewSubmissionController.onPageLoad("12345").url)
+          .withSession(SessionKeys.sessionId -> "some-session-id")
 
         val result = route(application, request).value
 
         status(result) shouldBe OK
-
         val body = contentAsString(result)
-
-        body should include("24GB12345678901234")
-        body should include("8GB1234567890123456")
+        body should include("mrn12345")
+        body should include("referenceNumberUcr")
       }
     }
 
@@ -101,8 +116,8 @@ class ViewSubmissionControllerSpec extends SpecBase {
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
 
-      when(mockAutomatedExportSystemConnector.getSubmissionSummaryResponses()(any()))
-        .thenReturn(Future.successful(SubmissionSummaryResponseList(Seq.empty)))
+      when(mockAutomatedExportSystemConnector.getSingleSubmission(any[String])(any()))
+        .thenReturn(Future.failed(UpstreamErrorResponse("not found", NOT_FOUND)))
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(

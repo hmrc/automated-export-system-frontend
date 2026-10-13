@@ -24,18 +24,35 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 object AmendEnterDucrSummary {
 
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendEnterDucrPage(submissionId)).map { answer =>
-      SummaryListRowViewModel(
-        key = "enterDucr.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answer).toString),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendEnterDucrController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("enterDucr.change.hidden"))
-        )
-      )
+      build(answer, submissionId, withChangeLink = true)
     }
+
+  def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
+
+  def lockedRow(value: String, submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    row(value, submissionId, withChangeLink = false).map { summaryRow =>
+      summaryRow.copy(value = ValueViewModel(HtmlContent(HtmlFormat.raw(s"""<span style="white-space: nowrap;">${HtmlFormat.escape(
+        value
+      )}</span><br>${HtmlFormat.escape(messages("amendCheckYourAnswers.cannotBeAmended"))}"""))))
+    }
+
+  private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "enterDucr.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(value).toString),
+      actions =
+        if (withChangeLink)
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendEnterDucrController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("enterDucr.change.hidden"))
+          )
+        else Seq.empty
+    )
 }

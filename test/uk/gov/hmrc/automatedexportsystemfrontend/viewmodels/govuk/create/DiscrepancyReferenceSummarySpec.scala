@@ -32,7 +32,7 @@ class DiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answered, return the summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyReferencePage, "declarationGoodsReference")
+        .set(DiscrepancyReferencePage, Some("declarationGoodsReference"))
         .get
 
       DiscrepancyReferenceSummary.row(userAnswers) shouldBe Some(
@@ -48,6 +48,14 @@ class DiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
           )
         )
       )
+    }
+
+    "when the reference is blank, return no summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyReferencePage, Option.empty[String])
+        .get
+
+      DiscrepancyReferenceSummary.row(userAnswers) shouldBe None
     }
 
     "when answer unavailable, return empty" in {

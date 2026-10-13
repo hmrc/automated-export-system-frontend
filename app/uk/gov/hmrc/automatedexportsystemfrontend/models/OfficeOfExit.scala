@@ -17,7 +17,6 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 import uk.gov.hmrc.govukfrontend.views.viewmodels.select.SelectItem
 
 sealed trait OfficeOfExit
@@ -32,12 +31,17 @@ object OfficeOfExit extends Enumerable.Implicits {
 
   val values: Seq[OfficeOfExit] = Seq(Belfast, Larne, Warrenpoint, Foyle)
 
+  implicit val enumerable: Enumerable[OfficeOfExit] =
+    Enumerable(values.map(value => value.toString -> value): _*)
+
+  def fromCode(code: String): OfficeOfExit =
+    enumerable
+      .withName(code)
+      .getOrElse(throw new NoSuchElementException(s"Unknown office of exit code: $code"))
+
   def options(implicit messages: Messages): Seq[SelectItem] =
     SelectItem(text = messages(s"officeOfExit.placeholder"), value = None, disabled = true, selected = false)
       +: values.zipWithIndex.map { case (value, index) =>
         SelectItem(text = messages(s"officeOfExit.${value.toString}"), value = Some(value.toString))
       }
-
-  implicit val enumerable: Enumerable[OfficeOfExit] =
-    Enumerable(values.map(v => v.toString -> v): _*)
 }

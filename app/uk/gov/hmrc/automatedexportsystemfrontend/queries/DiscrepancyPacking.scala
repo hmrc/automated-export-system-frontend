@@ -18,6 +18,9 @@ package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{PackingDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
+
+import scala.util.Try
 
 case object DiscrepancyPacking extends Gettable[List[PackingDetails]] with Settable[List[PackingDetails]] {
   override def path: JsPath = JsPath \ "standard" \ "discrepancyPacking"
@@ -29,4 +32,11 @@ case object DiscrepancyPacking extends Gettable[List[PackingDetails]] with Setta
   def count(userAnswers: UserAnswers): Int = getAll(userAnswers).size
 
   def remaining(userAnswers: UserAnswers): Int = math.max(0, maxPackagingDetails - count(userAnswers))
+
+  def exists(userAnswers: UserAnswers, packagingDetailIndex: Int): Boolean = userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)).isDefined
+
+  def nextIndex(userAnswers: UserAnswers): Int = count(userAnswers) + 1
+
+  def removeOne(userAnswers: UserAnswers, packagingDetailIndex: Int): Try[UserAnswers] =
+    userAnswers.remove(DiscrepancyPackingPage(packagingDetailIndex))
 }

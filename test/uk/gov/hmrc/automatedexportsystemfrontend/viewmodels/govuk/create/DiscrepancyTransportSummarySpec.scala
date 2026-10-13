@@ -33,7 +33,7 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
 
   "rows" - {
     "when answered, return the summary rows" in {
-      val containerDetails = ContainerDetails("containerId", 99)
+      val containerDetails = ContainerDetails(Some("containerId"), Some(99))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportPage, containerDetails)
         .get
@@ -69,6 +69,37 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
       DiscrepancyTransportSummary.rows(userAnswers) shouldBe None
+    }
+
+    "when both fields are blank, return no summary rows" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyTransportPage, ContainerDetails(None, None))
+        .get
+
+      DiscrepancyTransportSummary.rows(userAnswers) shouldBe Some(Seq.empty)
+    }
+
+    "when only the container ID is entered, return its summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
+        .get
+
+      val rows = DiscrepancyTransportSummary.rows(userAnswers).get
+
+      rows.size shouldBe 1
+      rows.head.key.content shouldBe
+        uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text("discrepancyTransport.containerId.checkYourAnswersLabel")
+    }
+
+    "when only zero seals is entered, return its summary row" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyTransportPage, ContainerDetails(None, Some(0)))
+        .get
+
+      val rows = DiscrepancyTransportSummary.rows(userAnswers).get
+
+      rows.size shouldBe 1
+      rows.head.value.content shouldBe HtmlContent("0")
     }
   }
 }

@@ -22,9 +22,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 case class LocationOfGoods(
   typeOfLocation: TypeOfLocation,
   qualifierOfIdentification: QualifierOfTheIdentification,
-  authorisationNumber: String, // Note: optional in the schema but mandatory in the journey
-  additionalIdentifier: String, // Note: optional in the schema but mandatory in the journey
-  UNLocode: String // Note: optional in the schema but mandatory in the journey
+  authorisationNumber: Option[String],
+  additionalIdentifier: Option[String],
+  UNLocode: Option[String]
 )
 
 object LocationOfGoods {
@@ -35,9 +35,9 @@ object LocationOfGoods {
       "LocationOfGoods",
       XmlWrites.elem("typeOfLocation", l.typeOfLocation.toXml),
       XmlWrites.elem("qualifierOfIdentification", l.qualifierOfIdentification.toXml),
-      XmlWrites.textElem("authorisationNumber", l.authorisationNumber),
-      XmlWrites.textElem("additionalIdentifier", l.additionalIdentifier),
-      XmlWrites.textElem("UNLocode", l.UNLocode)
+      XmlWrites.optElem("authorisationNumber", l.authorisationNumber),
+      XmlWrites.optElem("additionalIdentifier", l.additionalIdentifier),
+      XmlWrites.optElem("UNLocode", l.UNLocode)
     )
   }
 }

@@ -18,109 +18,173 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
+import org.jsoup.Jsoup
+import org.jsoup.nodes.Element
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import uk.gov.hmrc.auth.core.Enrolments
+import uk.gov.hmrc.auth.core.{EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{OfficeOfExit, PartOfConsolidationAnswer}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  CheckMode,
+  LocationDetails,
+  LocationQualifier,
+  LocationType,
+  NormalMode,
+  OfficeOfExit,
+  PartOfConsolidationAnswer
+}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.http.SessionKeys
 
 import scala.concurrent.Future
 
 class AmendCYASubmissionControllerSpec extends SpecBase {
 
-//  "CYASubmissionController" - {
-//
-//    "must return OK and the correct view for a GET" in {
-//      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
-//      val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
-//      val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
-//
-//      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
-//        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
-//
-//      val userAnswers = emptyUserAnswers
-//        .set(AmendEnterMrnPage("submissionId"), "MRN")
-//        .get
-//        .set(AmendIsSplitExitPage("submissionId"), false)
-//        .get
-//        .set(AmendEnterDucrPage("submissionId"), "DUCR")
-//        .get
-//        .set(AmendPartOfConsolidationPage("submissionId"), PartOfConsolidationAnswer(true, Some("123")))
-//        .get
-//        .set(AmendOfficeOfExitPage("submissionId"), OfficeOfExit.Belfast)
-//        .get
-//        .set(AmendAnyDiscrepanciesPage("submissionId"), false)
-//        .get
-//
-//      val application = applicationBuilder(userAnswers = Some(userAnswers))
-//        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-//        .build()
-//
-//      val exportOperationList = SummaryListViewModel(
-//        Seq(
-//          AmendEnterMrnSummary.row(userAnswers)("submissionId")(messages(application)),
-//          AmendIsSplitExitSummary.row(userAnswers)("submissionId")(messages(application))
-//        ).flatten
-//      )
-//
-//      val consignmentList = SummaryListViewModel(
-//        Seq(
-//          AmendEnterDucrSummary.row(userAnswers)("submissionId")(messages(application)),
-//          AmendPartOfConsolidationSummary.row(userAnswers)(messages(application))
-//        ).flatten
-//      )
-//
-//      val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(userAnswers)("submissionId")(messages(application))).flatten)
-//
-//      val extraRowsList = SummaryListViewModel(Seq(AmendAnyDiscrepanciesSummary.row(userAnswers)("submissionId")(messages(application))).flatten)
-//
-//      running(application) {
-//        val request = FakeRequest(GET, amendRoute.AmendCYASubmissionController.onPageLoad().url)
-//          .withSession(SessionKeys.sessionId -> "some-session-id")
-//        val result = route(application, request).value
-//
-//        val view = application.injector.instanceOf[AmendCYASubmissionView]
-//        status(result) shouldBe OK
-//        val body = contentAsString(result)
-//        body should include("MRN")
-//        body should include("Is this a split exit?")
-//        body should include("DUCR")
-//        body should include("Yes - MUCR: 123")
-//        body should include("Belfast")
-//        body should include("Are there any discrepancies with this consignment?")
-//      }
-//    }
-//
-//    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-//      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
-//      val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
-//      val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
-//
-//      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
-//        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
-//
-//      val application = applicationBuilder(userAnswers = None)
-//        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-//        .build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, amendRoute.AmendCYASubmissionController.onPageLoad().url)
-//
-//        val result = route(application, request).value
-//
-//        status(result) shouldBe SEE_OTHER
-//        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
-//      }
-//    }
-//  }
+  "AmendCYASubmissionController" - {
+
+    "must return OK and render CYA page for a GET" in {
+      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+      val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "some-eori")
+      val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
+
+      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+      val submissionId = "submissionId"
+
+      val userAnswers = emptyUserAnswers
+        .set(AmendEnterMrnPage(submissionId), "MRN")
+        .get
+        .set(AmendIsSplitExitPage(submissionId), false)
+        .get
+        .set(AmendEnterDucrPage(submissionId), "DUCR")
+        .get
+        .set(AmendPartOfConsolidationPage(submissionId), PartOfConsolidationAnswer(boolean = true, mucr = Some("123")))
+        .get
+        .set(AmendOfficeOfExitPage(submissionId), OfficeOfExit.Belfast)
+        .get
+        .set(AmendAnyDiscrepanciesPage(submissionId), false)
+        .get
+        .set(AmendLocationTypePage(submissionId), LocationType.AuthorisedPlace)
+        .get
+        .set(
+          AmendLocationIdPage(submissionId),
+          LocationDetails(
+            locationType = LocationQualifier.AuthorisationNumber,
+            unlocode = None,
+            locationAdditionalIdentifier = Some("ABCD"),
+            authorisationReferenceNumber = Some("GB/SSE/2024/00471")
+          )
+        )
+        .get
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, submissionId).url)
+          .withSession(SessionKeys.sessionId -> "some-session-id")
+
+        val result = route(application, request).value
+
+        status(result) shouldBe OK
+        val body = contentAsString(result)
+        val document = Jsoup.parse(body)
+
+        def summaryRow(label: String): Element = {
+          val rows = document.select(".govuk-summary-list__row")
+          val matchingRow = (0 until rows.size()).map(rows.get).find { row =>
+            row.select(".govuk-summary-list__key").text() == label
+          }
+
+          withClue(s"Missing summary row: $label") {
+            matchingRow shouldBe defined
+          }
+
+          matchingRow.get
+        }
+
+        def assertChangeLink(label: String, expectedUrl: String): Unit = {
+          val links = summaryRow(label).select(".govuk-summary-list__actions a")
+          links.size() shouldBe 1
+          links.first().attr("href") shouldBe expectedUrl
+        }
+
+        document.select("h1").text() shouldBe "Review and amend your submission"
+        document.select(".govuk-caption-l").text() shouldBe s"Amending $submissionId"
+
+        summaryRow("MRN").select(".govuk-summary-list__value").text() shouldBe
+          "MRN Cannot be amended"
+        summaryRow("MRN").select("a").isEmpty shouldBe true
+
+        summaryRow("DUCR").select(".govuk-summary-list__value").text() shouldBe
+          "DUCR Cannot be amended"
+        summaryRow("DUCR").select("a").isEmpty shouldBe true
+
+        summaryRow("Discrepancies").select(".govuk-summary-list__value").text() shouldBe "No"
+        summaryRow("Split exit").select(".govuk-summary-list__value").text() shouldBe "No"
+        summaryRow("MUCR").select(".govuk-summary-list__value").text() shouldBe "123"
+
+        summaryRow("Office of exit").select(".govuk-summary-list__value").text() should not be empty
+        summaryRow("Type of location").select(".govuk-summary-list__value").text() shouldBe
+          "Authorised place"
+
+        val identifiedBy = summaryRow("Identified by")
+          .select(".govuk-summary-list__value")
+          .text()
+
+        identifiedBy should include("GB/SSE/2024/00471")
+        identifiedBy should include("ABCD")
+
+        summaryRow("Reference number").select(".govuk-summary-list__value").text() shouldBe
+          "GB/SSE/2024/00471"
+
+        summaryRow("Contact").select(".govuk-summary-list__value").text() shouldBe ""
+        summaryRow("Contact").select("a").isEmpty shouldBe true
+
+        summaryRow("Authorisation type").select(".govuk-summary-list__value").text() shouldBe ""
+        summaryRow("Authorisation type").select("a").isEmpty shouldBe true
+
+        assertChangeLink("Discrepancies", amendRoute.AmendAnyDiscrepanciesController.onPageLoad(CheckMode, submissionId).url)
+        assertChangeLink("Split exit", amendRoute.AmendIsSplitExitController.onPageLoad(CheckMode, submissionId).url)
+        assertChangeLink("MUCR", amendRoute.AmendPartOfConsolidationController.onPageLoad(CheckMode, submissionId).url)
+        assertChangeLink("Office of exit", amendRoute.AmendOfficeOfExitController.onPageLoad(CheckMode, submissionId).url)
+        assertChangeLink("Type of location", amendRoute.AmendLocationTypeController.onPageLoad(CheckMode, submissionId).url)
+        assertChangeLink("Identified by", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+        assertChangeLink("Reference number", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+
+        document.select("form").attr("action") shouldBe
+          amendRoute.AmendCYASubmissionController.onSubmit(NormalMode, submissionId).url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+      val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+      val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "some-eori")
+      val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
+
+      when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
+        .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, "submissionId").url)
+          .withSession(SessionKeys.sessionId -> "some-session-id")
+
+        val result = route(application, request).value
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe
+          problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+  }
 }

@@ -58,5 +58,14 @@ class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
     "must bind an entered value as Some" in {
       form.bind(Map(fieldName -> "SEAL123")).value mustBe Some(Some("SEAL123"))
     }
+
+    "must bind a missing value as None" in {
+      form.bind(Map.empty[String, String]).value mustBe Some(None)
+    }
+
+    "must bind an empty value as None" in {
+      form.bind(Map(fieldName -> "")).value mustBe Some(None)
+    }
+
   }
 }

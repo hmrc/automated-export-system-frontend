@@ -28,16 +28,27 @@ object AmendAnyDiscrepanciesSummary {
 
   def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(AmendAnyDiscrepanciesPage(submissionId)).map { answer =>
-
-      val value = if (answer) "site.yes" else "site.no"
-
-      SummaryListRowViewModel(
-        key = "anyDiscrepancies.checkYourAnswersLabel",
-        value = ValueViewModel(value),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendAnyDiscrepanciesController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("anyDiscrepancies.change.hidden"))
-        )
-      )
+      build(answer, submissionId, withChangeLink = true)
     }
+
+  def row(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
+
+  def reviewRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    row(answers)(submissionId).map(_.copy(key = "viewSubmission.exportOperation.discrepancies"))
+
+  private def build(value: Boolean, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow = {
+    val display = if (value) messages("site.yes") else messages("site.no")
+    SummaryListRowViewModel(
+      key = "anyDiscrepancies.checkYourAnswersLabel",
+      value = ValueViewModel(display),
+      actions =
+        if (withChangeLink)
+          Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendAnyDiscrepanciesController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("anyDiscrepancies.change.hidden"))
+          )
+        else Seq.empty
+    )
+  }
 }

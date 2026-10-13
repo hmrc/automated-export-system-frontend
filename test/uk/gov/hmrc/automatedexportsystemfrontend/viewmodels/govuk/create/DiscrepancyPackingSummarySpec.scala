@@ -21,7 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PackingDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyPackingSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
@@ -32,13 +32,58 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "rows" - {
-    "when answered, return the summary rows" in {
+    "when answered, return the summary rows in NormalMode" in {
       val packingDetails = PackingDetails("BX", 2, "MARKS123")
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyPackingPage(1), packingDetails)
         .get
 
-      DiscrepancyPackingSummary.rows(1, userAnswers) shouldBe Some(
+      DiscrepancyPackingSummary.rows(1, userAnswers, NormalMode) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("BX")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+              )
+                .withVisuallyHiddenText("discrepancyPacking.packagingCode.change.hidden")
+            )
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("2")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+              )
+                .withVisuallyHiddenText("discrepancyPacking.numberOfPackages.change.hidden")
+            )
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("MARKS123")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+              )
+                .withVisuallyHiddenText("discrepancyPacking.shippingMarks.change.hidden")
+            )
+          )
+        )
+      )
+    }
+
+    "when answered, return the summary rows in CheckMode" in {
+      val packingDetails = PackingDetails("BX", 2, "MARKS123")
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyPackingPage(1), packingDetails)
+        .get
+
+      DiscrepancyPackingSummary.rows(1, userAnswers, CheckMode) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
@@ -79,7 +124,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyPackingSummary.rows(1, userAnswers) shouldBe None
+      DiscrepancyPackingSummary.rows(1, userAnswers, NormalMode) shouldBe None
     }
   }
 }

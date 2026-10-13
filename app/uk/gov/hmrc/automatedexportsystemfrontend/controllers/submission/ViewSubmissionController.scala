@@ -21,42 +21,37 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponseList, SubmissionViewModelMapper}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponseList, SubmissionViewModelMapper, ViewSubmissionViewModelMapper}
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.utils.AmendmentAnswersMapper
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import javax.inject.Inject
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class ViewSubmissionController @Inject() (
   override val messagesApi: MessagesApi,
   override val controllerComponents: MessagesControllerComponents,
   view: ViewSubmissionView,
   automatedExportSystemConnector: AutomatedExportSystemConnector,
+  answerMapper: AmendmentAnswersMapper,
+  sessionRepository: SessionRepository,
   actionBuilder: AesAuthRequestActionBuilder
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
 
   def onPageLoad(submissionId: String): Action[AnyContent] =
     actionBuilder.async { implicit request =>
-      automatedExportSystemConnector
-        .getSubmissionSummaryResponses()
-        .map[Result] { response =>
-          response.submissions
-            .find(_.submissionId.toString == submissionId)
-            .map { submission =>
-              val summary =
-                SubmissionViewModelMapper
-                  .toViewModel(SubmissionSummaryResponseList(Seq(submission)))
-                  .summaries
-                  .head
-
-              Ok(view(summary))
-            }
-            .getOrElse {
-              logger.warn(s"No submission found for submission Id $submissionId")
-              NotFound("Not Found")
-            }
-        }
+      (for {
+        response <- automatedExportSystemConnector.getSingleSubmission(submissionId)
+        answers <- Future.fromTry(answerMapper.toUserAnswers(submissionId, response))
+        viewModel = ViewSubmissionViewModelMapper.toViewModel(response)
+        _ <- sessionRepository.set(answers)
+      } yield Ok(view(viewModel))).recover { case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
+        logger.warn(s"No submission found for submission Id $submissionId")
+        NotFound("Not Found")
+      }
     }
 }

@@ -28,7 +28,7 @@ class AmendPartOfConsolidationFormProvider @Inject() extends Mappings {
 
   def apply(): Form[PartOfConsolidationAnswer] =
     Form(
-      mapping("boolean" -> boolean("partOfConsolidation.error.required"), "mucr" -> optional(text()))(PartOfConsolidationAnswer.apply)(answer =>
+      mapping("boolean" -> boolean("mucr.error.required"), "mucr" -> optional(text()))(PartOfConsolidationAnswer.apply)(answer =>
         Some((answer.boolean, answer.mucr))
       )
     )

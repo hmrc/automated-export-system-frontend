@@ -32,9 +32,9 @@ object LocationIdSummary {
     answers.get(LocationIdPage).map { answer =>
 
       val locationType = HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}"))
-      val unlocode = HtmlFormat.escape(answer.unlocode)
-      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier)
-      val authorisationReferenceNumber = HtmlFormat.escape(answer.authorisationReferenceNumber)
+      val unlocode = HtmlFormat.escape(answer.unlocode.getOrElse(""))
+      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier.getOrElse(""))
+      val authorisationReferenceNumber = HtmlFormat.escape(answer.authorisationReferenceNumber.getOrElse(""))
 
       Seq(
         SummaryListRowViewModel(
