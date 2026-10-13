@@ -17,10 +17,12 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.maxNumberOfSealsInList
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 
 case object DiscrepancySeals extends Gettable[List[String]] with Settable[List[String]] {
+
+  private val maxNumberOfSealsInList = 99
+
   override def path: JsPath = JsPath \ "standard" \ "discrepancySeals"
 
   def getAll(userAnswers: UserAnswers): List[String] = userAnswers.get(this).getOrElse(Nil)

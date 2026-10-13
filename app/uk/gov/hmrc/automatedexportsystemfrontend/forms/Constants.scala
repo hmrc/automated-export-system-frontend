@@ -72,6 +72,4 @@ object Constants {
   lazy val numberOfSealsMaxValue = 9999
 
   lazy val numberOfPackagesMaxValue = 99999999
-
-  lazy val maxNumberOfSealsInList = 99
 }
