@@ -34,6 +34,7 @@ case class ViewSubmissionViewModel(
   mucr: Option[String],
   anyDiscrepancies: String,
   isSplitExit: String,
+  errors: Seq[String] = Seq.empty,
   locationQualifier: Option[String] = None
 ) {
   def identifiedBy(implicit messages: play.api.i18n.Messages): String = {
