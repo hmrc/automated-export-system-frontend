@@ -69,7 +69,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
                                          |            <GoodsShipment>
                                          |              <Consignment>
                                          |                <modeOfTransportAtTheBorder>1</modeOfTransportAtTheBorder>
-                                         |                <ducr>referenceNumberUcr</ducr>
+                                         |                <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
                                          |                <parentUCRID>parentUcrId</parentUCRID>
                                          |                <TransportEquipment>
                                          |                  <sequenceNumber>1</sequenceNumber>
