@@ -152,7 +152,7 @@ object SingleSubmissionResponseParser {
     SingleSubmissionGoodsItem(
       declarationGoodsItemNumber = (xml \ "declarationGoodsItemNumber").headOption
         .map(_.text.trim.toInt),
-      referenceNumberUCR = (xml \ "ducr").headOption
+      referenceNumberUCR = (xml \ "referenceNumberUCR").headOption
         .map(_.text.trim)
         .filter(_.nonEmpty),
       commodity = parseCommodity(
