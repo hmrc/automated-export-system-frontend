@@ -65,6 +65,16 @@ amendCheckYourAnswers.warning = By submitting this amendment you are confirming 
 amendCheckYourAnswers.submit = Submit amendment
 amendCheckYourAnswers.cancel = Cancel and go back
 
+amendSubmissionConfirmation.title = Amendment submitted
+amendSubmissionConfirmation.reference = Original MRN
+amendSubmissionConfirmation.subheading = What happens next
+amendSubmissionConfirmation.message1 = Your amendment has been sent to the Customs Declaration Service for revalidation. This process is the same as for the original submission - you will receive an Accepted, Rejected, or Awaiting decision outcome.
+amendSubmissionConfirmation.message2 = While the amendment is being processed, the previous version of your submission remains on record.
+amendSubmissionConfirmation.inset.heading = Important:
+amendSubmissionConfirmation.inset.message = If your amendment is rejected, you will need to correct and resubmit. The original submission details will still apply until a valid amendment is accepted.
+amendSubmissionConfirmation.returnToSubmissions = Return to your submissions
+amendSubmissionConfirmation.returnToStart = Return to start
+
 journeyRecovery.continue.title = Sorry, there is a problem with the service
 journeyRecovery.continue.heading = Sorry, there is a problem with the service
 journeyRecovery.continue.guidance = [Add content to explain how to proceed.]

@@ -54,10 +54,10 @@ class AmendmentAnswersMapper {
 
   private def mapLocationQualifier(value: String): LocationQualifier =
     value.trim.toLowerCase match {
-      case "unlocode" =>
+      case "u" | "unlocode" =>
         LocationQualifier.UnLocode
 
-      case "authorisationnumber" =>
+      case "y" | "authorisationnumber" | "authnumber" =>
         LocationQualifier.AuthorisationNumber
 
       case _ =>
