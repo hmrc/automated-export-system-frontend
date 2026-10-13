@@ -15,8 +15,47 @@
  */
 
 package uk.gov.hmrc.automatedexportsystemfrontend.helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{
+  SingleSubmissionConsignment,
+  SingleSubmissionCustomsOfficeOfExitActual,
+  SingleSubmissionExportOperation,
+  SingleSubmissionGoodsShipment,
+  SingleSubmissionLocationOfGoods,
+  SingleSubmissionResponse
+}
+
+import java.time.{Clock, Instant, LocalDateTime, ZoneOffset}
 
 object TestFixture {
   val testGroupId = "test-group-id"
   val testAuthorityId = "test-authority-id"
+  val testMrn = "24GB12345678901234"
+  private val fixedInstant = Instant.parse("2025-06-03T00:00:00Z")
+  private val clock = Clock.fixed(fixedInstant, ZoneOffset.UTC)
+
+  val testLocationOfGoods = SingleSubmissionLocationOfGoods(
+    typeOfLocation = "test",
+    qualifierOfIdentification = "test",
+    authorisationNumber = None,
+    additionalIdentifier = None,
+    UNLocode = None
+  )
+
+  val testConsignment = SingleSubmissionConsignment(
+    modeOfTransportAtTheBorder = None,
+    referenceNumberUCR = "test",
+    parentUCRID = None,
+    transportEquipment = None,
+    locationOfGoods = testLocationOfGoods,
+    activeBorderTransportMeans = None,
+    transportDocument = None
+  )
+
+  def singleSubmission(submissionId: String, mrn: String = testMrn): SingleSubmissionResponse = SingleSubmissionResponse(
+    submissionId = submissionId,
+    exportOperation = SingleSubmissionExportOperation(exportOperationType = "test", splitIndicator = 0, mrn = mrn, discrepanciesExist = 0),
+    customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual(referenceNumber = "testRef"),
+    goodsShipment = Some(SingleSubmissionGoodsShipment(consignment = testConsignment, goodsItems = None)),
+    updatedAt = LocalDateTime.now(clock)
+  )
 }

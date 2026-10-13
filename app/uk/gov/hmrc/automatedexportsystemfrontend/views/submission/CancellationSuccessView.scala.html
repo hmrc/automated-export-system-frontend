@@ -28,7 +28,7 @@ govukPanel: GovukPanel
 )
 
 
-@(submission: SubmissionSummary)(implicit request: Request[_], messages: Messages)
+@(mrn: String)(implicit request: Request[_], messages: Messages)
 
 @layout(
 pageTitle = titleNoForm(messages("cancellationSuccess.title")),
@@ -38,13 +38,13 @@ showBackLink = false
 @govukPanel(
 Panel(
 title = Text(messages("cancellationSuccess.heading")),
-content = Text(messages("cancellationSuccess.reference", submission.mrn))
+content = Text(messages("cancellationSuccess.reference", mrn))
 )
 )
 
 <h2 class="govuk-heading-m">@messages("cancellationSuccess.subheading")</h2>
 
-<p class="govuk-body">@messages("cancellationSuccess.cancellationSuccess", submission.mrn)</p>
+<p class="govuk-body">@messages("cancellationSuccess.cancellationSuccess", mrn)</p>
 
 <p class="govuk-body">@messages("cancellationSuccess.hint")</p>
 
