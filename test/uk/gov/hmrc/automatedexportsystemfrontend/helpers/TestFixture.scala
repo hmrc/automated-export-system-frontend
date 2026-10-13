@@ -52,10 +52,12 @@ object TestFixture {
   )
 
   def singleSubmission(submissionId: String, mrn: String = testMrn): SingleSubmissionResponse = SingleSubmissionResponse(
+    status = 1,
     submissionId = submissionId,
     exportOperation = SingleSubmissionExportOperation(exportOperationType = "test", splitIndicator = 0, mrn = mrn, discrepanciesExist = 0),
     customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual(referenceNumber = "testRef"),
     goodsShipment = Some(SingleSubmissionGoodsShipment(consignment = testConsignment, goodsItems = None)),
-    updatedAt = LocalDateTime.now(clock)
+    updatedAt = LocalDateTime.now(clock),
+    metadata = None
   )
 }
