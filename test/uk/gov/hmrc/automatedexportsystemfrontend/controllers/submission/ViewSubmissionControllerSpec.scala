@@ -51,7 +51,7 @@ class ViewSubmissionControllerSpec extends SpecBase {
       |  </CustomsOfficeOfExitActual>
       |  <GoodsShipment>
       |    <Consignment>
-      |      <ducr>referenceNumberUcr</ducr>
+      |      <referenceNumberUCR>referenceNumberUcr</referenceNumberUCR>
       |      <LocationOfGoods>
       |        <qualifierOfIdentification>q</qualifierOfIdentification>
       |      </LocationOfGoods>
