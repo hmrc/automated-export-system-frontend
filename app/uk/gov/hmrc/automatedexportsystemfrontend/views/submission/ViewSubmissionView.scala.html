@@ -95,7 +95,9 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   <th scope="row" class="govuk-table__header">
    @messages("viewSubmission.consignment.mucr")
   </th>
-  <td class="govuk-table__cell"></td>
+  <td class="govuk-table__cell">
+   @submission.mucr.getOrElse(messages("amendCheckYourAnswers.notApplicable"))
+  </td>
  </tr>
  </tbody>
 </table>
@@ -159,7 +161,7 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">
    @messages("viewSubmission.location.identifiedBy")
   </th>
-  <td class="govuk-table__cell">@submission.locationAdditionalIdentifier</td>
+  <td class="govuk-table__cell">@submission.identifiedBy</td>
  </tr>
  <tr class="govuk-table__row">
   <th scope="row" class="govuk-table__header govuk-!-width-one-third">

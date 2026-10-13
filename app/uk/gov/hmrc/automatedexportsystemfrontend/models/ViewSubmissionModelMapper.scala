@@ -43,6 +43,7 @@ object ViewSubmissionViewModelMapper {
       partOfConsolidation = response.goodsShipment.map(_.consignment.parentUCRID.isDefined),
       mucr = response.goodsShipment.flatMap(_.consignment.parentUCRID),
       anyDiscrepancies = boolToString(response.exportOperation.discrepanciesExist == 1),
-      isSplitExit = boolToString(response.exportOperation.splitIndicator == 1)
+      isSplitExit = boolToString(response.exportOperation.splitIndicator == 1),
+      locationQualifier = response.goodsShipment.map(_.consignment.locationOfGoods.qualifierOfIdentification)
     )
 }
