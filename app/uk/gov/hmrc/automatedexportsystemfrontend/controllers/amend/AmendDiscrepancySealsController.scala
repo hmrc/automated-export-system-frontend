@@ -53,14 +53,14 @@ class AmendDiscrepancySealsController @Inject() (
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm, 1, mode)) // TODO: TBD indexing in Amend scenario
+    Ok(view(preparedForm, mode, submissionId))
   }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, 1, mode))), // TODO: TBD seals indexing in Amend scenario
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, submissionId))),
         value =>
           for {
             updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendDiscrepancySealsPage(submissionId), value))
