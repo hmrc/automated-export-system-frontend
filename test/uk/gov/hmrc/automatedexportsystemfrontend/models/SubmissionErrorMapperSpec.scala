@@ -59,5 +59,18 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
 
       SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq.empty
     }
+
+    "return technical error for new HMRC async technical error codes" in {
+
+      val technicalCodes =
+        Seq("INCORRECT_ENUMERATION", "NOT_SUPPORTED_IN_POSITION", "UNSPECIFIED_ERROR_OTHER", "TOO_MANY_REPETITIONS", "INVALID_XML_FORMAT")
+
+      technicalCodes.foreach { code =>
+        val errors = Seq(SingleSubmissionError(code = code, description = None, path = None, originalValue = None))
+
+        SubmissionErrorMapper.toMessageKeys(errors) shouldBe
+          Seq("viewSubmission.error.technical")
+      }
+    }
   }
 }
