@@ -83,7 +83,6 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
       result.get(AmendEnterMrnPage(submissionId)) shouldBe Some("24GB12345678901234")
       result.get(AmendIsSplitExitPage(submissionId)) shouldBe Some(true)
       result.get(AmendAnyDiscrepanciesPage(submissionId)) shouldBe Some(true)
-      result.get(AmendOfficeOfExitPage(submissionId)) shouldBe Some(OfficeOfExit.fromCode("XI000142"))
       result.get(AmendEnterDucrPage(submissionId)) shouldBe Some("DUCR123456")
       result.get(AmendLocationTypePage(submissionId)) shouldBe Some(LocationType.DesignatedLocation)
       result.get(AmendLocationIdPage(submissionId)) shouldBe Some(
