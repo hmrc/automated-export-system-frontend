@@ -37,7 +37,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
         status = 1,
         exportOperation =
           SingleSubmissionExportOperation(exportOperationType = "1", mrn = "24GB12345678901234", discrepanciesExist = 1, splitIndicator = 1),
-        customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual("XI000142"),
+        customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual("GB000051"),
         goodsShipment = Some(
           SingleSubmissionGoodsShipment(
             consignment = SingleSubmissionConsignment(

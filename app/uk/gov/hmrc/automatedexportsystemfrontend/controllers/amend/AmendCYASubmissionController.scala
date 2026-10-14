@@ -20,7 +20,6 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
@@ -35,6 +34,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryLis
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -61,15 +62,14 @@ class AmendCYASubmissionController @Inject() (
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
       val answers = request.userAnswers
 
-      val eori = request.eori
       val exportOperationList =
         SummaryListViewModel(
           Seq(
             answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
               AmendEnterMrnSummary.lockedRow(answer, submissionId)
             },
-            AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
-            AmendIsSplitExitSummary.row(answers)(submissionId)
+            AmendIsSplitExitSummary.row(answers)(submissionId),
+            AmendAnyDiscrepanciesSummary.row(answers)(submissionId)
           ).flatten
         )
 
@@ -115,7 +115,6 @@ class AmendCYASubmissionController @Inject() (
           view(
             mode,
             submissionId,
-            eori,
             exportOperationList,
             consignmentList,
             customsOfficeExitList,
