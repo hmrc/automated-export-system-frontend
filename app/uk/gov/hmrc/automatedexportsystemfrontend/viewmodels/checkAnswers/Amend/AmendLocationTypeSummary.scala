@@ -28,23 +28,25 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendLocationTypeSummary {
 
-  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendLocationTypePage(submissionId)).map { answer =>
+      build(answer.toString, submissionId, withChangeLink = true)
+    }
 
-    val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$answerFromXml"))))
+  def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(value, submissionId, withChangeLink))
 
-    Some(
-      SummaryListRowViewModel(
-        key = "locationType.checkYourAnswersLabel",
-        value = value,
-        actions = if (withAmendLink) {
+  private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "locationType.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"locationType.$value")))),
+      actions =
+        if (withChangeLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendLocationTypeController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("locationType.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
   }
 

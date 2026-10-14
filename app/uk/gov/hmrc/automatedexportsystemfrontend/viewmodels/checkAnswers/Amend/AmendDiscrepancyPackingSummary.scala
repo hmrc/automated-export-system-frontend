@@ -28,66 +28,66 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyPackingSummary {
 
-  def typeOfPackagesRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def typeOfPackagesRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyPackingPage(submissionId)).map { answer =>
+      buildPackagingCode(answer.packagingCode, submissionId, withAmendLink = true)
+    }
 
-    val packagingCode = HtmlFormat.escape(answerFromXml)
+  def typeOfPackagesRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(buildPackagingCode(answerFromXml, submissionId, withAmendLink))
 
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(packagingCode)),
-        actions = if (withAmendLink) {
+  def numberOfPackagesRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyPackingPage(submissionId)).map { answer =>
+      buildNumberOfPackages(answer.numberOfPackages, submissionId, withAmendLink = true)
+    }
+
+  def numberOfPackagesRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(buildNumberOfPackages(answerFromXml, submissionId, withAmendLink))
+
+  def shippingMarksRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyPackingPage(submissionId)).map { answer =>
+      buildShippingMarks(answer.shippingMarks, submissionId, withAmendLink = true)
+    }
+
+  def shippingMarksRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(buildShippingMarks(answerFromXml, submissionId, withAmendLink))
+
+  private def buildPackagingCode(value: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlContent(HtmlFormat.escape(value))),
+      actions =
+        if (withAmendLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyPackingController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.packagingCode.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
-  }
 
-  def numberOfPackagesRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(
-    implicit messages: Messages
-  ): Option[SummaryListRow] = {
-
-    val numberOfPackages = HtmlFormat.escape(answerFromXml.toString)
-
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(numberOfPackages)),
-        actions = if (withAmendLink) {
+  private def buildNumberOfPackages(value: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlContent(HtmlFormat.escape(value.toString))),
+      actions =
+        if (withAmendLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyPackingController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.numberOfPackages.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
-  }
 
-  def shippingMarksRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
-
-    val shippingMarks = HtmlFormat.escape(answerFromXml)
-
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(shippingMarks)),
-        actions = if (withAmendLink) {
+  private def buildShippingMarks(value: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlContent(HtmlFormat.escape(value))),
+      actions =
+        if (withAmendLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyPackingController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.shippingMarks.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
-  }
-
 }
