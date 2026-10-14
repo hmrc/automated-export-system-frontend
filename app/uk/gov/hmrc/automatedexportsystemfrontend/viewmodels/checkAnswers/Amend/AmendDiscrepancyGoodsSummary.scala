@@ -28,6 +28,41 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyGoodsSummary {
 
+  def rows(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
+    val maybeAnswer = answers.get(AmendDiscrepancyGoodsPage(submissionId))
+
+    Seq(
+      maybeAnswer.flatMap(_.declarationGoodsItemNumber.map { answer =>
+        SummaryListRowViewModel(
+          key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer.toString))),
+          actions = amendmentActions(submissionId, withAmendLink = true, "discrepancyGoods.goodsItemNumber.change.hidden")
+        )
+      }),
+      maybeAnswer.flatMap(_.declarationUniqueConsignmentReference.map { answer =>
+        SummaryListRowViewModel(
+          key = "discrepancyGoods.ducr.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer))),
+          actions = amendmentActions(submissionId, withAmendLink = true, "discrepancyGoods.ducr.change.hidden")
+        )
+      }),
+      maybeAnswer.map { answer =>
+        SummaryListRowViewModel(
+          key = "discrepancyGoods.newGrossMass.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer.newGrossMass.toString))),
+          actions = amendmentActions(submissionId, withAmendLink = true, "discrepancyGoods.newGrossMass.change.hidden")
+        )
+      },
+      maybeAnswer.map { answer =>
+        SummaryListRowViewModel(
+          key = "discrepancyGoods.newNetMass.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer.newNetMass.toString))),
+          actions = amendmentActions(submissionId, withAmendLink = true, "discrepancyGoods.newNetMass.change.hidden")
+        )
+      }
+    )
+  }
+
   def goodsItemNumberRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
 
     val declarationGoodsItemNumber = HtmlFormat.escape(answerFromXml.toString)
@@ -109,7 +144,6 @@ object AmendDiscrepancyGoodsSummary {
         }
       )
     )
-
   }
 
   def goodsItemNumberRow(answers: UserAnswers, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
@@ -149,12 +183,10 @@ object AmendDiscrepancyGoodsSummary {
     }
 
   private def amendmentActions(submissionId: String, withAmendLink: Boolean, hiddenTextKey: String)(implicit messages: Messages) =
-    if (withAmendLink) {
+    if (withAmendLink)
       Seq(
         ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, submissionId).url)
           .withVisuallyHiddenText(messages(hiddenTextKey))
       )
-    } else {
-      Seq.empty
-    }
+    else Seq.empty
 }
