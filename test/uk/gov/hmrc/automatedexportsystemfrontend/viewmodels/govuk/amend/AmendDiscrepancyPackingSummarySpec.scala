@@ -34,7 +34,7 @@ class AmendDiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with 
   "rows" - {
     "when answered, return the summary rows with change lnik" in {
       val packagingCode = "BX"
-      val numberOfPackages = "2"
+      val numberOfPackages = 2
       val shippingMarks = "MARKS123"
 
       AmendDiscrepancyPackingSummary.typeOfPackagesRow(packagingCode, "submissionId", true) shouldBe Some(
@@ -87,7 +87,7 @@ class AmendDiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with 
 
     "when answered, return the summary rows without change links" in {
       val packagingCode = "BX"
-      val numberOfPackages = "2"
+      val numberOfPackages = 2
       val shippingMarks = "MARKS123"
 
       AmendDiscrepancyPackingSummary.typeOfPackagesRow(packagingCode, "submissionId", false) shouldBe Some(

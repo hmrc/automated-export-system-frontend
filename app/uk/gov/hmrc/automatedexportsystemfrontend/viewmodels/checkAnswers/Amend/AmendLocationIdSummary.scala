@@ -146,4 +146,22 @@ object AmendLocationIdSummary {
           else Seq.empty
       )
     )
+
+  def contactRow(implicit messages: Messages): Option[SummaryListRow] =
+    Some(SummaryListRowViewModel(key = "viewSubmission.location.contact", value = ValueViewModel(""), actions = Seq.empty))
+
+  def referenceNumberRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendLocationIdPage(submissionId)).map { answer =>
+      SummaryListRowViewModel(
+        key = "viewSubmission.authorisation.referenceNumber",
+        value = ValueViewModel(answer.authorisationReferenceNumber.getOrElse("")),
+        actions = Seq(
+          ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+            .withVisuallyHiddenText(messages("viewSubmission.authorisation.referenceNumber"))
+        )
+      )
+    }
+
+  def authorisationTypeRow(implicit messages: Messages): Option[SummaryListRow] =
+    Some(SummaryListRowViewModel(key = "viewSubmission.authorisation.type", value = ValueViewModel(""), actions = Seq.empty))
 }

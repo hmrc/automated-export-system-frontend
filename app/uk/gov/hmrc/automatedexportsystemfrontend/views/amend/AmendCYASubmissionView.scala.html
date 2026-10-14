@@ -31,27 +31,47 @@
     consignmentList: SummaryList,
     customsOfficeExitList: SummaryList,
     discrepancyList: SummaryList,
-    locationOfGoodsList: SummaryList
+    locationOfGoodsList: SummaryList,
+    authorisationList: SummaryList
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("amendCheckYourAnswers.title"))) {
 
-    <h1 class="govuk-heading-l">@messages("amendCheckYourAnswers.heading")</h1>
+    <span class="govuk-caption-l">
+            @messages("amendCheckYourAnswers.caption", submissionId)
+        </span>
 
+    <h1 class="govuk-heading-l">
+        @messages("amendCheckYourAnswers.heading")
+    </h1>
 
+    <p class="govuk-body">
+        @messages("amendCheckYourAnswers.guidance")
+    </p>
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
     @govukSummaryList(exportOperationList)
 
+    <h2 class="govuk-heading-m">
+        @messages("cYASubmission.subHeading.consignment")xxxxx
+    </h2>
+    @govukSummaryList(consignmentList)
+
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
     @govukSummaryList(customsOfficeExitList)
-
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.locationOfGoods")</h2>
-    @govukSummaryList(consignmentList)
 
     <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.discrepancyDetails")</h2>
     @govukSummaryList(discrepancyList)
 
 
+    <h2 class="govuk-heading-m">
+        @messages("viewSubmission.location.heading")
+    </h2>
+    @govukSummaryList(locationOfGoodsList)
+
+    <h2 class="govuk-heading-m">
+        @messages("viewSubmission.authorisation.heading")
+    </h2>
+    @govukSummaryList(authorisationList)
 
     @govukWarningText(
         WarningText(

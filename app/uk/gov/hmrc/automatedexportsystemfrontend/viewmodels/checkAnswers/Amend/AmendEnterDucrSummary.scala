@@ -18,11 +18,12 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.{routes => amendRoute}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterDucrPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendEnterDucrSummary {
@@ -34,6 +35,13 @@ object AmendEnterDucrSummary {
 
   def row(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(build(value, submissionId, withChangeLink))
+
+  def lockedRow(value: String, submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    row(value, submissionId, withChangeLink = false).map { summaryRow =>
+      summaryRow.copy(value = ValueViewModel(HtmlContent(HtmlFormat.raw(s"""<span style="white-space: nowrap;">${HtmlFormat.escape(
+        value
+      )}</span><br>${HtmlFormat.escape(messages("amendCheckYourAnswers.cannotBeAmended"))}"""))))
+    }
 
   private def build(value: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
