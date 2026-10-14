@@ -241,12 +241,10 @@ object AmendDiscrepancyGoodsSummary {
     }
 
   private def amendmentActions(submissionId: String, withAmendLink: Boolean, hiddenTextKey: String)(implicit messages: Messages) =
-    if (withAmendLink) {
+    if (withAmendLink)
       Seq(
         ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyGoodsController.onPageLoad(CheckMode, submissionId).url)
           .withVisuallyHiddenText(messages(hiddenTextKey))
       )
-    } else {
-      Seq.empty
-    }
+    else Seq.empty
 }
