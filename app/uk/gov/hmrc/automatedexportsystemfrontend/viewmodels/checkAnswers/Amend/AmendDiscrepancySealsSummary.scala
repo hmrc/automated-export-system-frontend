@@ -19,26 +19,32 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancySealsSummary {
 
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancySealsPage(submissionId)).map { answer =>
+      build(answer, submissionId, withAmendLink = true)
+    }
+
   def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancySeals.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answerFromXml).toString),
-        actions = if (withAmendLink) {
+    Some(build(answerFromXml, submissionId, withAmendLink))
+
+  private def build(value: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancySeals.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(value).toString),
+      actions =
+        if (withAmendLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancySealsController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("discrepancySeals.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
 }
