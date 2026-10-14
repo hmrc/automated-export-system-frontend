@@ -94,8 +94,6 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
         )
       )
       result.get(AmendPartOfConsolidationPage(submissionId)) shouldBe Some(PartOfConsolidationAnswer(boolean = true, mucr = Some("MUCR123")))
-      result.get(AmendDiscrepancyConsignmentPage(submissionId)) shouldBe ModeOfTransportAtBorder.fromCode(3)
-      submission.goodsShipment.value.consignment.modeOfTransportAtTheBorder shouldBe Some(3)
       result.get(AmendDiscrepancyConsignmentPage(submissionId)) shouldBe Some(ModeOfTransportAtBorder.fromCode(3).value)
     }
 
