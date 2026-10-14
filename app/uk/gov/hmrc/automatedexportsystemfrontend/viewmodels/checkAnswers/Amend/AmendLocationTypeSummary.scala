@@ -48,5 +48,4 @@ object AmendLocationTypeSummary {
           )
         else Seq.empty
     )
-
 }
