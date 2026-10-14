@@ -44,9 +44,12 @@
         @messages("amendCheckYourAnswers.caption", submissionId)
     </span>
 
-    <h1 class="govuk-heading-l">
-        @messages("amendCheckYourAnswers.heading")
-    </h1>
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
+    @govukSummaryList(exportOperationList)
+
+    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
+    @govukSummaryList(customsOfficeExitList)
 
     <p class="govuk-body">
         @messages("amendCheckYourAnswers.guidance")
@@ -55,18 +58,8 @@
     @govukSummaryList(exportOperationList)
 
     <h2 class="govuk-heading-m">
-        @messages("cYASubmission.subHeading.consignment")
+        @messages("viewSubmission.exportOperation.heading")
     </h2>
-    @govukSummaryList(consignmentList)
-
-    <h1 class="govuk-heading-l">
-        @messages("amendCheckYourAnswers.heading")
-    </h1>
-
-    <p class="govuk-body">
-        @messages("amendCheckYourAnswers.guidance")
-    </p>
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
     @govukSummaryList(exportOperationList)
 
     <h2 class="govuk-heading-m">
