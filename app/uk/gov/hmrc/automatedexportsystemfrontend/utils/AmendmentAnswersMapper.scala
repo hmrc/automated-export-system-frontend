@@ -16,29 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{
-  LocationDetails,
-  LocationQualifier,
-  LocationType,
-  ModeOfTransportAtBorder,
-  OfficeOfExit,
-  PartOfConsolidationAnswer,
-  SingleSubmissionLocationOfGoods,
-  SingleSubmissionResponse,
-  UserAnswers
-}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
-  AmendAnyDiscrepanciesPage,
-  AmendDiscrepancyConsignmentPage,
-  AmendEnterDucrPage,
-  AmendEnterMrnPage,
-  AmendIsSplitExitPage,
-  AmendLocationIdPage,
-  AmendLocationTypePage,
-  AmendOfficeOfExitPage,
-  AmendPartOfConsolidationPage
-}
-import play.api.data.Forms.*
+import uk.gov.hmrc.automatedexportsystemfrontend.models.*
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 
 import scala.util.Try
 

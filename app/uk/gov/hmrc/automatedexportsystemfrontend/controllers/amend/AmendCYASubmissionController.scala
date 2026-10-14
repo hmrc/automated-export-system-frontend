@@ -25,6 +25,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as p
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.services.AmendSubmissionDataService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
@@ -61,41 +62,67 @@ class AmendCYASubmissionController @Inject() (
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
       val answers = request.userAnswers
 
-      val exportOperationList = SummaryListViewModel(
-        Seq(
-          answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
-            AmendEnterMrnSummary.lockedRow(answer, submissionId)
-          },
-          AmendAnyDiscrepanciesSummary.reviewRow(answers)(submissionId),
-          AmendIsSplitExitSummary.reviewRow(answers)(submissionId)
-        ).flatten
-      )
+      val exportOperationList =
+        SummaryListViewModel(
+          Seq(
+            answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
+              AmendEnterMrnSummary.lockedRow(answer, submissionId)
+            },
+            AmendIsSplitExitSummary.row(answers)(submissionId),
+            AmendAnyDiscrepanciesSummary.row(answers)(submissionId)
+          ).flatten
+        )
 
-      val consignmentList = SummaryListViewModel(
-        Seq(
-          answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
-            AmendEnterDucrSummary.lockedRow(answer, submissionId)
-          },
-          AmendPartOfConsolidationSummary.mucrRow(answers)(submissionId)
-        ).flatten
-      )
+      val consignmentList =
+        SummaryListViewModel(
+          Seq(
+            answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
+              AmendEnterDucrSummary.lockedRow(answer, submissionId)
+            },
+            AmendPartOfConsolidationSummary.row(answers)(submissionId)
+          ).flatten
+        )
 
-      val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.reviewRow(answers)(submissionId)).flatten)
+      val customsOfficeExitList =
+        SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
 
-      val locationOfGoodsList = SummaryListViewModel(
-        Seq(
-          AmendLocationTypeSummary.row(answers)(submissionId),
-          AmendLocationIdSummary.identifiedByRow(answers)(submissionId),
-          AmendLocationIdSummary.contactRow
-        ).flatten
-      )
+      val locationTypeRows =
+        AmendLocationTypeSummary.row(answers)(submissionId).toSeq
+
+      val locationIdRows =
+        AmendLocationIdSummary.row(answers)(submissionId).toSeq.flatten
+
+      val locationOfGoodsList =
+        SummaryListViewModel(locationTypeRows ++ locationIdRows)
+
+      val discrepancyRows: Seq[SummaryListRow] =
+        Seq(AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten ++
+          AmendDiscrepancyTransportSummary.rows(answers)(submissionId).flatten ++
+          Seq(AmendDiscrepancySealsSummary.row(answers)(submissionId), AmendDiscrepancyReferenceSummary.row(answers)(submissionId)).flatten ++
+          AmendDiscrepancyTransportMeansSummary.rows(answers)(submissionId).flatten ++
+          AmendDiscrepancyTransportDocSummary.rows(answers)(submissionId).flatten ++
+          AmendDiscrepancyGoodsSummary.rows(answers)(submissionId).flatten
+
+      val discrepancyList =
+        SummaryListViewModel(discrepancyRows)
 
       val authorisationList = SummaryListViewModel(
         Seq(AmendLocationIdSummary.authorisationTypeRow, AmendLocationIdSummary.referenceNumberRow(answers)(submissionId)).flatten
       )
 
       Future.successful(
-        Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, locationOfGoodsList, authorisationList))
+        Ok(
+          view(
+            mode,
+            submissionId,
+            exportOperationList,
+            consignmentList,
+            customsOfficeExitList,
+            discrepancyList,
+            locationOfGoodsList,
+            authorisationList
+          )
+        )
       )
     }
 
