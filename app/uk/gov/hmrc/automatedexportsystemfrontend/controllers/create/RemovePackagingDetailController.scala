@@ -50,7 +50,7 @@ class RemovePackagingDetailController @Inject() (
   def onPageLoad(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
       if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(request.userAnswers, returnPage)) {
-        Ok(view(form(packagingDetailIndex), packagingDetailIndex, returnPageAfterRemoval(request.userAnswers, returnPage), mode))
+        Ok(view(form(packagingDetailIndex), packagingDetailIndex, returnPage, mode))
       } else {
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
@@ -58,7 +58,7 @@ class RemovePackagingDetailController @Inject() (
 
   def onSubmit(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
-      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex)) {
+      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(request.userAnswers, returnPage)) {
         form(packagingDetailIndex)
           .bindFromRequest()
           .fold(
