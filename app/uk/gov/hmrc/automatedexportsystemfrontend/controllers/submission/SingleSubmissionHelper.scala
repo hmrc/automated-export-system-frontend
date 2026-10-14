@@ -78,7 +78,7 @@ class SingleSubmissionHelper {
     implicit messages: Messages
   ): Option[SummaryListRow] =
     declarationGoods.flatMap { value =>
-      AmendDiscrepancyReferenceSummary.row(value, submissionId, withChangeLink)
+      AmendDiscrepancyReferenceSummary.row(value.toString, submissionId, withChangeLink)
     }
 
   def goodsReferenceHandler(goodsReference: Option[Seq[SingleSubmissionGoodsReference]], submissionId: String, withChangeLink: Boolean)(
@@ -176,7 +176,7 @@ class SingleSubmissionHelper {
     implicit messages: Messages
   ): Option[SummaryListRow] =
     numberOfPackages.flatMap { value =>
-      AmendDiscrepancyPackingSummary.numberOfPackagesRow(value, submissionId, withChangeLink)
+      AmendDiscrepancyPackingSummary.numberOfPackagesRow(value.toInt, submissionId, withChangeLink)
     }
 
   def shippingMarksHandler(shippingMarks: Option[String], submissionId: String, withChangeLink: Boolean)(
