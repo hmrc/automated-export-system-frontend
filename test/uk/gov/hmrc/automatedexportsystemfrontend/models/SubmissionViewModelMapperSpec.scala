@@ -37,7 +37,7 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
             submissionId = submissionId,
             mrn = "26GB0000X6524786A9",
             ducr = Some("GB123456789012"),
-            officeOfExitCode = "GB000051",
+            officeOfExitCode = "XI000142",
             updatedAt = LocalDateTime.parse("2026-08-03T00:00:00"),
             status = 1
           )
@@ -62,27 +62,26 @@ class SubmissionViewModelMapperSpec extends AnyWordSpec with Matchers {
 
       val submissions = SubmissionSummaryResponseList(
         Seq(
-          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000142", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000244", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "GB000411", LocalDateTime.of(2026, 8, 17, 10, 30), 1)
+          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "XI000142", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
+          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "XI005220", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
+          SubmissionSummaryResponse(UUID.randomUUID(), "26GB0000X6524786A9", None, "XI005160", LocalDateTime.of(2026, 8, 17, 10, 30), 1)
         )
       )
 
       val result = SubmissionViewModelMapper.toViewModel(submissions)
 
-      result.summaries.map(_.officeOfExit) shouldBe Seq(OfficeOfExit.Belfast, OfficeOfExit.Larne, OfficeOfExit.Warrenpoint, OfficeOfExit.Foyle)
+      result.summaries.map(_.officeOfExit) shouldBe Seq(OfficeOfExit.Belfast, OfficeOfExit.Larne, OfficeOfExit.Warrenpoint)
     }
 
     "map all supported submission statuses correctly" in {
 
       val submissions = SubmissionSummaryResponseList(
         Seq(
-          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 0),
-          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
-          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 2),
-          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 3),
-          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "GB000051", LocalDateTime.of(2026, 8, 17, 10, 30), 4)
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "XI000142", LocalDateTime.of(2026, 8, 17, 10, 30), 0),
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "XI000142", LocalDateTime.of(2026, 8, 17, 10, 30), 1),
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "XI000142", LocalDateTime.of(2026, 8, 17, 10, 30), 2),
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "XI000142", LocalDateTime.of(2026, 8, 17, 10, 30), 3),
+          SubmissionSummaryResponse(UUID.randomUUID(), "A1B2C3D4E5F6G7H8I9J0", None, "XI000142", LocalDateTime.of(2026, 8, 17, 10, 30), 4)
         )
       )
 

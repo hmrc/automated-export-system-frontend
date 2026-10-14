@@ -57,7 +57,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         submissionId = UUID.randomUUID(),
         mrn = "24GB12345678901234",
         ducr = Some("8GB1234567890123456"),
-        officeOfExitCode = "GB000051",
+        officeOfExitCode = "XI000142",
         updatedAt = LocalDateTime.of(2026, 8, 17, 10, 30),
         status = 1
       )
@@ -109,7 +109,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         submissionId = UUID.randomUUID(),
         mrn = "MRN1234567890ABCDEF",
         ducr = Some("DUCR1234567890XYZ"),
-        officeOfExitCode = "GB000051",
+        officeOfExitCode = "XI000142",
         updatedAt = LocalDateTime.of(2026, 8, 17, 10, 30),
         status = 1
       )
@@ -118,7 +118,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         submissionId = UUID.randomUUID(),
         mrn = "A1B2C3D4E5F6G7H8I9J0",
         ducr = Some("DUCR-SECOND-0001"),
-        officeOfExitCode = "GB000142",
+        officeOfExitCode = "XI005220",
         updatedAt = LocalDateTime.of(2026, 8, 16, 14, 45),
         status = 2
       )
@@ -169,7 +169,7 @@ class ViewSubmissionsControllerSpec extends SpecBase {
         submissionId = UUID.randomUUID(),
         mrn = "MRN1234567890ABCPDF",
         ducr = None,
-        officeOfExitCode = "GB000051",
+        officeOfExitCode = "XI000142",
         updatedAt = LocalDateTime.of(2026, 8, 17, 10, 30),
         status = 1
       )
