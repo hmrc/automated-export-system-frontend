@@ -17,28 +17,19 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
 import play.api.Logger
-import play.api.i18n.{I18nSupport, Messages, MessagesApi}
+import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.services.AmendSubmissionDataService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.{
-  DiscrepancyConsignmentSummary,
-  DiscrepancyGoodsSummary,
-  DiscrepancyReferenceSummary,
-  DiscrepancySealsSummary,
-  DiscrepancyTransportDocSummary,
-  DiscrepancyTransportMeansSummary,
-  DiscrepancyTransportSummary
-}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -74,9 +65,9 @@ class AmendCYASubmissionController @Inject() (
       val exportOperationList =
         SummaryListViewModel(
           Seq(
-            answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
-              AmendEnterMrnSummary.lockedRow(answer, submissionId)
-            },
+            AmendEnterMrnSummary.row(answers)(submissionId),
+            AmendEnterDucrSummary.row(answers)(submissionId),
+            AmendPartOfConsolidationSummary.row(answers)(submissionId),
             AmendIsSplitExitSummary.row(answers)(submissionId),
             AmendAnyDiscrepanciesSummary.row(answers)(submissionId)
           ).flatten
@@ -84,12 +75,7 @@ class AmendCYASubmissionController @Inject() (
 
       val consignmentList =
         SummaryListViewModel(
-          Seq(
-            answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
-              AmendEnterDucrSummary.lockedRow(answer, submissionId)
-            },
-            AmendPartOfConsolidationSummary.row(answers)(submissionId)
-          ).flatten
+          Seq(AmendEnterDucrSummary.row(answers)(submissionId), AmendPartOfConsolidationSummary.row(answers)(submissionId)).flatten
         )
 
       val customsOfficeExitList =
@@ -115,23 +101,8 @@ class AmendCYASubmissionController @Inject() (
       val discrepancyList =
         SummaryListViewModel(discrepancyRows)
 
-      val authorisationList = SummaryListViewModel(
-        Seq(AmendLocationIdSummary.authorisationTypeRow, AmendLocationIdSummary.referenceNumberRow(answers)(submissionId)).flatten
-      )
-
       Future.successful(
-        Ok(
-          view(
-            mode,
-            submissionId,
-            exportOperationList,
-            consignmentList,
-            customsOfficeExitList,
-            discrepancyList,
-            locationOfGoodsList,
-            authorisationList
-          )
-        )
+        Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, discrepancyList, locationOfGoodsList))
       )
     }
 
