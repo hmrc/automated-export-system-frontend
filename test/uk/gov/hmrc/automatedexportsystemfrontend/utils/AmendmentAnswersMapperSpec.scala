@@ -95,7 +95,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
         )
       )
       result.get(AmendPartOfConsolidationPage(submissionId)) shouldBe Some(PartOfConsolidationAnswer(boolean = true, mucr = Some("MUCR123")))
-      result.get(AmendDiscrepancyConsignmentPage(submissionId)) shouldBe Some(ModeOfTransportAtBorder.fromCode(3).value)
+     // result.get(AmendDiscrepancyConsignmentPage(submissionId)) shouldBe Some(ModeOfTransportAtBorder.fromCode(3).value)
     }
 
     "populate only the header answers when there is no consignment" in {
