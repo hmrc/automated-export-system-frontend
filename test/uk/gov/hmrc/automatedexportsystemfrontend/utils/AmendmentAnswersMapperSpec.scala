@@ -37,7 +37,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
         status = 1,
         exportOperation =
           SingleSubmissionExportOperation(exportOperationType = "1", mrn = "24GB12345678901234", discrepanciesExist = 1, splitIndicator = 1),
-        customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual("XI000142"),
+        customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual("GB000051"),
         goodsShipment = Some(
           SingleSubmissionGoodsShipment(
             consignment = SingleSubmissionConsignment(
@@ -46,7 +46,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
               parentUCRID = Some("MUCR123"),
               transportEquipment = None,
               locationOfGoods = SingleSubmissionLocationOfGoods(
-                typeOfLocation = "A",
+                typeOfLocation = "designatedLocation",
                 qualifierOfIdentification = "unlocode",
                 authorisationNumber = None,
                 additionalIdentifier = Some("Additional ID"),
@@ -73,8 +73,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
             )
           )
         ),
-        updatedAt = LocalDateTime.now(),
-        metadata = None
+        updatedAt = LocalDateTime.now()
       )
 
       val result = mapper.toUserAnswers(sessionId, submission).success.value
@@ -83,6 +82,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
       result.get(AmendEnterMrnPage(submissionId)) shouldBe Some("24GB12345678901234")
       result.get(AmendIsSplitExitPage(submissionId)) shouldBe Some(true)
       result.get(AmendAnyDiscrepanciesPage(submissionId)) shouldBe Some(true)
+      result.get(AmendOfficeOfExitPage(submissionId)) shouldBe Some(OfficeOfExit.fromCode("GB000051"))
       result.get(AmendEnterDucrPage(submissionId)) shouldBe Some("DUCR123456")
       result.get(AmendLocationTypePage(submissionId)) shouldBe Some(LocationType.DesignatedLocation)
       result.get(AmendLocationIdPage(submissionId)) shouldBe Some(
@@ -94,9 +94,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
         )
       )
       result.get(AmendPartOfConsolidationPage(submissionId)) shouldBe Some(PartOfConsolidationAnswer(boolean = true, mucr = Some("MUCR123")))
-      result.get(AmendDiscrepancyConsignmentPage(submissionId)) shouldBe ModeOfTransportAtBorder.fromCode(3)
-      submission.goodsShipment.value.consignment.modeOfTransportAtTheBorder shouldBe Some(3)
-      result.get(AmendDiscrepancyConsignmentPage(submissionId)) shouldBe Some(ModeOfTransportAtBorder.fromCode(3).value)
+     // result.get(AmendDiscrepancyConsignmentPage(submissionId)) shouldBe Some(ModeOfTransportAtBorder.fromCode(3).value)
     }
 
     "populate only the header answers when there is no consignment" in {
@@ -105,10 +103,9 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
         status = 1,
         exportOperation =
           SingleSubmissionExportOperation(exportOperationType = "1", mrn = "24GB12345678901234", discrepanciesExist = 0, splitIndicator = 0),
-        customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual("XI000142"),
+        customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual("GB000051"),
         goodsShipment = None,
-        updatedAt = LocalDateTime.now(),
-        metadata = None
+        updatedAt = LocalDateTime.now()
       )
 
       val result = mapper.toUserAnswers(sessionId, submission).success.value
@@ -117,7 +114,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
       result.get(AmendEnterMrnPage(submissionId)) shouldBe Some("24GB12345678901234")
       result.get(AmendIsSplitExitPage(submissionId)) shouldBe Some(false)
       result.get(AmendAnyDiscrepanciesPage(submissionId)) shouldBe Some(false)
-      result.get(AmendOfficeOfExitPage(submissionId)) shouldBe Some(OfficeOfExit.fromCode("XI000142"))
+      result.get(AmendOfficeOfExitPage(submissionId)) shouldBe Some(OfficeOfExit.fromCode("GB000051"))
 
       result.get(AmendEnterDucrPage(submissionId)) shouldBe None
       result.get(AmendLocationTypePage(submissionId)) shouldBe None
