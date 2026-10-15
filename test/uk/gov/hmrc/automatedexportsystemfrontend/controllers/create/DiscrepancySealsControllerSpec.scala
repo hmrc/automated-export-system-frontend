@@ -32,7 +32,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancySealsView
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
 import scala.concurrent.Future
@@ -59,8 +58,6 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DiscrepancySealsView]
-
         status(result) shouldBe OK
 
         val body = contentAsString(result)
@@ -79,8 +76,6 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancySealsRoute)
-
-        val view = application.injector.instanceOf[DiscrepancySealsView]
 
         val result = route(application, request).value
 
@@ -133,8 +128,6 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, discrepancySealsRoute)
             .withFormUrlEncodedBody(("value", "abc123 "))
-
-        val view = application.injector.instanceOf[DiscrepancySealsView]
 
         val result = route(application, request).value
 

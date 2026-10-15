@@ -22,6 +22,10 @@ site.status.awaitingDecision = Awaiting decision
 site.status.cancelled = Cancelled
 site.status.amended = Amended
 site.status.rejected = Rejected
+site.pagination.itemsShowing = Showing {0}-{1} of {2} items
+site.pagination.previous = Previous
+site.pagination.next = Next
+site.pagination.hidden.page = page
 
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
