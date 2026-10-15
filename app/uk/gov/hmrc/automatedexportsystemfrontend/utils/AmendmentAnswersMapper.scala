@@ -57,10 +57,93 @@ class AmendmentAnswersMapper {
       )
     } yield a2
 
+  private def setTransportEquipment(
+    answers: UserAnswers,
+    submissionId: String,
+    equipment: Seq[SingleSubmissionTransportEquipment]
+  ): Try[UserAnswers] =
+    equipment.foldLeft(Try(answers)) { (acc, item) =>
+      acc.flatMap { current =>
+        val currentTransport = item.containerIdentificationNumber.orElse(item.numberOfSeals.map(_.toString)).map(Some(_)).getOrElse(None)
+        val currentSeals = item.seal.toSeq.flatten.flatMap(_.identifier)
+        val currentRefs = item.goodsReference.toSeq.flatten.flatMap(_.declarationGoodsItemNumber).map(_.toString)
+
+        for {
+          a1 <- currentTransport.fold(Try(current))(value =>
+            current.set(AmendDiscrepancyTransportPage(submissionId), ContainerDetails(Some(value), item.numberOfSeals))
+          )
+          a2 <- currentSeals.headOption.fold(Try(a1))(seal => a1.set(AmendDiscrepancySealsPage(submissionId), seal))
+          a3 <- currentRefs.headOption.fold(Try(a2))(ref => a2.set(AmendDiscrepancyReferencePage(submissionId), ref))
+        } yield a3
+      }
+    }
+
+  private def setTransportMeans(answers: UserAnswers, submissionId: String, transport: SingleSubmissionActiveBorderTransportMeans): Try[UserAnswers] =
+    transport.typeOfIdentification match {
+      case Some(tpe) =>
+        answers.set(
+          AmendDiscrepancyTransportMeansPage(submissionId),
+          TransportAcrossBorderDetails(
+            transportType = Some(tpe),
+            transportIdNumber = transport.identificationNumber,
+            countryOfRegistration = transport.nationality
+          )
+        )
+      case None =>
+        Try(answers)
+    }
+
+  private def setTransportDocuments(answers: UserAnswers, submissionId: String, documents: Seq[SingleSubmissionTransportDocument]): Try[UserAnswers] =
+    documents.foldLeft(Try(answers)) { (acc, doc) =>
+      acc.flatMap { current =>
+        for {
+          a1 <- doc.`type`.fold(Try(current))(value =>
+            current.set(AmendDiscrepancyTransportDocPage(submissionId), DocumentDetails(Some(value), doc.referenceNumber.flatMap(_.toIntOption)))
+          )
+        } yield a1
+      }
+    }
+
+  private def setGoodsItems(answers: UserAnswers, submissionId: String, items: Seq[SingleSubmissionGoodsItem]): Try[UserAnswers] =
+    items.foldLeft(Try(answers)) { (acc, item) =>
+      acc.flatMap { current =>
+        val goods = WhatHasChangedDetails(
+          declarationGoodsItemNumber = item.declarationGoodsItemNumber,
+          declarationUniqueConsignmentReference = item.referenceNumberUCR,
+          newGrossMass = item.commodity.grossMass.toString,
+          newNetMass = item.commodity.netMass.toString
+        )
+
+        val withGoods: Try[UserAnswers] =
+          current.set(AmendDiscrepancyGoodsPage(submissionId), goods)
+
+        item.packaging match {
+          case Some(packs) =>
+            packs.foldLeft(withGoods) { (innerAcc, pack) =>
+              innerAcc.flatMap { ua =>
+                pack.typeOfPackages match {
+                  case Some(code) =>
+                    ua.set(
+                      AmendDiscrepancyPackingPage(submissionId),
+                      PackingDetails(code, pack.numberOfPackages.flatMap(_.toIntOption).getOrElse(0), pack.shippingMarks.getOrElse(""))
+                    )
+                  case None =>
+                    Try(ua)
+                }
+              }
+            }
+
+          case None =>
+            withGoods
+        }
+      }
+    }
+
   def toUserAnswers(sessionId: String, submission: SingleSubmissionResponse): Try[UserAnswers] = {
     val submissionId = submission.submissionId
     val consignmentOpt = submission.goodsShipment.map(_.consignment)
 
+    val goodsItemsOpt = submission.goodsShipment.flatMap(_.goodsItems)
     for {
       base <- Try(UserAnswers(sessionId))
       a1 <- base.set(AmendEnterMrnPage(submissionId), submission.exportOperation.mrn)
@@ -75,16 +158,11 @@ class AmendmentAnswersMapper {
             AmendPartOfConsolidationPage(submissionId),
             PartOfConsolidationAnswer(boolean = consignment.parentUCRID.isDefined, mucr = consignment.parentUCRID)
           )
-          b4 <- consignment.modeOfTransportAtTheBorder match {
-            case Some(modeCode) =>
-              ModeOfTransportAtBorder.fromCode(modeCode) match {
-                case Some(mode) => b3.set(AmendDiscrepancyConsignmentPage(submissionId), mode)
-                case None       => Try(b3)
-              }
-            case None =>
-              Try(b3)
-          }
-        } yield b4
+          b4 <- consignment.transportEquipment.fold(Try(b3))(setTransportEquipment(b3, submissionId, _))
+          b5 <- consignment.activeBorderTransportMeans.fold(Try(b4))(setTransportMeans(b4, submissionId, _))
+          b6 <- consignment.transportDocument.fold(Try(b5))(setTransportDocuments(b5, submissionId, _))
+          b7 <- goodsItemsOpt.fold(Try(b6))(setGoodsItems(b6, submissionId, _))
+        } yield b7
       }
     } yield a5
   }
