@@ -47,7 +47,7 @@ class ViewSubmissionControllerSpec extends SpecBase {
       |    <splitIndicator>1</splitIndicator>
       |  </ExportOperation>
       |  <CustomsOfficeOfExitActual>
-      |    <referenceNumber>GB000051</referenceNumber>
+      |    <referenceNumber>XI000142</referenceNumber>
       |  </CustomsOfficeOfExitActual>
       |  <GoodsShipment>
       |    <Consignment>
