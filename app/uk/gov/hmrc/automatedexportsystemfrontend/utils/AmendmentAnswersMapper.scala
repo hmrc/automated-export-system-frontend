@@ -142,8 +142,8 @@ class AmendmentAnswersMapper {
   def toUserAnswers(sessionId: String, submission: SingleSubmissionResponse): Try[UserAnswers] = {
     val submissionId = submission.submissionId
     val consignmentOpt = submission.goodsShipment.map(_.consignment)
-
     val goodsItemsOpt = submission.goodsShipment.flatMap(_.goodsItems)
+
     for {
       base <- Try(UserAnswers(sessionId))
       a1 <- base.set(AmendEnterMrnPage(submissionId), submission.exportOperation.mrn)
@@ -158,10 +158,19 @@ class AmendmentAnswersMapper {
             AmendPartOfConsolidationPage(submissionId),
             PartOfConsolidationAnswer(boolean = consignment.parentUCRID.isDefined, mucr = consignment.parentUCRID)
           )
-          b4 <- consignment.transportEquipment.fold(Try(b3))(setTransportEquipment(b3, submissionId, _))
-          b5 <- consignment.activeBorderTransportMeans.fold(Try(b4))(setTransportMeans(b4, submissionId, _))
-          b6 <- consignment.transportDocument.fold(Try(b5))(setTransportDocuments(b5, submissionId, _))
-          b7 <- goodsItemsOpt.fold(Try(b6))(setGoodsItems(b6, submissionId, _))
+          b4 <- consignment.modeOfTransportAtTheBorder.flatMap(ModeOfTransportAtBorder.fromCode) match {
+            case Some(mode) => b3.set(AmendDiscrepancyConsignmentPage(submissionId), mode)
+            case None       => Try(b3)
+          }
+          b5 <- consignment.activeBorderTransportMeans.fold(Try(b4)) { transportMeans =>
+            setTransportMeans(b4, submissionId, transportMeans)
+          }
+          b6 <- consignment.transportDocument.fold(Try(b5)) { documents =>
+            setTransportDocuments(b5, submissionId, documents)
+          }
+          b7 <- goodsItemsOpt.fold(Try(b6)) { goodsItems =>
+            setGoodsItems(b6, submissionId, goodsItems)
+          }
         } yield b7
       }
     } yield a5
