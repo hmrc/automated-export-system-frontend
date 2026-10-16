@@ -29,6 +29,7 @@
 @(
     mode: Mode,
     submissionId: String,
+    eori: String,
     exportOperationList: SummaryList,
     consignmentList: SummaryList,
     customsOfficeExitList: SummaryList,
@@ -137,6 +138,29 @@
             <dd class="govuk-summary-list__value"></dd>
         </div>
     </dl>
+<h2 class="govuk-heading-m">
+    @messages("cYASubmission.subHeading.exitCarrier")
+</h2>
+<dl class="govuk-summary-list">
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            @messages("viewSubmission.exitCarrier.eori")
+        </dt>
+        <dd class="govuk-summary-list__value">@eori</dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            @messages("viewSubmission.exitCarrier.name")
+        </dt>
+        <dd class="govuk-summary-list__value"></dd>
+    </div>
+    <div class="govuk-summary-list__row">
+        <dt class="govuk-summary-list__key">
+            @messages("viewSubmission.exitCarrier.address")
+        </dt>
+        <dd class="govuk-summary-list__value"></dd>
+    </div>
+</dl>
 
     <h2 class="govuk-heading-m">
         @messages("viewSubmission.location.heading")
@@ -147,6 +171,7 @@
         @messages("viewSubmission.authorisation.heading")
     </h2>
     @govukSummaryList(authorisationList)
+
 
     @govukWarningText(
         WarningText(
