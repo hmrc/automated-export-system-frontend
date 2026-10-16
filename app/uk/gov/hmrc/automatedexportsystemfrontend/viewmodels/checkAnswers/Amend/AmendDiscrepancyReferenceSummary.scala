@@ -19,26 +19,32 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyReferencePage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyReferenceSummary {
 
-  def row(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancyReference.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlFormat.escape(answerFromXml.toString).toString),
-        actions = if (withAmendLink) {
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyReferencePage(submissionId)).map { answer =>
+      build(answer, submissionId, withAmendLink = true)
+    }
+
+  def row(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(build(answerFromXml, submissionId, withAmendLink))
+
+  private def build(value: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancyReference.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlFormat.escape(value.toString).toString),
+      actions =
+        if (withAmendLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyReferenceController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("discrepancyReference.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
 }

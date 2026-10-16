@@ -45,8 +45,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
 object AmendLocationIdSummary {
 
-  def identifiedByRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(AmendLocationIdPage(submissionId)).map { answer =>
+      val locationType = HtmlFormat.escape(messages(s"locationId.${answer.locationType.toString}"))
+      val unlocode = HtmlFormat.escape(s"${messages("locationId.unlocode.prefix")}: ${answer.unlocode.getOrElse("")}")
+      val locationAdditionalIdentifier = HtmlFormat.escape(answer.locationAdditionalIdentifier.getOrElse(""))
+      val authorisationReferenceNumber =
+        HtmlFormat.escape(s"${messages("locationId.authnumber.prefix")}: ${answer.authorisationReferenceNumber.getOrElse("")}")
+
       val identifier = answer.locationType match {
         case LocationQualifier.UnLocode =>
           answer.unlocode
@@ -54,18 +60,20 @@ object AmendLocationIdSummary {
           answer.authorisationReferenceNumber
       }
 
-      val value = Seq(
-        Some(messages(s"locationId.${answer.locationType}")),
-        identifier.filter(_.nonEmpty),
-        answer.locationAdditionalIdentifier.filter(_.nonEmpty)
-      ).flatten.mkString(": ")
-
-      SummaryListRowViewModel(
-        key = "viewSubmission.location.identifiedBy",
-        value = ValueViewModel(value),
-        actions = Seq(
-          ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
-            .withVisuallyHiddenText(messages("viewSubmission.location.identifiedBy"))
+      val value = answer.locationType match {
+        case LocationQualifier.UnLocode =>
+          HtmlFormat.escape(s"${messages("locationId.unlocode.prefix")}: ${answer.unlocode.getOrElse("")}")
+        case LocationQualifier.AuthorisationNumber =>
+          HtmlFormat.escape(s"${messages("locationId.authnumber.prefix")}: ${answer.authorisationReferenceNumber.getOrElse("")}")
+      }
+      Seq(
+        SummaryListRowViewModel(
+          key = "locationId.identificationType.checkYourAnswersLabel",
+          value = ValueViewModel(HtmlContent(value)),
+          actions = Seq(
+            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+          )
         )
       )
     }
@@ -75,14 +83,13 @@ object AmendLocationIdSummary {
       SummaryListRowViewModel(
         key = "locationId.identificationType.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(answerFromXml)),
-        actions = if (withAmendLink) {
-          Seq(
-            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("locationId.identificationType.change.hidden"))
-          )
-        } else {
-          Seq.empty
-        }
+        actions =
+          if (withAmendLink)
+            Seq(
+              ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+                .withVisuallyHiddenText(messages("locationId.identificationType.change.hidden"))
+            )
+          else Seq.empty
       )
     )
 
@@ -91,14 +98,13 @@ object AmendLocationIdSummary {
       SummaryListRowViewModel(
         key = "locationId.authorisationReferenceNumber.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(answerFromXml)),
-        actions = if (withAmendLink) {
-          Seq(
-            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("locationId.authorisationReferenceNumber.change.hidden"))
-          )
-        } else {
-          Seq.empty
-        }
+        actions =
+          if (withAmendLink)
+            Seq(
+              ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+                .withVisuallyHiddenText(messages("locationId.authorisationReferenceNumber.change.hidden"))
+            )
+          else Seq.empty
       )
     )
 
@@ -107,14 +113,13 @@ object AmendLocationIdSummary {
       SummaryListRowViewModel(
         key = "locationId.locationAdditionalIdentifier.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(answerFromXml)),
-        actions = if (withAmendLink) {
-          Seq(
-            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("locationId.locationAdditionalIdentifier.change.hidden"))
-          )
-        } else {
-          Seq.empty
-        }
+        actions =
+          if (withAmendLink)
+            Seq(
+              ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+                .withVisuallyHiddenText(messages("locationId.locationAdditionalIdentifier.change.hidden"))
+            )
+          else Seq.empty
       )
     )
 
@@ -123,14 +128,13 @@ object AmendLocationIdSummary {
       SummaryListRowViewModel(
         key = "locationId.unlocode.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(answerFromXml)),
-        actions = if (withAmendLink) {
-          Seq(
-            ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
-              .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
-          )
-        } else {
-          Seq.empty
-        }
+        actions =
+          if (withAmendLink)
+            Seq(
+              ActionItemViewModel("site.change", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
+                .withVisuallyHiddenText(messages("locationId.unlocode.change.hidden"))
+            )
+          else Seq.empty
       )
     )
 
