@@ -32,7 +32,7 @@ class AesDataRequiredActionImpl @Inject() (implicit val executionContext: Execut
       case None =>
         Future.successful(Left(Redirect(problemRoute.JourneyRecoveryController.onPageLoad())))
       case Some(data) =>
-        Future.successful(Right(DataRequest(request.request, request.sessionId, data)))
+        Future.successful(Right(DataRequest(request.request, request.sessionId, request.eori, data)))
     }
 }
 
