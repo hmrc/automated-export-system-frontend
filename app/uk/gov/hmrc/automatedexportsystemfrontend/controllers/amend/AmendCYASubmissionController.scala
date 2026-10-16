@@ -20,6 +20,7 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
@@ -62,14 +63,15 @@ class AmendCYASubmissionController @Inject() (
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
       val answers = request.userAnswers
 
+      val eori = request.eori
       val exportOperationList =
         SummaryListViewModel(
           Seq(
             answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
               AmendEnterMrnSummary.lockedRow(answer, submissionId)
             },
-            AmendIsSplitExitSummary.row(answers)(submissionId),
-            AmendAnyDiscrepanciesSummary.row(answers)(submissionId)
+            AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
+            AmendIsSplitExitSummary.row(answers)(submissionId)
           ).flatten
         )
 
@@ -115,6 +117,7 @@ class AmendCYASubmissionController @Inject() (
           view(
             mode,
             submissionId,
+            eori,
             exportOperationList,
             consignmentList,
             customsOfficeExitList,
