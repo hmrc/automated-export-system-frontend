@@ -24,12 +24,11 @@ sealed trait OfficeOfExit
 object OfficeOfExit extends Enumerable.Implicits {
 
   // TODO Office codes have been hard coded here to pass scheme validaiton check in the backend. To update with codes when ready.
-  case object Belfast extends WithName("GB000051") with OfficeOfExit
-  case object Larne extends WithName("GB000142") with OfficeOfExit
-  case object Warrenpoint extends WithName("GB000244") with OfficeOfExit
-  case object Foyle extends WithName("GB000411") with OfficeOfExit
+  case object Belfast extends WithName("XI000142") with OfficeOfExit
+  case object Larne extends WithName("XI005220") with OfficeOfExit
+  case object Warrenpoint extends WithName("XI005160") with OfficeOfExit
 
-  val values: Seq[OfficeOfExit] = Seq(Belfast, Larne, Warrenpoint, Foyle)
+  val values: Seq[OfficeOfExit] = Seq(Belfast, Larne, Warrenpoint)
 
   implicit val enumerable: Enumerable[OfficeOfExit] =
     Enumerable(values.map(value => value.toString -> value): _*)

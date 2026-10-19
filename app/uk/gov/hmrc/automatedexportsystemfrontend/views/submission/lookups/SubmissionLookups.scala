@@ -21,10 +21,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{OfficeOfExit, Submissio
 object SubmissionLookups {
   def mapOfficeOfExit(code: String): OfficeOfExit =
     code match {
-      case "GB000051" => OfficeOfExit.Belfast
-      case "GB000142" => OfficeOfExit.Larne
-      case "GB000244" => OfficeOfExit.Warrenpoint
-      case "GB000411" => OfficeOfExit.Foyle
+      case "XI000142" => OfficeOfExit.Belfast
+      case "XI005220" => OfficeOfExit.Larne
+      case "XI005160" => OfficeOfExit.Warrenpoint
       case _          => throw new IllegalArgumentException(s"Unknown office of exit code: $code")
     }
 

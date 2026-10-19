@@ -64,7 +64,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
                                          |              <splitIndicator>1</splitIndicator>
                                          |            </ExportOperation>
                                          |            <CustomsOfficeOfExitActual>
-                                         |              <referenceNumber>GB000051</referenceNumber>
+                                         |              <referenceNumber>XI000142</referenceNumber>
                                          |            </CustomsOfficeOfExitActual>
                                          |            <GoodsShipment>
                                          |              <Consignment>
@@ -210,7 +210,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
 
         body should include("Customs office of exit")
         body should include("Where do you expect the goods to exit the UK?")
-        body should include("Belfast (GB000051)")
+        body should include("Belfast (XI000142)")
 
         body should include("Exit carrier")
 

@@ -66,5 +66,11 @@ class PartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers {
 
       result.errors must contain(FormError("mucr", "partOfConsolidation.mucr.invalid"))
     }
+    "clear MUCR when no is selected" in {
+      val result = form.validateAnswer(PartOfConsolidationAnswer(boolean = false, mucr = Some("INVALID-MUCR")))
+
+      result.value.value mustEqual PartOfConsolidationAnswer(false, None)
+      result.errors mustBe empty
+    }
   }
 }

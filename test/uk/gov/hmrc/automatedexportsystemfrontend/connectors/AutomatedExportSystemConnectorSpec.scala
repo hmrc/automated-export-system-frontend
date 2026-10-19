@@ -103,7 +103,7 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
                     |    <splitIndicator>0</splitIndicator>
                     |  </ExportOperation>
                     |  <CustomsOfficeOfExitActual>
-                    |    <referenceNumber>GB000051</referenceNumber>
+                    |    <referenceNumber>XI000142</referenceNumber>
                     |  </CustomsOfficeOfExitActual>
                     |  <updatedAt>2026-08-03T00:00:00</updatedAt>
                     |</Submission>
@@ -121,7 +121,7 @@ class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {
         result.exportOperation.mrn shouldBe "26GB0000X6524786A9"
         result.exportOperation.discrepanciesExist shouldBe 0
         result.exportOperation.splitIndicator shouldBe 0
-        result.customsOfficeOfExitActual.referenceNumber shouldBe "GB000051"
+        result.customsOfficeOfExitActual.referenceNumber shouldBe "XI000142"
         result.goodsShipment shouldBe None
       }
     }

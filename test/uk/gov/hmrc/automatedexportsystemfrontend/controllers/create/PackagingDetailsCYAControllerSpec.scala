@@ -59,7 +59,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("2")
         body should include("Shipping marks")
         body should include("MARKS2")
-        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(NormalMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url}"""")
       }
     }
 
@@ -84,7 +84,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("2")
         body should include("Shipping marks")
         body should include("MARKS2")
-        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(CheckMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, CheckMode).url}"""")
       }
     }
 

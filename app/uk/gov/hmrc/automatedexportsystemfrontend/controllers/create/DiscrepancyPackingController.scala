@@ -70,15 +70,25 @@ class DiscrepancyPackingController @Inject() (
 
   def onSubmit(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
     implicit request =>
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, mode))),
-          value =>
-            for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyPackingPage(packagingDetailIndex), value))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(createNavigator.nextPage(DiscrepancyPackingPage(packagingDetailIndex), mode, updatedAnswers))
-        )
+      val userAnswers: UserAnswers = request.userAnswers
+      val nextIndex: Int = DiscrepancyPacking.nextIndex(userAnswers)
+
+      if (
+        DiscrepancyPacking
+          .exists(userAnswers, packagingDetailIndex) || packagingDetailIndex == nextIndex
+      ) {
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, mode))),
+            value =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyPackingPage(packagingDetailIndex), value))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(createNavigator.nextPage(DiscrepancyPackingPage(packagingDetailIndex), mode, updatedAnswers))
+          )
+      } else {
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      }
   }
 }

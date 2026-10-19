@@ -60,8 +60,6 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[DiscrepancySealsView]
-
         status(result) shouldBe OK
 
         val body = contentAsString(result)
@@ -81,8 +79,6 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancySealsRoute)
-
-        val view = application.injector.instanceOf[DiscrepancySealsView]
 
         val result = route(application, request).value
 
@@ -137,8 +133,6 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
             .withFormUrlEncodedBody(("value", invalidSealId))
 
         val boundForm: Form[Option[String]] = form.bind(Map("value" -> invalidSealId))
-
-        val view = application.injector.instanceOf[DiscrepancySealsView]
 
         val result = route(application, request).value
 
