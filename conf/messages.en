@@ -249,7 +249,8 @@ discrepancyReference.heading = What is the Declaration Goods Reference?
 discrepancyReference.hint = This is the 5-character reference shown on the item line in the export declaration.
 discrepancyReference.checkYourAnswersLabel = Declaration Goods Reference
 discrepancyReference.error.required = Enter the Declaration Goods Reference
-discrepancyReference.error.length = The Declaration Goods Reference must be 5 characters or less
+discrepancyReference.error.length = The Declaration Goods Reference must be 5 numbers or less
+discrepancyReference.error.invalid = The Declaration Goods Reference must be in the correct format, for example 12345
 discrepancyReference.change.hidden = Declaration Goods Reference
 
 locationType.title = What type of location are the goods at?
