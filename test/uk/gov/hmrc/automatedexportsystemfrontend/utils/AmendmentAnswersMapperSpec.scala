@@ -46,7 +46,7 @@ class AmendmentAnswersMapperSpec extends SpecBase with Matchers {
               parentUCRID = Some("MUCR123"),
               transportEquipment = None,
               locationOfGoods = SingleSubmissionLocationOfGoods(
-                typeOfLocation = "designatedLocation",
+                typeOfLocation = "A",
                 qualifierOfIdentification = "unlocode",
                 authorisationNumber = None,
                 additionalIdentifier = Some("Additional ID"),
