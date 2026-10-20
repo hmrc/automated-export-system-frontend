@@ -17,6 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TypeOfLocation
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 
 import scala.util.Try
@@ -45,7 +46,7 @@ class AmendmentAnswersMapper {
 
   private def setAmendLocation(answers: UserAnswers, submissionId: String, loc: SingleSubmissionLocationOfGoods): Try[UserAnswers] =
     for {
-      a1 <- answers.set(AmendLocationTypePage(submissionId), mapLocationType(loc.typeOfLocation))
+      a1 <- answers.set(AmendLocationTypePage(submissionId), LocationType.mapLocationType(TypeOfLocation.toLocationTypeKey(loc.typeOfLocation)))
       a2 <- a1.set(
         AmendLocationIdPage(submissionId),
         LocationDetails(
