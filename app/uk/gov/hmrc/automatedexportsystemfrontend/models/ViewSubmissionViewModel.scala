@@ -34,7 +34,7 @@ case class ViewSubmissionViewModel(
   mucr: Option[String],
   anyDiscrepancies: String,
   isSplitExit: String,
-  errors: Seq[String] = Seq.empty
+  errors: Seq[SubmissionErrorMessage] = Seq.empty
 )
 
 object ViewSubmissionViewModel {
