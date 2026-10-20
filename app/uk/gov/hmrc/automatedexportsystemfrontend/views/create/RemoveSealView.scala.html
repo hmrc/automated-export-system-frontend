@@ -28,7 +28,7 @@
 
 @layout(pageTitle = title(form, messages("removeSeal.title"))) {
 
-    @formHelper(action = createRoute.RemoveSealsController.onSubmit(sealIndex, mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = createRoute.RemoveSealController.onSubmit(sealIndex, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))

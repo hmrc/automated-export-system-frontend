@@ -21,7 +21,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 
 import javax.inject.Inject
 
-class RemoveSealsFormProvider @Inject() extends Mappings {
+class RemoveSealFormProvider @Inject() extends Mappings {
 
   def apply(): Form[Boolean] =
     Form("value" -> boolean("removeSeal.error.required"))

@@ -63,7 +63,7 @@ object AddAnotherSealViewModel {
                 visuallyHiddenText = Some(messages("addAnotherSeal.change.hidden", index))
               ),
               ActionItem(
-                href = createRoute.RemoveSealsController.onPageLoad(index, mode).url,
+                href = createRoute.RemoveSealController.onPageLoad(index, mode).url,
                 content = Text(messages("site.remove")),
                 visuallyHiddenText = Some(messages("addAnotherSeal.remove.hidden", index))
               )
