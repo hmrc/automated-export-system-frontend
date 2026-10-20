@@ -20,7 +20,7 @@ import org.scalatest.matchers.must.Matchers.{mustBe, mustNot}
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 class AnyDiscrepanciesPageSpec extends SpecBase {
 
@@ -37,7 +37,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
-            .set(DiscrepancySealsPage, Some("sealsIdentifier"))
+            .set(DiscrepancySealsPage(index), "sealsIdentifier")
             .success
             .value
             .set(DiscrepancyReferencePage, Some("goodsRef"))
@@ -60,7 +60,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
 
           result.get(DiscrepancyConsignmentPage) mustNot be(defined)
           result.get(DiscrepancyTransportPage) mustNot be(defined)
-          result.get(DiscrepancySealsPage) mustNot be(defined)
+          result.get(DiscrepancySealsPage(index)) mustNot be(defined)
           result.get(DiscrepancyReferencePage) mustNot be(defined)
           result.get(DiscrepancyTransportMeansPage) mustNot be(defined)
           result.get(DiscrepancyTransportDocPage) mustNot be(defined)
@@ -78,7 +78,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
-            .set(DiscrepancySealsPage, Some("sealsIdentifier"))
+            .set(DiscrepancySealsPage(index), "sealsIdentifier")
             .success
             .value
             .set(DiscrepancyReferencePage, Some("goodsRef"))
@@ -101,7 +101,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
 
           result.get(DiscrepancyConsignmentPage) mustBe defined
           result.get(DiscrepancyTransportPage) mustBe defined
-          result.get(DiscrepancySealsPage) mustBe defined
+          result.get(DiscrepancySealsPage(index)) mustBe defined
           result.get(DiscrepancyReferencePage) mustBe defined
           result.get(DiscrepancyTransportMeansPage) mustBe defined
           result.get(DiscrepancyTransportDocPage) mustBe defined
