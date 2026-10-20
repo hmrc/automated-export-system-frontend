@@ -58,7 +58,9 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
   </h2>
   <div class="govuk-error-summary__body">
    <ul class="govuk-list govuk-error-summary__list">
-    @for(error <- submission.errors) {<li>@messages(error)</li>}
+    @for(error <- submission.errors) {
+    <li>@messages(error.key, error.args:_*)</li>
+    }
    </ul>
   </div>
  </div>
