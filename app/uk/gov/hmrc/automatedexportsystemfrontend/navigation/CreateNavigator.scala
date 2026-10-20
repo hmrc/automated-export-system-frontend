@@ -45,6 +45,8 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportDocPage                  => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
     case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
+    case DiscrepancyTransportEquipmentPage(transportEquipmentIndex) =>
+      _ => createRoute.TransportEquipmentCYAController.onPageLoad(transportEquipmentIndex, NormalMode)
   }
   override val checkRoutes: Page => UserAnswers => Call = {
     case IsSplitExitPage            => isSplitExitCheckRoute
@@ -58,7 +60,9 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, CheckMode)
-    case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
+    case DiscrepancyTransportEquipmentPage(transportEquipmentIndex) =>
+      _ => createRoute.TransportEquipmentCYAController.onPageLoad(transportEquipmentIndex, CheckMode)
+    case _ => _ => createRoute.CYASubmissionController.onPageLoad()
   }
 
   private def partOfConsolidationRoute(answers: UserAnswers): Call =
