@@ -87,22 +87,22 @@ object SubmissionErrorMapper {
 
         case SingleSubmissionError("LOWER_THAN_MIN", _, Some(path), _) =>
           ValidationErrorMapper.get(path).map { constraint =>
-            SubmissionErrorMessage("viewSubmission.error.lowerThanMin", Seq(constraint.fieldLabel))
+            SubmissionErrorMessage("viewSubmission.error.lowerThanMin", Seq(constraint.fieldLabel, constraint.minValue.getOrElse("")))
           }
 
         case SingleSubmissionError("GREATER_THAN_MAX", _, Some(path), _) =>
           ValidationErrorMapper.get(path).map { constraint =>
-            SubmissionErrorMessage("viewSubmission.error.greaterThanMax", Seq(constraint.fieldLabel))
+            SubmissionErrorMessage("viewSubmission.error.greaterThanMax", Seq(constraint.fieldLabel, constraint.maxValue.getOrElse("")))
           }
 
         case SingleSubmissionError("EQUAL_OR_LOWER_THAN_MIN", _, Some(path), _) =>
           ValidationErrorMapper.get(path).map { constraint =>
-            SubmissionErrorMessage("viewSubmission.error.equalOrLowerThanMin", Seq(constraint.fieldLabel))
+            SubmissionErrorMessage("viewSubmission.error.equalOrLowerThanMin", Seq(constraint.fieldLabel, constraint.minValue.getOrElse("")))
           }
 
-        case SingleSubmissionError("EQUAL_OR_GREATER_THAN_MIN", _, Some(path), _) =>
+        case SingleSubmissionError("EQUAL_OR_GREATER_THAN_MAX", _, Some(path), _) =>
           ValidationErrorMapper.get(path).map { constraint =>
-            SubmissionErrorMessage("viewSubmission.error.equalOrGreaterThanMin", Seq(constraint.fieldLabel))
+            SubmissionErrorMessage("viewSubmission.error.equalOrGreaterThanMax", Seq(constraint.fieldLabel, constraint.maxValue.getOrElse("")))
           }
 
         case error =>
