@@ -38,7 +38,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(EnterDucrPage, "5GB000000000000-12345")
         userAnswers <- userAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("GB/000000000000-12345")))
         userAnswers <- userAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
-        userAnswers <- userAnswers.set(DiscrepancySealsPage, Some("sealId"))
+        userAnswers <- userAnswers.set(DiscrepancySealsPage(index), "sealId")
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("locationId"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
@@ -102,7 +102,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(EnterDucrPage, "5GB000000000000-12345")
         userAnswers <- userAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("GB/000000000000-12345")))
         userAnswers <- userAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
-        userAnswers <- userAnswers.set(DiscrepancySealsPage, Some("sealId"))
+        userAnswers <- userAnswers.set(DiscrepancySealsPage(index), "sealId")
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
@@ -204,7 +204,6 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
         answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         answers <- answers.set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
-        answers <- answers.set(DiscrepancySealsPage, Option.empty[String])
       } yield answers).get
 
       val result = service.buildStandardSubmission(userAnswers)
@@ -290,7 +289,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
         answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
-        answers <- answers.set(DiscrepancySealsPage, Some("sealId"))
+        answers <- answers.set(DiscrepancySealsPage(index), "sealId")
       } yield answers).get
 
       val cases = Seq(

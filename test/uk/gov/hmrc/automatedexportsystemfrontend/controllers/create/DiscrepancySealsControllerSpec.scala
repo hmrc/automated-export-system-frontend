@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
@@ -31,8 +32,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancySealsView
 
 import scala.concurrent.Future
 
@@ -43,7 +45,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DiscrepancySealsFormProvider()
   val form: Form[Option[String]] = formProvider()
 
-  lazy val discrepancySealsRoute: String = createRoute.DiscrepancySealsController.onPageLoad(NormalMode).url
+  lazy val discrepancySealsRoute: String = createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
 
   "DiscrepancySeals Controller" - {
 
@@ -67,8 +69,9 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must populate the view correctly on a GET when the question has previously been answered" in {
+      val sealIdentifier = "testSealIdentifier"
 
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage, Some("answer")).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage(1), sealIdentifier).success.value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -87,7 +90,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
         body should include("""id="value"""")
         body should include("""name="value"""")
         body should include("""type="text"""")
-        body should include("""value="answer"""")
+        body should include("""value="testSealIdentifier"""")
       }
     }
 
@@ -119,7 +122,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
-
+      val invalidSealId = " invalidSealId"
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
@@ -127,7 +130,9 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancySealsRoute)
-            .withFormUrlEncodedBody(("value", "abc123 "))
+            .withFormUrlEncodedBody(("value", invalidSealId))
+
+        val boundForm: Form[Option[String]] = form.bind(Map("value" -> invalidSealId))
 
         val result = route(application, request).value
 
@@ -154,13 +159,33 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save a blank answer and redirect to the next page" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, discrepancySealsRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to the next page when no data is entered" in {
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals, List("seal1", "seal2")).success.value
+
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
@@ -178,27 +203,9 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe onwardRoute.url
 
-        org.mockito.Mockito
-          .verify(mockSessionRepository)
-          .set(org.mockito.ArgumentMatchers.argThat[UserAnswers](answers => answers.get(DiscrepancySealsPage).contains(None)))
-      }
-    }
-
-    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-
-      val application = applicationBuilder(userAnswers = None)
-        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-        .build()
-
-      running(application) {
-        val request =
-          FakeRequest(POST, discrepancySealsRoute)
-            .withFormUrlEncodedBody(("value", "answer"))
-
-        val result = route(application, request).value
-
-        status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancySeals.getAll(captor.getValue) shouldBe List("seal2")
       }
     }
   }

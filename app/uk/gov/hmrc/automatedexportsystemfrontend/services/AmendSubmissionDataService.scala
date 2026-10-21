@@ -25,6 +25,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
+import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
 class AmendSubmissionDataService @Inject() extends Logging {
 
@@ -67,7 +68,12 @@ class AmendSubmissionDataService @Inject() extends Logging {
       locationDetails <- userAnswers.get(AmendLocationIdPage(submissionId))
     } yield LocationOfGoods(
       typeOfLocation,
-      QualifierOfTheIdentification.UnLocode,
+      locationDetails.locationType match {
+        case LocationQualifier.UnLocode =>
+          QualifierOfTheIdentification.UnLocode
+        case LocationQualifier.AuthorisationNumber =>
+          QualifierOfTheIdentification.AuthorisationNumber
+      },
       locationDetails.authorisationReferenceNumber,
       locationDetails.locationAdditionalIdentifier,
       locationDetails.unlocode

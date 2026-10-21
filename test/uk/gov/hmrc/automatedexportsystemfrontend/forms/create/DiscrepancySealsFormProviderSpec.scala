@@ -37,6 +37,12 @@ class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
+    "must bind to None when the field is missing" in {
+      val result = form.bind(Map.empty[String, String])
+      result.errors mustBe empty
+      result.value.value mustBe None
+    }
+
     "must not bind invalid data" in {
 
       val invalidValues: Seq[String] = Seq(" abc123", "abc123 ")
@@ -49,6 +55,10 @@ class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
       }
     }
 
+    "must bind an entered value as Some" in {
+      form.bind(Map(fieldName -> "SEAL123")).value mustBe Some(Some("SEAL123"))
+    }
+
     "must bind a missing value as None" in {
       form.bind(Map.empty[String, String]).value mustBe Some(None)
     }
@@ -57,8 +67,5 @@ class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
       form.bind(Map(fieldName -> "")).value mustBe Some(None)
     }
 
-    "must bind an entered value as Some" in {
-      form.bind(Map(fieldName -> "SEAL123")).value mustBe Some(Some("SEAL123"))
-    }
   }
 }

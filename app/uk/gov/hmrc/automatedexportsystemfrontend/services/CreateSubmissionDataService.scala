@@ -39,9 +39,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendPartOfConsolidationPage
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyPacking, DiscrepancyReference}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.*
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage.reads
 
 class CreateSubmissionDataService @Inject() extends Logging {
 
@@ -83,8 +82,8 @@ class CreateSubmissionDataService @Inject() extends Logging {
   }
 
   private def collectSeals(userAnswers: UserAnswers): List[Seal] =
-    userAnswers.get(DiscrepancySealsPage).flatten.toList.zipWithIndex.map { case (seal, index) =>
-      Seal(index + 1, seal)
+    DiscrepancySeals.getAll(userAnswers).zipWithIndex.map { (sealIdentifier, index) =>
+      Seal(index + 1, sealIdentifier)
     }
 
   private def collectGoodsReference(userAnswers: UserAnswers): List[GoodsReference] =
