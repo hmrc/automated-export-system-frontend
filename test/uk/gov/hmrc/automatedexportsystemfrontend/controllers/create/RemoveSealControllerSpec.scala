@@ -27,9 +27,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.RemoveSealFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyPackingPage, DiscrepancySealsPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
 import scala.concurrent.Future
