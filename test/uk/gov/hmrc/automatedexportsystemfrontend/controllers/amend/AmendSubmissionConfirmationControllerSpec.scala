@@ -49,7 +49,8 @@ class AmendSubmissionConfirmationControllerSpec extends SpecBase {
     exportOperation = SingleSubmissionExportOperation("1", mrn, 0, 0),
     customsOfficeOfExitActual = SingleSubmissionCustomsOfficeOfExitActual("GB000051"),
     goodsShipment = None,
-    updatedAt = LocalDateTime.of(2026, 10, 12, 10, 30)
+    updatedAt = LocalDateTime.of(2026, 10, 12, 10, 30),
+    metadata = None
   )
 
   "AmendSubmissionConfirmationController" - {
