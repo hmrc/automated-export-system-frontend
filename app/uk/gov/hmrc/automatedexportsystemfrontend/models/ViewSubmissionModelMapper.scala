@@ -17,7 +17,6 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TypeOfLocation
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TypeOfLocation.toLocationTypeKey
 import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
 
 import java.time.format.DateTimeFormatter
@@ -36,7 +35,8 @@ object ViewSubmissionViewModelMapper {
       discrepancyConsignment = response.goodsShipment.flatMap(_.consignment.modeOfTransportAtTheBorder.map(_.toString)),
       locationType = response.goodsShipment
         .map(_.consignment.locationOfGoods.typeOfLocation)
-        .map(toLocationTypeKey),
+        .map(LocationType.mapLocationType)
+        .map(_.toString),
       locationUnlocode = response.goodsShipment.flatMap(_.consignment.locationOfGoods.UNLocode),
       locationAdditionalIdentifier = response.goodsShipment.flatMap(_.consignment.locationOfGoods.additionalIdentifier),
       locationAuthorisationReferenceNumber = response.goodsShipment.flatMap(_.consignment.locationOfGoods.authorisationNumber),
@@ -48,6 +48,5 @@ object ViewSubmissionViewModelMapper {
       errors = response.metadata
         .map(metadata => SubmissionErrorMapper.toMessageKeys(metadata.errors))
         .getOrElse(Seq.empty)
-    )
     )
 }
