@@ -23,9 +23,10 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthReq
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.RemovePackagingDetailFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherPackagingDetailViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.RemovePackagingDetailView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -46,29 +47,54 @@ class RemovePackagingDetailController @Inject() (
 
   def form(packagingDetailIndex: Int): Form[Boolean] = formProvider(packagingDetailIndex)
 
-  def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
-    implicit request =>
-      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex)) {
-        Ok(view(form(packagingDetailIndex), packagingDetailIndex, mode))
+  def onPageLoad(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
+      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(request.userAnswers, returnPage)) {
+        Ok(view(form(packagingDetailIndex), packagingDetailIndex, returnPage, mode))
       } else {
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
+    }
+
+  def onSubmit(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(request.userAnswers, returnPage)) {
+        form(packagingDetailIndex)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, returnPage, mode))),
+            {
+              case true =>
+                for {
+                  updatedAnswers <- Future.fromTry(DiscrepancyPacking.removeOne(request.userAnswers, packagingDetailIndex))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield
+                  if (DiscrepancyPacking.count(updatedAnswers) == 0) {
+                    Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
+                  } else {
+                    Redirect(
+                      createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(returnPageAfterRemoval(updatedAnswers, returnPage)), mode)
+                    )
+                  }
+              case false => Future.successful(Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(returnPage), mode)))
+            }
+          )
+      } else {
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      }
+    }
+
+  private def validReturnPage(userAnswers: UserAnswers, returnPage: Int): Boolean = {
+    val addAnotherPackagingDetailViewModel =
+      AddAnotherPackagingDetailViewModel(userAnswers, Some(returnPage))
+
+    returnPage >= 1 && returnPage <= addAnotherPackagingDetailViewModel.totalPages
   }
 
-  def onSubmit(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
-    implicit request =>
-      form(packagingDetailIndex)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, mode))),
-          {
-            case true =>
-              for {
-                updatedAnswers <- Future.fromTry(DiscrepancyPacking.removeOne(request.userAnswers, packagingDetailIndex))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(mode))
-            case false => Future.successful(Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(mode)))
-          }
-        )
+  private def returnPageAfterRemoval(updatedUserAnswers: UserAnswers, returnPage: Int): Int = {
+    val addAnotherPackagingDetailViewModel =
+      AddAnotherPackagingDetailViewModel(updatedUserAnswers, Some(returnPage))
+
+    math.min(returnPage, addAnotherPackagingDetailViewModel.totalPages)
   }
 }

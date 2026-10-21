@@ -40,12 +40,12 @@ class AmendOfficeOfExitSummarySpec extends SpecBase {
 
   "row" - {
     "when answer is selected, return the summary row with change link" in {
-      val userAnswers = "GB000051"
+      val userAnswers = "XI000142"
 
       AmendOfficeOfExitSummary.row(userAnswers, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
-          value = ValueViewModel(Text("officeOfExit.GB000051")),
+          value = ValueViewModel(Text("officeOfExit.XI000142")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
@@ -58,12 +58,12 @@ class AmendOfficeOfExitSummarySpec extends SpecBase {
     }
 
     "when answer is selected, return the summary row" in {
-      val userAnswers = "GB000051"
+      val userAnswers = "XI000142"
 
       AmendOfficeOfExitSummary.row(userAnswers, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(
           key = "officeOfExit.checkYourAnswersLabel",
-          value = ValueViewModel(Text("officeOfExit.GB000051")),
+          value = ValueViewModel(Text("officeOfExit.XI000142")),
           actions = Seq.empty
         )
       )

@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherPackagingDetailFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherPackagingDetailViewModel
@@ -41,27 +42,40 @@ class AddAnotherPackagingDetailController @Inject() (
 
   def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers)
+  def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page)
 
-    if (viewModel.numberOfPackagingDetails > 0) {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
+    if (viewModel.numberOfPackagingDetails == 0) {
+      Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
+    } else if (!isValidPage(viewModel)) {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+    } else if (page != viewModel.pageParam) {
+      Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(viewModel.pageParam, mode))
     } else {
-      Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode).url)
+      Ok(view(form(viewModel.allowMore), viewModel, mode))
     }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers)
+  def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page)
 
-    formProvider(viewModel.allowMore)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
-        {
-          case true  => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(viewModel.numberOfPackagingDetails + 1, mode))
-          case false => Redirect(createRoute.CYASubmissionController.onPageLoad())
-        }
-      )
+    if (viewModel.numberOfPackagingDetails == 0) {
+      Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
+    } else if (!isValidPage(viewModel)) {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+    } else {
+      formProvider(viewModel.allowMore)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
+          {
+            case true  => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(viewModel.numberOfPackagingDetails + 1, mode))
+            case false => Redirect(createRoute.CYASubmissionController.onPageLoad())
+          }
+        )
+    }
   }
+
+  private def isValidPage(viewModel: AddAnotherPackagingDetailViewModel): Boolean =
+    viewModel.currentPage >= 1 && viewModel.currentPage <= viewModel.totalPages
 }
