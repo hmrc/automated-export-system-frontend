@@ -55,18 +55,28 @@ class RemoveSealController @Inject() (
   }
 
   def onSubmit(sealIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, sealIndex, mode))),
-        {
-          case true =>
-            for {
-              updatedAnswers <- Future.fromTry(DiscrepancySeals.removeOne(request.userAnswers, sealIndex))
-              _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(createRoute.AddAnotherSealController.onPageLoad(mode))
-          case false => Future.successful(Redirect(createRoute.AddAnotherSealController.onPageLoad(mode)))
-        }
-      )
+    if (DiscrepancySeals.exists(request.userAnswers, sealIndex)) {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, sealIndex, mode))),
+          {
+            case true =>
+              for {
+                updatedAnswers <- Future.fromTry(DiscrepancySeals.removeOne(request.userAnswers, sealIndex))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield
+                if (DiscrepancySeals.count(updatedAnswers) == 0) {
+                  Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
+                } else {
+                  Redirect(createRoute.AddAnotherSealController.onPageLoad(mode))
+                }
+            case false => Future.successful(Redirect(createRoute.AddAnotherSealController.onPageLoad(mode)))
+          }
+        )
+    } else {
+      Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+    }
   }
+
 }

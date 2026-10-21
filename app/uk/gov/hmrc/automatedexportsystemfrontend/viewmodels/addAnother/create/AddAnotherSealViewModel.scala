@@ -22,7 +22,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, Text}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.{ActionItem, Actions, Key, SummaryListRow, Value}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
-import uk.gov.hmrc.govukfrontend.views.Aliases.{Text, Value}
+import uk.gov.hmrc.govukfrontend.views.Aliases.Value
 
 case class AddAnotherSealViewModel(
   numberOfSeals: Int,
