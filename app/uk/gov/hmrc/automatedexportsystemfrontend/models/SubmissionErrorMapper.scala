@@ -45,8 +45,7 @@ object SubmissionErrorMapper {
     "DIVERSION_REJECTED_INVALID_DECLARATION" -> "viewSubmission.error.diversionRejectedInvalidDeclaration",
     "DIVERSION_REJECTED_UNKNOWN_MRN" -> "viewSubmission.error.diversionRejectedUnknownMrn",
     "DIVERSION_REJECTED_ALREADY_EXITED" -> "viewSubmission.error.diversionRejectedAlreadyExited",
-    "DIVERSION_REJECTED_OTHER" -> "viewSubmission.error.diversionRejectedOther",
-    "ELEMENT_TOO_LONG" -> "viewSubmission.error.elementTooLong"
+    "DIVERSION_REJECTED_OTHER" -> "viewSubmission.error.diversionRejectedOther"
   )
 
   def toMessageKeys(errors: Seq[SingleSubmissionError]): Seq[SubmissionErrorMessage] =
@@ -86,10 +85,30 @@ object SubmissionErrorMapper {
             SubmissionErrorMessage("viewSubmission.error.invalidValuePattern", Seq(constraint.fieldLabel))
           }
 
+        case SingleSubmissionError("LOWER_THAN_MIN", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.lowerThanMin", Seq(constraint.fieldLabel))
+          }
+
+        case SingleSubmissionError("GREATER_THAN_MAX", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.greaterThanMax", Seq(constraint.fieldLabel))
+          }
+
+        case SingleSubmissionError("EQUAL_OR_LOWER_THAN_MIN", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.equalOrLowerThanMin", Seq(constraint.fieldLabel))
+          }
+
+        case SingleSubmissionError("EQUAL_OR_GREATER_THAN_MIN", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.equalOrGreaterThanMin", Seq(constraint.fieldLabel))
+          }
+
         case error =>
           errorMappings
             .get(error.code)
             .map(SubmissionErrorMessage(_))
-      }
+      }.distinct
     }
 }

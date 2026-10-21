@@ -30,7 +30,8 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         SingleSubmissionError(code = "INVALID_MRN", description = None, path = None, originalValue = None)
       )
 
-      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq("viewSubmission.error.technical")
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe
+        Seq(SubmissionErrorMessage("viewSubmission.error.technical"))
     }
 
     "remove duplicate errors" in {
@@ -40,7 +41,8 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         SingleSubmissionError(code = "INVALID_MRN", description = None, path = None, originalValue = None)
       )
 
-      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq("viewSubmission.error.invalidMrn")
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe
+        Seq(SubmissionErrorMessage("viewSubmission.error.invalidMrn"))
     }
 
     "return multiple validation errors" in {
@@ -50,7 +52,8 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         SingleSubmissionError(code = "UNKNOWN_MRN", description = None, path = None, originalValue = None)
       )
 
-      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq("viewSubmission.error.invalidMrn", "viewSubmission.error.unknownMrn")
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe
+        Seq(SubmissionErrorMessage("viewSubmission.error.invalidMrn"), SubmissionErrorMessage("viewSubmission.error.unknownMrn"))
     }
 
     "ignore unknown errors" in {
@@ -69,7 +72,7 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         val errors = Seq(SingleSubmissionError(code = code, description = None, path = None, originalValue = None))
 
         SubmissionErrorMapper.toMessageKeys(errors) shouldBe
-          Seq("viewSubmission.error.technical")
+          Seq(SubmissionErrorMessage("viewSubmission.error.technical"))
       }
     }
   }
