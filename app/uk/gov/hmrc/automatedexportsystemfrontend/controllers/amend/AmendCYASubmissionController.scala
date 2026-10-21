@@ -35,6 +35,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryLis
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -135,7 +136,7 @@ class AmendCYASubmissionController @Inject() (
             .submitIE507a(xmlSubmission.toString)
             .flatMap { _ =>
               sessionRepository.set(userAnswerHelper.removeAmendSubmissionAnswers(submissionId, request.userAnswers)).map { _ =>
-                Redirect(submissionRoute.StandardSubmissionConfirmationController.onPageLoad().url)
+                Redirect(amendRoute.AmendSubmissionConfirmationController.onPageLoad(submissionId).url)
               }
             }
             .recoverWith { case NonFatal(ex) =>
