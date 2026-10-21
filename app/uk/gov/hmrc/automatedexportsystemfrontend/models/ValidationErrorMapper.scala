@@ -50,7 +50,7 @@ object ValidationErrorMapper {
     "Body.GoodsShipment.Consignment.TransportEquipment.containerIdentificationNumber" ->
       ValidationConstraint(fieldLabel = "Container identification number", minLength = Some(1), maxLength = Some(17)),
     "Body.GoodsShipment.Consignment.TransportEquipment.numberOfSeals" ->
-      ValidationConstraint(fieldLabel = "Container identification number", minValue = Some("0"), maxValue = Some("9999")),
+      ValidationConstraint(fieldLabel = "Number of seals", minValue = Some("0"), maxValue = Some("9999")),
     "Body.GoodsShipment.Consignment.TransportEquipment.Seal.sequenceNumber" ->
       ValidationConstraint(fieldLabel = "Seal sequence number", minValue = Some("1"), maxValue = Some("99999")),
     "Body.GoodsShipment.Consignment.TransportEquipment.Seal.identifier" ->
@@ -86,7 +86,9 @@ object ValidationErrorMapper {
     "Body.GoodsShipment.GoodsItem.Packaging.shippingMarks" ->
       ValidationConstraint(fieldLabel = "Shipping Marks", minLength = Some(1), maxLength = Some(512)),
     "Body.GoodsItem.Commodity.GoodsMeasure.grossMass" ->
-      ValidationConstraint(fieldLabel = "Gross mass", minValue = Some("0"))
+      ValidationConstraint(fieldLabel = "Gross mass", minValue = Some("0"), maxValue = Some("9999999999.999999")),
+    "Body.GoodsItem.Commodity.GoodsMeasure.netMass" ->
+      ValidationConstraint(fieldLabel = "Net mass", minValue = Some("0"), maxValue = Some("9999999999.999999"))
   )
 
   def get(path: String): Option[ValidationConstraint] =
