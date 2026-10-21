@@ -84,7 +84,9 @@ object ValidationErrorMapper {
     "Body.GoodsShipment.GoodsItem.Packaging.numberOfPackages" ->
       ValidationConstraint(fieldLabel = "Number of packages", minValue = Some("0"), maxValue = Some("99999999")),
     "Body.GoodsShipment.GoodsItem.Packaging.shippingMarks" ->
-      ValidationConstraint(fieldLabel = "Shipping Marks", minLength = Some(1), maxLength = Some(512))
+      ValidationConstraint(fieldLabel = "Shipping Marks", minLength = Some(1), maxLength = Some(512)),
+    "Body.GoodsItem.Commodity.GoodsMeasure.grossMass" ->
+      ValidationConstraint(fieldLabel = "Gross mass", minValue = Some("0"))
   )
 
   def get(path: String): Option[ValidationConstraint] =
