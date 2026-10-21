@@ -43,7 +43,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("locationId"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
-        userAnswers <- userAnswers.set(DiscrepancyReferencePage, Some("1"))
+        userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
@@ -107,7 +107,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
-        userAnswers <- userAnswers.set(DiscrepancyReferencePage, Some("1"))
+        userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
@@ -181,7 +181,6 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
         answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         answers <- answers.set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
-        answers <- answers.set(DiscrepancyReferencePage, Option.empty[String])
       } yield answers).get
 
       val result = service.buildStandardSubmission(userAnswers)

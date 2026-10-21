@@ -20,14 +20,15 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyReferenceFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyReference
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyReferenceView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -47,26 +48,52 @@ class DiscrepancyReferenceController @Inject() (
 
   val form: Form[Option[String]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
+    implicit request =>
+      val userAnswers: UserAnswers = request.userAnswers
+      val nextIndex: Int = DiscrepancyReference.nextIndex(userAnswers)
 
-    val preparedForm = request.userAnswers.get(DiscrepancyReferencePage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
-    }
+      if (
+        DiscrepancyReference
+          .exists(userAnswers, discrepancyReferenceIndex) || discrepancyReferenceIndex == nextIndex
+      ) {
+        val preparedForm = request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(Some(value))
+        }
 
-    Ok(view(preparedForm, mode))
+        Ok(view(preparedForm, discrepancyReferenceIndex, mode))
+      } else {
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyReferencePage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancyReferencePage, mode, updatedAnswers))
-      )
+  def onSubmit(discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
+    implicit request =>
+      val userAnswers: UserAnswers = request.userAnswers
+      val nextIndex: Int = DiscrepancyReference.nextIndex(userAnswers)
+
+      if (
+        DiscrepancyReference
+          .exists(userAnswers, discrepancyReferenceIndex) || discrepancyReferenceIndex == nextIndex
+      ) {
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, discrepancyReferenceIndex, mode))),
+            value =>
+              for {
+                updatedAnswers <- value match {
+                  case Some(discrepancyReference) =>
+                    Future.fromTry(request.userAnswers.set(DiscrepancyReferencePage(discrepancyReferenceIndex), discrepancyReference))
+                  case None =>
+                    Future.fromTry(request.userAnswers.remove(DiscrepancyReferencePage(discrepancyReferenceIndex)))
+                }
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(createNavigator.nextPage(DiscrepancyReferencePage(discrepancyReferenceIndex), mode, updatedAnswers))
+          )
+      } else {
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      }
   }
 }

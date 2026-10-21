@@ -442,10 +442,6 @@ viewSingleSubmission.transportDoc.subheading = Document Details
 viewSingleSubmission.goodsItem.subheading = Goods Item
 viewSingleSubmission.auth.subheading = Authorisation
 
-
-
-packagingDetailsCYA.title = Check your answers
-packagingDetailsCYA.heading = Check your answers
 packagingDetailsCYA.caption = Packaging detail {0}
 
 addAnotherPackagingDetail.singular.title = You have added 1 packaging detail
@@ -464,6 +460,8 @@ addAnotherPackagingDetail.error.required = Select yes if you want to add another
 removePackagingDetail.title = Are you sure you want to remove packaging detail {0}
 removePackagingDetail.heading = Are you sure you want to remove packaging detail {0}
 removePackagingDetail.error.required = Select yes if you want to remove packaging detail {0}
+
+goodsReferenceCYA.caption = Declaration Goods Reference {0}
 
 viewSubmission.errorSummary.heading=There is a problem
 viewSubmission.error.technical=Sorry, there is a problem with the service. Try again later. We have not saved your answers. When the service is available, you will have to start again.
