@@ -358,6 +358,7 @@ discrepancyTransportDoc.error.referenceNumber.required = Enter the reference num
 discrepancyTransportDoc.error.referenceNumber.invalid = Enter a reference number between 1 and 9999
 discrepancyTransportDoc.documentType.change.hidden = transport document type
 discrepancyTransportDoc.referenceNumber.change.hidden = transport document reference
+transportDocCYA.caption = Transport document {0}
 
 discrepancyGoods.title = Tell us what’s changed
 discrepancyGoods.heading = Tell us what’s changed

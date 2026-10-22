@@ -45,7 +45,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
-            .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
             .success
             .value
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
@@ -62,7 +62,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           result.get(DiscrepancySealsPage(index)) mustNot be(defined)
           result.get(DiscrepancyReferencePage(index)) mustNot be(defined)
           result.get(DiscrepancyTransportMeansPage) mustNot be(defined)
-          result.get(DiscrepancyTransportDocPage) mustNot be(defined)
+          result.get(DiscrepancyTransportDocPage(index)) mustNot be(defined)
           result.get(DiscrepancyGoodsPage) mustNot be(defined)
           result.get(DiscrepancyPackingPage(index)) mustNot be(defined)
         }
@@ -86,7 +86,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
-            .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
             .success
             .value
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
@@ -103,7 +103,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           result.get(DiscrepancySealsPage(index)) mustBe defined
           result.get(DiscrepancyReferencePage(index)) mustBe defined
           result.get(DiscrepancyTransportMeansPage) mustBe defined
-          result.get(DiscrepancyTransportDocPage) mustBe defined
+          result.get(DiscrepancyTransportDocPage(index)) mustBe defined
           result.get(DiscrepancyGoodsPage) mustBe defined
           result.get(DiscrepancyPackingPage(index)) mustBe defined
         }

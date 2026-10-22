@@ -20,10 +20,12 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportDocFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, Mode}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportDocPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportDoc
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyTransportDocView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -46,26 +48,53 @@ class DiscrepancyTransportDocController @Inject() (
 
   val form: Form[DocumentDetails] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(docIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-    val preparedForm = request.userAnswers.get(DiscrepancyTransportDocPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+    val userAnswers: UserAnswers = request.userAnswers
+    val nextIndex: Int = DiscrepancyTransportDoc.nextIndex(userAnswers)
+
+    if (
+      DiscrepancyTransportDoc
+        .exists(userAnswers, docIndex) || docIndex == nextIndex
+    ) {
+      val preparedForm = userAnswers.get(DiscrepancyTransportDocPage(docIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(value)
+      }
+
+      Ok(view(preparedForm, docIndex, mode))
+    } else {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     }
-
-    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyTransportDocPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancyTransportDocPage, mode, updatedAnswers))
-      )
+  def onSubmit(docIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+    val userAnswers: UserAnswers = request.userAnswers
+    val nextIndex: Int = DiscrepancyTransportDoc.nextIndex(userAnswers)
+
+    if (
+      DiscrepancyTransportDoc
+        .exists(userAnswers, docIndex) || docIndex == nextIndex
+    ) {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, docIndex, mode))),
+          value =>
+            for {
+              updatedAnswers <- value match {
+                case document if document.documentType.isDefined || document.referenceNumber.isDefined =>
+                  Future
+                    .fromTry(request.userAnswers.set(DiscrepancyTransportDocPage(docIndex), value))
+                // TODO, see PR note about removal when time to add removal functionality
+                case _ =>
+                  Future.fromTry(request.userAnswers.remove(DiscrepancyTransportDocPage(docIndex)))
+              }
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(createNavigator.nextPage(DiscrepancyTransportDocPage(docIndex), mode, updatedAnswers))
+        )
+    } else {
+      Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+    }
   }
 }

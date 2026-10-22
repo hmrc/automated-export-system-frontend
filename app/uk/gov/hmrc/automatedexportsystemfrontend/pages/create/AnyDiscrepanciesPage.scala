@@ -38,7 +38,7 @@ case object AnyDiscrepanciesPage extends QuestionPage[Boolean] {
           .flatMap(_.remove(DiscrepancySeals))
           .flatMap(_.remove(DiscrepancyReference))
           .flatMap(_.remove(DiscrepancyTransportMeansPage))
-          .flatMap(_.remove(DiscrepancyTransportDocPage))
+          .flatMap(_.remove(DiscrepancyTransportDoc))
           .flatMap(_.remove(DiscrepancyGoodsPage))
           .flatMap(_.remove(DiscrepancyPacking))
       case _ => super.cleanup(value, userAnswers)
