@@ -20,9 +20,10 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyTransportDocSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.SealsCYAView
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.TransportDocCYAView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -34,15 +35,15 @@ class TransportDocCYAController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
-  view: SealsCYAView
+  view: TransportDocCYAView
 ) extends FrontendBaseController with I18nSupport {
-  def onPageLoad(docIndex: Int): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(docIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-    val transportDocRow: Option[Seq[SummaryListRow]] = DiscrepancyTransportDocSummary.rows(docIndex, request.userAnswers)
+    val transportDocRow: Option[Seq[SummaryListRow]] = DiscrepancyTransportDocSummary.rows(docIndex, request.userAnswers, mode)
 
     transportDocRow match {
       case None       => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-      case Some(rows) => Ok(view(docIndex, SummaryListViewModel(rows)))
+      case Some(rows) => Ok(view(docIndex, SummaryListViewModel(rows), mode))
     }
   }
 }

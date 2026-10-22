@@ -42,7 +42,7 @@
 
 @layout(pageTitle = title(form, messages("discrepancyTransportDoc.title"))) {
 
-    @formHelper(action = createRoute.DiscrepancyTransportDocController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = createRoute.DiscrepancyTransportDocController.onSubmit(docIndex, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
