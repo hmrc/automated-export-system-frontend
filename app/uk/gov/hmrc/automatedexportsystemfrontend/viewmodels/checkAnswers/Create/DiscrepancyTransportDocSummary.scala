@@ -28,8 +28,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyTransportDocSummary {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-    answers.get(DiscrepancyTransportDocPage).map { answer =>
+  def rows(docIndex: Int, answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
+    answers.get(DiscrepancyTransportDocPage(docIndex)).map { answer =>
 
       val maybeDocumentType = answer.documentType.map(docType => HtmlFormat.escape(docType.toString))
       val maybeReferenceNumber = answer.referenceNumber.map(refNum => HtmlFormat.escape(refNum.toString))
@@ -40,7 +40,7 @@ object DiscrepancyTransportDocSummary {
             key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent(documentType)),
             actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(docIndex, CheckMode).url)
                 .withVisuallyHiddenText(messages("discrepancyTransportDoc.documentType.change.hidden"))
             )
           )
@@ -50,7 +50,7 @@ object DiscrepancyTransportDocSummary {
             key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent(referenceNumber)),
             actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode).url)
+              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportDocController.onPageLoad(docIndex, CheckMode).url)
                 .withVisuallyHiddenText(messages("discrepancyTransportDoc.referenceNumber.change.hidden"))
             )
           )

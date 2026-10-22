@@ -75,7 +75,7 @@ class CYASubmissionController @Inject() (
       // Seq(DiscrepancySealsSummary.row(answers)) ++ TODO: Add Seals summary once design is finalised
       Seq(DiscrepancyReferenceSummary.row(answers)) ++
       DiscrepancyTransportMeansSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
-      DiscrepancyTransportDocSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
+      // DiscrepancyTransportDocSummary.rows(answers).toSeq.flatten.map(Some(_)) ++ TODO: Temp comment out check with team
       DiscrepancyGoodsSummary.rows(answers).toSeq.flatten.map(Some(_))
 
 }

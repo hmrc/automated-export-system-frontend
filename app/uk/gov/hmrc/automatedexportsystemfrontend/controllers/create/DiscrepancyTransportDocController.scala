@@ -46,26 +46,26 @@ class DiscrepancyTransportDocController @Inject() (
 
   val form: Form[DocumentDetails] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(docIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-    val preparedForm = request.userAnswers.get(DiscrepancyTransportDocPage) match {
+    val preparedForm = request.userAnswers.get(DiscrepancyTransportDocPage(docIndex)) match {
       case None        => form
       case Some(value) => form.fill(value)
     }
 
-    Ok(view(preparedForm, mode))
+    Ok(view(preparedForm, docIndex, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+  def onSubmit(docIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
+        formWithErrors => Future.successful(BadRequest(view(formWithErrors, docIndex, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyTransportDocPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyTransportDocPage(docIndex), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancyTransportDocPage, mode, updatedAnswers))
+          } yield Redirect(createNavigator.nextPage(DiscrepancyTransportDocPage(docIndex), mode, updatedAnswers))
       )
   }
 }
