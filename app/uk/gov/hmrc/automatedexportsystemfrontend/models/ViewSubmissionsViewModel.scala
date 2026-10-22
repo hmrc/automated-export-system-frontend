@@ -27,7 +27,7 @@ case class SubmissionSummary(
   officeOfExit: OfficeOfExit,
   submittedDate: String,
   submissionStatus: SubmissionStatus,
-  errors: Seq[String] = Seq.empty
+  errors: Seq[SubmissionErrorMessage] = Seq.empty
 )
 
 case class SubmissionStatus(key: String, cssClass: String)
