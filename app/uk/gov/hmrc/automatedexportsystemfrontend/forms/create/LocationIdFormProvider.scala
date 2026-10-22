@@ -37,8 +37,8 @@ class LocationIdFormProvider @Inject() extends Mappings {
         text()
           .verifying(
             firstError(
-              // maxLength(additionalIdentifierMaxLength, "locationId.error.locationAdditionalIdentifier.length"),
-              // regexp(additionalIdentifierRegex, "locationId.error.locationAdditionalIdentifier.invalid")
+              maxLength(additionalIdentifierMaxLength, "locationId.error.locationAdditionalIdentifier.length"),
+              regexp(additionalIdentifierRegex, "locationId.error.locationAdditionalIdentifier.invalid")
             )
           )
       ),
