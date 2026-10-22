@@ -54,15 +54,18 @@ class AddAnotherSealController @Inject() (
 
   def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherSealViewModel(request.userAnswers, mode)
-
-    formProvider(viewModel.allowMore)
-      .bindFromRequest()
-      .fold(
-        formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
-        {
-          case true  => Redirect(createRoute.DiscrepancySealsController.onPageLoad(viewModel.numberOfSeals + 1, mode))
-          case false => Redirect(createRoute.CYASubmissionController.onPageLoad())
-        }
-      )
+    if (viewModel.numberOfSeals > 0) {
+      formProvider(viewModel.allowMore)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
+          {
+            case true  => Redirect(createRoute.DiscrepancySealsController.onPageLoad(viewModel.numberOfSeals + 1, mode))
+            case false => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(mode))
+          }
+        )
+    } else {
+      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
+    }
   }
 }

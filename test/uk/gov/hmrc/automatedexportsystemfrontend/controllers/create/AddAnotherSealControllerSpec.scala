@@ -161,7 +161,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to CYASubmission when No is selected" in {
+      "must redirect to Discrepancy Reference when No is selected" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -174,7 +174,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode).url
         }
       }
 
@@ -211,7 +211,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to CYASubmission when maximum items reached" in {
+      "must redirect to Discrepancy Reference when maximum items reached" in {
 
         val userAnswers = emptyUserAnswers
           .set(DiscrepancySeals, sealsList)
@@ -228,7 +228,23 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode).url
+        }
+      }
+
+      "must redirect to DiscrepancySealsPage at the first index if zero items added for a POST" in {
+
+        val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(POST, createRoute.AddAnotherSealController.onPageLoad(NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
         }
       }
 
