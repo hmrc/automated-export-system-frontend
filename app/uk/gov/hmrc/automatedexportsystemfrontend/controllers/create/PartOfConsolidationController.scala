@@ -71,7 +71,7 @@ class PartOfConsolidationController @Inject() (
           } else {
             val cleanedValue = if (!value.boolean) value.copy(mucr = None) else value
             for {
-              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartOfConsolidationPage, value))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(PartOfConsolidationPage, cleanedValue))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(createNavigator.nextPage(PartOfConsolidationPage, mode, updatedAnswers))
           }

@@ -32,7 +32,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationType, NormalMod
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.LocationTypePage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.LocationTypeView
 
 import scala.concurrent.Future
 
@@ -58,8 +57,6 @@ class LocationTypeControllerSpec extends SpecBase with MockitoSugar {
 
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[LocationTypeView]
-
         status(result) shouldBe OK
 
         val body = contentAsString(result)
@@ -82,8 +79,6 @@ class LocationTypeControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, locationTypeRoute)
-
-        val view = application.injector.instanceOf[LocationTypeView]
 
         val result = route(application, request).value
 
@@ -137,10 +132,6 @@ class LocationTypeControllerSpec extends SpecBase with MockitoSugar {
         val request =
           FakeRequest(POST, locationTypeRoute)
             .withFormUrlEncodedBody(("value", "invalid value"))
-
-        val boundForm = form.bind(Map("value" -> "invalid value"))
-
-        val view = application.injector.instanceOf[LocationTypeView]
 
         val result = route(application, request).value
 

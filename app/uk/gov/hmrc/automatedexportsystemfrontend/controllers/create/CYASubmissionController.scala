@@ -72,7 +72,7 @@ class CYASubmissionController @Inject() (
   private def discrepancyRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     Seq(DiscrepancyConsignmentSummary.row(answers)) ++
       DiscrepancyTransportSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
-      Seq(DiscrepancySealsSummary.row(answers)) ++
+      // Seq(DiscrepancySealsSummary.row(answers)) ++ TODO: Add Seals summary once design is finalised
       Seq(DiscrepancyReferenceSummary.row(answers)) ++
       DiscrepancyTransportMeansSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
       DiscrepancyTransportDocSummary.rows(answers).toSeq.flatten.map(Some(_)) ++

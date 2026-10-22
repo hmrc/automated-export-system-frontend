@@ -24,20 +24,60 @@ case class AddAnotherPackagingDetailViewModel(
   remainingPackagingDetails: Int,
   allowMore: Boolean,
   addedSingularOrPlural: String,
-  remainingSingularOrPlural: String
-)
+  remainingSingularOrPlural: String,
+  currentPage: Int,
+  totalPages: Int,
+  firstPackagingDetail: Int,
+  lastPackagingDetail: Int,
+  packagingDetailNumbers: Seq[Int],
+  pageNumbers: Seq[Int]
+) {
+
+  def hasPreviousPage: Boolean = currentPage > 1
+
+  def hasNextPage: Boolean = currentPage < totalPages
+
+  def previousPage: Int = currentPage - 1
+
+  def nextPage: Int = currentPage + 1
+
+  def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
+}
 
 object AddAnotherPackagingDetailViewModel {
-  def apply(userAnswers: UserAnswers): AddAnotherPackagingDetailViewModel = {
+
+  private val pageSize = 25
+
+  def apply(userAnswers: UserAnswers, page: Option[Int]): AddAnotherPackagingDetailViewModel = {
+
     val numberOfPackagingDetails: Int = DiscrepancyPacking.count(userAnswers)
+
     val remainingPackagingDetails: Int = DiscrepancyPacking.remaining(userAnswers)
+
+    val currentPage: Int = page.getOrElse(1)
+
+    val totalPages: Int = ((numberOfPackagingDetails - 1) / pageSize) + 1
+
+    val firstPackagingDetail: Int = ((currentPage - 1) * pageSize) + 1
+
+    val lastPackagingDetail: Int = math.min(currentPage * pageSize, numberOfPackagingDetails)
+
+    val firstPageNumber: Int = math.max(1, currentPage - 1)
+
+    val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
 
     AddAnotherPackagingDetailViewModel(
       numberOfPackagingDetails = numberOfPackagingDetails,
       remainingPackagingDetails = remainingPackagingDetails,
       allowMore = remainingPackagingDetails > 0,
       addedSingularOrPlural = if (numberOfPackagingDetails == 1) "singular" else "plural",
-      remainingSingularOrPlural = if (remainingPackagingDetails == 1) "singular" else "plural"
+      remainingSingularOrPlural = if (remainingPackagingDetails == 1) "singular" else "plural",
+      currentPage = currentPage,
+      totalPages = totalPages,
+      firstPackagingDetail = firstPackagingDetail,
+      lastPackagingDetail = lastPackagingDetail,
+      packagingDetailNumbers = firstPackagingDetail to lastPackagingDetail,
+      pageNumbers = firstPageNumber to lastPageNumber
     )
   }
 }
