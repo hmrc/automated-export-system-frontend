@@ -494,12 +494,8 @@ addAnotherTransportEquipment.plural.title=You have added {0} transport equipment
 
 addAnotherTransportEquipment.singular.heading=You have added 1 transport equipment
 addAnotherTransportEquipment.plural.heading=You have added {0} transport equipment entries
-
 addAnotherTransportEquipment.key=Transport equipment {0}
-
 addAnotherTransportEquipment.singular.remaining=You can add <strong>{0}</strong> more transport equipment entry.
 addAnotherTransportEquipment.plural.remaining=You can add <strong>{0}</strong> more transport equipment entries.
-
 addAnotherTransportEquipment.addAnother=Do you want to add another transport equipment entry?
-
 addAnotherTransportEquipment.change.hidden=transport equipment {0}

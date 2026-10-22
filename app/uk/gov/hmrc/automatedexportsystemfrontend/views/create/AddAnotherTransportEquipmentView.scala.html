@@ -75,7 +75,7 @@ ErrorSummaryViewModel(form)
                                             "addAnotherTransportEquipment.change.hidden",
                                             transportEquipmentNumber
                                         )
-                                    </span>
+                            </span>
                         </a>
                     </li>
                 </ul>
@@ -165,22 +165,22 @@ Symbol("autoComplete") -> "off"
 @if(viewModel.allowMore) {
 <p class="govuk-body">
     @Html(
-    messages(
-    s"addAnotherTransportEquipment.${viewModel.remainingSingularOrPlural}.remaining",
-    <strong>@viewModel.remainingTransportEquipment</strong>
-    )
+        messages(
+            s"addAnotherTransportEquipment.${viewModel.remainingSingularOrPlural}.remaining",
+            viewModel.remainingTransportEquipment
+        )
     )
 </p>
 
-@govukRadios(
-RadiosViewModel.yesNo(
-field = form("value"),
-legend = LegendViewModel(
-HtmlContent(
-s"<strong>${messages("addAnotherTransportEquipment.addAnother")}</strong>"
-)
-)
-)
+    @govukRadios(
+        RadiosViewModel.yesNo(
+            field = form("value"),
+            legend = LegendViewModel(
+            HtmlContent(
+                s"<strong>${messages("addAnotherTransportEquipment.addAnother")}</strong>"
+            )
+        )
+    )
 )
 } else {
 <p class="govuk-body">
