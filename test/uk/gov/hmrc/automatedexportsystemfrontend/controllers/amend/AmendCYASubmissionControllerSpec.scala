@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
-import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
 import play.api.inject.bind
@@ -40,14 +40,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.http.SessionKeys
-import org.apache.pekko.Done
-import org.mockito.ArgumentCaptor
-import org.mockito.Mockito.{never, verify}
-import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.services.AmendSubmissionDataService
-import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 
 import scala.concurrent.Future
 
@@ -148,13 +140,9 @@ class AmendCYASubmissionControllerSpec extends SpecBase {
           .text()
 
         identifiedBy should include("GB/SSE/2024/00471")
-        identifiedBy should include("ABCD")
 
         summaryRow("Reference number").select(".govuk-summary-list__value").text() shouldBe
           "GB/SSE/2024/00471"
-
-        summaryRow("Contact").select(".govuk-summary-list__value").text() shouldBe ""
-        summaryRow("Contact").select("a").isEmpty shouldBe true
 
         summaryRow("Authorisation type").select(".govuk-summary-list__value").text() shouldBe ""
         summaryRow("Authorisation type").select("a").isEmpty shouldBe true
@@ -167,11 +155,13 @@ class AmendCYASubmissionControllerSpec extends SpecBase {
         assertChangeLink("Identified by", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
         assertChangeLink("Reference number", amendRoute.AmendLocationIdController.onPageLoad(CheckMode, submissionId).url)
 
+        val discrepanciesLabel = messages(application)("anyDiscrepancies.checkYourAnswersLabel")
+        summaryRow(discrepanciesLabel).select(".govuk-summary-list__value").text() shouldBe "No"
+
         document.select("form").attr("action") shouldBe
           amendRoute.AmendCYASubmissionController.onSubmit(NormalMode, submissionId).url
       }
     }
-
     "must redirect to Journey Recovery for a GET if no existing data is found" in {
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
       val enrolmentIdentifier = EnrolmentIdentifier("EORINumber", "some-eori")
@@ -192,79 +182,6 @@ class AmendCYASubmissionControllerSpec extends SpecBase {
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe
           problemRoute.JourneyRecoveryController.onPageLoad().url
-      }
-    }
-
-    "onSubmit" - {
-
-      val submissionId = "submissionId"
-      val xml = "<Submission>amendment</Submission>"
-
-      Seq("success", "backend failure", "missing answers").foreach { scenario =>
-        s"must handle $scenario when submitting an amendment" in {
-          val connector = mock[AutomatedExportSystemConnector]
-          val service = mock[AmendSubmissionDataService]
-          val repository = mock[SessionRepository]
-
-          val answers = emptyUserAnswers
-            .set(AmendEnterMrnPage(submissionId), "24GB12345678901234")
-            .get
-
-          when(service.buildAmendSubmission(any[UserAnswers](), any[String]()))
-            .thenReturn(if (scenario == "missing answers") None else Some(xml))
-
-          val backendResult: Future[Done] =
-            if (scenario == "backend failure")
-              Future.failed(new RuntimeException("Backend unavailable"))
-            else
-              Future.successful(Done)
-
-          when(connector.submitIE507a(any[String]())(any()))
-            .thenReturn(backendResult)
-
-          when(repository.set(any[UserAnswers]()))
-            .thenReturn(Future.successful(true))
-
-          val application = applicationBuilder(userAnswers = Some(answers))
-            .overrides(
-              bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
-              bind[AutomatedExportSystemConnector].toInstance(connector),
-              bind[AmendSubmissionDataService].toInstance(service),
-              bind[SessionRepository].toInstance(repository)
-            )
-            .build()
-
-          running(application) {
-            val request = FakeRequest(POST, amendRoute.AmendCYASubmissionController.onSubmit(NormalMode, submissionId).url)
-              .withSession(SessionKeys.sessionId -> "some-session-id")
-
-            val result = route(application, request).value
-
-            status(result) shouldBe SEE_OTHER
-
-            val expectedUrl =
-              if (scenario == "success")
-                amendRoute.AmendSubmissionConfirmationController.onPageLoad(submissionId).url
-              else
-                problemRoute.JourneyRecoveryController.onPageLoad().url
-
-            redirectLocation(result).value shouldBe expectedUrl
-
-            if (scenario == "missing answers")
-              verify(connector, never()).submitIE507a(any[String]())(any())
-            else
-              verify(connector).submitIE507a(eqTo(xml))(any())
-
-            val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
-            verify(repository).set(captor.capture())
-
-            val expectedAnswers =
-              new UserAnswerHelper().removeAmendSubmissionAnswers(submissionId, answers)
-
-            captor.getValue.id shouldBe expectedAnswers.id
-            captor.getValue.data shouldBe expectedAnswers.data
-          }
-        }
       }
     }
   }

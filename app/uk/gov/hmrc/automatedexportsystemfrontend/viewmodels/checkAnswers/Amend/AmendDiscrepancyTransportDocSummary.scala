@@ -28,39 +28,62 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyTransportDocSummary {
 
-  def transportTypeRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] = {
+  def rows(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
+    val maybeAnswer = answers.get(AmendDiscrepancyTransportDocPage(submissionId))
 
-    val transportType = HtmlFormat.escape(answerFromXml.toString)
+    Seq(
+      maybeAnswer.flatMap(_.documentType.map { documentType =>
+        buildTransportType(documentType, submissionId, withAmendLink = true)
+      }),
+      maybeAnswer.flatMap(_.referenceNumber.map { referenceNumber =>
+        buildDocReference(referenceNumber.toString, submissionId, withAmendLink = true)
+      })
+    )
+  }
 
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(transportType)),
-        actions = if (withAmendLink) {
+  def transportTypeRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyTransportDocPage(submissionId)).flatMap { answer =>
+      answer.documentType.map { documentType =>
+        buildTransportType(documentType, submissionId, withAmendLink = true)
+      }
+    }
+
+  def transportTypeRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(buildTransportType(answerFromXml, submissionId, withAmendLink))
+
+  def docReferenceRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(AmendDiscrepancyTransportDocPage(submissionId)).flatMap { answer =>
+      answer.referenceNumber.map { referenceNumber =>
+        buildDocReference(referenceNumber.toString, submissionId, withAmendLink = true)
+      }
+    }
+
+  def docReferenceRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+    Some(buildDocReference(answerFromXml, submissionId, withAmendLink))
+
+  private def buildTransportType(value: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlContent(HtmlFormat.escape(value.toString))),
+      actions =
+        if (withAmendLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyTransportDocController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("discrepancyTransportDoc.documentType.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
-  }
 
-  def docReferenceRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    Some(
-      SummaryListRowViewModel(
-        key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
-        value = ValueViewModel(HtmlContent(answerFromXml)),
-        actions = if (withAmendLink) {
+  private def buildDocReference(value: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+    SummaryListRowViewModel(
+      key = "discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel",
+      value = ValueViewModel(HtmlContent(HtmlFormat.escape(value))),
+      actions =
+        if (withAmendLink)
           Seq(
             ActionItemViewModel("site.change", amendRoute.AmendDiscrepancyTransportDocController.onPageLoad(CheckMode, submissionId).url)
               .withVisuallyHiddenText(messages("discrepancyTransportDoc.referenceNumber.change.hidden"))
           )
-        } else {
-          Seq.empty
-        }
-      )
+        else Seq.empty
     )
 }

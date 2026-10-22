@@ -31,7 +31,7 @@ class AmendDiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
 
   "row" - {
     "when answered, return the summary row with change links" in {
-      val userAnswers = 12345
+      val userAnswers = "12345"
 
       AmendDiscrepancyReferenceSummary.row(userAnswers, "submissionId", true) shouldBe Some(
         SummaryListRowViewModel(
@@ -51,7 +51,7 @@ class AmendDiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
     }
 
     "when answered, return the summary row without change links" in {
-      val userAnswers = 12345
+      val userAnswers = "12345"
 
       AmendDiscrepancyReferenceSummary.row(userAnswers, "submissionId", false) shouldBe Some(
         SummaryListRowViewModel(key = "discrepancyReference.checkYourAnswersLabel", value = ValueViewModel("12345"), actions = Seq.empty)
