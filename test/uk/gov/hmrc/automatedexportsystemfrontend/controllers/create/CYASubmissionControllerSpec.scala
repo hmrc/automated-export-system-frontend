@@ -35,6 +35,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   LocationDetails,
   LocationType,
   ModeOfTransportAtBorder,
+  NormalMode,
   OfficeOfExit,
   PartOfConsolidationAnswer,
   TransportAcrossBorderDetails,
@@ -161,7 +162,7 @@ class CYASubmissionControllerSpec extends SpecBase {
           TransportAcrossBorderDetails(Some("transportType"), Some("transportIdNumber"), Some("countryOfRegistration"))
         )
         .get
-        .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
+        .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1234)))
         .get
         .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("2GB647298735290-S569"), "20", "10"))
         .get

@@ -43,7 +43,7 @@ class DiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DiscrepancyTransportDocFormProvider()
   val form: Form[DocumentDetails] = formProvider()
 
-  lazy val discrepancyTransportDocRoute: String = createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode).url
+  lazy val discrepancyTransportDocRoute: String = createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode).url
 
   val userAnswers =
     UserAnswers(

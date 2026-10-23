@@ -22,21 +22,21 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(docIndex: Int, packagingDetailsList: SummaryList, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(docIndex: Int, transportDocList: SummaryList, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages("packagingDetailsCYA.title"))) {
+@layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
     <span class="govuk-caption-l">
-        @messages("packagingDetailsCYA.caption", docIndex)
+        @messages("transportDocCYA.caption", docIndex)
     </span>
 
-    <h1 class="govuk-heading-l">@messages("packagingDetailsCYA.heading")</h1>
+    <h1 class="govuk-heading-l">@messages("checkYourAnswers.heading")</h1>
 
-    @govukSummaryList(packagingDetailsList)
+    @govukSummaryList(transportDocList)
 
     <div>
         @govukButton(
-            ButtonViewModel(messages("site.continue")).asLink(createRoute.AddAnotherPackagingDetailController.onPageLoad(None, mode).url)
+            ButtonViewModel(messages("site.continue")).asLink(createRoute.CYASubmissionController.onPageLoad().url)
         )
     </div>
 }
