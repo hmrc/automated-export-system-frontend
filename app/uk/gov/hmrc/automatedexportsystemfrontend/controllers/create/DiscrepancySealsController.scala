@@ -63,23 +63,27 @@ class DiscrepancySealsController @Inject() (
   }
 
   def onSubmit(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, sealsIndex, mode))),
-        value =>
-          for {
-            updatedAnswers <- value match {
-              case Some(sealIdentifier) =>
-                Future
-                  .fromTry(request.userAnswers.set(DiscrepancySealsPage(sealsIndex), sealIdentifier))
-              case None =>
-                Future.fromTry(
-                  request.userAnswers.remove(DiscrepancySealsPage(sealsIndex))
-                ) // TODO: discuss with BA if this is okay, also discuss the implications on check route
-            }
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancySealsPage(sealsIndex), mode, updatedAnswers))
-      )
+    val userAnswers: UserAnswers = request.userAnswers
+    val nextIndex: Int = DiscrepancySeals.nextIndex(userAnswers)
+    if (DiscrepancySeals.exists(userAnswers, sealsIndex) || sealsIndex == nextIndex) {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, sealsIndex, mode))),
+          value =>
+            for {
+              updatedAnswers <- value match {
+                case Some(sealIdentifier) =>
+                  Future
+                    .fromTry(request.userAnswers.set(DiscrepancySealsPage(sealsIndex), sealIdentifier))
+                case None =>
+                  Future.fromTry(request.userAnswers.remove(DiscrepancySealsPage(sealsIndex))) // TODO: AES 1065 will refine the logic and navigation
+              }
+              _ <- sessionRepository.set(updatedAnswers)
+            } yield Redirect(createNavigator.nextPage(DiscrepancySealsPage(sealsIndex), mode, updatedAnswers))
+        )
+    } else {
+      Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+    }
   }
 }

@@ -155,7 +155,7 @@ class CreateNavigator extends Navigator {
       case Some(_) =>
         createRoute.SealsCYAController.onPageLoad(sealsIndex, mode)
       case None if hasExistingSeals(userAnswers) =>
-        createRoute.AddAnotherSealController.onPageLoad(mode)
+        createRoute.AddAnotherSealController.onPageLoad(None, mode)
       case None => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
     }
 
