@@ -27,6 +27,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTranspo
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyTransportView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportEquipmentPage
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -63,9 +64,9 @@ class DiscrepancyTransportController @Inject() (
         formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
         value =>
           for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyTransportPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyTransportEquipmentPage(1), value))
             _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage, mode, updatedAnswers))
+          } yield Redirect(createNavigator.nextPage(DiscrepancyTransportEquipmentPage(1), mode, updatedAnswers))
       )
   }
 }
