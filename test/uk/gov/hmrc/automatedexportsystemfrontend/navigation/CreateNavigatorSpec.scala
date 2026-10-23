@@ -128,6 +128,12 @@ class CreateNavigatorSpec extends SpecBase {
           navigator.nextPage(DiscrepancyTransportDocPage(index), NormalMode, userAnswers) shouldBe
             createRoute.TransportDocCYAController.onPageLoad(index, NormalMode)
         }
+
+        "to TransportDocCYA when  empty" in {
+          val userAnswers = emptyUserAnswers
+          navigator.nextPage(DiscrepancyTransportDocPage(index), NormalMode, userAnswers) shouldBe
+            createRoute.TransportDocCYAController.onPageLoad(index, NormalMode)
+        }
       }
 
       //TODO add navigation when empty

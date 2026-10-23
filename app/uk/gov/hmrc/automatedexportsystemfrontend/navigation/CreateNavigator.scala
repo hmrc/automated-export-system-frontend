@@ -42,7 +42,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancySealsPage(sealsIndex)             => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex)
     case DiscrepancyReferencePage                     => _ => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
     case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
-    case DiscrepancyTransportDocPage(docIndex)        => _ => createRoute.TransportDocCYAController.onPageLoad(docIndex, NormalMode)
+    case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex)
     case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
@@ -138,6 +138,12 @@ class CreateNavigator extends Navigator {
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
+  private def discrepancyTransportDocRoute(answers: UserAnswers): Call =
+    answers.get(DiscrepancyGoodsPage) match {
+      case None => createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode)
+      case _ => createRoute.CYASubmissionController.onPageLoad()
+    }
+  
   private def discrepancyTransportDocCheckRoute(answers: UserAnswers): Call =
     answers.get(DiscrepancyGoodsPage) match {
       case None => createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode)
