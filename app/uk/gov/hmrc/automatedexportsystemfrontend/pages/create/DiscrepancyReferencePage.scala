@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 
-import play.api.libs.json.{JsPath, Reads}
+import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
-case object DiscrepancyReferencePage extends QuestionPage[Option[String]] {
+case class DiscrepancyReferencePage(discrepancyReferenceIndex: Int) extends QuestionPage[String] {
 
-  implicit val reads: Reads[Option[String]] = Reads.optionWithNull[String]
-
-  override def path: JsPath = JsPath \ "standard" \ toString
+  override def path: JsPath = JsPath \ "standard" \ toString \ (discrepancyReferenceIndex - 1)
 
   override def toString: String = "discrepancyReference"
 }

@@ -32,7 +32,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 import scala.concurrent.Future
 
@@ -43,11 +42,13 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DiscrepancyReferenceFormProvider()
   val form: Form[Option[String]] = formProvider()
 
-  lazy val discrepancyReferenceRoute: String = createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode).url
+  lazy val discrepancyReferenceRoute: String = createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+
+  val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReferencePage(1), "answer").success.value
 
   "DiscrepancyReference Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET at the next index" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -66,9 +67,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReferencePage, Some("answer")).success.value
+    "must populate the view correctly on a GET when the question has previously been answered at an existing index" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -164,7 +163,37 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         org.mockito.Mockito
           .verify(mockSessionRepository)
-          .set(org.mockito.ArgumentMatchers.argThat[UserAnswers](answers => answers.get(DiscrepancyReferencePage).contains(None)))
+          .set(org.mockito.ArgumentMatchers.argThat[UserAnswers](answers => answers.get(DiscrepancyReferencePage(1)).isEmpty))
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET where the index doesn't exist and is not the next index" in {
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, createRoute.DiscrepancyReferenceController.onPageLoad(5, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST where the index doesn't exist and is not the next index" in {
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, createRoute.DiscrepancyReferenceController.onPageLoad(5, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
       }
     }
 
