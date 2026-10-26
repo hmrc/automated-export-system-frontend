@@ -70,7 +70,7 @@ class AddAnotherSealController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
           {
             case true  => Redirect(createRoute.DiscrepancySealsController.onPageLoad(viewModel.numberOfSeals + 1, mode))
-            case false => Redirect(createRoute.CYASubmissionController.onPageLoad())
+            case false => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(mode))
           }
         )
     }

@@ -20,6 +20,7 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancySealsFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
@@ -28,7 +29,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancySealsView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

@@ -92,7 +92,18 @@ class CreateNavigatorSpec extends SpecBase {
         "to Seals CYA when there is some seal identifier" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage(1), "sealId").success.value
           navigator.nextPage(DiscrepancySealsPage(1), NormalMode, userAnswers) shouldBe
-            createRoute.SealsCYAController.onPageLoad(1)
+            createRoute.SealsCYAController.onPageLoad(1, NormalMode)
+        }
+
+        "to AddAnotherSeal when DiscrepancySealsPage is not answered and there are existing seals" in {
+          val userAnswers = emptyUserAnswers
+            .set(DiscrepancySealsPage(1), "seal1")
+            .flatMap(_.set(DiscrepancySealsPage(2), "Seal2"))
+            .success
+            .value
+          navigator.nextPage(DiscrepancySealsPage(3), NormalMode, userAnswers) shouldBe
+            createRoute.AddAnotherSealController.onPageLoad(None, NormalMode)
+
         }
       }
 
