@@ -20,20 +20,22 @@ import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.services.{AmendSubmissionDataService, CreateSubmissionDataService}
+import uk.gov.hmrc.automatedexportsystemfrontend.services.AmendSubmissionDataService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -58,44 +60,71 @@ class AmendCYASubmissionController @Inject() (
 
   def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
-
       val answers = request.userAnswers
 
-      val exportOperationList = SummaryListViewModel(
-        Seq(
-          answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
-            AmendEnterMrnSummary.lockedRow(answer, submissionId)
-          },
-          AmendAnyDiscrepanciesSummary.reviewRow(answers)(submissionId),
-          AmendIsSplitExitSummary.reviewRow(answers)(submissionId)
-        ).flatten
-      )
+      val eori = request.eori
+      val exportOperationList =
+        SummaryListViewModel(
+          Seq(
+            answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
+              AmendEnterMrnSummary.lockedRow(answer, submissionId)
+            },
+            AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
+            AmendIsSplitExitSummary.row(answers)(submissionId)
+          ).flatten
+        )
 
-      val consignmentList = SummaryListViewModel(
-        Seq(
-          answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
-            AmendEnterDucrSummary.lockedRow(answer, submissionId)
-          },
-          AmendPartOfConsolidationSummary.mucrRow(answers)(submissionId)
-        ).flatten
-      )
+      val consignmentList =
+        SummaryListViewModel(
+          Seq(
+            answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
+              AmendEnterDucrSummary.lockedRow(answer, submissionId)
+            },
+            AmendPartOfConsolidationSummary.row(answers)(submissionId)
+          ).flatten
+        )
 
-      val customsOfficeExitList = SummaryListViewModel(Seq(AmendOfficeOfExitSummary.reviewRow(answers)(submissionId)).flatten)
+      val customsOfficeExitList =
+        SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
 
-      val locationOfGoodsList = SummaryListViewModel(
-        Seq(
-          AmendLocationTypeSummary.row(answers)(submissionId),
-          AmendLocationIdSummary.identifiedByRow(answers)(submissionId),
-          AmendLocationIdSummary.contactRow
-        ).flatten
-      )
+      val locationTypeRows =
+        AmendLocationTypeSummary.row(answers)(submissionId).toSeq
+
+      val locationIdRows =
+        AmendLocationIdSummary.row(answers)(submissionId).toSeq.flatten
+
+      val locationOfGoodsList =
+        SummaryListViewModel(locationTypeRows ++ locationIdRows)
+
+      val discrepancyRows: Seq[SummaryListRow] =
+        Seq(AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten ++
+          AmendDiscrepancyTransportSummary.rows(answers)(submissionId).flatten ++
+          Seq(AmendDiscrepancySealsSummary.row(answers)(submissionId), AmendDiscrepancyReferenceSummary.row(answers)(submissionId)).flatten ++
+          AmendDiscrepancyTransportMeansSummary.rows(answers)(submissionId).flatten ++
+          AmendDiscrepancyTransportDocSummary.rows(answers)(submissionId).flatten ++
+          AmendDiscrepancyGoodsSummary.rows(answers)(submissionId).flatten
+
+      val discrepancyList =
+        SummaryListViewModel(discrepancyRows)
 
       val authorisationList = SummaryListViewModel(
         Seq(AmendLocationIdSummary.authorisationTypeRow, AmendLocationIdSummary.referenceNumberRow(answers)(submissionId)).flatten
       )
 
       Future.successful(
-        Ok(view(mode, submissionId, exportOperationList, consignmentList, customsOfficeExitList, locationOfGoodsList, authorisationList))
+        Ok(
+          view(
+            mode,
+            submissionId,
+            eori,
+            exportOperationList,
+            consignmentList,
+            customsOfficeExitList,
+            discrepancyList,
+            locationOfGoodsList,
+            authorisationList
+          )
+        )
       )
     }
 
@@ -107,7 +136,7 @@ class AmendCYASubmissionController @Inject() (
             .submitIE507a(xmlSubmission.toString)
             .flatMap { _ =>
               sessionRepository.set(userAnswerHelper.removeAmendSubmissionAnswers(submissionId, request.userAnswers)).map { _ =>
-                Redirect(submissionRoute.StandardSubmissionConfirmationController.onPageLoad().url)
+                Redirect(amendRoute.AmendSubmissionConfirmationController.onPageLoad(submissionId).url)
               }
             }
             .recoverWith { case NonFatal(ex) =>

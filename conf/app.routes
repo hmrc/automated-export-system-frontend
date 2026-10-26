@@ -217,6 +217,7 @@ POST       /amend/discrepancy-packing/:submissionId                      uk.gov.
 GET        /amend/change-discrepancy-packing/:submissionId               uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyPackingController.onPageLoad(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
 POST       /amend/change-discrepancy-packing/:submissionId               uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendDiscrepancyPackingController.onSubmit(mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode, submissionId)
 
+GET        /amend/confirmation/:submissionId                             uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.AmendSubmissionConfirmationController.onPageLoad(submissionId: String)
 
 GET        /confirmation                       uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.StandardSubmissionConfirmationController.onPageLoad()
 

@@ -19,12 +19,13 @@ package uk.gov.hmrc.automatedexportsystemfrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.{Amend, Standard}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
+import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
 class AmendSubmissionDataService @Inject() extends Logging {
 
@@ -67,7 +68,12 @@ class AmendSubmissionDataService @Inject() extends Logging {
       locationDetails <- userAnswers.get(AmendLocationIdPage(submissionId))
     } yield LocationOfGoods(
       typeOfLocation,
-      QualifierOfTheIdentification.UnLocode,
+      locationDetails.locationType match {
+        case LocationQualifier.UnLocode =>
+          QualifierOfTheIdentification.UnLocode
+        case LocationQualifier.AuthorisationNumber =>
+          QualifierOfTheIdentification.AuthorisationNumber
+      },
       locationDetails.authorisationReferenceNumber,
       locationDetails.locationAdditionalIdentifier,
       locationDetails.unlocode
@@ -144,7 +150,7 @@ class AmendSubmissionDataService @Inject() extends Logging {
       referenceNumber <- userAnswers.get(AmendOfficeOfExitPage(submissionId))
     } yield Submission(
       Some(submissionId),
-      ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
+      ExportOperation(Amend, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
       collectAmendGoodsShipment(userAnswers, submissionId)
     )

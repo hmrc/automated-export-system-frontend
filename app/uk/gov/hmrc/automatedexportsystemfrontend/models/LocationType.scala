@@ -17,7 +17,6 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TypeOfLocation
 import uk.gov.hmrc.govukfrontend.views.Aliases.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.radios.RadioItem
 
