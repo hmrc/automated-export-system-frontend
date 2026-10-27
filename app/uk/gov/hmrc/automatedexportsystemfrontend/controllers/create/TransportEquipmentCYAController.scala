@@ -21,7 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyTransportEquipmentSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyTransportSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.TransportEquipmentCYAView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
@@ -42,7 +42,7 @@ class TransportEquipmentCYAController @Inject() (
     (actionBuilder andThen getData andThen requireData) { implicit request =>
 
       val transportEquipmentRows: Option[Seq[SummaryListRow]] =
-        DiscrepancyTransportEquipmentSummary.rows(transportEquipmentIndex, request.userAnswers, mode)
+        DiscrepancyTransportSummary.rows(transportEquipmentIndex, request.userAnswers, mode)
 
       transportEquipmentRows match {
         case None =>

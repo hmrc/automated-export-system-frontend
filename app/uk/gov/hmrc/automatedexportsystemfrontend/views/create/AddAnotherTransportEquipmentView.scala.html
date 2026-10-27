@@ -65,7 +65,7 @@ ErrorSummaryViewModel(form)
                     <li class="govuk-summary-list__actions-list-item">
                         <a
                                 class="govuk-link"
-                                href="@createRoute.DiscrepancyTransportEquipmentController.onPageLoad(transportEquipmentNumber, mode).url"
+                                href="@createRoute.DiscrepancyTransportController.onPageLoad(transportEquipmentNumber, mode).url"
                         >
                                     <span aria-hidden="true">
                                         @messages("site.change")
@@ -101,7 +101,7 @@ ErrorSummaryViewModel(form)
     <div class="govuk-pagination__prev">
         <a
                 class="govuk-link govuk-pagination__link"
-                href="@createRoute.AddAnotherTransportEquipmentController.onPageLoad(Some(viewModel.previousPage), mode).url"
+                href="@createRoute.AddAnotherTransportController.onPageLoad(Some(viewModel.previousPage), mode).url"
                 rel="prev"
         >
             <svg
@@ -131,7 +131,7 @@ ErrorSummaryViewModel(form)
         <li class="govuk-pagination__item @if(pageNumber == viewModel.currentPage) {govuk-pagination__item--current}">
             <a
                     class="govuk-link govuk-pagination__link"
-                    href="@createRoute.AddAnotherTransportEquipmentController.onPageLoad(Some(pageNumber), mode).url"
+                    href="@createRoute.AddAnotherTransportController.onPageLoad(Some(pageNumber), mode).url"
                     aria-label="Page @pageNumber"
                     @if(pageNumber == viewModel.currentPage) {
                     aria-current="page"
@@ -157,7 +157,7 @@ ErrorSummaryViewModel(form)
 }
 
 @formHelper(
-action = createRoute.AddAnotherTransportEquipmentController
+action = createRoute.AddAnotherTransportController
 .onSubmit(viewModel.pageParam, mode),
 Symbol("autoComplete") -> "off"
 ) {

@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportEquipmentPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
 
 import scala.util.Try
 
@@ -40,12 +40,12 @@ case object DiscrepancyTransportEquipment extends Gettable[List[ContainerDetails
 
   def exists(userAnswers: UserAnswers, transportEquipmentIndex: Int): Boolean =
     userAnswers
-      .get(DiscrepancyTransportEquipmentPage(transportEquipmentIndex))
+      .get(DiscrepancyTransportPage(transportEquipmentIndex))
       .isDefined
 
   def nextIndex(userAnswers: UserAnswers): Int =
     count(userAnswers) + 1
 
   def removeOne(userAnswers: UserAnswers, transportEquipmentIndex: Int): Try[UserAnswers] =
-    userAnswers.remove(DiscrepancyTransportEquipmentPage(transportEquipmentIndex))
+    userAnswers.remove(DiscrepancyTransportPage(transportEquipmentIndex))
 }

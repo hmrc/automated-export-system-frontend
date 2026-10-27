@@ -31,7 +31,7 @@ import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 
-class AddAnotherTransportEquipmentController @Inject() (
+class AddAnotherTransportController @Inject() (
   override val messagesApi: MessagesApi,
   val actionBuilder: AesAuthRequestActionBuilder,
   formProvider: AddAnotherTransportEquipmentFormProvider,
@@ -52,14 +52,14 @@ class AddAnotherTransportEquipmentController @Inject() (
 
       if (viewModel.numberOfTransportEquipment == 0) {
         Redirect(
-          createRoute.DiscrepancyTransportEquipmentController
+          createRoute.DiscrepancyTransportController
             .onPageLoad(DiscrepancyTransportEquipment.nextIndex(request.userAnswers), mode)
         )
       } else if (!isValidPage(viewModel)) {
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       } else if (page != viewModel.pageParam) {
         Redirect(
-          createRoute.AddAnotherTransportEquipmentController
+          createRoute.AddAnotherTransportController
             .onPageLoad(viewModel.pageParam, mode)
         )
       } else {
@@ -75,7 +75,7 @@ class AddAnotherTransportEquipmentController @Inject() (
 
       if (viewModel.numberOfTransportEquipment == 0) {
         Redirect(
-          createRoute.DiscrepancyTransportEquipmentController
+          createRoute.DiscrepancyTransportController
             .onPageLoad(DiscrepancyTransportEquipment.nextIndex(request.userAnswers), mode)
         )
       } else if (!isValidPage(viewModel)) {
@@ -88,7 +88,7 @@ class AddAnotherTransportEquipmentController @Inject() (
             {
               case true =>
                 Redirect(
-                  createRoute.DiscrepancyTransportEquipmentController
+                  createRoute.DiscrepancyTransportController
                     .onPageLoad(viewModel.numberOfTransportEquipment + 1, mode)
                 )
 
