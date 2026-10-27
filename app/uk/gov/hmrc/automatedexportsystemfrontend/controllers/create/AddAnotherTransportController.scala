@@ -94,8 +94,8 @@ class AddAnotherTransportController @Inject() (
 
               case false =>
                 Redirect(
-                  createRoute.CYASubmissionController
-                    .onPageLoad()
+                  createRoute.DiscrepancySealsController
+                    .onPageLoad(1, mode)
                 )
             }
           )
