@@ -24,28 +24,29 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.PackingDetails
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyPackingPage, DiscrepancySealsPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 
 class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
+  val mode = NormalMode
+
+  val userAnswers = emptyUserAnswers
+    .set(DiscrepancySealsPage(1), "Seal1")
+    .flatMap(_.set(DiscrepancySealsPage(2), "Seal2"))
+    .flatMap(_.set(DiscrepancySealsPage(3), "Seal3"))
+    .success
+    .value
 
   "SealsCYA Controller" - {
 
-    "must return OK and the correct view for a GET with an existing index" in {
-
-      val userAnswers = emptyUserAnswers
-        .set(DiscrepancySealsPage(1), "Seal1")
-        .flatMap(_.set(DiscrepancySealsPage(2), "Seal2"))
-        .flatMap(_.set(DiscrepancySealsPage(3), "Seal3"))
-        .success
-        .value
+    "must return OK and the correct view for a GET with an existing index in NormalMode" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2).url)
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2, mode).url)
 
         val result = route(application, request).value
 
@@ -56,7 +57,29 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Seal identifier")
         body should include("Seal2")
 
-        // body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad().url}"""") TODO: Add this after developing seal list page
+        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(mode).url}"""")
+      }
+    }
+
+    "must return OK and the correct view for a GET with an existing index in CheckMode" in {
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2, CheckMode).url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual OK
+        val body = contentAsString(result)
+        body should include("Seal 2")
+        body should include("Check your answers")
+        body should include("Seal identifier")
+        body should include("Seal2")
+
+        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(CheckMode).url}"""")
       }
     }
 
@@ -71,7 +94,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2).url)
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2, mode).url)
 
         val result = route(application, request).value
 
@@ -87,7 +110,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(1).url)
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(1, mode).url)
 
         val result = route(application, request).value
 
