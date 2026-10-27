@@ -27,6 +27,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
+import org.jsoup.Jsoup
 
 class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 

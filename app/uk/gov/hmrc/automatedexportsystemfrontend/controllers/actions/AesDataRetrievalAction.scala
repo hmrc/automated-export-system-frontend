@@ -30,7 +30,7 @@ class AesDataRetrievalActionImpl @Inject() (val sessionRepository: SessionReposi
   override protected def transform[A](request: AesAuthRequest[A]): Future[OptionalDataRequest[A]] =
     sessionRepository
       .get(request.sessionId)
-      .map(answers => OptionalDataRequest(request, request.sessionId, answers))
+      .map(answers => OptionalDataRequest(request, request.sessionId, request.eori, answers))
 }
 
 trait AesDataRetrievalAction extends ActionTransformer[AesAuthRequest, OptionalDataRequest]
