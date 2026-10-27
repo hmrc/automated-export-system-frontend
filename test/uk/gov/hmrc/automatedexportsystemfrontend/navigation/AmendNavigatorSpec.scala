@@ -84,7 +84,7 @@ class AmendNavigatorSpec extends SpecBase {
         "to AmendDiscrepancyConsignmentPage true" in {
           val userAnswers = emptyUserAnswers.set(AmendIsSplitExitPage("submissionId"), true).success.value
           navigator.nextPage(AmendIsSplitExitPage("submissionId"), NormalMode, userAnswers) shouldBe
-            createRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+            amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(NormalMode, "submissionId")
         }
         "to JourneyRecovery TEMPORARY when None" in {
           val userAnswers = emptyUserAnswers
@@ -102,7 +102,7 @@ class AmendNavigatorSpec extends SpecBase {
       "to DiscrepancyConsignmentPage when true" in {
         val userAnswers = emptyUserAnswers.set(AmendAnyDiscrepanciesPage("submissionId"), true).success.value
         navigator.nextPage(AmendAnyDiscrepanciesPage("submissionId"), NormalMode, userAnswers) shouldBe
-          createRoute.DiscrepancyConsignmentController.onPageLoad(NormalMode)
+          amendRoute.AmendDiscrepancyConsignmentController.onPageLoad(NormalMode, "submissionId")
       }
       "to JourneyRecovery TEMPORARY when None" in {
         val userAnswers = emptyUserAnswers

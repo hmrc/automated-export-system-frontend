@@ -21,10 +21,17 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{additionalIden
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendLocationIdFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier}
+import org.scalacheck.Gen
 
 class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehaviours {
 
   val form = new AmendLocationIdFormProvider()()
+
+  private def referenceStringsWithMaxLength(maxLength: Int): Gen[String] =
+    for {
+      length <- Gen.choose(1, maxLength)
+      characters <- Gen.listOfN(length, Gen.alphaNumChar)
+    } yield characters.mkString
 
   ".locationType" - {
 
@@ -58,7 +65,7 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
     val invalidKey = "locationId.error.locationAdditionalIdentifier.invalid"
     val maxLength = 4
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, referenceStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
@@ -82,13 +89,14 @@ class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringField
     val invalidKey = "locationId.error.authorisationReferenceNumber.invalid"
     val maxLength = 35
 
-    behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, referenceStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     "must not bind invalid data" in {
 
-      val invalidValues: Seq[String] = Seq(" abcd1", "abcd1 ")
+      val invalidValues: Seq[String] =
+        Seq(" abcd1", "abcd1 ", "\u2008abcd1", "abcd1\u2008")
 
       val expectedError = FormError(fieldName, invalidKey, Seq(authorisationNumberRegex))
 

@@ -90,11 +90,10 @@
 
     <div class="govuk-button-group govuk-!-margin-top-6">
 
-        <!--Update route with amend page when created-->
         <div>
             @govukButton(
             ButtonViewModel(messages("site.amendSubmission"))
-            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.SubmissionController.standardSubmit.url)
+            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSingleSubmissionController.startAmend(submissionId).url)
             )
         </div>
 

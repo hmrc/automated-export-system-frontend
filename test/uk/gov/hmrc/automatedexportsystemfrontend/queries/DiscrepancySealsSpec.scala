@@ -50,6 +50,39 @@ class DiscrepancySealsSpec extends SpecBase {
       }
     }
 
+    ".maxSeals" - {
+      "must have a maximum of 99" in {
+        DiscrepancySeals.maxNumberOfSealsInList mustBe 99
+      }
+    }
+
+    ".exists" - {
+      "must return true if the index is defined" in {
+        DiscrepancySeals.exists(userAnswers, 3) mustBe true
+      }
+
+      "must return false if the index is not defined" in {
+        DiscrepancySeals.exists(userAnswers, 4) mustBe false
+      }
+    }
+
+    ".nextIndex" - {
+      "must return the next empty index positon" in {
+        DiscrepancySeals.nextIndex(userAnswers) mustBe 4
+      }
+    }
+
+    ".removeOne" - {
+      "must remove one DiscrepancySeals item at the correct index" in {
+
+        val updatedUserAnswers = DiscrepancySeals.removeOne(userAnswers, 2).success.value
+
+        val expected = List("Seal1", "Seal3")
+
+        DiscrepancySeals.getAll(updatedUserAnswers) mustBe expected
+      }
+    }
+
     "must be able to remove all DiscrepancySeals data from user answers" in {
       val updatedUserAnswers = userAnswers.remove(DiscrepancySeals).success.value
 
