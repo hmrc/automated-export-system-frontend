@@ -24,16 +24,16 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 class DiscrepancyReferenceSpec extends SpecBase {
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyReferencePage(1), "reference1")
-    .flatMap(_.set(DiscrepancyReferencePage(2), "reference2"))
-    .flatMap(_.set(DiscrepancyReferencePage(3), "reference3"))
+    .set(DiscrepancyReferencePage(1), "12345")
+    .flatMap(_.set(DiscrepancyReferencePage(2), "23456"))
+    .flatMap(_.set(DiscrepancyReferencePage(3), "34567"))
     .success
     .value
 
   "DiscrepancyReference" - {
     ".getAll" - {
       "must get all of the DiscrepancyReference data" in {
-        val expected = List("reference1", "reference2", "reference3")
+        val expected = List("12345", "23456", "34567")
 
         DiscrepancyReference.getAll(userAnswers) mustBe expected
       }
@@ -70,6 +70,16 @@ class DiscrepancyReferenceSpec extends SpecBase {
     ".nextIndex" - {
       "must return the next empty index positon" in {
         DiscrepancyReference.nextIndex(userAnswers) mustBe 4
+      }
+    }
+
+    ".removeOne" - {
+      "must remove one DiscrepancyReference item at the correct index" in {
+        val updatedUserAnswers = DiscrepancyReference.removeOne(userAnswers, 2).success.value
+
+        val expected = List("12345", "34567")
+
+        DiscrepancyReference.getAll(updatedUserAnswers) mustBe expected
       }
     }
 

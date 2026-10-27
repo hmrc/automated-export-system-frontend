@@ -49,7 +49,10 @@ class RemovePackagingDetailController @Inject() (
 
   def onPageLoad(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
-      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(request.userAnswers, returnPage)) {
+      val addAnotherPackagingDetailViewModel: AddAnotherPackagingDetailViewModel =
+        AddAnotherPackagingDetailViewModel(request.userAnswers, Some(returnPage), mode)
+
+      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(addAnotherPackagingDetailViewModel, returnPage)) {
         Ok(view(form(packagingDetailIndex), packagingDetailIndex, returnPage, mode))
       } else {
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
@@ -58,7 +61,15 @@ class RemovePackagingDetailController @Inject() (
 
   def onSubmit(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
-      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(request.userAnswers, returnPage)) {
+      def addAnotherPackagingDetailViewModel(userAnswers: UserAnswers, returnPage: Int, mode: Mode): AddAnotherPackagingDetailViewModel =
+        AddAnotherPackagingDetailViewModel(userAnswers, Some(returnPage), mode)
+
+      if (
+        DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(
+          addAnotherPackagingDetailViewModel(request.userAnswers, returnPage, mode),
+          returnPage
+        )
+      ) {
         form(packagingDetailIndex)
           .bindFromRequest()
           .fold(
@@ -73,7 +84,10 @@ class RemovePackagingDetailController @Inject() (
                     Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
                   } else {
                     Redirect(
-                      createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(returnPageAfterRemoval(updatedAnswers, returnPage)), mode)
+                      createRoute.AddAnotherPackagingDetailController.onPageLoad(
+                        Some(returnPageAfterRemoval(addAnotherPackagingDetailViewModel(updatedAnswers, returnPage, mode), returnPage)),
+                        mode
+                      )
                     )
                   }
               case false => Future.successful(Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(returnPage), mode)))
@@ -84,17 +98,9 @@ class RemovePackagingDetailController @Inject() (
       }
     }
 
-  private def validReturnPage(userAnswers: UserAnswers, returnPage: Int): Boolean = {
-    val addAnotherPackagingDetailViewModel =
-      AddAnotherPackagingDetailViewModel(userAnswers, Some(returnPage))
+  private def validReturnPage(viewModel: AddAnotherPackagingDetailViewModel, returnPage: Int): Boolean =
+    returnPage >= 1 && returnPage <= viewModel.totalPages
 
-    returnPage >= 1 && returnPage <= addAnotherPackagingDetailViewModel.totalPages
-  }
-
-  private def returnPageAfterRemoval(updatedUserAnswers: UserAnswers, returnPage: Int): Int = {
-    val addAnotherPackagingDetailViewModel =
-      AddAnotherPackagingDetailViewModel(updatedUserAnswers, Some(returnPage))
-
-    math.min(returnPage, addAnotherPackagingDetailViewModel.totalPages)
-  }
+  private def returnPageAfterRemoval(viewModel: AddAnotherPackagingDetailViewModel, returnPage: Int): Int =
+    math.min(returnPage, viewModel.totalPages)
 }

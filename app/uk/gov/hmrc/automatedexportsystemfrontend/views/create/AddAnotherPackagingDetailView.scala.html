@@ -22,7 +22,8 @@
         formHelper: FormWithCSRF,
         govukButton: GovukButton,
         govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios
+        govukRadios: GovukRadios,
+        govukSummaryList: GovukSummaryList
 )
 
 @(form: Form[_], viewModel: AddAnotherPackagingDetailViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
@@ -35,23 +36,7 @@
 
   <h1 class="govuk-heading-l">@messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfPackagingDetails)</h1>
 
-  <div class="govuk-form-group">
-    <dl class="govuk-summary-list hmrc-list-with-actions hmrc-list-with-actions--short">
-      @((viewModel.packagingDetailNumbers).map { packagingDetailNumber =>
-        <div class="govuk-summary-list__row">
-          <dt class="govuk-summary-list__key govuk-!-font-weight-regular hmrc-summary-list__key">
-            {messages("addAnotherPackagingDetail.key", packagingDetailNumber)}
-          </dt>
-          <dd class="govuk-summary-list__actions hmrc-summary-list__actions">
-            <ul class="govuk-summary-list__actions-list">
-              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailNumber, mode).url}><span aria-hidden="true">Change</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.change.hidden", packagingDetailNumber)}</span></a></li>
-              <li class="govuk-summary-list__actions-list-item"><a class="govuk-link" href={createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailNumber, viewModel.currentPage, mode).url}><span aria-hidden="true">Remove</span><span class="govuk-visually-hidden">{messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber)}</span></a></li>
-            </ul>
-          </dd>
-        </div>
-      })
-    </dl>
-  </div>
+  @govukSummaryList(SummaryList(rows = viewModel.rows))
 
   @if(viewModel.totalPages > 1) {
 

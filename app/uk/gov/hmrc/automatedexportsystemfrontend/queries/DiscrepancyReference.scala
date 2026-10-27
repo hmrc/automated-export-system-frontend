@@ -17,8 +17,8 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{PackingDetails, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyPackingPage, DiscrepancyReferencePage}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
 
 import scala.util.Try
 
@@ -37,4 +37,7 @@ case object DiscrepancyReference extends Gettable[List[String]] with Settable[Li
     userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)).isDefined
 
   def nextIndex(userAnswers: UserAnswers): Int = count(userAnswers) + 1
+
+  def removeOne(userAnswers: UserAnswers, discrepancyReferenceIndex: Int): Try[UserAnswers] =
+    userAnswers.remove(DiscrepancyReferencePage(discrepancyReferenceIndex))
 }

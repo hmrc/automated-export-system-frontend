@@ -16,8 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import play.api.i18n.Messages
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 
 case class AddAnotherPackagingDetailViewModel(
   numberOfPackagingDetails: Int,
@@ -29,8 +33,8 @@ case class AddAnotherPackagingDetailViewModel(
   totalPages: Int,
   firstPackagingDetail: Int,
   lastPackagingDetail: Int,
-  packagingDetailNumbers: Seq[Int],
-  pageNumbers: Seq[Int]
+  pageNumbers: Seq[Int],
+  rows: Seq[SummaryListRow]
 ) {
 
   def hasPreviousPage: Boolean = currentPage > 1
@@ -48,7 +52,7 @@ object AddAnotherPackagingDetailViewModel {
 
   private val pageSize = 25
 
-  def apply(userAnswers: UserAnswers, page: Option[Int]): AddAnotherPackagingDetailViewModel = {
+  def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherPackagingDetailViewModel = {
 
     val numberOfPackagingDetails: Int = DiscrepancyPacking.count(userAnswers)
 
@@ -76,8 +80,35 @@ object AddAnotherPackagingDetailViewModel {
       totalPages = totalPages,
       firstPackagingDetail = firstPackagingDetail,
       lastPackagingDetail = lastPackagingDetail,
-      packagingDetailNumbers = firstPackagingDetail to lastPackagingDetail,
-      pageNumbers = firstPageNumber to lastPageNumber
+      pageNumbers = firstPageNumber to lastPageNumber,
+      rows = rows(firstPackagingDetail to lastPackagingDetail, currentPage, mode)
     )
   }
+
+  def rows(packagingDetailNumbers: Seq[Int], currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+    packagingDetailNumbers.map { packagingDetailNumber =>
+      SummaryListRow(
+        key = Key(
+          content = Text(messages("addAnotherPackagingDetail.key", packagingDetailNumber)),
+          classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
+        ),
+        value = Value(content = Empty, classes = "govuk-!-display-none"),
+        actions = Some(
+          Actions(items =
+            Seq(
+              ActionItem(
+                href = createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailNumber, mode).url,
+                content = Text(messages("site.change")),
+                visuallyHiddenText = Some(messages("addAnotherPackagingDetail.change.hidden", packagingDetailNumber))
+              ),
+              ActionItem(
+                href = createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailNumber, currentPage, mode).url,
+                content = Text(messages("site.remove")),
+                visuallyHiddenText = Some(messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber))
+              )
+            )
+          )
+        )
+      )
+    }
 }
