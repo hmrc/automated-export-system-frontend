@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
@@ -28,13 +28,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancySealsSummary {
 
-  def row(sealsIndex: Int, answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
+  def row(sealsIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[SummaryListRow] =
     answers.get(DiscrepancySealsPage(sealsIndex)).map { answer =>
       SummaryListRowViewModel(
         key = "discrepancySeals.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer).toString)),
         actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancySealsController.onPageLoad(sealsIndex, NormalMode).url)
+          ActionItemViewModel("site.change", createRoute.DiscrepancySealsController.onPageLoad(sealsIndex, mode).url)
             .withVisuallyHiddenText(messages("discrepancySeals.change.hidden"))
         )
       )

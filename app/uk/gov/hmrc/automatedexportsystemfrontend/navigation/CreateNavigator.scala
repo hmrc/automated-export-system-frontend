@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 import play.api.mvc.Call
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
@@ -159,12 +159,12 @@ class CreateNavigator extends Navigator {
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
-  private def discrepancySealsRoute(userAnswers: UserAnswers, sealsIndex: Int): Call =
+  private def discrepancySealsRoute(userAnswers: UserAnswers, sealsIndex: Int, mode: Mode): Call =
     userAnswers.get(DiscrepancySealsPage(sealsIndex)) match {
       case Some(_) =>
-        createRoute.SealsCYAController.onPageLoad(sealsIndex)
+        createRoute.SealsCYAController.onPageLoad(sealsIndex, mode)
       case None if hasExistingSeals(userAnswers) =>
-        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with seals list page
+        createRoute.AddAnotherSealController.onPageLoad(mode)
       case None => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
     }
 
