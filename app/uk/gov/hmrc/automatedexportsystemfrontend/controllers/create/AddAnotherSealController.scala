@@ -44,7 +44,7 @@ class AddAnotherSealController @Inject() (
     val viewModel = AddAnotherSealViewModel(request.userAnswers, page, mode)
 
     if (viewModel.numberOfSeals == 0) {
-      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode)) // TODO: need .url?
+      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
     } else if (!isValidPage(viewModel)) {
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     } else if (page != viewModel.pageParam) {

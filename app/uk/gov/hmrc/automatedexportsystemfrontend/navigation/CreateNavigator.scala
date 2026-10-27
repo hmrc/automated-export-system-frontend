@@ -47,12 +47,11 @@ class CreateNavigator extends Navigator {
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
   override val checkRoutes: Page => UserAnswers => Call = {
-    case IsSplitExitPage            => isSplitExitCheckRoute
-    case AnyDiscrepanciesPage       => anyDiscrepanciesCheckRoute
-    case DiscrepancyConsignmentPage => discrepancyConsignmentCheckRoute
-    case DiscrepancyTransportPage   => discrepancyTransportCheckRoute
-    case DiscrepancySealsPage(sealsIndex) =>
-      discrepancySealsCheckRoute // TODO: discussion pending with team this will need to be addressed in future tickets
+    case IsSplitExitPage                              => isSplitExitCheckRoute
+    case AnyDiscrepanciesPage                         => anyDiscrepanciesCheckRoute
+    case DiscrepancyConsignmentPage                   => discrepancyConsignmentCheckRoute
+    case DiscrepancyTransportPage                     => discrepancyTransportCheckRoute
+    case DiscrepancySealsPage(sealsIndex)             => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, CheckMode)
     case DiscrepancyReferencePage                     => discrepancyReferenceCheckRoute
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
@@ -151,12 +150,13 @@ class CreateNavigator extends Navigator {
     }
 
   private def discrepancySealsRoute(userAnswers: UserAnswers, sealsIndex: Int, mode: Mode): Call =
-    userAnswers.get(DiscrepancySealsPage(sealsIndex)) match {
-      case Some(_) =>
+    (userAnswers.get(DiscrepancySealsPage(sealsIndex)), mode) match {
+      case (Some(_), _) =>
         createRoute.SealsCYAController.onPageLoad(sealsIndex, mode)
-      case None if hasExistingSeals(userAnswers) =>
+      case (None, _) if hasExistingSeals(userAnswers) =>
         createRoute.AddAnotherSealController.onPageLoad(None, mode)
-      case None => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
+      case (None, NormalMode) => createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode)
+      case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
     }
 
   private def hasExistingSeals(userAnswers: UserAnswers): Boolean =
