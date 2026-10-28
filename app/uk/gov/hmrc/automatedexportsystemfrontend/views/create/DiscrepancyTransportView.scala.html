@@ -18,52 +18,47 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.InputWidth._
 
 @this(
-layout: Layout,
-formHelper: FormWithCSRF,
-govukErrorSummary: GovukErrorSummary,
-govukInput: GovukInput,
-govukButton: GovukButton
+    layout: Layout,
+    formHelper: FormWithCSRF,
+    govukErrorSummary: GovukErrorSummary,
+    govukInput: GovukInput,
+    govukButton: GovukButton
 )
 
-@(form: Form[_], transportEquipmentIndex: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = title(form, messages("discrepancyTransport.title"))) {
 
-@formHelper(
-action = createRoute.DiscrepancyTransportController.onSubmit(transportEquipmentIndex, mode),
-Symbol("autoComplete") -> "off"
-) {
+    @formHelper(action = createRoute.DiscrepancyTransportController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
-@if(form.errors.nonEmpty) {
-@govukErrorSummary(ErrorSummaryViewModel(form))
-}
+        @if(form.errors.nonEmpty) {
+            @govukErrorSummary(ErrorSummaryViewModel(form))
+        }
 
-<h1 class="govuk-heading-l govuk-!-margin-bottom-3">
-    @messages("discrepancyTransport.heading")
-</h1>
+        <h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("discrepancyTransport.heading")</h1>
 
-<div id="discrepancyTransportHint" class="govuk-hint">
-    @messages("discrepancyTransport.hint")
-</div>
+        <div id="discrepancyTransportHint" class="govuk-hint">
+          @messages("discrepancyTransport.hint")
+        </div>
 
-@govukInput(
-InputViewModel(
-field = form("containerId"),
-label = LabelViewModel(messages("discrepancyTransport.containerId"))
-)
-.withWidth(Fixed20)
-)
+        @govukInput(
+            InputViewModel(
+                field = form("containerId"),
+                label = LabelViewModel(messages("discrepancyTransport.containerId"))
+            )
+            .withWidth(Fixed20)
+        )
 
-@govukInput(
-InputViewModel(
-field = form("numberOfSeals"),
-label = LabelViewModel(messages("discrepancyTransport.numberOfSeals"))
-)
-.withWidth(Fixed5)
-)
+        @govukInput(
+            InputViewModel(
+                field = form("numberOfSeals"),
+                label = LabelViewModel(messages("discrepancyTransport.numberOfSeals"))
+            )
+            .withWidth(Fixed5)
+        )
 
-@govukButton(
-ButtonViewModel(messages("site.continue"))
-)
-}
+        @govukButton(
+            ButtonViewModel(messages("site.continue"))
+        )
+    }
 }

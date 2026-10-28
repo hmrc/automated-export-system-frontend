@@ -21,6 +21,7 @@ import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
+import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -28,7 +29,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, NormalMode}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
@@ -42,18 +43,16 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DiscrepancyTransportFormProvider()
   val form: Form[ContainerDetails] = formProvider()
 
-  val transportEquipmentIndex = 1
-
-  lazy val discrepancyTransportRoute: String =
-    createRoute.DiscrepancyTransportController
-      .onPageLoad(transportEquipmentIndex, NormalMode)
-      .url
+  lazy val discrepancyTransportRoute: String = createRoute.DiscrepancyTransportController.onPageLoad(NormalMode).url
 
   val userAnswers =
-    emptyUserAnswers
-      .set(DiscrepancyTransportPage(transportEquipmentIndex), ContainerDetails(Some("value 1"), Some(99)))
-      .success
-      .value
+    UserAnswers(
+      userAnswersId,
+      Json.obj(
+        "standard" ->
+          Json.obj(DiscrepancyTransportPage.toString -> Json.obj("containerId" -> "value 1", "numberOfSeals" -> 99))
+      )
+    )
 
   "DiscrepancyTransport Controller" - {
 

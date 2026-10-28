@@ -19,19 +19,10 @@ package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.ContainerDetails
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.Settable
 
-case class DiscrepancyTransportPage(transportEquipmentIndex: Int) extends QuestionPage[ContainerDetails] {
+case object DiscrepancyTransportPage extends QuestionPage[ContainerDetails] {
 
-  override def path: JsPath =
-    DiscrepancyTransportPages.path \ (transportEquipmentIndex - 1)
+  override def path: JsPath = JsPath \ "standard" \ toString
 
-  override def toString: String =
-    "discrepancyTransportEquipment"
-}
-
-case object DiscrepancyTransportPages extends Settable[List[ContainerDetails]] {
-
-  override def path: JsPath =
-    JsPath \ "standard" \ "discrepancyTransportEquipment"
+  override def toString: String = "discrepancyTransport"
 }
