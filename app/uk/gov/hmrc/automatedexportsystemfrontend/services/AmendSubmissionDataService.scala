@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.{Amend, Standard}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
@@ -150,7 +150,7 @@ class AmendSubmissionDataService @Inject() extends Logging {
       referenceNumber <- userAnswers.get(AmendOfficeOfExitPage(submissionId))
     } yield Submission(
       Some(submissionId),
-      ExportOperation(Standard, mrn, discrepanciesExist, splitIndicator),
+      ExportOperation(Amend, mrn, discrepanciesExist, splitIndicator),
       CustomsOfficeOfExitActual(referenceNumber.toString),
       collectAmendGoodsShipment(userAnswers, submissionId)
     )

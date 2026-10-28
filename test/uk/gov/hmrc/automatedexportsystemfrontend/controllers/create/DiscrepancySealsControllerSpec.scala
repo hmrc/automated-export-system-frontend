@@ -47,9 +47,13 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val discrepancySealsRoute: String = createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
 
+  val sealIdentifier = "testSealIdentifier"
+
+  val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage(1), sealIdentifier).success.value
+
   "DiscrepancySeals Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET at the next index" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -68,10 +72,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
-      val sealIdentifier = "testSealIdentifier"
-
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage(1), sealIdentifier).success.value
+    "must populate the view correctly on a GET when the question has previously been answered at an existing index" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -151,6 +152,22 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request = FakeRequest(GET, discrepancySealsRoute)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET where the index doesn't exist and is not the next index" in {
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, createRoute.DiscrepancySealsController.onPageLoad(5, NormalMode).url)
 
         val result = route(application, request).value
 
