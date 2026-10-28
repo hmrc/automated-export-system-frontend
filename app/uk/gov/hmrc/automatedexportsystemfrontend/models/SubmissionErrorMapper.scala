@@ -48,13 +48,67 @@ object SubmissionErrorMapper {
     "DIVERSION_REJECTED_OTHER" -> "viewSubmission.error.diversionRejectedOther"
   )
 
-  def toMessageKeys(errors: Seq[SingleSubmissionError]): Seq[String] =
+  def toMessageKeys(errors: Seq[SingleSubmissionError]): Seq[SubmissionErrorMessage] =
     if (errors.exists(error => technicalErrors.contains(error.code))) {
-      Seq("viewSubmission.error.technical")
+      Seq(SubmissionErrorMessage("viewSubmission.error.technical"))
     } else {
-      errors
-        .map(_.code)
-        .distinct
-        .flatMap(errorMappings.get)
+      errors.flatMap {
+        case SingleSubmissionError("ELEMENT_TOO_LONG", _, Some(path), _) =>
+          for {
+            constraint <- ValidationErrorMapper.get(path)
+            max <- constraint.maxLength
+          } yield SubmissionErrorMessage("viewSubmission.error.elementTooLong", Seq(constraint.fieldLabel, max.toString))
+
+        case SingleSubmissionError("ELEMENT_TOO_SHORT", _, Some(path), _) =>
+          for {
+            constraint <- ValidationErrorMapper.get(path)
+            min <- constraint.minLength
+          } yield SubmissionErrorMessage("viewSubmission.error.elementTooShort", Seq(constraint.fieldLabel, min.toString))
+
+        case SingleSubmissionError("MISSING_FIELD", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.missingField", Seq(constraint.fieldLabel))
+          }
+
+        case SingleSubmissionError("INVALID_CHARACTERS", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.invalidCharacters", Seq(constraint.fieldLabel))
+          }
+
+        case SingleSubmissionError("INVALID_VALUE_SPECIFIC_TYPE", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.invalidValueSpecificType", Seq(constraint.fieldLabel))
+          }
+
+        case SingleSubmissionError("INVALID_VALUE_PATTERN", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.invalidValuePattern", Seq(constraint.fieldLabel))
+          }
+
+        case SingleSubmissionError("LOWER_THAN_MIN", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.lowerThanMin", Seq(constraint.fieldLabel, constraint.minValue.getOrElse("")))
+          }
+
+        case SingleSubmissionError("GREATER_THAN_MAX", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.greaterThanMax", Seq(constraint.fieldLabel, constraint.maxValue.getOrElse("")))
+          }
+
+        case SingleSubmissionError("EQUAL_OR_LOWER_THAN_MIN", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.equalOrLowerThanMin", Seq(constraint.fieldLabel, constraint.minValue.getOrElse("")))
+          }
+
+        case SingleSubmissionError("EQUAL_OR_GREATER_THAN_MAX", _, Some(path), _) =>
+          ValidationErrorMapper.get(path).map { constraint =>
+            SubmissionErrorMessage("viewSubmission.error.equalOrGreaterThanMax", Seq(constraint.fieldLabel, constraint.maxValue.getOrElse("")))
+          }
+
+        case error =>
+          errorMappings
+            .get(error.code)
+            .map(SubmissionErrorMessage(_))
+      }.distinct
     }
 }
