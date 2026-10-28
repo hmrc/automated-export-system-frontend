@@ -20,6 +20,7 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendAnyDiscrepanciesPage,
@@ -64,7 +65,8 @@ class CreateSubmissionDataService @Inject() extends Logging {
     seals: List[Seal],
     goodsReferences: List[GoodsReference]
   ): List[TransportEquipment] = {
-    val discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
+    val discrepancyTransport =
+      DiscrepancyTransportEquipment.getAll(userAnswers)
     discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
       TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
     }

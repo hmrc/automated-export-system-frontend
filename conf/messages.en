@@ -508,6 +508,27 @@ viewSubmission.error.diversionRejectedUnknownMrn=This request can't be completed
 viewSubmission.error.diversionRejectedAlreadyExited=This request can't be completed as the goods have already exited.
 viewSubmission.error.diversionRejectedOther=Your attempt to reroute the goods covered by this Export Declaration to Exit the customs territory of the EU via a Northern Ireland Office of Exit has not been possible. It is not clear what the issue is, please contact Business Helpline.
 
+addAnotherTransportEquipment.title = Transport Equipment
+addAnotherTransportEquipment.heading = Transport Equipment
+
+addAnotherTransportEquipment.error.required = Select yes if you want to add another Transport Equipment
+addAnotherTransportEquipment.error.max = You cannot add another Transport Equipment
+
+addAnotherTransportEquipment.yes.label = Yes
+addAnotherTransportEquipment.no.label = No
+transportEquipmentCYA.title=Check your answers
+transportEquipmentCYA.heading=Check your answers
+transportEquipmentCYA.caption=Transport Equipment {0}
+addAnotherTransportEquipment.singular.title=You have added 1 transport equipment
+addAnotherTransportEquipment.plural.title=You have added {0} transport equipment entries
+
+addAnotherTransportEquipment.singular.heading=You have added 1 transport equipment
+addAnotherTransportEquipment.plural.heading=You have added {0} transport equipment entries
+addAnotherTransportEquipment.key=Transport equipment {0}
+addAnotherTransportEquipment.singular.remaining=You can add <strong>{0}</strong> more transport equipment entry.
+addAnotherTransportEquipment.plural.remaining=You can add <strong>{0}</strong> more transport equipment entries.
+addAnotherTransportEquipment.addAnother=Do you want to add another transport equipment entry?
+addAnotherTransportEquipment.change.hidden=transport equipment {0}
 viewSubmission.error.missingField=You must enter the {0}
 viewSubmission.error.invalidCharacters={0} must only include letters a to z, hyphens, spaces and apostrophes
 viewSubmission.error.invalidValueSpecificType=Enter a valid {0}

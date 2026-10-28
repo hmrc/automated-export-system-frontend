@@ -30,15 +30,17 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Generators {
 
   private implicit val messages: Messages = Helpers.stubMessages()
+  private val transportEquipmentIndex = 1
 
   "rows" - {
     "when answered, return the summary rows" in {
       val containerDetails = ContainerDetails(Some("containerId"), Some(99))
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyTransportPage, containerDetails)
+        .set(DiscrepancyTransportPage(transportEquipmentIndex), containerDetails)
         .get
 
-      DiscrepancyTransportSummary.rows(userAnswers) shouldBe Some(
+      DiscrepancyTransportSummary
+        .rows(transportEquipmentIndex, userAnswers, CheckMode) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyTransport.containerId.checkYourAnswersLabel",
@@ -46,7 +48,9 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController
+                  .onPageLoad(transportEquipmentIndex, CheckMode)
+                  .url
               )
                 .withVisuallyHiddenText("discrepancyTransport.containerId.change.hidden")
             )
@@ -57,7 +61,9 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController
+                  .onPageLoad(transportEquipmentIndex, CheckMode)
+                  .url
               )
                 .withVisuallyHiddenText("discrepancyTransport.numberOfSeals.change.hidden")
             )
@@ -68,23 +74,28 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyTransportSummary.rows(userAnswers) shouldBe None
+      DiscrepancyTransportSummary
+        .rows(transportEquipmentIndex, userAnswers, CheckMode) shouldBe None
     }
 
     "when both fields are blank, return no summary rows" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyTransportPage, ContainerDetails(None, None))
+        .set(DiscrepancyTransportPage(transportEquipmentIndex), ContainerDetails(None, None))
         .get
 
-      DiscrepancyTransportSummary.rows(userAnswers) shouldBe Some(Seq.empty)
+      DiscrepancyTransportSummary
+        .rows(transportEquipmentIndex, userAnswers, CheckMode) shouldBe Some(Seq.empty)
     }
 
     "when only the container ID is entered, return its summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
+        .set(DiscrepancyTransportPage(transportEquipmentIndex), ContainerDetails(Some("CONT123"), None))
         .get
 
-      val rows = DiscrepancyTransportSummary.rows(userAnswers).get
+      val rows =
+        DiscrepancyTransportSummary
+          .rows(transportEquipmentIndex, userAnswers, CheckMode)
+          .get
 
       rows.size shouldBe 1
       rows.head.key.content shouldBe
@@ -93,10 +104,13 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
 
     "when only zero seals is entered, return its summary row" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyTransportPage, ContainerDetails(None, Some(0)))
+        .set(DiscrepancyTransportPage(transportEquipmentIndex), ContainerDetails(None, Some(0)))
         .get
 
-      val rows = DiscrepancyTransportSummary.rows(userAnswers).get
+      val rows =
+        DiscrepancyTransportSummary
+          .rows(transportEquipmentIndex, userAnswers, CheckMode)
+          .get
 
       rows.size shouldBe 1
       rows.head.value.content shouldBe HtmlContent("0")

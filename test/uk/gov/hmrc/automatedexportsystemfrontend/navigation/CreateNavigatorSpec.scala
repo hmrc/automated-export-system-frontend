@@ -67,19 +67,19 @@ class CreateNavigatorSpec extends SpecBase {
         }
       }
 
-      "navigate from DiscrepancyConsignmentPage" - {
-        "to DiscrepancyTransportPage" in {
+      "navigate from DiscrepancyTransportPage" - {
+        "to TransportEquipmentCYA" in {
           val userAnswers = emptyUserAnswers.set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.values.head).success.value
           navigator.nextPage(DiscrepancyConsignmentPage, NormalMode, userAnswers) shouldBe
-            createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
+            createRoute.DiscrepancyTransportController.onPageLoad(1, NormalMode)
         }
       }
 
       "navigate from DiscrepancyTransportPage" - {
         "to DiscrepancySealsPage" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99))).success.value
-          navigator.nextPage(DiscrepancyTransportPage, NormalMode, userAnswers) shouldBe
-            createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode)
+          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99))).success.value
+          navigator.nextPage(DiscrepancyTransportPage(1), NormalMode, userAnswers) shouldBe
+            createRoute.TransportEquipmentCYAController.onPageLoad(1, NormalMode)
         }
       }
 
@@ -283,11 +283,11 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyConsignmentPage" - {
         "to DiscrepancyTransportPage when DiscrepancyTransportPage is unanswered" in {
           navigator.nextPage(DiscrepancyConsignmentPage, CheckMode, emptyUserAnswers) shouldBe
-            createRoute.DiscrepancyTransportController.onPageLoad(CheckMode)
+            createRoute.DiscrepancyTransportController.onPageLoad(1, CheckMode)
         }
 
         "to CYASubmissionPage when DiscrepancyTransportPage is answered" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99))).success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99))).success.value
           navigator.nextPage(DiscrepancyConsignmentPage, CheckMode, userAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }
