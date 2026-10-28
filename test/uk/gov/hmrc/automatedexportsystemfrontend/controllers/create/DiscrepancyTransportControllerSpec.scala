@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
@@ -210,6 +211,166 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must add transport equipment at the current index without overwriting a previous entry" in {
+
+      val firstTransportEquipment =
+        ContainerDetails(Some("CONT001"), Some(1))
+
+      val secondTransportEquipment =
+        ContainerDetails(Some("CONT002"), Some(2))
+
+      val answersWithFirstTransportEquipment =
+        emptyUserAnswers
+          .set(DiscrepancyTransportPage(1), firstTransportEquipment)
+          .success
+          .value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answersWithFirstTransportEquipment))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+
+        val pageRoute =
+          createRoute.DiscrepancyTransportController
+            .onPageLoad(2, NormalMode)
+            .url
+
+        val request =
+          FakeRequest(POST, pageRoute)
+            .withFormUrlEncodedBody("containerId" -> "CONT002", "numberOfSeals" -> "2")
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe onwardRoute.url
+
+        val userAnswersCaptor =
+          ArgumentCaptor.forClass(classOf[uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers])
+
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+
+        val savedAnswers = userAnswersCaptor.getValue
+
+        savedAnswers
+          .get(DiscrepancyTransportPage(1)) shouldBe Some(firstTransportEquipment)
+
+        savedAnswers
+          .get(DiscrepancyTransportPage(2)) shouldBe Some(secondTransportEquipment)
+      }
+    }
+
+    "must populate the correct transport equipment when loading a later index" in {
+
+      val answers =
+        emptyUserAnswers
+          .set(DiscrepancyTransportPage(1), ContainerDetails(Some("CONT001"), Some(1)))
+          .success
+          .value
+          .set(DiscrepancyTransportPage(2), ContainerDetails(Some("CONT002"), Some(2)))
+          .success
+          .value
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+      running(application) {
+
+        val pageRoute =
+          createRoute.DiscrepancyTransportController
+            .onPageLoad(2, NormalMode)
+            .url
+
+        val request = FakeRequest(GET, pageRoute)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe OK
+
+        val body = contentAsString(result)
+
+        body should include("""value="CONT002"""")
+        body should include("""value="2"""")
+
+        body should not include """value="CONT001""""
+      }
+    }
+
+    "must update the transport equipment at the supplied index without changing other entries" in {
+
+      val firstTransportEquipment =
+        ContainerDetails(Some("CONT001"), Some(1))
+
+      val secondTransportEquipment =
+        ContainerDetails(Some("CONT002"), Some(2))
+
+      val updatedTransportEquipment =
+        ContainerDetails(Some("UPDATED"), Some(3))
+
+      val answers =
+        emptyUserAnswers
+          .set(DiscrepancyTransportPage(1), firstTransportEquipment)
+          .success
+          .value
+          .set(DiscrepancyTransportPage(2), secondTransportEquipment)
+          .success
+          .value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+
+        val pageRoute =
+          createRoute.DiscrepancyTransportController
+            .onPageLoad(2, NormalMode)
+            .url
+
+        val request =
+          FakeRequest(POST, pageRoute)
+            .withFormUrlEncodedBody("containerId" -> "UPDATED", "numberOfSeals" -> "3")
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe onwardRoute.url
+
+        val userAnswersCaptor =
+          ArgumentCaptor.forClass(classOf[uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers])
+
+        verify(mockSessionRepository).set(userAnswersCaptor.capture())
+
+        val savedAnswers = userAnswersCaptor.getValue
+
+        savedAnswers
+          .get(DiscrepancyTransportPage(1)) shouldBe Some(firstTransportEquipment)
+
+        savedAnswers
+          .get(DiscrepancyTransportPage(2)) shouldBe Some(updatedTransportEquipment)
       }
     }
   }
