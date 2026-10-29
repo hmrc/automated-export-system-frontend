@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{never, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
@@ -371,6 +371,87 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
         savedAnswers
           .get(DiscrepancyTransportPage(2)) shouldBe Some(updatedTransportEquipment)
+      }
+    }
+
+    "must redirect to the existing Transport Equipment list when blank details are submitted and Transport Equipment already exists" in {
+
+      val existingTransportEquipment =
+        ContainerDetails(Some("CONT001"), Some(1))
+
+      val answersWithExistingTransportEquipment =
+        emptyUserAnswers
+          .set(DiscrepancyTransportPage(1), existingTransportEquipment)
+          .success
+          .value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(answersWithExistingTransportEquipment))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+
+        val pageRoute =
+          createRoute.DiscrepancyTransportController
+            .onPageLoad(2, NormalMode)
+            .url
+
+        val request =
+          FakeRequest(POST, pageRoute)
+            .withFormUrlEncodedBody("containerId" -> "", "numberOfSeals" -> "")
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+
+        redirectLocation(result).value shouldBe
+          createRoute.AddAnotherTransportController
+            .onPageLoad(None, NormalMode)
+            .url
+      }
+    }
+
+    "must redirect to the Declarations Transport Equipment page when blank details are submitted and no Transport Equipment exists" in {
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+
+        val pageRoute =
+          createRoute.DiscrepancyTransportController
+            .onPageLoad(1, NormalMode)
+            .url
+
+        val request =
+          FakeRequest(POST, pageRoute)
+            .withFormUrlEncodedBody("containerId" -> "", "numberOfSeals" -> "")
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+
+        redirectLocation(result).value shouldBe
+          createRoute.DiscrepancySealsController
+            .onPageLoad(1, NormalMode)
+            .url
       }
     }
   }
