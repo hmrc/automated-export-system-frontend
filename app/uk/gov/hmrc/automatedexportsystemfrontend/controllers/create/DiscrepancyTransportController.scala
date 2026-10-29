@@ -20,12 +20,10 @@ import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, Mode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, Mode}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyTransportView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -46,11 +44,17 @@ class DiscrepancyTransportController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form: Form[ContainerDetails] =
-    formProvider()
+  val form: Form[ContainerDetails] = formProvider()
 
-  def onPageLoad(transportEquipmentIndex: Int, mode: Mode): Action[AnyContent] =
-    (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+
+    val preparedForm = request.userAnswers.get(DiscrepancyTransportPage) match {
+      case None        => form
+      case Some(value) => form.fill(value)
+    }
+
+    Ok(view(preparedForm, mode))
+  }
 
       val userAnswers: UserAnswers =
         request.userAnswers
@@ -62,14 +66,22 @@ class DiscrepancyTransportController @Inject() (
         DiscrepancyTransportEquipment.exists(userAnswers, transportEquipmentIndex) ||
         transportEquipmentIndex == nextIndex
       ) {
-        val preparedForm =
-          userAnswers
-            .get(DiscrepancyTransportPage(transportEquipmentIndex))
-            .fold(form)(form.fill)
-
-        Ok(view(preparedForm, transportEquipmentIndex, mode))
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, mode))),
+            value =>
+              if (isEmpty(value)) {
+                Future.successful(Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, userAnswers)))
+              } else {
+                for {
+                  updatedAnswers <- Future.fromTry(userAnswers.set(DiscrepancyTransportPage(transportEquipmentIndex), value))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers))
+              }
+          )
       } else {
-        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
     }
 
