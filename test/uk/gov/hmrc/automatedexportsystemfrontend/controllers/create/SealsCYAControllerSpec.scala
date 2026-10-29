@@ -57,7 +57,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Seal identifier")
         body should include("Seal2")
 
-        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(mode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(None, mode).url}"""")
       }
     }
 
@@ -79,7 +79,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Seal identifier")
         body should include("Seal2")
 
-        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(CheckMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(None, CheckMode).url}"""")
       }
     }
 

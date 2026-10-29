@@ -523,3 +523,14 @@ viewSubmission.error.diversionRejectedInvalidDeclaration=The export declaration 
 viewSubmission.error.diversionRejectedUnknownMrn=This request can't be completed as the MRN can't be found
 viewSubmission.error.diversionRejectedAlreadyExited=This request can't be completed as the goods have already exited.
 viewSubmission.error.diversionRejectedOther=Your attempt to reroute the goods covered by this Export Declaration to Exit the customs territory of the EU via a Northern Ireland Office of Exit has not been possible. It is not clear what the issue is, please contact Business Helpline.
+
+viewSubmission.error.missingField=You must enter the {0}
+viewSubmission.error.invalidCharacters={0} must only include letters a to z, hyphens, spaces and apostrophes
+viewSubmission.error.invalidValueSpecificType=Enter a valid {0}
+viewSubmission.error.invalidValuePattern=Enter {0} again in the correct format
+viewSubmission.error.elementTooLong={0} must be {1} characters or fewer
+viewSubmission.error.elementTooShort={0} must be {1} characters or more
+viewSubmission.error.lowerThanMin={0} must be higher than {1}
+viewSubmission.error.greaterThanMax={0} must be {1} or lower
+viewSubmission.error.equalOrLowerThanMin={0} must be higher than {1}
+viewSubmission.error.equalOrGreaterThanMin={0} must be {1} or lower

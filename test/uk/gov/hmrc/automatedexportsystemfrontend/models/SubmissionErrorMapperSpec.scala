@@ -30,7 +30,8 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         SingleSubmissionError(code = "INVALID_MRN", description = None, path = None, originalValue = None)
       )
 
-      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq("viewSubmission.error.technical")
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe
+        Seq(SubmissionErrorMessage("viewSubmission.error.technical"))
     }
 
     "remove duplicate errors" in {
@@ -40,7 +41,8 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         SingleSubmissionError(code = "INVALID_MRN", description = None, path = None, originalValue = None)
       )
 
-      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq("viewSubmission.error.invalidMrn")
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe
+        Seq(SubmissionErrorMessage("viewSubmission.error.invalidMrn"))
     }
 
     "return multiple validation errors" in {
@@ -50,7 +52,8 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         SingleSubmissionError(code = "UNKNOWN_MRN", description = None, path = None, originalValue = None)
       )
 
-      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq("viewSubmission.error.invalidMrn", "viewSubmission.error.unknownMrn")
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe
+        Seq(SubmissionErrorMessage("viewSubmission.error.invalidMrn"), SubmissionErrorMessage("viewSubmission.error.unknownMrn"))
     }
 
     "ignore unknown errors" in {
@@ -69,8 +72,165 @@ class SubmissionErrorMapperSpec extends AnyWordSpec with Matchers {
         val errors = Seq(SingleSubmissionError(code = code, description = None, path = None, originalValue = None))
 
         SubmissionErrorMapper.toMessageKeys(errors) shouldBe
-          Seq("viewSubmission.error.technical")
+          Seq(SubmissionErrorMessage("viewSubmission.error.technical"))
       }
+    }
+
+    "return element too long error with its field label and maximum length" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "ELEMENT_TOO_LONG",
+          description = None,
+          path = Some("Body.GoodsShipment.Consignment.LocationOfGoods.additionalIdentifier"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(
+        SubmissionErrorMessage("viewSubmission.error.elementTooLong", Seq("Location of goods additional identifier", "4"))
+      )
+    }
+
+    "return element too short error with its field label and minimum length" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "ELEMENT_TOO_SHORT",
+          description = None,
+          path = Some("Body.GoodsShipment.Consignment.LocationOfGoods.additionalIdentifier"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(
+        SubmissionErrorMessage("viewSubmission.error.elementTooShort", Seq("Location of goods additional identifier", "1"))
+      )
+    }
+
+    "return missing field error with its field label" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "MISSING_FIELD",
+          description = None,
+          path = Some("Body.GoodsShipment.Consignment.parentUCRID"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(SubmissionErrorMessage("viewSubmission.error.missingField", Seq("MUCR")))
+    }
+
+    "return invalid characters error with its field label" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "INVALID_CHARACTERS",
+          description = None,
+          path = Some("Body.GoodsShipment.Consignment.parentUCRID"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(SubmissionErrorMessage("viewSubmission.error.invalidCharacters", Seq("MUCR")))
+    }
+
+    "return invalid specific type error with its field label" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "INVALID_VALUE_SPECIFIC_TYPE",
+          description = None,
+          path = Some("Body.CustomsOfficeOfExitActual.referenceNumber"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(
+        SubmissionErrorMessage("viewSubmission.error.invalidValueSpecificType", Seq("Reference number"))
+      )
+    }
+
+    "return invalid value pattern error with its field label" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "INVALID_VALUE_PATTERN",
+          description = None,
+          path = Some("Body.GoodsShipment.Consignment.TransportEquipment.numberOfSeals"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(
+        SubmissionErrorMessage("viewSubmission.error.invalidValuePattern", Seq("Number of seals"))
+      )
+    }
+
+    "return lower than minimum error with its field label and minimum value" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "LOWER_THAN_MIN",
+          description = None,
+          path = Some("Body.GoodsItem.Commodity.GoodsMeasure.grossMass"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(SubmissionErrorMessage("viewSubmission.error.lowerThanMin", Seq("Gross mass", "0")))
+    }
+
+    "return greater than maximum error with its field label and maximum value" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "GREATER_THAN_MAX",
+          description = None,
+          path = Some("Body.GoodsItem.Commodity.GoodsMeasure.netMass"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(
+        SubmissionErrorMessage("viewSubmission.error.greaterThanMax", Seq("Net mass", "9999999999.999999"))
+      )
+    }
+
+    "return equal or lower than minimum error with its field label and minimum value" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "EQUAL_OR_LOWER_THAN_MIN",
+          description = None,
+          path = Some("Body.GoodsItem.Commodity.GoodsMeasure.grossMass"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(
+        SubmissionErrorMessage("viewSubmission.error.equalOrLowerThanMin", Seq("Gross mass", "0"))
+      )
+    }
+
+    "return equal or greater than maximum error with its field label and maximum value" in {
+      val errors = Seq(
+        SingleSubmissionError(
+          code = "EQUAL_OR_GREATER_THAN_MAX",
+          description = None,
+          path = Some("Body.GoodsItem.Commodity.GoodsMeasure.netMass"),
+          originalValue = None
+        )
+      )
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq(
+        SubmissionErrorMessage("viewSubmission.error.equalOrGreaterThanMax", Seq("Net mass", "9999999999.999999"))
+      )
+    }
+
+    "ignore a field validation error when its path is missing" in {
+      val errors = Seq(SingleSubmissionError(code = "ELEMENT_TOO_LONG", description = None, path = None, originalValue = None))
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq.empty
+    }
+
+    "ignore a field validation error when its path is not mapped" in {
+      val errors =
+        Seq(SingleSubmissionError(code = "ELEMENT_TOO_LONG", description = None, path = Some("Body.Unknown.unmappedField"), originalValue = None))
+
+      SubmissionErrorMapper.toMessageKeys(errors) shouldBe Seq.empty
     }
   }
 }

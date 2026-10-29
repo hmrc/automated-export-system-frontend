@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create
 
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.pageSize
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
@@ -49,8 +50,6 @@ case class AddAnotherPackagingDetailViewModel(
 }
 
 object AddAnotherPackagingDetailViewModel {
-
-  private val pageSize = 25
 
   def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherPackagingDetailViewModel = {
 
