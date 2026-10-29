@@ -56,16 +56,68 @@ class DiscrepancyTransportController @Inject() (
     Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyTransportPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage, mode, updatedAnswers))
-      )
-  }
+      val userAnswers: UserAnswers =
+        request.userAnswers
+
+      val nextIndex: Int =
+        DiscrepancyTransportEquipment.nextIndex(userAnswers)
+
+      if (
+        DiscrepancyTransportEquipment.exists(userAnswers, transportEquipmentIndex) ||
+        transportEquipmentIndex == nextIndex
+      ) {
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, mode))),
+            value =>
+              if (isEmpty(value)) {
+                Future.successful(Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, userAnswers)))
+              } else {
+                for {
+                  updatedAnswers <- Future.fromTry(userAnswers.set(DiscrepancyTransportPage(transportEquipmentIndex), value))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers))
+              }
+          )
+      } else {
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      }
+    }
+
+  def onSubmit(transportEquipmentIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+
+      val userAnswers: UserAnswers =
+        request.userAnswers
+
+      val nextIndex: Int =
+        DiscrepancyTransportEquipment.nextIndex(userAnswers)
+
+      if (
+        DiscrepancyTransportEquipment.exists(userAnswers, transportEquipmentIndex) ||
+        transportEquipmentIndex == nextIndex
+      ) {
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, mode))),
+            value =>
+              if (isEmpty(value)) {
+                Future.successful(Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, userAnswers)))
+              } else {
+                for {
+                  updatedAnswers <- Future.fromTry(userAnswers.set(DiscrepancyTransportPage(transportEquipmentIndex), value))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers))
+              }
+          )
+      } else {
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      }
+    }
+
+  private def isEmpty(value: ContainerDetails): Boolean =
+    value.containerId.isEmpty &&
+      value.numberOfSeals.isEmpty
 }

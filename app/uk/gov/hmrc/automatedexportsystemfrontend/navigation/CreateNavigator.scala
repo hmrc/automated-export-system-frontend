@@ -37,8 +37,8 @@ class CreateNavigator extends Navigator {
     case OfficeOfExitPage                             => _ => createRoute.IsSplitExitController.onPageLoad(NormalMode)
     case IsSplitExitPage                              => isSplitExitRoute
     case AnyDiscrepanciesPage                         => anyDiscrepanciesRoute
-    case DiscrepancyConsignmentPage                   => _ => createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
-    case DiscrepancyTransportPage                     => _ => createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode)
+    case DiscrepancyConsignmentPage                   => _ => createRoute.DiscrepancyTransportController.onPageLoad(1, NormalMode)
+    case DiscrepancyTransportPage                     => userAnswers => discrepancyTransportEquipmentRoute(userAnswers, transportEquipmentIndex, NormalMode)
     case DiscrepancySealsPage(sealsIndex)             => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, NormalMode)
     case DiscrepancyReferencePage                     => _ => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
     case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
@@ -46,13 +46,14 @@ class CreateNavigator extends Navigator {
     case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
+  
   override val checkRoutes: Page => UserAnswers => Call = {
     case IsSplitExitPage            => isSplitExitCheckRoute
     case AnyDiscrepanciesPage       => anyDiscrepanciesCheckRoute
     case DiscrepancyConsignmentPage => discrepancyConsignmentCheckRoute
-    case DiscrepancyTransportPage   => discrepancyTransportCheckRoute
-    case DiscrepancySealsPage(sealsIndex) =>
-      discrepancySealsCheckRoute // TODO: discussion pending with team this will need to be addressed in future tickets
+    case DiscrepancyTransportPage   => userAnswers => discrepancyTransportEquipmentRoute(userAnswers, transportEquipmentIndex, CheckMode)
+    case DiscrepancySealsPage(sealsIndex) => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, CheckMode)
+     // TODO: discussion pending with team this will need to be addressed in future tickets
     case DiscrepancyReferencePage                     => discrepancyReferenceCheckRoute
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
@@ -161,4 +162,21 @@ class CreateNavigator extends Navigator {
 
   private def hasExistingSeals(userAnswers: UserAnswers): Boolean =
     DiscrepancySeals.count(userAnswers) > 0
+
+  private def discrepancyTransportEquipmentRoute(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode): Call =
+    userAnswers
+      .get(DiscrepancyTransportPage(transportEquipmentIndex)) match {
+
+      case Some(_) =>
+        createRoute.TransportEquipmentCYAController
+          .onPageLoad(transportEquipmentIndex, mode)
+
+      case None if DiscrepancyTransportEquipment.count(userAnswers) > 0 =>
+        createRoute.AddAnotherTransportController
+          .onPageLoad(None, mode)
+
+      case None =>
+        createRoute.DiscrepancySealsController
+          .onPageLoad(1, NormalMode)
+    }
 }
