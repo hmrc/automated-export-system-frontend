@@ -31,10 +31,6 @@
 
 @layout(pageTitle = titleNoForm(messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfSeals))) {
 
-  @if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummaryViewModel(form))
-  }
-
   <h1 class="govuk-heading-l">@messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfSeals)</h1>
 
   @govukSummaryList(SummaryList(rows= viewModel.rows))
@@ -45,6 +41,10 @@
   }
 
   @formHelper(action = createRoute.AddAnotherSealController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
+
+    @if(form.errors.nonEmpty) {
+      @govukErrorSummary(ErrorSummaryViewModel(form))
+    }
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">
