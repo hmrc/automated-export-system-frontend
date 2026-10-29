@@ -59,9 +59,7 @@ class CreateNavigator extends Navigator {
           .onPageLoad(1, NormalMode)
 
     case DiscrepancyTransportPage(transportEquipmentIndex) =>
-      _ =>
-        createRoute.TransportEquipmentCYAController
-          .onPageLoad(transportEquipmentIndex, NormalMode)
+      userAnswers => discrepancyTransportEquipmentRoute(userAnswers, transportEquipmentIndex, NormalMode)
 
     case DiscrepancySealsPage(sealsIndex) =>
       userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, NormalMode)
@@ -103,9 +101,7 @@ class CreateNavigator extends Navigator {
       discrepancyConsignmentCheckRoute
 
     case DiscrepancyTransportPage(transportEquipmentIndex) =>
-      _ =>
-        createRoute.TransportEquipmentCYAController
-          .onPageLoad(transportEquipmentIndex, CheckMode)
+      userAnswers => discrepancyTransportEquipmentRoute(userAnswers, transportEquipmentIndex, CheckMode)
 
     case DiscrepancySealsPage(sealsIndex) =>
       userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, CheckMode)
@@ -225,4 +221,21 @@ class CreateNavigator extends Navigator {
 
   private def hasExistingSeals(userAnswers: UserAnswers): Boolean =
     DiscrepancySeals.count(userAnswers) > 0
+
+  private def discrepancyTransportEquipmentRoute(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode): Call =
+    userAnswers
+      .get(DiscrepancyTransportPage(transportEquipmentIndex)) match {
+
+      case Some(_) =>
+        createRoute.TransportEquipmentCYAController
+          .onPageLoad(transportEquipmentIndex, mode)
+
+      case None if DiscrepancyTransportEquipment.count(userAnswers) > 0 =>
+        createRoute.AddAnotherTransportController
+          .onPageLoad(None, mode)
+
+      case None =>
+        createRoute.DiscrepancySealsController
+          .onPageLoad(1, NormalMode)
+    }
 }

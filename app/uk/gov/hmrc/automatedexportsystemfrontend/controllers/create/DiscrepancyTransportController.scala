@@ -91,13 +91,21 @@ class DiscrepancyTransportController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, mode))),
             value =>
-              for {
-                updatedAnswers <- Future.fromTry(userAnswers.set(DiscrepancyTransportPage(transportEquipmentIndex), value))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers))
+              if (isEmpty(value)) {
+                Future.successful(Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, userAnswers)))
+              } else {
+                for {
+                  updatedAnswers <- Future.fromTry(userAnswers.set(DiscrepancyTransportPage(transportEquipmentIndex), value))
+                  _ <- sessionRepository.set(updatedAnswers)
+                } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers))
+              }
           )
       } else {
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
     }
+
+  private def isEmpty(value: ContainerDetails): Boolean =
+    value.containerId.isEmpty &&
+      value.numberOfSeals.isEmpty
 }
