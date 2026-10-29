@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create
 
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.pageSize
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 
@@ -45,8 +46,6 @@ case class AddAnotherPackagingDetailViewModel(
 }
 
 object AddAnotherPackagingDetailViewModel {
-
-  private val pageSize = 25
 
   def apply(userAnswers: UserAnswers, page: Option[Int]): AddAnotherPackagingDetailViewModel = {
 

@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherSealFormProvider
-
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherSealFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherSealViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AddAnotherSealView
@@ -40,21 +40,30 @@ class AddAnotherSealController @Inject() (
   view: AddAnotherSealView
 ) extends FrontendBaseController with I18nSupport {
 
-  private def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
+  def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherSealViewModel(request.userAnswers, page, mode)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherSealViewModel(request.userAnswers, mode)
-
-    if (viewModel.numberOfSeals > 0) {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
+    if (viewModel.numberOfSeals == 0) {
+      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
+    } else if (!isValidPage(viewModel)) {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+    } else if (page != viewModel.pageParam) {
+      Redirect(createRoute.AddAnotherSealController.onPageLoad(viewModel.pageParam, mode))
     } else {
-      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode).url)
+      Ok(view(form(viewModel.allowMore), viewModel, mode))
     }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherSealViewModel(request.userAnswers, mode)
-    if (viewModel.numberOfSeals > 0) {
+  private def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
+
+  def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherSealViewModel(request.userAnswers, page, mode)
+
+    if (viewModel.numberOfSeals == 0) {
+      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
+    } else if (!isValidPage(viewModel)) {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+    } else {
       formProvider(viewModel.allowMore)
         .bindFromRequest()
         .fold(
@@ -64,8 +73,9 @@ class AddAnotherSealController @Inject() (
             case false => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
           }
         )
-    } else {
-      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
     }
   }
+
+  private def isValidPage(viewModel: AddAnotherSealViewModel): Boolean =
+    viewModel.currentPage >= 1 && viewModel.currentPage <= viewModel.totalPages
 }

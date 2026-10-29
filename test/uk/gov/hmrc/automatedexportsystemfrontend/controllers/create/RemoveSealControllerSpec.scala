@@ -19,6 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{never, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
+import play.api.data.Form
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
@@ -30,6 +31,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
 import scala.concurrent.Future
@@ -38,14 +40,16 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val sealIndex = 2
+  val sealIndex = 30
   val formProvider = new RemoveSealFormProvider()
-  val form = formProvider()
+  val form: Form[Boolean] = formProvider()
+
+  val sealsList = (1 to 50).map { number =>
+    s"seal$number"
+  }.toList
 
   val userAnswers = emptyUserAnswers
-    .set(DiscrepancySealsPage(1), "Seal1")
-    .flatMap(_.set(DiscrepancySealsPage(2), "Seal2"))
-    .flatMap(_.set(DiscrepancySealsPage(3), "Seal3"))
+    .set(DiscrepancySeals, sealsList)
     .success
     .value
 
@@ -57,7 +61,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(sealIndex, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(sealIndex, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -69,7 +73,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to AddAnotherSeal and update user answers when true" in {
+    "must redirect to AddAnotherSeal while preserving the return page and update user answers when true" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -86,13 +90,13 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -114,13 +118,13 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, CheckMode).url)
+          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, 2, CheckMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(CheckMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(2), CheckMode).url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -146,7 +150,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(1, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(1, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
@@ -157,7 +161,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to AddAnotherSeal and not update user answers when false" in {
+    "must redirect to AddAnotherSeal while preserving the return page and not update user answers when false" in {
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -174,14 +178,51 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url
         verify(mockSessionRepository, never()).set(any())
+      }
+    }
+
+    "must redirect to AddAnotherSeal at next valid page when true and last item is removed from the expected return page" in {
+
+      val sealsList = (1 to 51).map { number =>
+        s"seal$number"
+      }.toList
+
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancySeals, sealsList)
+        .success
+        .value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[Navigator].toInstance(new FakeNavigator(onwardRoute)),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
+            bind[SessionRepository].toInstance(mockSessionRepository)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(51, 3, NormalMode).url)
+            .withFormUrlEncodedBody(("value", "true"))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url
+        verify(mockSessionRepository).set(any())
       }
     }
 
@@ -193,7 +234,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
@@ -211,7 +252,23 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(4, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(51, 2, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if index isn't defined" in {
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(51, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -227,7 +284,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(sealIndex, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(sealIndex, 1, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -243,7 +300,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(50, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemoveSealController.onPageLoad(50, 3, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -260,7 +317,7 @@ class RemoveSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveSealController.onPageLoad(sealIndex, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

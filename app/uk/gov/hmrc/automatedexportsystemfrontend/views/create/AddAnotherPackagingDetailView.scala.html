@@ -27,7 +27,7 @@
 
 @(form: Form[_], viewModel: AddAnotherPackagingDetailViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfPackagingDetails))) {
+@layout(pageTitle = title(form, messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfPackagingDetails))) {
 
   @if(form.errors.nonEmpty) {
     @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -54,9 +54,7 @@
   </div>
 
   @if(viewModel.totalPages > 1) {
-
     <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstPackagingDetail, viewModel.lastPackagingDetail, viewModel.numberOfPackagingDetails)</p>
-
     <nav class="govuk-pagination" aria-label="Pagination">
       @if(viewModel.hasPreviousPage) {
         <div class="govuk-pagination__prev">
@@ -70,7 +68,6 @@
           </a>
         </div>
       }
-
       <ul class="govuk-pagination__list">
         @viewModel.pageNumbers.map { pageNumber =>
           <li class="govuk-pagination__item @if(pageNumber == viewModel.currentPage) {govuk-pagination__item--current}">
@@ -80,7 +77,6 @@
           </li>
         }
       </ul>
-
       @if(viewModel.hasNextPage) {
         <div class="govuk-pagination__next">
           <a class="govuk-link govuk-pagination__link" href="@createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(viewModel.nextPage), mode).url" rel="next">

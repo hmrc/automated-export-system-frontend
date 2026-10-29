@@ -102,8 +102,7 @@ class CreateNavigatorSpec extends SpecBase {
             .success
             .value
           navigator.nextPage(DiscrepancySealsPage(3), NormalMode, userAnswers) shouldBe
-            createRoute.AddAnotherSealController.onPageLoad(NormalMode)
-
+            createRoute.AddAnotherSealController.onPageLoad(None, NormalMode)
         }
       }
 
@@ -297,7 +296,7 @@ class CreateNavigatorSpec extends SpecBase {
             createRoute.CYASubmissionController.onPageLoad()
         }
       }
-      /* TODO: resolve test when checkmode is clarified
+
       "navigate from DiscrepancyTransportPage" - {
         "to DiscrepancySealsPage when DiscrepancySealsPage is unanswered" in {
           navigator.nextPage(DiscrepancyTransportPage, CheckMode, emptyUserAnswers) shouldBe
@@ -305,25 +304,23 @@ class CreateNavigatorSpec extends SpecBase {
         }
 
         "to CYASubmissionPage when DiscrepancySealsPage is answered" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage, "sealIdentifier").success.value
+          val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage(1), "sealIdentifier").success.value
           navigator.nextPage(DiscrepancyTransportPage, CheckMode, userAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }
       }
 
       "navigate from DiscrepancySealsPage" - {
-        "to DiscrepancyReferencePage when DiscrepancyReferencePage is unanswered" in {
-          navigator.nextPage(DiscrepancySealsPage, CheckMode, emptyUserAnswers) shouldBe
-            createRoute.DiscrepancyReferenceController.onPageLoad(1, CheckMode)
+        "to SealsCYA when DiscrepancySealsPage is answered" in {
+          val userAnswers = emptyUserAnswers.set(DiscrepancySealsPage(1), "sealIdentifier").success.value
+          navigator.nextPage(DiscrepancySealsPage(1), CheckMode, userAnswers) shouldBe createRoute.SealsCYAController.onPageLoad(1, CheckMode)
         }
 
-        "to CYASubmissionPage when DiscrepancyReferencePage is answered" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage(1), "reference").success.value
-          navigator.nextPage(DiscrepancySealsPage, CheckMode, userAnswers) shouldBe
+        "to CYASubmissionPage when DiscrepancySealsPage is unanswered" in {
+          navigator.nextPage(DiscrepancySealsPage(1), CheckMode, emptyUserAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }
       }
-       */
 
       "navigate from DiscrepancyReferencePage" - {
         "to GoodsReferenceCYA when DiscrepancyReferencePage is answered" in {

@@ -23,12 +23,13 @@
         govukButton: GovukButton,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukSummaryList: GovukSummaryList
+        govukSummaryList: GovukSummaryList,
+        govukPagination: GovukPagination
 )
 
 @(form: Form[_], viewModel: AddAnotherSealViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfSeals))) {
+@layout(pageTitle = title(form, messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfSeals))) {
 
   @if(form.errors.nonEmpty) {
     @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -38,7 +39,12 @@
 
   @govukSummaryList(SummaryList(rows= viewModel.rows))
 
-  @formHelper(action = createRoute.AddAnotherSealController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+  @viewModel.pagination(mode).map { pagination =>
+    <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstSeal, viewModel.lastSeal, viewModel.numberOfSeals)</p>
+    @govukPagination(pagination)
+  }
+
+  @formHelper(action = createRoute.AddAnotherSealController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

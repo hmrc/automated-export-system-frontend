@@ -36,7 +36,7 @@
 
     <div>
         @govukButton(
-            ButtonViewModel(messages("site.continue")).asLink(createRoute.AddAnotherSealController.onPageLoad(mode).url)
+            ButtonViewModel(messages("site.continue")).asLink(createRoute.AddAnotherSealController.onPageLoad(None, mode).url)
         )
     </div>
 }
