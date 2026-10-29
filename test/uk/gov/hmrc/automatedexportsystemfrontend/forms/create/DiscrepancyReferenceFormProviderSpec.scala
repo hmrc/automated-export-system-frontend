@@ -17,15 +17,16 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.{Field, FormError}
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.sealIdentifierRegex
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.discrepancyReferenceNumberRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyReferenceFormProvider
 
 class DiscrepancyReferenceFormProviderSpec extends StringFieldBehaviours {
 
-  val lengthKey = "discrepancySeals.error.length"
-  val invalidKey = "discrepancySeals.error.invalid"
-  val maxLength = 20
+  val lengthKey = "discrepancyReference.error.length"
+  val invalidKey = "discrepancyReference.error.invalid"
+  val maxLength = 5
+  val validValue = "12345"
 
   val form = new DiscrepancyReferenceFormProvider()()
 
@@ -33,15 +34,15 @@ class DiscrepancyReferenceFormProviderSpec extends StringFieldBehaviours {
 
     val fieldName = "value"
 
-    behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
+    behave like fieldThatBindsValidData(form, fieldName, validValue)
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     "must not bind invalid data" in {
 
-      val invalidValues: Seq[String] = Seq(" abc123", "abc123 ")
+      val invalidValues: Seq[String] = Seq("01234", "abcde")
 
-      val expectedError = FormError(fieldName, invalidKey, Seq(sealIdentifierRegex))
+      val expectedError = FormError(fieldName, invalidKey, Seq(discrepancyReferenceNumberRegex))
 
       invalidValues.foreach { invalidValue =>
         val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)

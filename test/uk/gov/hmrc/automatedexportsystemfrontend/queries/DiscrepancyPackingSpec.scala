@@ -18,21 +18,21 @@ package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import org.scalatest.matchers.must.Matchers.{mustBe, mustNot}
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.PackingDetails
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 class DiscrepancyPackingSpec extends SpecBase {
 
+  val userAnswers: UserAnswers = emptyUserAnswers
+    .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
+    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
+    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+    .success
+    .value
+
   "DiscrepancyPacking" - {
     ".getAll" - {
       "must get all of the DiscrepancyPacking data" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
         val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("CT", 2, "MARKS2"), PackingDetails("PK", 3, "MARKS3"))
 
         DiscrepancyPacking.getAll(userAnswers) mustBe expected
@@ -41,26 +41,12 @@ class DiscrepancyPackingSpec extends SpecBase {
 
     ".count" - {
       "must return how many DiscrepancyPacking data items have been added" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
         DiscrepancyPacking.count(userAnswers) mustBe 3
       }
     }
 
     ".remaining" - {
       "must return how many remaining DiscrepancyPacking data items can be added" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
         DiscrepancyPacking.remaining(userAnswers) mustBe 96
       }
     }
@@ -73,50 +59,22 @@ class DiscrepancyPackingSpec extends SpecBase {
 
     ".exists" - {
       "must return true if the index is defined" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
         DiscrepancyPacking.exists(userAnswers, 3) mustBe true
       }
 
       "must return false if the index is not defined" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
         DiscrepancyPacking.exists(userAnswers, 4) mustBe false
       }
     }
 
     ".nextIndex" - {
       "must return the next empty index positon" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
         DiscrepancyPacking.nextIndex(userAnswers) mustBe 4
       }
     }
 
     ".removeOne" - {
       "must remove one DiscrepancyPacking item at the correct index" in {
-        val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-          .success
-          .value
-
         val updatedUserAnswers = DiscrepancyPacking.removeOne(userAnswers, 2).success.value
 
         val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("PK", 3, "MARKS3"))
@@ -126,13 +84,6 @@ class DiscrepancyPackingSpec extends SpecBase {
     }
 
     "must be able to remove all DiscrepancyPacking data from user answers" in {
-      val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-        .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-        .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
-        .success
-        .value
-
       val updatedUserAnswers = userAnswers.remove(DiscrepancyPacking).success.value
 
       updatedUserAnswers.get(DiscrepancyPacking) mustNot be(defined)

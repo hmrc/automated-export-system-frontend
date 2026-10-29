@@ -444,7 +444,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
       }
     }
 
@@ -511,7 +511,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
       }
     }
 

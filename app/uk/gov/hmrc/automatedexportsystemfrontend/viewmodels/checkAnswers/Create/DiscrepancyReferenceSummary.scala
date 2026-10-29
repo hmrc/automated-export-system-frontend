@@ -19,22 +19,21 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 object DiscrepancyReferenceSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancyReferencePage).flatten.map { answer =>
+  def row(discrepancyReferenceIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)).map { answer =>
       SummaryListRowViewModel(
         key = "discrepancyReference.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyReferenceController.onPageLoad(CheckMode).url)
+          ActionItemViewModel("site.change", createRoute.DiscrepancyReferenceController.onPageLoad(discrepancyReferenceIndex, mode).url)
             .withVisuallyHiddenText(messages("discrepancyReference.change.hidden"))
         )
       )

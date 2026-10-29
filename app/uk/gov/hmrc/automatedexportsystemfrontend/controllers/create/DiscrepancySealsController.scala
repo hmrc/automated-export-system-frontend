@@ -97,7 +97,7 @@ class DiscrepancySealsController @Inject() (
       createRoute.AddAnotherSealController.onPageLoad(None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancyReferenceController.onPageLoad(mode)
+        case NormalMode => createRoute.DiscrepancyReferenceController.onPageLoad(1, mode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 }
