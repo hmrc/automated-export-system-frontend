@@ -100,7 +100,7 @@ class CreateNavigator extends Navigator {
     answers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
       case Some(_) => createRoute.GoodsReferenceCYAController.onPageLoad(discrepancyReferenceIndex, NormalMode)
       case None if DiscrepancyReference.count(answers) > 0 =>
-        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: Change to add another goods ref when built
+        createRoute.AddAnotherGoodsReferenceController.onPageLoad(NormalMode)
       case None => createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
     }
 
@@ -138,7 +138,7 @@ class CreateNavigator extends Navigator {
     answers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
       case Some(_) => createRoute.GoodsReferenceCYAController.onPageLoad(discrepancyReferenceIndex, CheckMode)
       case None if DiscrepancyReference.count(answers) > 0 =>
-        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: Change to add another goods ref when built
+        createRoute.AddAnotherGoodsReferenceController.onPageLoad(CheckMode)
       case _ => createRoute.CYASubmissionController.onPageLoad()
     }
 

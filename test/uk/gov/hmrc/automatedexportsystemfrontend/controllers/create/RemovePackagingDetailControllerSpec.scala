@@ -26,7 +26,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.RemovePackagingDetailFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
@@ -41,8 +40,6 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
   def onwardRoute = Call("GET", "/foo")
 
   val packagingDetailIndex = 30
-  val formProvider = new RemovePackagingDetailFormProvider()
-  val form: Form[Boolean] = formProvider(packagingDetailIndex)
 
   val packingDetailsList50: List[PackingDetails] = (1 to 50).map { number =>
     PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
@@ -68,7 +65,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe OK
         val body = contentAsString(result)
-        body should include("Are you sure you want to remove packaging detail 30")
+        body should include("Are you sure you want to remove packaging detail 30?")
         body should include("Yes")
         body should include("No")
       }

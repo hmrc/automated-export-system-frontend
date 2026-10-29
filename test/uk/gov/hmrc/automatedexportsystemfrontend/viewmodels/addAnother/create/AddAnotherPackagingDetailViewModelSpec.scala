@@ -17,14 +17,22 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create
 
 import org.scalatest.matchers.must.Matchers.mustBe
+import play.api.i18n.Messages
+import play.api.test.Helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.PackingDetails
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
+  private implicit val messages: Messages = Helpers.stubMessages()
+
   val maxPackagingDetails: Int = DiscrepancyPacking.maxPackagingDetails
+
+  val userAnswers: UserAnswers = emptyUserAnswers.set(DiscrepancyPackingPage(1), PackingDetails("packagingCode1", 1, "shippingMarks1")).success.value
 
   val packagingDetailsListMax: List[PackingDetails] = (1 to maxPackagingDetails).map { number =>
     PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
@@ -32,25 +40,103 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
   "AddAnotherPackagingDetailViewModel" - {
 
+    "rows" - {
+      "must build a valid row with packaging details, hidden value, change and remove actions" in {
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
+        val rows = result.rows
+        rows.size mustBe 1
+        val row = rows.head
+
+        val actions = row.actions.value
+
+        row.key.content mustBe Text(messages("addAnotherPackagingDetail.key", "1"))
+        actions.items.size mustBe 2
+
+        val change = actions.items.head
+        change.href mustBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+        change.content mustBe Text(messages("site.change"))
+        change.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.change.hidden", "1"))
+
+        val remove = actions.items(1)
+        remove.href mustBe createRoute.RemovePackagingDetailController.onPageLoad(1, 1, NormalMode).url
+        remove.content mustBe Text(messages("site.remove"))
+        remove.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.remove.hidden", "1"))
+
+        result.numberOfPackagingDetails mustBe 1
+        result.remainingPackagingDetails mustBe 98
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "singular"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 1
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 1
+        result.pageNumbers mustBe (1 to 1)
+      }
+
+      "must build a valid row with packaging details, hidden value, change and remove actions in CheckMode" in {
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode)
+        val rows = result.rows
+        rows.size mustBe 1
+        val row = rows.head
+
+        val actions = row.actions.value
+
+        row.key.content mustBe Text(messages("addAnotherPackagingDetail.key", "1"))
+        actions.items.size mustBe 2
+
+        val change = actions.items.head
+        change.href mustBe createRoute.DiscrepancyPackingController.onPageLoad(1, CheckMode).url
+        change.content mustBe Text(messages("site.change"))
+        change.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.change.hidden", "1"))
+
+        val remove = actions.items(1)
+        remove.href mustBe createRoute.RemovePackagingDetailController.onPageLoad(1, 1, CheckMode).url
+        remove.content mustBe Text(messages("site.remove"))
+        remove.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.remove.hidden", "1"))
+
+        result.numberOfPackagingDetails mustBe 1
+        result.remainingPackagingDetails mustBe 98
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "singular"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 1
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 1
+        result.pageNumbers mustBe (1 to 1)
+      }
+    }
+
     "when determining if add another should be enabled" - {
       "must provide the correct model when 1 item has been added" in {
-        val userAnswers = emptyUserAnswers.set(DiscrepancyPackingPage(1), PackingDetails("packagingCode1", 1, "shippingMarks1")).success.value
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None)
+        result.numberOfPackagingDetails mustBe 1
+        result.remainingPackagingDetails mustBe 98
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "singular"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 1
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 1
+        result.pageNumbers mustBe (1 to 1)
+      }
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 1,
-          remainingPackagingDetails = 98,
-          allowMore = true,
-          addedSingularOrPlural = "singular",
-          remainingSingularOrPlural = "plural",
-          currentPage = 1,
-          totalPages = 1,
-          firstPackagingDetail = 1,
-          lastPackagingDetail = 1,
-          packagingDetailNumbers = 1 to 1,
-          pageNumbers = 1 to 1
-        )
+      "must provide the correct model when 1 item has been added in CheckMode" in {
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode)
+
+        result.numberOfPackagingDetails mustBe 1
+        result.remainingPackagingDetails mustBe 98
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "singular"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 1
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 1
+        result.pageNumbers mustBe (1 to 1)
       }
 
       "must provide the correct model when 1 more item can be added" in {
@@ -63,21 +149,18 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 98,
-          remainingPackagingDetails = 1,
-          allowMore = true,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "singular",
-          currentPage = 1,
-          totalPages = 4,
-          firstPackagingDetail = 1,
-          lastPackagingDetail = 25,
-          packagingDetailNumbers = 1 to 25,
-          pageNumbers = 1 to 2
-        )
+        result.numberOfPackagingDetails mustBe 98
+        result.remainingPackagingDetails mustBe 1
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "singular"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 4
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 25
+        result.pageNumbers mustBe (1 to 2)
       }
 
       "must provide the correct model when the maximum number of items has been reached" in {
@@ -86,21 +169,18 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 99,
-          remainingPackagingDetails = 0,
-          allowMore = false,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "plural",
-          currentPage = 1,
-          totalPages = 4,
-          firstPackagingDetail = 1,
-          lastPackagingDetail = 25,
-          packagingDetailNumbers = 1 to 25,
-          pageNumbers = 1 to 2
-        )
+        result.numberOfPackagingDetails mustBe 99
+        result.remainingPackagingDetails mustBe 0
+        result.allowMore mustBe false
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 4
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 25
+        result.pageNumbers mustBe (1 to 2)
       }
     }
 
@@ -115,21 +195,46 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 25,
-          remainingPackagingDetails = 74,
-          allowMore = true,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "plural",
-          currentPage = 1,
-          totalPages = 1,
-          firstPackagingDetail = 1,
-          lastPackagingDetail = 25,
-          packagingDetailNumbers = 1 to 25,
-          pageNumbers = 1 to 1
-        )
+        result.numberOfPackagingDetails mustBe 25
+        result.remainingPackagingDetails mustBe 74
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 1
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 25
+        result.pageNumbers mustBe (1 to 1)
+
+        result.hasPreviousPage mustBe false
+        result.hasNextPage mustBe false
+        result.pageParam mustBe None
+      }
+
+      "must provide the correct model before pagination starts in CheckMode" in {
+        val packingDetailsList = (1 to 25).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode)
+
+        result.numberOfPackagingDetails mustBe 25
+        result.remainingPackagingDetails mustBe 74
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 1
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 25
+        result.pageNumbers mustBe (1 to 1)
 
         result.hasPreviousPage mustBe false
         result.hasNextPage mustBe false
@@ -146,21 +251,18 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 26,
-          remainingPackagingDetails = 73,
-          allowMore = true,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "plural",
-          currentPage = 1,
-          totalPages = 2,
-          firstPackagingDetail = 1,
-          lastPackagingDetail = 25,
-          packagingDetailNumbers = 1 to 25,
-          pageNumbers = 1 to 2
-        )
+        result.numberOfPackagingDetails mustBe 26
+        result.remainingPackagingDetails mustBe 73
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 1
+        result.totalPages mustBe 2
+        result.firstPackagingDetail mustBe 1
+        result.lastPackagingDetail mustBe 25
+        result.pageNumbers mustBe (1 to 2)
 
         result.hasPreviousPage mustBe false
         result.hasNextPage mustBe true
@@ -178,21 +280,18 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2))
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 26,
-          remainingPackagingDetails = 73,
-          allowMore = true,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "plural",
-          currentPage = 2,
-          totalPages = 2,
-          firstPackagingDetail = 26,
-          lastPackagingDetail = 26,
-          packagingDetailNumbers = 26 to 26,
-          pageNumbers = 1 to 2
-        )
+        result.numberOfPackagingDetails mustBe 26
+        result.remainingPackagingDetails mustBe 73
+        result.allowMore mustBe true
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 2
+        result.totalPages mustBe 2
+        result.firstPackagingDetail mustBe 26
+        result.lastPackagingDetail mustBe 26
+        result.pageNumbers mustBe (1 to 2)
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe false
@@ -206,21 +305,18 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2))
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 99,
-          remainingPackagingDetails = 0,
-          allowMore = false,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "plural",
-          currentPage = 2,
-          totalPages = 4,
-          firstPackagingDetail = 26,
-          lastPackagingDetail = 50,
-          packagingDetailNumbers = 26 to 50,
-          pageNumbers = 1 to 3
-        )
+        result.numberOfPackagingDetails mustBe 99
+        result.remainingPackagingDetails mustBe 0
+        result.allowMore mustBe false
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 2
+        result.totalPages mustBe 4
+        result.firstPackagingDetail mustBe 26
+        result.lastPackagingDetail mustBe 50
+        result.pageNumbers mustBe (1 to 3)
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe true
@@ -234,21 +330,18 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(3))
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(3), NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 99,
-          remainingPackagingDetails = 0,
-          allowMore = false,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "plural",
-          currentPage = 3,
-          totalPages = 4,
-          firstPackagingDetail = 51,
-          lastPackagingDetail = 75,
-          packagingDetailNumbers = 51 to 75,
-          pageNumbers = 2 to 4
-        )
+        result.numberOfPackagingDetails mustBe 99
+        result.remainingPackagingDetails mustBe 0
+        result.allowMore mustBe false
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 3
+        result.totalPages mustBe 4
+        result.firstPackagingDetail mustBe 51
+        result.lastPackagingDetail mustBe 75
+        result.pageNumbers mustBe (2 to 4)
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe true
@@ -262,21 +355,18 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(4))
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(4), NormalMode)
 
-        result mustBe AddAnotherPackagingDetailViewModel(
-          numberOfPackagingDetails = 99,
-          remainingPackagingDetails = 0,
-          allowMore = false,
-          addedSingularOrPlural = "plural",
-          remainingSingularOrPlural = "plural",
-          currentPage = 4,
-          totalPages = 4,
-          firstPackagingDetail = 76,
-          lastPackagingDetail = 99,
-          packagingDetailNumbers = 76 to 99,
-          pageNumbers = 3 to 4
-        )
+        result.numberOfPackagingDetails mustBe 99
+        result.remainingPackagingDetails mustBe 0
+        result.allowMore mustBe false
+        result.addedSingularOrPlural mustBe "plural"
+        result.remainingSingularOrPlural mustBe "plural"
+        result.currentPage mustBe 4
+        result.totalPages mustBe 4
+        result.firstPackagingDetail mustBe 76
+        result.lastPackagingDetail mustBe 99
+        result.pageNumbers mustBe (3 to 4)
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe false

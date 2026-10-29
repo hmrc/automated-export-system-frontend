@@ -280,7 +280,7 @@ discrepancyReference.checkYourAnswersLabel = Declaration Goods Reference
 discrepancyReference.error.required = Enter the Declaration Goods Reference
 discrepancyReference.error.length = The Declaration Goods Reference must be 5 numbers or less
 discrepancyReference.error.invalid = The Declaration Goods Reference must be in the correct format, for example 12345
-discrepancyReference.change.hidden = Declaration Goods Reference
+discrepancyReference.change.hidden = Declaration Goods Reference {0}
 
 locationType.title = What type of location are the goods at?
 locationType.heading = What type of location are the goods at?
@@ -488,11 +488,28 @@ addAnotherPackagingDetail.addAnother = Do you need to add another packaging deta
 addAnotherPackagingDetail.maxLimit = You cannot add any more packaging details. To add another, you need to remove one first.
 addAnotherPackagingDetail.error.required = Select yes if you want to add another packaging detail
 
-removePackagingDetail.title = Are you sure you want to remove packaging detail {0}
-removePackagingDetail.heading = Are you sure you want to remove packaging detail {0}
+removePackagingDetail.title = Are you sure you want to remove packaging detail {0}?
+removePackagingDetail.heading = Are you sure you want to remove packaging detail {0}?
 removePackagingDetail.error.required = Select yes if you want to remove packaging detail {0}
 
 goodsReferenceCYA.caption = Declaration Goods Reference {0}
+
+addAnotherGoodsReference.singular.title = You have added 1 Declaration Goods Reference
+addAnotherGoodsReference.plural.title = You have added {0} Declaration Goods References
+addAnotherGoodsReference.singular.heading = You have added 1 Declaration Goods Reference
+addAnotherGoodsReference.plural.heading = You have added {0} Declaration Goods References
+addAnotherGoodsReference.key = Declaration Goods Reference {0}
+addAnotherGoodsReference.change.hidden = Declaration Goods Reference {0}
+addAnotherGoodsReference.remove.hidden = Declaration Goods Reference {0}
+addAnotherGoodsReference.singular.remaining = You can add up to 1 more Declaration Goods Reference.
+addAnotherGoodsReference.plural.remaining = You can add up to {0} more Declaration Goods References.
+addAnotherGoodsReference.addAnother = Do you need to add another Declaration Goods Reference?
+addAnotherGoodsReference.maxLimit = You cannot add any more Declaration Goods References. To add another, you need to remove one first.
+addAnotherGoodsReference.error.required = Select yes if you want to add another Declaration Goods Reference
+
+removeGoodsReference.title = Are you sure you want to remove Declaration Goods Reference {0}?
+removeGoodsReference.heading = Are you sure you want to remove Declaration Goods Reference {0}?
+removeGoodsReference.error.required = Select yes if you want to remove Declaration Goods Reference {0}
 
 viewSubmission.errorSummary.heading=There is a problem
 viewSubmission.error.technical=Sorry, there is a problem with the service. Try again later. We have not saved your answers. When the service is available, you will have to start again.

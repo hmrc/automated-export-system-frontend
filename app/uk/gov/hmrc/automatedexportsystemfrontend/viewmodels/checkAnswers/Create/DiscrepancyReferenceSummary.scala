@@ -34,7 +34,7 @@ object DiscrepancyReferenceSummary {
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
           ActionItemViewModel("site.change", createRoute.DiscrepancyReferenceController.onPageLoad(discrepancyReferenceIndex, mode).url)
-            .withVisuallyHiddenText(messages("discrepancyReference.change.hidden"))
+            .withVisuallyHiddenText(messages("discrepancyReference.change.hidden", HtmlFormat.escape(answer).toString))
         )
       )
     }

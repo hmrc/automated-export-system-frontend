@@ -1,0 +1,71 @@
+/*
+ * Copyright 2026 HM Revenue & Customs
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
+
+import play.api.data.Form
+import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherGoodsReferenceFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherGoodsReferenceViewModel
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AddAnotherGoodsReferenceView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import javax.inject.Inject
+
+class AddAnotherGoodsReferenceController @Inject() (
+  override val messagesApi: MessagesApi,
+  val actionBuilder: AesAuthRequestActionBuilder,
+  formProvider: AddAnotherGoodsReferenceFormProvider,
+  getData: AesDataRetrievalAction,
+  requireData: AesDataRequiredAction,
+  val controllerComponents: MessagesControllerComponents,
+  view: AddAnotherGoodsReferenceView
+) extends FrontendBaseController with I18nSupport {
+
+  def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
+
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, mode)
+
+    if (viewModel.numberOfGoodsReferences > 0) {
+      Ok(view(form(viewModel.allowMore), viewModel, mode))
+    } else {
+      Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
+    }
+  }
+
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, mode)
+
+    if (viewModel.numberOfGoodsReferences > 0) {
+      formProvider(viewModel.allowMore)
+        .bindFromRequest()
+        .fold(
+          formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
+          {
+            case true  => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(viewModel.numberOfGoodsReferences + 1, mode))
+            case false => Redirect(createRoute.DiscrepancyTransportMeansController.onPageLoad(mode))
+          }
+        )
+    } else {
+      Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
+    }
+  }
+}

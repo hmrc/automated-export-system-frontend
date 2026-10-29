@@ -113,7 +113,13 @@ class CreateNavigatorSpec extends SpecBase {
             createRoute.GoodsReferenceCYAController.onPageLoad(1, NormalMode)
         }
 
-        "to DiscrepancyTransportMeansPage when DiscrepancyReferencePage is unanswered" in {
+        "to AddAnotherGoodsReference when DiscrepancyReferencePage is unanswered at current index but there are existing references" in {
+          val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage(1), "reference").success.value
+          navigator.nextPage(DiscrepancyReferencePage(2), NormalMode, userAnswers) shouldBe
+            createRoute.AddAnotherGoodsReferenceController.onPageLoad(NormalMode)
+        }
+
+        "to DiscrepancyTransportMeansPage when DiscrepancyReferencePage is unanswered and there's no existing references" in {
           navigator.nextPage(DiscrepancyReferencePage(1), NormalMode, emptyUserAnswers) shouldBe
             createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode)
         }
@@ -332,7 +338,13 @@ class CreateNavigatorSpec extends SpecBase {
             createRoute.GoodsReferenceCYAController.onPageLoad(1, CheckMode)
         }
 
-        "to DiscrepancyTransportMeansPage when DiscrepancyReferencePage is unanswered" in {
+        "to AddAnotherGoodsReference when DiscrepancyReferencePage is unanswered at current index but there are existing references" in {
+          val userAnswers = emptyUserAnswers.set(DiscrepancyReferencePage(1), "reference").success.value
+          navigator.nextPage(DiscrepancyReferencePage(2), CheckMode, userAnswers) shouldBe
+            createRoute.AddAnotherGoodsReferenceController.onPageLoad(CheckMode)
+        }
+
+        "to CYASubmission when DiscrepancyReferencePage is unanswered and there's no existing references" in {
           navigator.nextPage(DiscrepancyReferencePage(1), CheckMode, emptyUserAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }

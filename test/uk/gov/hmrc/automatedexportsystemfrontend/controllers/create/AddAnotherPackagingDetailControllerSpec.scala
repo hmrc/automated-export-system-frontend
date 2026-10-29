@@ -27,7 +27,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
-import org.jsoup.Jsoup
 
 class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
@@ -473,24 +472,6 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
           status(result) shouldBe SEE_OTHER
           redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
-        }
-      }
-
-      "must redirect to next DiscrepancyPackingPage at the correct index and preserve the mode in CheckMode" in {
-
-        val application = applicationBuilder(userAnswers = Some(userAnswers))
-          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-          .build()
-
-        running(application) {
-          val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
-              .withFormUrlEncodedBody("value" -> "true")
-
-          val result = route(application, request).value
-
-          status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(4, NormalMode).url
         }
       }
 

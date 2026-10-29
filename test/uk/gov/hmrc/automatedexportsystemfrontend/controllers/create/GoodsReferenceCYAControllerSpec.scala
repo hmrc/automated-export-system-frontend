@@ -30,9 +30,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferen
 class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyReferencePage(1), "reference1")
-    .flatMap(_.set(DiscrepancyReferencePage(2), "reference2"))
-    .flatMap(_.set(DiscrepancyReferencePage(3), "reference3"))
+    .set(DiscrepancyReferencePage(1), "12345")
+    .flatMap(_.set(DiscrepancyReferencePage(2), "23456"))
+    .flatMap(_.set(DiscrepancyReferencePage(3), "34567"))
     .success
     .value
 
@@ -54,8 +54,9 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Declaration Goods Reference 2")
         body should include("Check your answers")
         body should include("Declaration Goods Reference")
-        body should include("reference2")
-//        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url}"""") TODO: Uncomment when page built
+        body should include("23456")
+        body should include("""Change<span class="govuk-visually-hidden"> Declaration Goods Reference 23456</span>""")
+        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(NormalMode).url}"""")
       }
     }
 
@@ -75,15 +76,16 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Declaration Goods Reference 2")
         body should include("Check your answers")
         body should include("Declaration Goods Reference")
-        body should include("reference2")
-//        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, CheckMode).url}"""") TODO: Uncomment when page built
+        body should include("23456")
+        body should include("""Change<span class="govuk-visually-hidden"> Declaration Goods Reference 23456</span>""")
+        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(CheckMode).url}"""")
       }
     }
 
     "must redirect to Journey Recovery for a GET if it is an empty index" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyReferencePage(1), "reference1")
+        .set(DiscrepancyReferencePage(1), "12345")
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
