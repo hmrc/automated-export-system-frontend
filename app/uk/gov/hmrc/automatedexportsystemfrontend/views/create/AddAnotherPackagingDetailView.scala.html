@@ -27,7 +27,7 @@
 
 @(form: Form[_], viewModel: AddAnotherPackagingDetailViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = titleNoForm(messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfPackagingDetails))) {
+@layout(pageTitle = title(form, messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfPackagingDetails))) {
 
   @if(form.errors.nonEmpty) {
     @govukErrorSummary(ErrorSummaryViewModel(form))
