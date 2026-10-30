@@ -40,12 +40,8 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportPage                            => _ => createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode)
     case DiscrepancySealsPage(sealsIndex)                    => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, NormalMode)
     case DiscrepancyReferencePage(discrepancyReferenceIndex) => userAnswers => discrepancyReferenceRoute(userAnswers, discrepancyReferenceIndex)
-    case DiscrepancyTransportMeansPage =>
-      _ =>
-        createRoute.DiscrepancyTransportDocController
-          .onPageLoad(1, NormalMode)
-
-    case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex)                       => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+    case DiscrepancyTransportMeansPage                       => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
+    case DiscrepancyTransportDocPage(docIndex)               => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex)
     case DiscrepancyGoodsPage                                => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
