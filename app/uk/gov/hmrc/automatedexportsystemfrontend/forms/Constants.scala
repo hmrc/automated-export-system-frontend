@@ -38,6 +38,9 @@ object Constants {
   lazy val sealIdentifierMaxLength = 20
   lazy val sealIdentifierRegex = "^\\P{Z}(.{0,18}\\P{Z})?$"
 
+  lazy val discrepancyReferenceNumberMaxLength = 5
+  lazy val discrepancyReferenceNumberRegex = "^[1-9][0-9]{0,4}$"
+
   lazy val goodsItemNumberMaxValue = 9999
 //  lazy val goodsItemNumberRegex = "^[A-Za-z0-9]{1,35}$"
 
@@ -72,4 +75,6 @@ object Constants {
   lazy val numberOfSealsMaxValue = 9999
 
   lazy val numberOfPackagesMaxValue = 99999999
+
+  val pageSize = 25
 }

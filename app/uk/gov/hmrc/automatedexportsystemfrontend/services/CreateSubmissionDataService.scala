@@ -40,9 +40,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendPartOfConsolidationPage
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyPacking, DiscrepancySeals}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.*
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage.reads
 
 class CreateSubmissionDataService @Inject() extends Logging {
 
@@ -90,7 +89,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
     }
 
   private def collectGoodsReference(userAnswers: UserAnswers): List[GoodsReference] =
-    userAnswers.get(DiscrepancyReferencePage).flatten.toList.zipWithIndex.map { case (reference, index) =>
+    DiscrepancyReference.getAll(userAnswers).zipWithIndex.map { case (reference, index) =>
       GoodsReference(index + 1, reference.toInt)
     }
 
@@ -127,7 +126,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
       }
 
   private def collectTransportDocument(userAnswers: UserAnswers): List[TransportDocument] =
-    userAnswers.get(DiscrepancyTransportDocPage).toList.zipWithIndex.map { case (document, index) =>
+    DiscrepancyTransportDoc.getAll(userAnswers).zipWithIndex.map { case (document, index) =>
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 

@@ -29,12 +29,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancySealsFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancySealsView
 
 import scala.concurrent.Future
 
@@ -176,6 +175,22 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
+    "must redirect to Journey Recovery for a POST where the index doesn't exist and is not the next index" in {
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, createRoute.DiscrepancySealsController.onPageLoad(5, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None)
@@ -194,7 +209,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must redirect to the next page when no data is entered" in {
+    "must remove the seal and redirect to the seals list when no data is entered and other seals remain" in {
       val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals, List("seal1", "seal2")).success.value
 
       val mockSessionRepository = mock[SessionRepository]
@@ -212,17 +227,81 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancySealsRoute)
+          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(1, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe onwardRoute.url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
         DiscrepancySeals.getAll(captor.getValue) shouldBe List("seal2")
+      }
+    }
+
+    "must redirect to the DiscrepancyReference when no data is entered and no seals remain in NormalMode" in {
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals, List("seal1")).success.value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(1, NormalMode).url)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancySeals.getAll(captor.getValue) shouldBe List.empty
+      }
+    }
+
+    "must redirect to the CYASubmissionController when no data is entered and no seals remain in CheckMode" in {
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals, List("seal1")).success.value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(1, CheckMode).url)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancySeals.getAll(captor.getValue) shouldBe List.empty
       }
     }
   }

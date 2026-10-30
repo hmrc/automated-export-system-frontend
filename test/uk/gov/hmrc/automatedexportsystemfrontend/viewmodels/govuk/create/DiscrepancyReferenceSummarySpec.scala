@@ -20,7 +20,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyReferenceSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
@@ -30,37 +30,49 @@ class DiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answered, return the summary row" in {
+    "when answered, return the summary row in NormalMode" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyReferencePage, Some("declarationGoodsReference"))
+        .set(DiscrepancyReferencePage(1), "12345")
         .get
 
-      DiscrepancyReferenceSummary.row(userAnswers) shouldBe Some(
+      DiscrepancyReferenceSummary.row(1, userAnswers, NormalMode) shouldBe Some(
+        SummaryListRowViewModel(
+          key = "discrepancyReference.checkYourAnswersLabel",
+          value = ValueViewModel("12345"),
+          actions = Seq(
+            ActionItemViewModel(
+              "site.change",
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+            )
+              .withVisuallyHiddenText(messages("discrepancyReference.change.hidden", "12345"))
+          )
+        )
+      )
+    }
+
+    "when answered, return the summary row in CheckMode" in {
+      val userAnswers = UserAnswers("id")
+        .set(DiscrepancyReferencePage(1), "declarationGoodsReference")
+        .get
+
+      DiscrepancyReferenceSummary.row(1, userAnswers, CheckMode) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyReference.checkYourAnswersLabel",
           value = ValueViewModel("declarationGoodsReference"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyReferenceController.onPageLoad(CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyReferenceController.onPageLoad(1, CheckMode).url
             )
-              .withVisuallyHiddenText("discrepancyReference.change.hidden")
+              .withVisuallyHiddenText(messages("discrepancyReference.change.hidden", "12345"))
           )
         )
       )
     }
 
-    "when the reference is blank, return no summary row" in {
-      val userAnswers = UserAnswers("id")
-        .set(DiscrepancyReferencePage, Option.empty[String])
-        .get
-
-      DiscrepancyReferenceSummary.row(userAnswers) shouldBe None
-    }
-
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyReferenceSummary.row(userAnswers) shouldBe None
+      DiscrepancyReferenceSummary.row(1, userAnswers, NormalMode) shouldBe None
     }
   }
 }

@@ -42,8 +42,8 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("locationId"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
-        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
-        userAnswers <- userAnswers.set(DiscrepancyReferencePage, Some("1"))
+        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
+        userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
@@ -106,8 +106,8 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
-        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
-        userAnswers <- userAnswers.set(DiscrepancyReferencePage, Some("1"))
+        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
+        userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers

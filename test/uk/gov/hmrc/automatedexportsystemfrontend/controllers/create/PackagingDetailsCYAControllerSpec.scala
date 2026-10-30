@@ -59,6 +59,9 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("2")
         body should include("Shipping marks")
         body should include("MARKS2")
+        body should include("""Change<span class="govuk-visually-hidden"> package type</span>""")
+        body should include("""Change<span class="govuk-visually-hidden"> number of packages</span>""")
+        body should include("""Change<span class="govuk-visually-hidden"> shipping marks</span>""")
         body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url}"""")
       }
     }
@@ -84,6 +87,9 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("2")
         body should include("Shipping marks")
         body should include("MARKS2")
+        body should include("""Change<span class="govuk-visually-hidden"> package type</span>""")
+        body should include("""Change<span class="govuk-visually-hidden"> number of packages</span>""")
+        body should include("""Change<span class="govuk-visually-hidden"> shipping marks</span>""")
         body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, CheckMode).url}"""")
       }
     }

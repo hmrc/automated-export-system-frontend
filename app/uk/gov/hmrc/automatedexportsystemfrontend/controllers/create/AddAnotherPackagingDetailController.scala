@@ -43,7 +43,7 @@ class AddAnotherPackagingDetailController @Inject() (
   def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
   def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page)
+    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, mode)
 
     if (viewModel.numberOfPackagingDetails == 0) {
       Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
@@ -57,7 +57,7 @@ class AddAnotherPackagingDetailController @Inject() (
   }
 
   def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page)
+    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, mode)
 
     if (viewModel.numberOfPackagingDetails == 0) {
       Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
