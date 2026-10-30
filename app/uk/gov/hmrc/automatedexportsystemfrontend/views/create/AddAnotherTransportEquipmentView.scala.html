@@ -28,7 +28,8 @@ govukRadios: GovukRadios
 @(form: Form[_], viewModel: AddAnotherTransportEquipmentViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(
-pageTitle = titleNoForm(
+pageTitle = title(
+form,
 messages(
 s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.title",
 viewModel.numberOfTransportEquipment
