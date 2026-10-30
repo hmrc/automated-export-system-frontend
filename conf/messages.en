@@ -518,3 +518,25 @@ viewSubmission.error.lowerThanMin={0} must be higher than {1}
 viewSubmission.error.greaterThanMax={0} must be {1} or lower
 viewSubmission.error.equalOrLowerThanMin={0} must be higher than {1}
 viewSubmission.error.equalOrGreaterThanMin={0} must be {1} or lower
+
+addAnotherTransportEquipment.title = Transport Equipment
+addAnotherTransportEquipment.heading = Transport Equipment
+
+addAnotherTransportEquipment.error.required = Select yes if you want to add another Transport Equipment
+addAnotherTransportEquipment.error.max = You cannot add another Transport Equipment
+
+addAnotherTransportEquipment.yes.label = Yes
+addAnotherTransportEquipment.no.label = No
+transportEquipmentCYA.title=Check your answers
+transportEquipmentCYA.heading=Check your answers
+transportEquipmentCYA.caption=Transport Equipment {0}
+addAnotherTransportEquipment.singular.title=You have added 1 transport equipment
+addAnotherTransportEquipment.plural.title=You have added {0} transport equipment entries
+
+addAnotherTransportEquipment.singular.heading=You have added 1 transport equipment
+addAnotherTransportEquipment.plural.heading=You have added {0} transport equipment entries
+addAnotherTransportEquipment.key=Transport equipment {0}
+addAnotherTransportEquipment.singular.remaining=You can add <strong>{0}</strong> more transport equipment entry.
+addAnotherTransportEquipment.plural.remaining=You can add <strong>{0}</strong> more transport equipment entries.
+addAnotherTransportEquipment.addAnother=Do you want to add another transport equipment entry?
+addAnotherTransportEquipment.change.hidden=transport equipment {0}
