@@ -33,7 +33,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
             .success
             .value
-            .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
+            .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
             .set(DiscrepancySealsPage(index), "sealsIdentifier")
@@ -58,7 +58,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           val result = AnyDiscrepanciesPage.cleanup(Some(false), userAnswers).success.value
 
           result.get(DiscrepancyConsignmentPage) mustNot be(defined)
-          result.get(DiscrepancyTransportPage) mustNot be(defined)
+          result.get(DiscrepancyTransportPage(1)) mustNot be(defined)
           result.get(DiscrepancySealsPage(index)) mustNot be(defined)
           result.get(DiscrepancyReferencePage(index)) mustNot be(defined)
           result.get(DiscrepancyTransportMeansPage) mustNot be(defined)
@@ -74,7 +74,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
             .success
             .value
-            .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
+            .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
             .set(DiscrepancySealsPage(index), "sealsIdentifier")
@@ -99,7 +99,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           val result = AnyDiscrepanciesPage.cleanup(Some(true), userAnswers).success.value
 
           result.get(DiscrepancyConsignmentPage) mustBe defined
-          result.get(DiscrepancyTransportPage) mustBe defined
+          result.get(DiscrepancyTransportPage(1)) mustBe defined
           result.get(DiscrepancySealsPage(index)) mustBe defined
           result.get(DiscrepancyReferencePage(index)) mustBe defined
           result.get(DiscrepancyTransportMeansPage) mustBe defined

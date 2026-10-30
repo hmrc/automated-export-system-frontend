@@ -19,12 +19,13 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.CYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -69,14 +70,25 @@ class CYASubmissionController @Inject() (
   private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     Seq(OfficeOfExitSummary.row(answers))
 
-  private def discrepancyRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
+  private def discrepancyRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
+
+    val transportEquipmentRows =
+      (1 to DiscrepancyTransportEquipment.count(answers)).flatMap { transportEquipmentIndex =>
+        DiscrepancyTransportSummary
+          .rows(transportEquipmentIndex, answers, CheckMode)
+          .toSeq
+          .flatten
+          .map(Some(_))
+      }
+
     Seq(DiscrepancyConsignmentSummary.row(answers)) ++
-      DiscrepancyTransportSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
+      transportEquipmentRows ++
       // Seq(DiscrepancySealsSummary.row(answers)) ++ TODO: Add Seals summary once design is finalised
       // Seq(DiscrepancyReferenceSummary.row(answers)) ++ TODO: Add goods reference once design is finalised
       DiscrepancyTransportMeansSummary.rows(answers).toSeq.flatten.map(Some(_)) ++
       // DiscrepancyTransportDocSummary.rows(answers).toSeq.flatten.map(Some(_)) ++ TODO: Temp comment out check with team
       DiscrepancyGoodsSummary.rows(answers).toSeq.flatten.map(Some(_))
+  }
   // DiscrepancyPackingSummary.rows(answers).toSeq.flatten.map(Some(_)) TODO: Add packing details once design is finalised
 
 }

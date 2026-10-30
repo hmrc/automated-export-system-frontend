@@ -153,7 +153,7 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(DiscrepancyConsignmentPage, Sea)
         .get
-        .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId123"), Some(99)))
+        .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId123"), Some(99)))
         .get
         .set(
           DiscrepancyTransportMeansPage,

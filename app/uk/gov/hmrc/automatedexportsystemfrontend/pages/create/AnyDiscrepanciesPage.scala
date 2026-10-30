@@ -34,7 +34,7 @@ case object AnyDiscrepanciesPage extends QuestionPage[Boolean] {
       case Some(false) =>
         userAnswers
           .remove(DiscrepancyConsignmentPage)
-          .flatMap(_.remove(DiscrepancyTransportPage))
+          .flatMap(_.remove(DiscrepancyTransportPages))
           .flatMap(_.remove(DiscrepancySeals))
           .flatMap(_.remove(DiscrepancyReference))
           .flatMap(_.remove(DiscrepancyTransportMeansPage))
