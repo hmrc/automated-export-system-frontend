@@ -124,7 +124,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
       }
 
   private def collectTransportDocument(userAnswers: UserAnswers): List[TransportDocument] =
-    userAnswers.get(DiscrepancyTransportDocPage).toList.zipWithIndex.map { case (document, index) =>
+    DiscrepancyTransportDoc.getAll(userAnswers).zipWithIndex.map { case (document, index) =>
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 

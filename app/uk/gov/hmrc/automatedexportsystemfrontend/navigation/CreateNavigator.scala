@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, Normal
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyReference, DiscrepancySeals}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyReference, DiscrepancySeals, DiscrepancyTransportDoc}
 
 class CreateNavigator extends Navigator {
 
@@ -40,8 +40,8 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportPage                            => _ => createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode)
     case DiscrepancySealsPage(sealsIndex)                    => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, NormalMode)
     case DiscrepancyReferencePage(discrepancyReferenceIndex) => userAnswers => discrepancyReferenceRoute(userAnswers, discrepancyReferenceIndex)
-    case DiscrepancyTransportMeansPage                       => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
-    case DiscrepancyTransportDocPage                         => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+    case DiscrepancyTransportMeansPage                       => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
+    case DiscrepancyTransportDocPage(docIndex)               => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex)
     case DiscrepancyGoodsPage                                => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
@@ -55,7 +55,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyReferencePage(discrepancyReferenceIndex) =>
       userAnswers => discrepancyReferenceCheckRoute(userAnswers, discrepancyReferenceIndex)
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
-    case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
+    case DiscrepancyTransportDocPage(docIndex)        => _ => createRoute.TransportDocCYAController.onPageLoad(docIndex, CheckMode)
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, CheckMode)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
@@ -143,8 +143,17 @@ class CreateNavigator extends Navigator {
     }
 
   private def discrepancyTransportMeansCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyTransportDocPage) match {
-      case None => createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode)
+    answers.get(DiscrepancyTransportDocPage(1)) match {
+      case None => createRoute.DiscrepancyTransportDocController.onPageLoad(1, CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancyTransportDocRoute(answers: UserAnswers, docIndex: Int): Call =
+    answers.get(DiscrepancyTransportDocPage(docIndex)) match {
+      case Some(_) => createRoute.TransportDocCYAController.onPageLoad(docIndex, NormalMode)
+      case None if hasExistingTransportDocs(answers) =>
+        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with transport doc list page
+      case None => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
@@ -172,4 +181,7 @@ class CreateNavigator extends Navigator {
 
   private def hasExistingSeals(userAnswers: UserAnswers): Boolean =
     DiscrepancySeals.count(userAnswers) > 0
+
+  private def hasExistingTransportDocs(userAnswers: UserAnswers): Boolean =
+    DiscrepancyTransportDoc.count(userAnswers) > 0
 }
