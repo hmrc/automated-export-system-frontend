@@ -171,7 +171,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<shippingMarks>marks</shippingMarks>")
     }
 
-    "must omit GoodsReference when the reference is blank" in {
+    "must omit GoodsReference when the reference is absent" in {
       val userAnswers = (for {
         answers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
         answers <- answers.set(AnyDiscrepanciesPage, true)
@@ -181,14 +181,14 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
         answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         answers <- answers.set(DiscrepancyTransportPage(index), ContainerDetails(Some("CONT123"), None))
-        answers <- answers.set(DiscrepancyReferencePage, Option.empty[String])
       } yield answers).get
 
       val result = service.buildStandardSubmission(userAnswers)
 
       result shouldBe defined
 
-      val equipment = scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
+      val equipment =
+        scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
 
       equipment.size shouldBe 1
       (equipment \ "containerIdentificationNumber").text shouldBe "CONT123"
