@@ -361,18 +361,22 @@ discrepancyTransportDoc.referenceNumber.change.hidden = transport document refer
 
 transportDocCYA.caption = Transport document {0}
 
-addAnotherTransportDoc.singular.title = You have added 1 seal
-addAnotherTransportDoc.plural.title = You have added {0} seals
-addAnotherTransportDoc.singular.heading = You have added 1 seal
-addAnotherTransportDoc.plural.heading = You have added {0} seals
-addAnotherTransportDoc.key = Seal {0}
-addAnotherTransportDoc.change.hidden = Change seal {0}
-addAnotherTransportDoc.remove.hidden = Remove seal {0}
-addAnotherTransportDoc.singular.remaining = You can add up to 1 more seal.
-addAnotherTransportDoc.plural.remaining = You can add up to {0} more seals.
-addAnotherTransportDoc.addAnother = Do you need to add another seal?
-addAnotherTransportDoc.maxLimit = You cannot add any more seals. To add another, you need to remove one first.
-addAnotherTransportDoc.error.required = Select yes if you want to add another seal
+addAnotherTransportDoc.singular.title = You have added 1 transport document
+addAnotherTransportDoc.plural.title = You have added {0} transport documents
+addAnotherTransportDoc.singular.heading = You have added 1 transport document
+addAnotherTransportDoc.plural.heading = You have added {0} transport documents
+addAnotherTransportDoc.key = Transport document {0}
+addAnotherTransportDoc.change.hidden = Change transport document {0}
+addAnotherTransportDoc.remove.hidden = Remove transport document {0}
+addAnotherTransportDoc.singular.remaining = You can add up to 1 more transport document.
+addAnotherTransportDoc.plural.remaining = You can add up to {0} more transport documents.
+addAnotherTransportDoc.addAnother = Do you need to add another transport document?
+addAnotherTransportDoc.maxLimit = You cannot add any more transport documents. To add another, you need to remove one first.
+addAnotherTransportDoc.error.required = Select yes if you want to add another transport document
+
+removeTransportDoc.title = Are you sure you want to remove transport document {0}?
+removeTransportDoc.heading = Are you sure you want to remove transport document {0}?
+removeTransportDoc.error.required = Select yes if you want to remove transport document {0}
 
 discrepancyGoods.title = Tell us what’s changed
 discrepancyGoods.heading = Tell us what’s changed
