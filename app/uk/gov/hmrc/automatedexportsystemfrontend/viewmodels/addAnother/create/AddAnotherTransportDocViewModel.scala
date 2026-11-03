@@ -49,7 +49,7 @@ case class AddAnotherTransportDocViewModel(
 
   def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
 
-  //TODO Covered in future pagination ticket
+  // TODO Covered in future pagination ticket
 //  def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
 //    if (totalPages <= 1) None
 //    else {
@@ -107,27 +107,28 @@ object AddAnotherTransportDocViewModel {
   }
 
   def rows(userAnswers: UserAnswers, mode: Mode, currentPage: Int)(implicit messages: Messages): Seq[SummaryListRow] =
-    DiscrepancyTransportDoc.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map { case (sealIdentifier, i) =>
-      val index = i + 1
-      SummaryListRow(
-        key = Key(content = Text(sealIdentifier), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
-        value = Value(content = Empty, classes = "govuk-!-display-none"),
-        actions = Some(
-          Actions(items =
-            Seq(
-              ActionItem(
-                href = createRoute.DiscrepancySealsController.onPageLoad(index, mode).url,
-                content = Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("addAnotherSeal.change.hidden", index))
-              ),
-              ActionItem(
-                href = createRoute.RemoveSealController.onPageLoad(index, currentPage, mode).url,
-                content = Text(messages("site.remove")),
-                visuallyHiddenText = Some(messages("addAnotherSeal.remove.hidden", index))
+    DiscrepancyTransportDoc.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map {
+      case (documentDetails, i) =>
+        val index = i + 1
+        SummaryListRow(
+          key = Key(content = Text(messages("transportDocCYA.caption", index)), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
+          value = Value(content = Empty, classes = "govuk-!-display-none"),
+          actions = Some(
+            Actions(items =
+              Seq(
+                ActionItem(
+                  href = createRoute.DiscrepancyTransportDocController.onPageLoad(index, mode).url,
+                  content = Text(messages("site.change")),
+                  visuallyHiddenText = Some(messages("addAnotherSeal.change.hidden", index))
+                ),
+                ActionItem(
+                  href = createRoute.RemoveTransportDocController.onPageLoad(index, currentPage, mode).url,
+                  content = Text(messages("site.remove")),
+                  visuallyHiddenText = Some(messages("addAnotherSeal.remove.hidden", index))
+                )
               )
             )
           )
         )
-      )
     }
 }

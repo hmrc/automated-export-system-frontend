@@ -18,22 +18,23 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherSealFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherTransportDocFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportDoc
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherTransportDocViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AddAnotherTransportDocView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 
-class AddAnotherTransportDocController @Inject()(
+class AddAnotherTransportDocController @Inject() (
   override val messagesApi: MessagesApi,
   val actionBuilder: AesAuthRequestActionBuilder,
-  formProvider: AddAnotherSealFormProvider,
+  formProvider: AddAnotherTransportDocFormProvider,
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
@@ -48,7 +49,7 @@ class AddAnotherTransportDocController @Inject()(
     } else if (!isValidPage(viewModel)) {
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     } else if (page != viewModel.pageParam) {
-      Redirect(createRoute.AddAnotherSealController.onPageLoad(viewModel.pageParam, mode))
+      Redirect(createRoute.AddAnotherTransportDocController.onPageLoad(viewModel.pageParam, mode))
     } else {
       Ok(view(form(viewModel.allowMore), viewModel, mode))
     }
@@ -78,4 +79,5 @@ class AddAnotherTransportDocController @Inject()(
 
   private def isValidPage(viewModel: AddAnotherTransportDocViewModel): Boolean =
     viewModel.currentPage >= 1 && viewModel.currentPage <= viewModel.totalPages
+
 }

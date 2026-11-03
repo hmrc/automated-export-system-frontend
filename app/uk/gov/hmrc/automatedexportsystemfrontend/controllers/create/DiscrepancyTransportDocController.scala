@@ -18,11 +18,12 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportDocFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, Mode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, DocumentDetails, Mode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportDocPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportDoc
@@ -91,10 +92,25 @@ class DiscrepancyTransportDocController @Inject() (
                   Future.fromTry(request.userAnswers.remove(DiscrepancyTransportDocPage(docIndex)))
               }
               _ <- sessionRepository.set(updatedAnswers)
-            } yield Redirect(createNavigator.nextPage(DiscrepancyTransportDocPage(docIndex), mode, updatedAnswers))
+            } yield Redirect(value match {
+              case document if document.documentType.isDefined || document.referenceNumber.isDefined =>
+                createNavigator.nextPage(DiscrepancyTransportDocPage(docIndex), mode, updatedAnswers)
+              case _ =>
+                nextPageAfterBlank(updatedAnswers, mode)
+            })
         )
+
     } else {
       Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
     }
   }
+
+  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
+    if (DiscrepancyTransportDoc.count(answers) > 0)
+      createRoute.AddAnotherTransportDocController.onPageLoad(None, mode)
+    else
+      mode match {
+        case NormalMode => createRoute.DiscrepancyReferenceController.onPageLoad(1, mode)
+        case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
+      }
 }

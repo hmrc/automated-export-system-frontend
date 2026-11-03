@@ -163,9 +163,8 @@ class CreateNavigator extends Navigator {
     answers.get(DiscrepancyTransportDocPage(docIndex)) match {
       case Some(_) => createRoute.TransportDocCYAController.onPageLoad(docIndex, NormalMode)
       case None if hasExistingTransportDocs(answers) =>
-        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with transport doc list page
+        createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode)
       case None => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
-      case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
   private def discrepancyTransportDocCheckRoute(answers: UserAnswers): Call =
