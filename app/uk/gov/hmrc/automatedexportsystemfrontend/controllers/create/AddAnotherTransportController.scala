@@ -48,7 +48,7 @@ class AddAnotherTransportController @Inject() (
     (actionBuilder andThen getData andThen requireData) { implicit request =>
 
       val viewModel =
-        AddAnotherTransportEquipmentViewModel(request.userAnswers, page)
+        AddAnotherTransportEquipmentViewModel(request.userAnswers, page, mode)
 
       if (viewModel.numberOfTransportEquipment == 0) {
         Redirect(
@@ -71,7 +71,7 @@ class AddAnotherTransportController @Inject() (
     (actionBuilder andThen getData andThen requireData) { implicit request =>
 
       val viewModel =
-        AddAnotherTransportEquipmentViewModel(request.userAnswers, page)
+        AddAnotherTransportEquipmentViewModel(request.userAnswers, page, mode)
 
       if (viewModel.numberOfTransportEquipment == 0) {
         Redirect(
