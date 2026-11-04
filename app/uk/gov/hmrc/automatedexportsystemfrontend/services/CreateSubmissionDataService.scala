@@ -21,6 +21,7 @@ import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
   AmendAnyDiscrepanciesPage,
   AmendDiscrepancyConsignmentPage,
@@ -63,7 +64,8 @@ class CreateSubmissionDataService @Inject() extends Logging {
     seals: List[Seal],
     goodsReferences: List[GoodsReference]
   ): List[TransportEquipment] = {
-    val discrepancyTransport = userAnswers.get(DiscrepancyTransportPage).toList
+    val discrepancyTransport =
+      DiscrepancyTransportEquipment.getAll(userAnswers)
     discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
       TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
     }
@@ -124,7 +126,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
       }
 
   private def collectTransportDocument(userAnswers: UserAnswers): List[TransportDocument] =
-    userAnswers.get(DiscrepancyTransportDocPage).toList.zipWithIndex.map { case (document, index) =>
+    DiscrepancyTransportDoc.getAll(userAnswers).zipWithIndex.map { case (document, index) =>
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 

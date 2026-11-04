@@ -23,40 +23,47 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, Normal
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyReference, DiscrepancySeals}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.{
+  DiscrepancyReference,
+  DiscrepancySeals,
+  DiscrepancyTransportDoc,
+  DiscrepancyTransportEquipment
+}
 
 class CreateNavigator extends Navigator {
 
   override val normalRoutes: Page => UserAnswers => Call = {
-    case EnterMrnPage                     => _ => createRoute.EnterDucrController.onPageLoad(NormalMode)
-    case EnterDucrPage                    => _ => createRoute.PartOfConsolidationController.onPageLoad(NormalMode)
-    case PartOfConsolidationPage          => partOfConsolidationRoute
-    case LocationTypePage                 => _ => createRoute.LocationIdController.onPageLoad(NormalMode)
-    case LocationIdPage                   => _ => createRoute.OfficeOfExitController.onPageLoad(NormalMode)
-    case OfficeOfExitPage                 => _ => createRoute.IsSplitExitController.onPageLoad(NormalMode)
-    case IsSplitExitPage                  => isSplitExitRoute
-    case AnyDiscrepanciesPage             => anyDiscrepanciesRoute
-    case DiscrepancyConsignmentPage       => _ => createRoute.DiscrepancyTransportController.onPageLoad(NormalMode)
-    case DiscrepancyTransportPage         => _ => createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode)
+    case EnterMrnPage               => _ => createRoute.EnterDucrController.onPageLoad(NormalMode)
+    case EnterDucrPage              => _ => createRoute.PartOfConsolidationController.onPageLoad(NormalMode)
+    case PartOfConsolidationPage    => partOfConsolidationRoute
+    case LocationTypePage           => _ => createRoute.LocationIdController.onPageLoad(NormalMode)
+    case LocationIdPage             => _ => createRoute.OfficeOfExitController.onPageLoad(NormalMode)
+    case OfficeOfExitPage           => _ => createRoute.IsSplitExitController.onPageLoad(NormalMode)
+    case IsSplitExitPage            => isSplitExitRoute
+    case AnyDiscrepanciesPage       => anyDiscrepanciesRoute
+    case DiscrepancyConsignmentPage => _ => createRoute.DiscrepancyTransportController.onPageLoad(1, NormalMode)
+    case DiscrepancyTransportPage(transportEquipmentIndex) =>
+      userAnswers => discrepancyTransportEquipmentRoute(userAnswers, transportEquipmentIndex, NormalMode)
     case DiscrepancySealsPage(sealsIndex) => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, NormalMode)
     case DiscrepancyReferencePage(discrepancyReferenceIndex) =>
       userAnswers => discrepancyReferenceRoute(userAnswers, discrepancyReferenceIndex, NormalMode)
-    case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(NormalMode)
-    case DiscrepancyTransportDocPage                  => _ => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+    case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
+    case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex)
     case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
 
   override val checkRoutes: Page => UserAnswers => Call = {
-    case IsSplitExitPage                  => isSplitExitCheckRoute
-    case AnyDiscrepanciesPage             => anyDiscrepanciesCheckRoute
-    case DiscrepancyConsignmentPage       => discrepancyConsignmentCheckRoute
-    case DiscrepancyTransportPage         => discrepancyTransportCheckRoute
+    case IsSplitExitPage            => isSplitExitCheckRoute
+    case AnyDiscrepanciesPage       => anyDiscrepanciesCheckRoute
+    case DiscrepancyConsignmentPage => discrepancyConsignmentCheckRoute
+    case DiscrepancyTransportPage(transportEquipmentIndex) =>
+      userAnswers => discrepancyTransportCheckRoute(userAnswers, transportEquipmentIndex)
     case DiscrepancySealsPage(sealsIndex) => userAnswers => discrepancySealsRoute(userAnswers, sealsIndex, CheckMode)
     case DiscrepancyReferencePage(discrepancyReferenceIndex) =>
       userAnswers => discrepancyReferenceRoute(userAnswers, discrepancyReferenceIndex, CheckMode)
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
-    case DiscrepancyTransportDocPage                  => discrepancyTransportDocCheckRoute
+    case DiscrepancyTransportDocPage(docIndex)        => _ => createRoute.TransportDocCYAController.onPageLoad(docIndex, CheckMode)
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, CheckMode)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
@@ -118,21 +125,34 @@ class CreateNavigator extends Navigator {
     }
 
   private def discrepancyConsignmentCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyTransportPage) match {
-      case None => createRoute.DiscrepancyTransportController.onPageLoad(CheckMode)
-      case _    => createRoute.CYASubmissionController.onPageLoad()
+    if (DiscrepancyTransportEquipment.count(answers) == 0) {
+      createRoute.DiscrepancyTransportController.onPageLoad(1, CheckMode)
+    } else {
+      createRoute.CYASubmissionController.onPageLoad()
     }
 
-  private def discrepancyTransportCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancySealsPage(1)) match {
+  private def discrepancyTransportCheckRoute(answers: UserAnswers, transportEquipmentIndex: Int): Call =
+    answers.get(DiscrepancySealsPage(transportEquipmentIndex)) match {
       case None =>
-        createRoute.DiscrepancySealsController.onPageLoad(1, CheckMode) // TODO: navigation in check mode will be handled in future tickets
-      case _ => createRoute.CYASubmissionController.onPageLoad()
+        createRoute.DiscrepancySealsController
+          .onPageLoad(transportEquipmentIndex, CheckMode)
+
+      case Some(_) =>
+        createRoute.CYASubmissionController.onPageLoad()
     }
 
   private def discrepancyTransportMeansCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyTransportDocPage) match {
-      case None => createRoute.DiscrepancyTransportDocController.onPageLoad(CheckMode)
+    answers.get(DiscrepancyTransportDocPage(1)) match {
+      case None => createRoute.DiscrepancyTransportDocController.onPageLoad(1, CheckMode)
+      case _    => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def discrepancyTransportDocRoute(answers: UserAnswers, docIndex: Int): Call =
+    answers.get(DiscrepancyTransportDocPage(docIndex)) match {
+      case Some(_) => createRoute.TransportDocCYAController.onPageLoad(docIndex, NormalMode)
+      case None if hasExistingTransportDocs(answers) =>
+        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with transport doc list page
+      case None => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
@@ -160,4 +180,24 @@ class CreateNavigator extends Navigator {
 
   private def hasExistingSeals(userAnswers: UserAnswers): Boolean =
     DiscrepancySeals.count(userAnswers) > 0
+
+  private def discrepancyTransportEquipmentRoute(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode): Call =
+    userAnswers
+      .get(DiscrepancyTransportPage(transportEquipmentIndex)) match {
+
+      case Some(_) =>
+        createRoute.TransportEquipmentCYAController
+          .onPageLoad(transportEquipmentIndex, mode)
+
+      case None if DiscrepancyTransportEquipment.count(userAnswers) > 0 =>
+        createRoute.AddAnotherTransportController
+          .onPageLoad(None, mode)
+
+      case None =>
+        createRoute.DiscrepancySealsController
+          .onPageLoad(1, NormalMode)
+    }
+
+  private def hasExistingTransportDocs(userAnswers: UserAnswers): Boolean =
+    DiscrepancyTransportDoc.count(userAnswers) > 0
 }

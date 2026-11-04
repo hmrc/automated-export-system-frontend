@@ -21,7 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, DocumentDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, DocumentDetails, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportDocPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyTransportDocSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
@@ -35,10 +35,10 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
     "when answered, return the both optional summary rows" in {
       val documentDetails = DocumentDetails(Some(1), Some(1234))
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyTransportDocPage, documentDetails)
+        .set(DiscrepancyTransportDocPage(1), documentDetails)
         .get
 
-      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe Some(
+      DiscrepancyTransportDocSummary.rows(1, userAnswers, NormalMode) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
@@ -46,7 +46,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
             )
@@ -57,7 +57,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyTransportDoc.referenceNumber.change.hidden")
             )
@@ -69,10 +69,10 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
     "when answered, return one optional summary row" in {
       val documentDetails = DocumentDetails(Some(1), None)
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyTransportDocPage, documentDetails)
+        .set(DiscrepancyTransportDocPage(1), documentDetails)
         .get
 
-      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe Some(
+      DiscrepancyTransportDocSummary.rows(1, userAnswers, NormalMode) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
@@ -80,7 +80,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportDocController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyTransportDoc.documentType.change.hidden")
             )
@@ -91,7 +91,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyTransportDocSummary.rows(userAnswers) shouldBe None
+      DiscrepancyTransportDocSummary.rows(1, userAnswers, NormalMode) shouldBe None
     }
   }
 }

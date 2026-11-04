@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
@@ -28,29 +28,39 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyTransportSummary {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-    answers.get(DiscrepancyTransportPage).map { answer =>
-      Seq(
-        answer.containerId.map { containerId =>
-          SummaryListRowViewModel(
-            key = "discrepancyTransport.containerId.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent(HtmlFormat.escape(containerId))),
-            actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-                .withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
+  def rows(transportEquipmentIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
+    answers
+      .get(DiscrepancyTransportPage(transportEquipmentIndex))
+      .map { answer =>
+        Seq(
+          answer.containerId.map { containerId =>
+            SummaryListRowViewModel(
+              key = "discrepancyTransport.containerId.checkYourAnswersLabel",
+              value = ValueViewModel(HtmlContent(HtmlFormat.escape(containerId))),
+              actions = Seq(
+                ActionItemViewModel(
+                  "site.change",
+                  createRoute.DiscrepancyTransportController
+                    .onPageLoad(transportEquipmentIndex, mode)
+                    .url
+                ).withVisuallyHiddenText(messages("discrepancyTransport.containerId.change.hidden"))
+              )
             )
-          )
-        },
-        answer.numberOfSeals.map { numberOfSeals =>
-          SummaryListRowViewModel(
-            key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
-            value = ValueViewModel(HtmlContent(numberOfSeals.toString)),
-            actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyTransportController.onPageLoad(CheckMode).url)
-                .withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
+          },
+          answer.numberOfSeals.map { numberOfSeals =>
+            SummaryListRowViewModel(
+              key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
+              value = ValueViewModel(HtmlContent(HtmlFormat.escape(numberOfSeals.toString))),
+              actions = Seq(
+                ActionItemViewModel(
+                  "site.change",
+                  createRoute.DiscrepancyTransportController
+                    .onPageLoad(transportEquipmentIndex, mode)
+                    .url
+                ).withVisuallyHiddenText(messages("discrepancyTransport.numberOfSeals.change.hidden"))
+              )
             )
-          )
-        }
-      ).flatten
-    }
+          }
+        ).flatten
+      }
 }

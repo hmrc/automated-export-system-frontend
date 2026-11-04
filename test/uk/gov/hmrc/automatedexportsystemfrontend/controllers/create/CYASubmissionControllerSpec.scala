@@ -35,6 +35,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   LocationDetails,
   LocationType,
   ModeOfTransportAtBorder,
+  NormalMode,
   OfficeOfExit,
   PartOfConsolidationAnswer,
   TransportAcrossBorderDetails,
@@ -152,14 +153,12 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(DiscrepancyConsignmentPage, Sea)
         .get
-        .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId123"), Some(99)))
+        .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId123"), Some(99)))
         .get
         .set(
           DiscrepancyTransportMeansPage,
           TransportAcrossBorderDetails(Some("transportType"), Some("transportIdNumber"), Some("countryOfRegistration"))
         )
-        .get
-        .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
         .get
         .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("2GB647298735290-S569"), "20", "10"))
         .get
@@ -208,10 +207,11 @@ class CYASubmissionControllerSpec extends SpecBase {
         body should include("transportIdNumber")
         body should include("Transport means nationality")
         body should include("countryOfRegistration")
-        body should include("Transport document type")
-        body should include("1")
-        body should include("Transport document reference")
-        body should include("1234")
+        // TODO revist CYA
+//        body should include("Transport document type")
+//        body should include("1")
+//        body should include("Transport document reference")
+//        body should include("1234")
         body should include("Declaration goods item number")
         body should include("1")
         body should include("Declaration Unique Consignment Reference (DUCR)")

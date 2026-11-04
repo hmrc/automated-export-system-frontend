@@ -37,12 +37,12 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
         userAnswers <- userAnswers.set(EnterDucrPage, "5GB000000000000-12345")
         userAnswers <- userAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("GB/000000000000-12345")))
-        userAnswers <- userAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
+        userAnswers <- userAnswers.set(DiscrepancyTransportPage(index), ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
         userAnswers <- userAnswers.set(DiscrepancySealsPage(index), "sealId")
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("locationId"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
-        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
+        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
@@ -101,12 +101,12 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
         userAnswers <- userAnswers.set(EnterDucrPage, "5GB000000000000-12345")
         userAnswers <- userAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("GB/000000000000-12345")))
-        userAnswers <- userAnswers.set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
+        userAnswers <- userAnswers.set(DiscrepancyTransportPage(index), ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
         userAnswers <- userAnswers.set(DiscrepancySealsPage(index), "sealId")
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
-        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
+        userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails("PK", 1, "marks"))
@@ -171,7 +171,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<shippingMarks>marks</shippingMarks>")
     }
 
-    "must omit GoodsReference when the reference is blank" in {
+    "must omit GoodsReference when the reference is absent" in {
       val userAnswers = (for {
         answers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
         answers <- answers.set(AnyDiscrepanciesPage, true)
@@ -180,14 +180,15 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
         answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
-        answers <- answers.set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
+        answers <- answers.set(DiscrepancyTransportPage(index), ContainerDetails(Some("CONT123"), None))
       } yield answers).get
 
       val result = service.buildStandardSubmission(userAnswers)
 
       result shouldBe defined
 
-      val equipment = scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
+      val equipment =
+        scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
 
       equipment.size shouldBe 1
       (equipment \ "containerIdentificationNumber").text shouldBe "CONT123"
@@ -203,7 +204,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
         answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
-        answers <- answers.set(DiscrepancyTransportPage, ContainerDetails(Some("CONT123"), None))
+        answers <- answers.set(DiscrepancyTransportPage(index), ContainerDetails(Some("CONT123"), None))
       } yield answers).get
 
       val result = service.buildStandardSubmission(userAnswers)
@@ -300,16 +301,28 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       )
 
       cases.foreach { details =>
-        val answers = baseAnswers.set(DiscrepancyTransportPage, details).get
+        val answers =
+          baseAnswers
+            .set(DiscrepancyTransportPage(index), details)
+            .get
+
         val result = service.buildStandardSubmission(answers)
 
         result shouldBe defined
 
-        val equipment = scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
+        val equipment =
+          scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
 
         equipment.size shouldBe 1
-        (equipment \ "containerIdentificationNumber").map(_.text).toList shouldBe details.containerId.toList
-        (equipment \ "numberOfSeals").map(_.text).toList shouldBe details.numberOfSeals.map(_.toString).toList
+
+        (equipment \ "containerIdentificationNumber")
+          .map(_.text)
+          .toList shouldBe details.containerId.toList
+
+        (equipment \ "numberOfSeals")
+          .map(_.text)
+          .toList shouldBe details.numberOfSeals.map(_.toString).toList
+
         (equipment \ "Seal" \ "identifier").text shouldBe "sealId"
       }
     }

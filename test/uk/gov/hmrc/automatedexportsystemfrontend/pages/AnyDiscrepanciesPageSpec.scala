@@ -33,7 +33,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
             .success
             .value
-            .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
+            .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
             .set(DiscrepancySealsPage(index), "sealsIdentifier")
@@ -45,7 +45,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
-            .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
             .success
             .value
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
@@ -58,11 +58,11 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           val result = AnyDiscrepanciesPage.cleanup(Some(false), userAnswers).success.value
 
           result.get(DiscrepancyConsignmentPage) mustNot be(defined)
-          result.get(DiscrepancyTransportPage) mustNot be(defined)
+          result.get(DiscrepancyTransportPage(1)) mustNot be(defined)
           result.get(DiscrepancySealsPage(index)) mustNot be(defined)
           result.get(DiscrepancyReferencePage(index)) mustNot be(defined)
           result.get(DiscrepancyTransportMeansPage) mustNot be(defined)
-          result.get(DiscrepancyTransportDocPage) mustNot be(defined)
+          result.get(DiscrepancyTransportDocPage(index)) mustNot be(defined)
           result.get(DiscrepancyGoodsPage) mustNot be(defined)
           result.get(DiscrepancyPackingPage(index)) mustNot be(defined)
         }
@@ -74,7 +74,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
             .success
             .value
-            .set(DiscrepancyTransportPage, ContainerDetails(Some("containerId"), Some(99)))
+            .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99)))
             .success
             .value
             .set(DiscrepancySealsPage(index), "sealsIdentifier")
@@ -86,7 +86,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
-            .set(DiscrepancyTransportDocPage, DocumentDetails(Some(1), Some(1234)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
             .success
             .value
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
@@ -99,11 +99,11 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
           val result = AnyDiscrepanciesPage.cleanup(Some(true), userAnswers).success.value
 
           result.get(DiscrepancyConsignmentPage) mustBe defined
-          result.get(DiscrepancyTransportPage) mustBe defined
+          result.get(DiscrepancyTransportPage(1)) mustBe defined
           result.get(DiscrepancySealsPage(index)) mustBe defined
           result.get(DiscrepancyReferencePage(index)) mustBe defined
           result.get(DiscrepancyTransportMeansPage) mustBe defined
-          result.get(DiscrepancyTransportDocPage) mustBe defined
+          result.get(DiscrepancyTransportDocPage(index)) mustBe defined
           result.get(DiscrepancyGoodsPage) mustBe defined
           result.get(DiscrepancyPackingPage(index)) mustBe defined
         }
