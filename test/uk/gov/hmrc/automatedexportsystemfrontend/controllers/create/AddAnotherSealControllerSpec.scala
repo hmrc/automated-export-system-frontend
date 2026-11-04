@@ -139,7 +139,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
           status(result) mustEqual OK
           val body = contentAsString(result)
-          body should include("You have added 26 seals")
+          body should include("You have added 26 seals (page 1 of 2)")
           (1 to pageSize).foreach { number =>
             body should include(s"seal$number")
             body should include(s"Change seal $number")
@@ -183,7 +183,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 seals")
+            body should include("You have added 99 seals (page 1 of 4)")
             (1 to pageSize).foreach { number =>
               body should include(s"seal$number")
               body should include(s"Change seal $number")
@@ -219,7 +219,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 seals")
+            body should include("You have added 99 seals (page 2 of 4)")
             (26 to 50).foreach { number =>
               body should include(s"seal$number")
               body should include(s"Change seal $number")
@@ -256,7 +256,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 seals")
+            body should include("You have added 99 seals (page 3 of 4)")
             (51 to 75).foreach { number =>
               body should include(s"seal$number")
               body should include(s"Change seal $number")
@@ -293,7 +293,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 seals")
+            body should include("You have added 99 seals (page 4 of 4)")
             (76 to 99).foreach { number =>
               body should include(s"seal$number")
               body should include(s"Change seal $number")

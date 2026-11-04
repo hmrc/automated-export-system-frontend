@@ -48,37 +48,69 @@ class RemoveGoodsReferenceController @Inject() (
 
   def form(goodsReference: String): Form[Boolean] = formProvider(goodsReference)
 
-  def onPageLoad(discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] =
+  def onPageLoad(discrepancyReferenceIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
-      request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
-        case Some(reference) => Ok(view(form(reference), reference, discrepancyReferenceIndex, mode))
-        case None            => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      val addAnotherGoodsReferenceViewModel: AddAnotherGoodsReferenceViewModel =
+        AddAnotherGoodsReferenceViewModel(request.userAnswers, Some(returnPage), mode)
+
+      if (
+        DiscrepancyReference.exists(request.userAnswers, discrepancyReferenceIndex) && validReturnPage(addAnotherGoodsReferenceViewModel, returnPage)
+      ) {
+        request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
+          case Some(reference) => Ok(view(form(reference), reference, discrepancyReferenceIndex, returnPage, mode))
+          case None            => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+        }
+      } else {
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
     }
 
-  def onSubmit(discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] =
+  def onSubmit(discrepancyReferenceIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
-      request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
-        case Some(reference) =>
-          form(reference)
-            .bindFromRequest()
-            .fold(
-              formWithErrors => Future.successful(BadRequest(view(formWithErrors, reference, discrepancyReferenceIndex, mode))),
-              {
-                case true =>
-                  for {
-                    updatedAnswers <- Future.fromTry(DiscrepancyReference.removeOne(request.userAnswers, discrepancyReferenceIndex))
-                    _ <- sessionRepository.set(updatedAnswers)
-                  } yield
-                    if (DiscrepancyReference.count(updatedAnswers) == 0) {
-                      Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
-                    } else {
-                      Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(mode))
-                    }
-                case false => Future.successful(Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(mode)))
-              }
-            )
-        case None => Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      def addAnotherGoodsReferenceViewModel(userAnswers: UserAnswers, returnPage: Int, mode: Mode): AddAnotherGoodsReferenceViewModel =
+        AddAnotherGoodsReferenceViewModel(userAnswers, Some(returnPage), mode)
+
+      if (
+        DiscrepancyReference.exists(request.userAnswers, discrepancyReferenceIndex) && validReturnPage(
+          addAnotherGoodsReferenceViewModel(request.userAnswers, returnPage, mode),
+          returnPage
+        )
+      ) {
+        request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
+          case Some(reference) =>
+            form(reference)
+              .bindFromRequest()
+              .fold(
+                formWithErrors => Future.successful(BadRequest(view(formWithErrors, reference, discrepancyReferenceIndex, returnPage, mode))),
+                {
+                  case true =>
+                    for {
+                      updatedAnswers <- Future.fromTry(DiscrepancyReference.removeOne(request.userAnswers, discrepancyReferenceIndex))
+                      _ <- sessionRepository.set(updatedAnswers)
+                    } yield
+                      if (DiscrepancyReference.count(updatedAnswers) == 0) {
+                        Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
+                      } else {
+                        Redirect(
+                          createRoute.AddAnotherGoodsReferenceController.onPageLoad(
+                            Some(returnPageAfterRemoval(addAnotherGoodsReferenceViewModel(updatedAnswers, returnPage, mode), returnPage)),
+                            mode
+                          )
+                        )
+                      }
+                  case false => Future.successful(Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(returnPage), mode)))
+                }
+              )
+          case None => Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+        }
+      } else {
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
     }
+
+  private def validReturnPage(viewModel: AddAnotherGoodsReferenceViewModel, returnPage: Int): Boolean =
+    returnPage >= 1 && returnPage <= viewModel.totalPages
+
+  private def returnPageAfterRemoval(viewModel: AddAnotherGoodsReferenceViewModel, returnPage: Int): Int =
+    math.min(returnPage, viewModel.totalPages)
 }

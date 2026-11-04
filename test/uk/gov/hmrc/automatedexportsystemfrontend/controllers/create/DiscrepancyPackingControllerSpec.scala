@@ -72,6 +72,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Packaging detail 1")
         body should include("Packing details")
         body should include("If the packaging of the goods has changed, enter the new details here.")
         body should include("Packaging code")
@@ -94,6 +95,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Packaging detail 1")
         body should include("Packing details")
         body should include("If the packaging of the goods has changed, enter the new details here.")
         body should include("Packaging code")

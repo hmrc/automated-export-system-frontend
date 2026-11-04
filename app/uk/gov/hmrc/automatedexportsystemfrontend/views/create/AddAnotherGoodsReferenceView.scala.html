@@ -23,12 +23,24 @@
         govukButton: GovukButton,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukSummaryList: GovukSummaryList
+        govukSummaryList: GovukSummaryList,
+        govukPagination: GovukPagination
 )
 
 @(form: Form[_], viewModel: AddAnotherGoodsReferenceViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"addAnotherGoodsReference.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfGoodsReferences))) {
+@baseTitle = @{
+    messages(s"addAnotherGoodsReference.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfGoodsReferences)
+}
+
+@pageTitle = @{
+    if (viewModel.totalPages > 1)
+      s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
+    else
+      baseTitle
+}
+
+@layout(pageTitle = title(form, pageTitle)) {
 
   @if(form.errors.nonEmpty) {
     @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -38,7 +50,12 @@
 
   @govukSummaryList(SummaryList(rows = viewModel.rows))
 
-  @formHelper(action = createRoute.AddAnotherGoodsReferenceController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+  @viewModel.pagination.map { pagination =>
+    <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstGoodsReference, viewModel.lastGoodsReference, viewModel.numberOfGoodsReferences)</p>
+    @govukPagination(pagination)
+  }
+
+  @formHelper(action = createRoute.AddAnotherGoodsReferenceController.onSubmit(viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

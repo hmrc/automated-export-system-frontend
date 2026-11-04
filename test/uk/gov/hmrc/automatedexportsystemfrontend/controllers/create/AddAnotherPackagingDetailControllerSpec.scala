@@ -136,7 +136,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
           status(result) mustEqual OK
           val body = contentAsString(result)
-          body should include("You have added 26 packaging details")
+          body should include("You have added 26 packaging details (page 1 of 2)")
           (1 to 25).foreach { number =>
             body should include(s"Packaging detail $number")
             body should include(s"Change packaging detail $number")
@@ -182,7 +182,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 packaging details")
+            body should include("You have added 99 packaging details (page 1 of 4)")
             (1 to 25).foreach { number =>
               body should include(s"Packaging detail $number")
               body should include(s"Change packaging detail $number")
@@ -218,7 +218,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 packaging details")
+            body should include("You have added 99 packaging details (page 2 of 4)")
             (26 to 50).foreach { number =>
               body should include(s"Packaging detail $number")
               body should include(s"Change packaging detail $number")
@@ -255,7 +255,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 packaging details")
+            body should include("You have added 99 packaging details (page 3 of 4)")
             (51 to 75).foreach { number =>
               body should include(s"Packaging detail $number")
               body should include(s"Change packaging detail $number")
@@ -292,7 +292,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
             status(result) mustEqual OK
             val body = contentAsString(result)
-            body should include("You have added 99 packaging details")
+            body should include("You have added 99 packaging details (page 4 of 4)")
             (76 to 99).foreach { number =>
               body should include(s"Packaging detail $number")
               body should include(s"Change packaging detail $number")
