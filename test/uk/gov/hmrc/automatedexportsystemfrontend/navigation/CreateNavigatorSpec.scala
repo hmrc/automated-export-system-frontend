@@ -385,18 +385,18 @@ class CreateNavigatorSpec extends SpecBase {
       }
 
       "navigate from DiscrepancyTransportDocPage" - {
-        "to DiscrepancyGoodsPage when DiscrepancyGoodsPage is unanswered" in {
+        "to DiscrepancyGoodsPage when Discrepancy Transport doc is unanswered AND no transport documents already exist" in {
           navigator.nextPage(DiscrepancyTransportDocPage(index), CheckMode, emptyUserAnswers) shouldBe
-            createRoute.TransportDocCYAController.onPageLoad(index, CheckMode)
+            createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode)
         }
 
-        "to TransportDocCYA when DiscrepancyGoodsPage is answered" in {
+        "to CYASubmissionPage when DiscrepancyGoodsPage is answered" in {
           val userAnswers = emptyUserAnswers
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(None, None, "20", "10"))
             .success
             .value
           navigator.nextPage(DiscrepancyTransportDocPage(index), CheckMode, userAnswers) shouldBe
-            createRoute.TransportDocCYAController.onPageLoad(index, CheckMode)
+            createRoute.CYASubmissionController.onPageLoad()
         }
       }
 

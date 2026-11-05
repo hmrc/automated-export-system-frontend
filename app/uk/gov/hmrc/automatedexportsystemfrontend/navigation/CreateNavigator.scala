@@ -62,7 +62,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyReferencePage(discrepancyReferenceIndex) =>
       userAnswers => discrepancyReferenceCheckRoute(userAnswers, discrepancyReferenceIndex)
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
-    case DiscrepancyTransportDocPage(docIndex)        => _ => createRoute.TransportDocCYAController.onPageLoad(docIndex, CheckMode)
+    case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocCheckRoute(userAnswers, docIndex)
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, CheckMode)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
@@ -163,12 +163,11 @@ class CreateNavigator extends Navigator {
     answers.get(DiscrepancyTransportDocPage(docIndex)) match {
       case Some(_) => createRoute.TransportDocCYAController.onPageLoad(docIndex, NormalMode)
       case None if hasExistingTransportDocs(answers) =>
-        problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with transport doc list page
+        createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode)
       case None => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
-      case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
-  private def discrepancyTransportDocCheckRoute(answers: UserAnswers): Call =
+  private def discrepancyTransportDocCheckRoute(answers: UserAnswers, docIndex: Int): Call =
     answers.get(DiscrepancyGoodsPage) match {
       case None => createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode)
       case _    => createRoute.CYASubmissionController.onPageLoad()
