@@ -52,11 +52,6 @@ class RemoveTransportDocController @Inject() (
       if (DiscrepancyTransportDoc.exists(request.userAnswers, docIndex) && validReturnPage(request.userAnswers, returnPage, mode)) {
         Ok(view(form, docIndex, returnPage, mode))
       } else {
-        System.out.println("/////////////////////////////////////////////////")
-        System.out.println("/////////////////////////////////////////////////")
-
-        System.out.println("/////////////////////////////////////////////////")
-
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
   }

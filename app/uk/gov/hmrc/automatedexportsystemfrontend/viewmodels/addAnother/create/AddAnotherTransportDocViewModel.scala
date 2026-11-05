@@ -119,12 +119,12 @@ object AddAnotherTransportDocViewModel {
                 ActionItem(
                   href = createRoute.DiscrepancyTransportDocController.onPageLoad(index, mode).url,
                   content = Text(messages("site.change")),
-                  visuallyHiddenText = Some(messages("addAnotherSeal.change.hidden", index))
+                  visuallyHiddenText = Some(messages("addAnotherTransportDoc.change.hidden", index))
                 ),
                 ActionItem(
                   href = createRoute.RemoveTransportDocController.onPageLoad(index, currentPage, mode).url,
                   content = Text(messages("site.remove")),
-                  visuallyHiddenText = Some(messages("addAnotherSeal.remove.hidden", index))
+                  visuallyHiddenText = Some(messages("addAnotherTransportDoc.remove.hidden", index))
                 )
               )
             )

@@ -71,7 +71,7 @@ class AddAnotherTransportDocController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
           {
             case true  => Redirect(createRoute.DiscrepancyTransportDocController.onPageLoad(viewModel.numberOfTransportDocs + 1, mode))
-            case false => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
+            case false => Redirect(createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode))
           }
         )
     }

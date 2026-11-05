@@ -32,7 +32,8 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
     .get
   val maxTransportDoc: Int = DiscrepancyTransportDoc.maxTransportDocuments
 
-  private def transportDocList(n: Int): List[String] = (1 to n).map(i => s"seal$i").toList
+  private def transportDocList(n: Int): List[DocumentDetails] =
+    (1 to n).map(i => DocumentDetails(Some(i), Some(i))).toList
 
   "AddAnotherTransportDocViewModel" - {
     "rows" - {
@@ -44,7 +45,7 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
 
         val actions = row.actions.value
 
-        row.key.content shouldBe Text("sealIdentifier")
+        row.key.content shouldBe Text(messages("transportDocCYA.caption"))
         actions.items.size shouldBe 2
 
         val change = actions.items.head
@@ -55,7 +56,9 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
         change.visuallyHiddenText shouldBe Some(messages("addAnotherTransportDoc.change.hidden", 1))
 
         val remove = actions.items(1)
-        remove.href shouldBe uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.RemoveSealController.onPageLoad(1, 1, NormalMode).url
+        remove.href shouldBe uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.RemoveTransportDocController
+          .onPageLoad(1, 1, NormalMode)
+          .url
         remove.content shouldBe Text(messages("site.remove"))
         remove.visuallyHiddenText shouldBe Some(messages("addAnotherTransportDoc.remove.hidden", 1))
         result.numberOfTransportDocs shouldBe 1
@@ -66,7 +69,7 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
         result.remainingSingularOrPlural shouldBe "plural"
       }
 
-      "should be empty when there are no seals" in {
+      "should be empty when there are no transport documents" in {
         AddAnotherTransportDocViewModel(emptyUserAnswers, None, NormalMode).rows shouldBe Seq.empty
       }
 
