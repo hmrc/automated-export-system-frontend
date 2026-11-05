@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.pageSize
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.pageSize
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{Empty, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.{Pagination, PaginationItem, PaginationLink}
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 
 case class AddAnotherPackagingDetailViewModel(
@@ -35,7 +36,8 @@ case class AddAnotherPackagingDetailViewModel(
   firstPackagingDetail: Int,
   lastPackagingDetail: Int,
   pageNumbers: Seq[Int],
-  rows: Seq[SummaryListRow]
+  rows: Seq[SummaryListRow],
+  pagination: Option[Pagination]
 ) {
 
   def hasPreviousPage: Boolean = currentPage > 1
@@ -69,6 +71,8 @@ object AddAnotherPackagingDetailViewModel {
 
     val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
 
+    val pageNumbers: Seq[Int] = firstPageNumber to lastPageNumber
+
     AddAnotherPackagingDetailViewModel(
       numberOfPackagingDetails = numberOfPackagingDetails,
       remainingPackagingDetails = remainingPackagingDetails,
@@ -79,8 +83,9 @@ object AddAnotherPackagingDetailViewModel {
       totalPages = totalPages,
       firstPackagingDetail = firstPackagingDetail,
       lastPackagingDetail = lastPackagingDetail,
-      pageNumbers = firstPageNumber to lastPageNumber,
-      rows = rows(firstPackagingDetail to lastPackagingDetail, currentPage, mode)
+      pageNumbers = pageNumbers,
+      rows = rows(firstPackagingDetail to lastPackagingDetail, currentPage, mode),
+      pagination = pagination(currentPage, totalPages, pageNumbers, mode)
     )
   }
 
@@ -107,6 +112,32 @@ object AddAnotherPackagingDetailViewModel {
               )
             )
           )
+        )
+      )
+    }
+
+  def pagination(currentPage: Int, totalPages: Int, pageNumbers: Seq[Int], mode: Mode): Option[Pagination] =
+    if (totalPages <= 1) None
+    else {
+
+      def href(number: Int): String =
+        createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(number), mode).url
+
+      Some(
+        Pagination(
+          items = Some(pageNumbers.map { number =>
+            PaginationItem(href = href(number), number = Some(number.toString), current = if (number == currentPage) Some(true) else None)
+          }),
+          previous = if (currentPage > 1) {
+            Some(PaginationLink(href = href(currentPage - 1)))
+          } else {
+            None
+          },
+          next = if (currentPage < totalPages) {
+            Some(PaginationLink(href = href(currentPage + 1)))
+          } else {
+            None
+          }
         )
       )
     }

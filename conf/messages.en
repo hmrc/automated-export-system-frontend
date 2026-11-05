@@ -22,6 +22,7 @@ site.status.awaitingDecision = Awaiting decision
 site.status.cancelled = Cancelled
 site.status.amended = Amended
 site.status.rejected = Rejected
+site.pagination.pageOf = (page {0} of {1})
 site.pagination.itemsShowing = Showing {0}-{1} of {2} items
 site.pagination.previous = Previous
 site.pagination.next = Next
@@ -247,6 +248,7 @@ discrepancyTransport.containerId.change.hidden = container identification number
 discrepancyTransport.numberOfSeals.change.hidden = number of seals
 
 discrepancySeals.title = What is the seal identifier?
+discrepancySeals.caption = Seal {0}
 discrepancySeals.heading = What is the seal identifier?
 discrepancySeals.hint = For example, GB12345678.
 discrepancySeals.checkYourAnswersLabel = Seal identifier
@@ -274,6 +276,7 @@ removeSeal.heading = Are you sure you want to remove Seal details?
 removeSeal.error.required = Select yes if you want to remove seal detail
 
 discrepancyReference.title = What is the Declaration Goods Reference?
+discrepancyReference.caption = Declaration Goods Reference {0}
 discrepancyReference.heading = What is the Declaration Goods Reference?
 discrepancyReference.hint = This is the 5-character reference shown on the item line in the export declaration.
 discrepancyReference.checkYourAnswersLabel = Declaration Goods Reference
@@ -392,6 +395,7 @@ discrepancyGoods.newGrossMass.change.hidden = new gross mass
 discrepancyGoods.newNetMass.change.hidden = new net mass
 
 discrepancyPacking.title = Packing details
+discrepancyPacking.caption = Packaging detail {0}
 discrepancyPacking.heading = Packing details
 discrepancyPacking.hint = If the packaging of the goods has changed, enter the new details here.
 discrepancyPacking.packagingCode = Packaging code

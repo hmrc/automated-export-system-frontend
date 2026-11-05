@@ -30,7 +30,7 @@
 
 @packagingCodeHint = {
     <div id="packagingCodeHint" class="govuk-hint">
-       @messages("discrepancyPacking.packagingCode.hint")
+        @messages("discrepancyPacking.packagingCode.hint")
     </div>
 }
 
@@ -41,6 +41,10 @@
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
+
+        <span class="govuk-caption-l">
+            @messages("discrepancyPacking.caption", packagingDetailIndex)
+        </span>
 
         <h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("discrepancyPacking.heading")</h1>
 

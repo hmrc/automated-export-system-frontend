@@ -16,8 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
@@ -28,9 +29,10 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyReferenceFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyReference
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
 import scala.concurrent.Future
@@ -62,6 +64,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Declaration Goods Reference 1")
         body should include("What is the Declaration Goods Reference?")
         body should include("This is the 5-character reference shown on the item line in the export declaration.")
       }
@@ -81,6 +84,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Declaration Goods Reference 1")
         body should include("What is the Declaration Goods Reference?")
         body should include("This is the 5-character reference shown on the item line in the export declaration.")
         body should include("""id="value"""")
@@ -137,13 +141,15 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must save a blank answer and redirect to the next page" in {
+    "must remove answer and redirect to the add another page when no data is entered and other references remain" in {
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference, List("reference1", "reference2")).success.value
+
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+        applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(
             bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),
@@ -153,17 +159,81 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, discrepancyReferenceRoute)
+          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(1, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe onwardRoute.url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url
 
-        org.mockito.Mockito
-          .verify(mockSessionRepository)
-          .set(org.mockito.ArgumentMatchers.argThat[UserAnswers](answers => answers.get(DiscrepancyReferencePage(1)).isEmpty))
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancyReference.getAll(captor.getValue) shouldBe List("reference2")
+      }
+    }
+
+    "must redirect to the DiscrepancyTransportMeans when no data is entered and no references remain in NormalMode" in {
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference, List("reference1")).success.value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(1, NormalMode).url)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancyReference.getAll(captor.getValue) shouldBe List.empty
+      }
+    }
+
+    "must redirect to the CYASubmissionController when no data is entered and no references remain in CheckMode" in {
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference, List("reference1")).success.value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(1, CheckMode).url)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancyReference.getAll(captor.getValue) shouldBe List.empty
       }
     }
 

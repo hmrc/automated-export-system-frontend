@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherGoodsReferenceFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherGoodsReferenceViewModel
@@ -41,20 +42,28 @@ class AddAnotherGoodsReferenceController @Inject() (
 
   def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, mode)
+  def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, page, mode)
 
-    if (viewModel.numberOfGoodsReferences > 0) {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
-    } else {
+    if (viewModel.numberOfGoodsReferences == 0) {
       Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
+    } else if (!isValidPage(viewModel)) {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+    } else if (page != viewModel.pageParam) {
+      Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(viewModel.pageParam, mode))
+    } else {
+      Ok(view(form(viewModel.allowMore), viewModel, mode))
     }
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, mode)
+  def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, page, mode)
 
-    if (viewModel.numberOfGoodsReferences > 0) {
+    if (viewModel.numberOfGoodsReferences == 0) {
+      Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
+    } else if (!isValidPage(viewModel)) {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+    } else {
       formProvider(viewModel.allowMore)
         .bindFromRequest()
         .fold(
@@ -64,8 +73,9 @@ class AddAnotherGoodsReferenceController @Inject() (
             case false => Redirect(createRoute.DiscrepancyTransportMeansController.onPageLoad(mode))
           }
         )
-    } else {
-      Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
     }
   }
+
+  private def isValidPage(viewModel: AddAnotherGoodsReferenceViewModel): Boolean =
+    viewModel.currentPage >= 1 && viewModel.currentPage <= viewModel.totalPages
 }
