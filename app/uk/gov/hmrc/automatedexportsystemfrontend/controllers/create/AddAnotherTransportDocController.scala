@@ -44,6 +44,8 @@ class AddAnotherTransportDocController @Inject() (
   def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherTransportDocViewModel(request.userAnswers, page, mode)
 
+    def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
+
     if (viewModel.numberOfTransportDocs == 0) {
       Redirect(createRoute.DiscrepancyTransportDocController.onPageLoad(1, mode))
     } else if (!isValidPage(viewModel)) {
@@ -54,8 +56,6 @@ class AddAnotherTransportDocController @Inject() (
       Ok(view(form(viewModel.allowMore), viewModel, mode))
     }
   }
-
-  private def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
   def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherTransportDocViewModel(request.userAnswers, page, mode)

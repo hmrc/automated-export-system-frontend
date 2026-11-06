@@ -385,18 +385,28 @@ class CreateNavigatorSpec extends SpecBase {
       }
 
       "navigate from DiscrepancyTransportDocPage" - {
-        "to DiscrepancyGoodsPage when Discrepancy Transport doc is unanswered AND no transport documents already exist" in {
+        "to CYASubmission when Discrepancy Transport doc is unanswered AND no transport documents already exist" in {
           navigator.nextPage(DiscrepancyTransportDocPage(index), CheckMode, emptyUserAnswers) shouldBe
-            createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode)
+            createRoute.CYASubmissionController.onPageLoad()
         }
 
-        "to CYASubmissionPage when DiscrepancyGoodsPage is answered" in {
+        "to TransportDocCYA when DiscrepancyTransportDocPage is answered" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyGoodsPage, WhatHasChangedDetails(None, None, "20", "10"))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1)))
             .success
             .value
           navigator.nextPage(DiscrepancyTransportDocPage(index), CheckMode, userAnswers) shouldBe
-            createRoute.CYASubmissionController.onPageLoad()
+            createRoute.TransportDocCYAController.onPageLoad(index, CheckMode)
+        }
+
+        "to AddAnotherTransportDocPage when DiscrepancyTransportDoc is unanswered at current index but there are existing documents" in {
+          val userAnswers = emptyUserAnswers
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1)))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyTransportDocPage(index + 1), CheckMode, userAnswers) shouldBe
+            createRoute.AddAnotherTransportDocController.onPageLoad(None, CheckMode)
+
         }
       }
 

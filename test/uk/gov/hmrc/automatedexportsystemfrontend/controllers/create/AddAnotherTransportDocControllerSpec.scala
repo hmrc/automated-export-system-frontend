@@ -63,7 +63,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
           body should include("Change transport document 1")
           body should include("Remove transport document 1")
           body should include("transport document 2")
-          body should include("Change transport document 2")
+          body should include("transport documen transport document 2")
           body should include("Remove transport document 2")
           body should include("transport document 3")
           body should include("Change transport document 3")

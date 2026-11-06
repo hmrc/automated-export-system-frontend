@@ -110,7 +110,7 @@ class DiscrepancyTransportDocController @Inject() (
       createRoute.AddAnotherTransportDocController.onPageLoad(None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancyReferenceController.onPageLoad(1, mode)
+        case NormalMode => createRoute.DiscrepancyGoodsController.onPageLoad(mode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 }
