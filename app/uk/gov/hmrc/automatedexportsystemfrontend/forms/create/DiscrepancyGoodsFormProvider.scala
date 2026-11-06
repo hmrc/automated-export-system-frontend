@@ -26,34 +26,36 @@ import javax.inject.Inject
 
 class DiscrepancyGoodsFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[WhatHasChangedDetails] = Form(
-    mapping(
-      "declarationGoodsItemNumber" -> optional(
-        int("discrepancyGoods.error.goodsItemNumber.required")
-          .verifying(
-            minimumValue(0, "discrepancyGoods.error.goodsItemNumber.length"),
-            maximumValue(goodsItemNumberMaxValue, "discrepancyGoods.error.goodsItemNumber.length")
-          )
-      ),
-      "declarationUniqueConsignmentReference" -> optional(
-        text("discrepancyGoods.error.declarationUniqueConsignmentReference.optional").verifying(
-          firstError(
-            maxLength(ducrMaxLength, "discrepancyGoods.error.declarationUniqueConsignmentReference.length"),
-            regexp(ducrRegex, "discrepancyGoods.error.declarationUniqueConsignmentReference.invalid")
-          )
-        )
-      ),
-      "newGrossMass" -> text("discrepancyGoods.error.newGrossMass.required")
-        .verifying(
-          firstError(
-            maxLength(100, "discrepancyGoods.error.newGrossMass.length"),
-            regexp(grossMassRegex, "discrepancyGoods.error.newGrossMass.invalid")
+  def apply(): Form[Option[WhatHasChangedDetails]] = Form(
+    "goodsItem" -> optional(
+      mapping(
+        "declarationGoodsItemNumber" -> optional(
+          int("discrepancyGoods.error.goodsItemNumber.required")
+            .verifying(
+              minimumValue(0, "discrepancyGoods.error.goodsItemNumber.length"),
+              maximumValue(goodsItemNumberMaxValue, "discrepancyGoods.error.goodsItemNumber.length")
+            )
+        ),
+        "declarationUniqueConsignmentReference" -> optional(
+          text("discrepancyGoods.error.declarationUniqueConsignmentReference.optional").verifying(
+            firstError(
+              maxLength(ducrMaxLength, "discrepancyGoods.error.declarationUniqueConsignmentReference.length"),
+              regexp(ducrRegex, "discrepancyGoods.error.declarationUniqueConsignmentReference.invalid")
+            )
           )
         ),
-      "newNetMass" -> text("discrepancyGoods.error.newNetMass.required")
-        .verifying(
-          firstError(maxLength(100, "discrepancyGoods.error.newNetMass.length"), regexp(netMassRegex, "discrepancyGoods.error.newNetMass.invalid"))
-        )
-    )(WhatHasChangedDetails.apply)(x => Some((x.declarationGoodsItemNumber, x.declarationUniqueConsignmentReference, x.newGrossMass, x.newNetMass)))
+        "newGrossMass" -> text("discrepancyGoods.error.newGrossMass.required")
+          .verifying(
+            firstError(
+              maxLength(100, "discrepancyGoods.error.newGrossMass.length"),
+              regexp(grossMassRegex, "discrepancyGoods.error.newGrossMass.invalid")
+            )
+          ),
+        "newNetMass" -> text("discrepancyGoods.error.newNetMass.required")
+          .verifying(
+            firstError(maxLength(100, "discrepancyGoods.error.newNetMass.length"), regexp(netMassRegex, "discrepancyGoods.error.newNetMass.invalid"))
+          )
+      )(WhatHasChangedDetails.apply)(x => Some((x.declarationGoodsItemNumber, x.declarationUniqueConsignmentReference, x.newGrossMass, x.newNetMass)))
+    )
   )
 }

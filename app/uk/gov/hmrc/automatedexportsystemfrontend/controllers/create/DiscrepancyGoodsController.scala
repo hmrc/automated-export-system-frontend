@@ -18,12 +18,15 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyGoodsFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, WhatHasChangedDetails}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers, WhatHasChangedDetails}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyGoodsPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyGoods
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyGoodsView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
@@ -44,28 +47,58 @@ class DiscrepancyGoodsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form: Form[WhatHasChangedDetails] = formProvider()
+  val form: Form[Option[WhatHasChangedDetails]] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(goodsItemIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+    val userAnswers: UserAnswers = request.userAnswers
+    val nextIndex: Int = DiscrepancyGoods.nextIndex(userAnswers)
+    if (DiscrepancyGoods.exists(userAnswers, goodsItemIndex) || goodsItemIndex == nextIndex) {
+      val preparedForm = userAnswers.get(DiscrepancyGoodsPage(goodsItemIndex)) match {
+        case None        => form
+        case Some(value) => form.fill(Some(value))
+      }
 
-    val preparedForm = request.userAnswers.get(DiscrepancyGoodsPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+      Ok(view(preparedForm, goodsItemIndex, mode))
+    } else {
+      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     }
-
-    Ok(view(preparedForm, mode))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyGoodsPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancyGoodsPage, mode, updatedAnswers))
-      )
+  def onSubmit(goodsItemIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+    val userAnswers: UserAnswers = request.userAnswers
+    val nextIndex: Int = DiscrepancyGoods.nextIndex(userAnswers)
+
+    if (DiscrepancyGoods.exists(userAnswers, goodsItemIndex) || goodsItemIndex == nextIndex) {
+      form
+        .bindFromRequest()
+        .fold(
+          formWithErrors => Future.successful(BadRequest(view(formWithErrors, goodsItemIndex, mode))),
+          {
+            case Some(goodsItem) =>
+              for {
+                updatedAnswers <- Future
+                  .fromTry(request.userAnswers.set(DiscrepancyGoodsPage(goodsItemIndex), goodsItem))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(createNavigator.nextPage(DiscrepancyGoodsPage(goodsItemIndex), mode, updatedAnswers))
+
+            case None =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.remove(DiscrepancyGoodsPage(goodsItemIndex)))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(nextPageAfterBlank(updatedAnswers, mode))
+          }
+        )
+    } else {
+      Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+    }
   }
+
+  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
+    if (DiscrepancyGoods.count(answers) > 0)
+      createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
+    else
+      mode match {
+        case NormalMode => createRoute.DiscrepancyPackingController.onPageLoad(1, mode)
+        case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
+      }
 }

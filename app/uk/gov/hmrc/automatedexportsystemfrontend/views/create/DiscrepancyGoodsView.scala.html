@@ -26,7 +26,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], goodsItemIndex: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @declarationUniqueConsignmentReferenceHint = {
     <div id="declarationUniqueConsignmentReferenceHint" class="govuk-hint">
@@ -48,7 +48,7 @@
 
 @layout(pageTitle = title(form, messages("discrepancyGoods.title"))) {
 
-    @formHelper(action = createRoute.DiscrepancyGoodsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+    @formHelper(action = createRoute.DiscrepancyGoodsController.onSubmit(goodsItemIndex, mode), Symbol("autoComplete") -> "off") {
 
         @if(form.errors.nonEmpty) {
             @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -62,7 +62,7 @@
 
         @govukInput(
             InputViewModel(
-                field = form("declarationGoodsItemNumber"),
+                field = form("goodsItem.declarationGoodsItemNumber"),
                 label = LabelViewModel(messages("discrepancyGoods.goodsItemNumber"))
             )
             .withWidth(Fixed5)
@@ -70,7 +70,7 @@
 
         @govukInput(
             InputViewModel(
-                field = form("declarationUniqueConsignmentReference"),
+                field = form("goodsItem.declarationUniqueConsignmentReference"),
                 label = LabelViewModel(messages("discrepancyGoods.declarationUniqueConsignmentReference"))
             )
             .withHint(HintViewModel(HtmlContent(declarationUniqueConsignmentReferenceHint)))
@@ -79,7 +79,7 @@
 
         @govukInput(
             InputViewModel(
-                field = form("newGrossMass"),
+                field = form("goodsItem.newGrossMass"),
                 label = LabelViewModel(messages("discrepancyGoods.newGrossMass"))
             )
             .withHint(HintViewModel(HtmlContent(newGrossMassHint)))
@@ -89,7 +89,7 @@
 
         @govukInput(
             InputViewModel(
-                field = form("newNetMass"),
+                field = form("goodsItem.newNetMass"),
                 label = LabelViewModel(messages("discrepancyGoods.newNetMass"))
             )
             .withHint(HintViewModel(HtmlContent(newNetMassHint)))

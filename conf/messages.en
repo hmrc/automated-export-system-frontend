@@ -26,6 +26,7 @@ site.pagination.itemsShowing = Showing {0}-{1} of {2} items
 site.pagination.previous = Previous
 site.pagination.next = Next
 site.pagination.hidden.page = page
+site.pagination.pageOf = (page {0} of {1})
 
 site.caption.exportOperation = Export operation
 site.mucr = MUCR
@@ -390,6 +391,25 @@ discrepancyGoods.goodsItemNumber.change.hidden = declaration goods item number
 discrepancyGoods.ducr.change.hidden = Declaration Unique Consignment Reference (DUCR)
 discrepancyGoods.newGrossMass.change.hidden = new gross mass
 discrepancyGoods.newNetMass.change.hidden = new net mass
+
+goodsItemCYA.caption = Goods item {0}
+
+removeGoodsItem.title = Are you sure you want to remove goods item {0}?
+removeGoodsItem.heading = Are you sure you want to remove goods item {0}?
+removeGoodsItem.error.required = Select yes if you want to remove goods item {0}
+
+addAnotherGoodsItem.singular.title = You have added 1 goods item
+addAnotherGoodsItem.plural.title = You have added {0} goods items
+addAnotherGoodsItem.singular.heading = You have added 1 goods item
+addAnotherGoodsItem.plural.heading = You have added {0} goods items
+addAnotherGoodsItem.key = Goods item {0}
+addAnotherGoodsItem.change.hidden = Change goods item {0}
+addAnotherGoodsItem.remove.hidden = Remove goods item {0}
+addAnotherGoodsItem.singular.remaining = You can add up to 1 more goods item.
+addAnotherGoodsItem.plural.remaining = You can add up to {0} more goods items.
+addAnotherGoodsItem.addAnother = Do you need to add another goods item?
+addAnotherGoodsItem.maxLimit = You cannot add any more goods items. To add another, you need to remove one first.
+addAnotherGoodsItem.error.required = Select yes if you want to add another goods item.
 
 discrepancyPacking.title = Packing details
 discrepancyPacking.heading = Packing details
