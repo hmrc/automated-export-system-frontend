@@ -42,6 +42,10 @@
 
 @layout(pageTitle = title(form, pageTitle)) {
 
+  @if(form.errors.nonEmpty) {
+    @govukErrorSummary(ErrorSummaryViewModel(form))
+  }
+
   <h1 class="govuk-heading-l">@messages(s"addAnotherGoodsItem.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfGoodsItem)</h1>
 
   @govukSummaryList(SummaryList(rows= viewModel.rows))
@@ -52,10 +56,6 @@
   }
 
   @formHelper(action = createRoute.AddAnotherGoodsItemController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
-
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

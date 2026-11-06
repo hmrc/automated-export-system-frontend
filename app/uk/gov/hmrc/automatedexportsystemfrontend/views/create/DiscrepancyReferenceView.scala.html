@@ -42,6 +42,10 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <span class="govuk-caption-l">
+            @messages("discrepancyReference.caption", discrepancyReferenceIndex)
+        </span>
+
         @govukInput(
             InputViewModel(
                 field = form("value"),

@@ -135,7 +135,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
       Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
 
-  private def collectGoodsItem(userAnswers: UserAnswers): List[GoodsItem] = // TODO: why this needs to be optional okay to be required
+  private def collectGoodsItem(userAnswers: UserAnswers): List[GoodsItem] =
     DiscrepancyGoods.getAll(userAnswers).zipWithIndex.map { (goods, index) =>
       GoodsItem(
         goods.declarationGoodsItemNumber,

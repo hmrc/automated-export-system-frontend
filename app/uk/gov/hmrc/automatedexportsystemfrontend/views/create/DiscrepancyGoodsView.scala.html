@@ -54,6 +54,10 @@
             @govukErrorSummary(ErrorSummaryViewModel(form))
         }
 
+        <span class="govuk-caption-l">
+                    @messages("goodsItemCYA.caption", goodsItemIndex)
+        </span>
+
         <h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("discrepancyGoods.heading")</h1>
 
         <div id="discrepancyGoodsHint" class="govuk-hint">
