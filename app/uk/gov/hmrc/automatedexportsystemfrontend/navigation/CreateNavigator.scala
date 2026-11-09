@@ -153,7 +153,7 @@ class CreateNavigator extends Navigator {
       case Some(_) => createRoute.TransportDocCYAController.onPageLoad(docIndex, NormalMode)
       case None if hasExistingTransportDocs(answers) =>
         problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with transport doc list page
-      case None => createRoute.DiscrepancyGoodsController.onPageLoad(1, NormalMode) // TODO: temp
+      case None => createRoute.DiscrepancyGoodsController.onPageLoad(1, NormalMode)
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 

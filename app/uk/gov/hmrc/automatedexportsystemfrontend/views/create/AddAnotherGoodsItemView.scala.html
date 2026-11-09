@@ -50,11 +50,6 @@
 
   @govukSummaryList(SummaryList(rows= viewModel.rows))
 
-  @viewModel.pagination(mode).map { pagination =>
-    <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstGoodsItem, viewModel.lastGoodsItem, viewModel.numberOfGoodsItem)</p>
-    @govukPagination(pagination)
-  }
-
   @formHelper(action = createRoute.AddAnotherGoodsItemController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {

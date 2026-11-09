@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyGoodsFo
 
 class AmendDiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFieldBehaviours {
 
-  val form = new DiscrepancyGoodsFormProvider()()
+  val form = new AmendDiscrepancyGoodsFormProvider()()
 
   ".declarationGoodsItemNumber" - {
 

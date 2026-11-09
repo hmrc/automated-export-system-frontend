@@ -49,23 +49,6 @@ case class AddAnotherGoodsItemViewModel(
 
   def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
 
-  def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
-    if (totalPages <= 1) None
-    else {
-      def href(page: Int): String =
-        createRoute.AddAnotherGoodsItemController.onPageLoad(Some(page), mode).url
-
-      Some(
-        Pagination(
-          items = Some(pageNumbers.map { number =>
-            PaginationItem(href = href(number), number = Some(number.toString), current = Some(number == currentPage))
-          }),
-          previous = Option.when(hasPreviousPage)(PaginationLink(href = href(previousPage), text = Some(messages("site.pagination.previous")))),
-          next = Option.when(hasNextPage)(PaginationLink(href = href(nextPage), text = Some(messages("site.pagination.next"))))
-        )
-      )
-    }
-
 }
 
 object AddAnotherGoodsItemViewModel {

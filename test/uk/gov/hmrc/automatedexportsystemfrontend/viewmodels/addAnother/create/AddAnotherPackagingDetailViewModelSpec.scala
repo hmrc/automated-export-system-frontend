@@ -25,6 +25,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, 
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPackingPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
+import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.PaginationItem
 
 class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
@@ -34,13 +35,13 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
   val userAnswers: UserAnswers = emptyUserAnswers.set(DiscrepancyPackingPage(1), PackingDetails("packagingCode1", 1, "shippingMarks1")).success.value
 
-  val packagingDetailsListMax: List[PackingDetails] = (1 to maxPackagingDetails).map { number =>
+  val packingDetailsListMax: List[PackingDetails] = (1 to maxPackagingDetails).map { number =>
     PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
   }.toList
 
   "AddAnotherPackagingDetailViewModel" - {
 
-    "rows" - {
+    ".rows" - {
       "must build a valid row with packaging details, hidden value, change and remove actions" in {
         val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
         val rows = result.rows
@@ -72,6 +73,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 1
         result.pageNumbers mustBe (1 to 1)
+        result.pagination mustBe None
       }
 
       "must build a valid row with packaging details, hidden value, change and remove actions in CheckMode" in {
@@ -105,6 +107,205 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 1
         result.pageNumbers mustBe (1 to 1)
+        result.pagination mustBe None
+      }
+    }
+
+    ".pagination" - {
+      "must return None when there is 25 items or less" in {
+        val packagingDetailsList: List[PackingDetails] = (1 to 25).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packagingDetailsList)
+          .success
+          .value
+
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode).pagination
+
+        pagination mustBe None
+      }
+
+      "must return None when there is 25 items or less in CheckMode" in {
+        val packagingDetailsList: List[PackingDetails] = (1 to 25).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packagingDetailsList)
+          .success
+          .value
+
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode).pagination
+
+        pagination mustBe None
+      }
+
+      "must return Pagination for page 1 when there is 26 items" in {
+
+        val packingDetailsList = (1 to 26).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), NormalMode).pagination.value
+
+        pagination.items mustBe Some(
+          Seq(
+            PaginationItem(
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+              number = Some("1"),
+              current = Some(true)
+            ),
+            PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url, number = Some("2"))
+          )
+        )
+        pagination.previous mustBe None
+        pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+      }
+
+      "must return Pagination for page 1 when there is 26 items in CheckMode" in {
+
+        val packingDetailsList = (1 to 26).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), CheckMode).pagination.value
+
+        pagination.items mustBe Some(
+          Seq(
+            PaginationItem(
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), CheckMode).url,
+              number = Some("1"),
+              current = Some(true)
+            ),
+            PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), CheckMode).url, number = Some("2"))
+          )
+        )
+        pagination.previous mustBe None
+        pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), CheckMode).url
+      }
+
+      "must return Pagination for page 2 when there is 26 items" in {
+
+        val packingDetailsList = (1 to 26).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode).pagination.value
+
+        pagination.items mustBe Some(
+          Seq(
+            PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+            PaginationItem(
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+              number = Some("2"),
+              current = Some(true)
+            )
+          )
+        )
+        pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url
+        pagination.next mustBe None
+      }
+
+      "must return Pagination when there is 99 items" - {
+        val packingDetailsList = (1 to 99).map { number =>
+          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyPacking, packingDetailsList)
+          .success
+          .value
+
+        "for page 1" in {
+
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), NormalMode).pagination.value
+
+          pagination.items mustBe Some(
+            Seq(
+              PaginationItem(
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+                number = Some("1"),
+                current = Some(true)
+              ),
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url, number = Some("2"))
+            )
+          )
+          pagination.previous mustBe None
+          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+        }
+
+        "for page 2" in {
+
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode).pagination.value
+
+          pagination.items mustBe Some(
+            Seq(
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+                number = Some("2"),
+                current = Some(true)
+              ),
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url, number = Some("3"))
+            )
+          )
+          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url
+          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url
+        }
+
+        "for page 3" in {
+
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(3), NormalMode).pagination.value
+
+          pagination.items mustBe Some(
+            Seq(
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
+              PaginationItem(
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url,
+                number = Some("3"),
+                current = Some(true)
+              ),
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url, number = Some("4"))
+            )
+          )
+          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url
+        }
+
+        "for page 4" in {
+
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(4), NormalMode).pagination.value
+
+          pagination.items mustBe Some(
+            Seq(
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url, number = Some("3")),
+              PaginationItem(
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url,
+                number = Some("4"),
+                current = Some(true)
+              )
+            )
+          )
+          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url
+          pagination.next mustBe None
+        }
       }
     }
 
@@ -122,6 +323,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 1
         result.pageNumbers mustBe (1 to 1)
+        result.rows.size mustBe 1
+        result.pagination mustBe None
       }
 
       "must provide the correct model when 1 item has been added in CheckMode" in {
@@ -137,6 +340,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 1
         result.pageNumbers mustBe (1 to 1)
+        result.rows.size mustBe 1
+        result.pagination mustBe None
       }
 
       "must provide the correct model when 1 more item can be added" in {
@@ -161,11 +366,13 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 25
         result.pageNumbers mustBe (1 to 2)
+        result.rows.size mustBe 25
+        result.pagination.isDefined mustBe true
       }
 
       "must provide the correct model when the maximum number of items has been reached" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packagingDetailsListMax)
+          .set(DiscrepancyPacking, packingDetailsListMax)
           .success
           .value
 
@@ -181,6 +388,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 25
         result.pageNumbers mustBe (1 to 2)
+        result.rows.size mustBe 25
+        result.pagination.isDefined mustBe true
       }
     }
 
@@ -207,6 +416,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 25
         result.pageNumbers mustBe (1 to 1)
+        result.rows.size mustBe 25
+        result.pagination mustBe None
 
         result.hasPreviousPage mustBe false
         result.hasNextPage mustBe false
@@ -235,6 +446,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 25
         result.pageNumbers mustBe (1 to 1)
+        result.rows.size mustBe 25
+        result.pagination mustBe None
 
         result.hasPreviousPage mustBe false
         result.hasNextPage mustBe false
@@ -263,6 +476,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 25
         result.pageNumbers mustBe (1 to 2)
+        result.rows.size mustBe 25
+        result.pagination.isDefined mustBe true
 
         result.hasPreviousPage mustBe false
         result.hasNextPage mustBe true
@@ -292,6 +507,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 26
         result.lastPackagingDetail mustBe 26
         result.pageNumbers mustBe (1 to 2)
+        result.rows.size mustBe 1
+        result.pagination.isDefined mustBe true
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe false
@@ -301,7 +518,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for page 2 at max" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packagingDetailsListMax)
+          .set(DiscrepancyPacking, packingDetailsListMax)
           .success
           .value
 
@@ -317,6 +534,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 26
         result.lastPackagingDetail mustBe 50
         result.pageNumbers mustBe (1 to 3)
+        result.rows.size mustBe 25
+        result.pagination.isDefined mustBe true
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe true
@@ -326,7 +545,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for page 3 at max" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packagingDetailsListMax)
+          .set(DiscrepancyPacking, packingDetailsListMax)
           .success
           .value
 
@@ -342,6 +561,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 51
         result.lastPackagingDetail mustBe 75
         result.pageNumbers mustBe (2 to 4)
+        result.rows.size mustBe 25
+        result.pagination.isDefined mustBe true
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe true
@@ -351,7 +572,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for page 4 at max" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packagingDetailsListMax)
+          .set(DiscrepancyPacking, packingDetailsListMax)
           .success
           .value
 
@@ -367,6 +588,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.firstPackagingDetail mustBe 76
         result.lastPackagingDetail mustBe 99
         result.pageNumbers mustBe (3 to 4)
+        result.rows.size mustBe 24
+        result.pagination.isDefined mustBe true
 
         result.hasPreviousPage mustBe true
         result.hasNextPage mustBe false

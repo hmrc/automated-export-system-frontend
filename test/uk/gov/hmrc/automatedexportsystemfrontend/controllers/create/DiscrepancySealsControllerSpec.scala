@@ -66,6 +66,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Seal 1")
         body should include("What is the seal identifier?")
         body should include("For example, GB12345678.")
       }
@@ -85,6 +86,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Seal 1")
         body should include("What is the seal identifier?")
         body should include("For example, GB12345678.")
         body should include("""id="value"""")

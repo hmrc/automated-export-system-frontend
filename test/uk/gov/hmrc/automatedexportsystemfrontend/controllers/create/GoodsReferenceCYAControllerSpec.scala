@@ -56,7 +56,7 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Declaration Goods Reference")
         body should include("23456")
         body should include("""Change<span class="govuk-visually-hidden"> Declaration Goods Reference 23456</span>""")
-        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(NormalMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url}"""")
       }
     }
 
@@ -78,7 +78,7 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Declaration Goods Reference")
         body should include("23456")
         body should include("""Change<span class="govuk-visually-hidden"> Declaration Goods Reference 23456</span>""")
-        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(CheckMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, CheckMode).url}"""")
       }
     }
 
