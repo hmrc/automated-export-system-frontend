@@ -29,10 +29,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyConsignmentSummary {
 
-  def row(answers: UserAnswers)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancyConsignmentPage).map { answer =>
+  def row(answers: UserAnswers, description: Option[String])(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(DiscrepancyConsignmentPage).map { _ =>
+      val label =
+        description.getOrElse(messages("discrepancyConsignment.descriptionUnavailable"))
 
-      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(messages(s"discrepancyConsignment.$answer"))))
+      val value = ValueViewModel(HtmlContent(HtmlFormat.escape(label)))
 
       SummaryListRowViewModel(
         key = "discrepancyConsignment.checkYourAnswersLabel",

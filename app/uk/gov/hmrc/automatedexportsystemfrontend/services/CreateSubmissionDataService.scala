@@ -156,7 +156,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
       location <- collectGoodsLocation(userAnswers)
     } yield {
       val transportMode =
-        userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.fromUserAnswers)
+        userAnswers.get(DiscrepancyConsignmentPage).map(TransportMode.apply)
 
       val mucr =
         userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)

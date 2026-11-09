@@ -26,6 +26,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyConsignmentPage
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
+
+import scala.concurrent.ExecutionContext
 
 import javax.inject.Inject
 import scala.concurrent.Future
@@ -36,24 +40,28 @@ class CYASubmissionController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   val controllerComponents: MessagesControllerComponents,
+  codeListService: CodeListService,
   view: CYASubmissionView
-) extends FrontendBaseController with I18nSupport {
+)(implicit ec: ExecutionContext)
+    extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad: Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad: Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      val userAnswers = request.userAnswers
 
-    val userAnswers = request.userAnswers
-
-    Future.successful(
-      Ok(
-        view(
-          SummaryListViewModel(exportOperationRowsGenerator(userAnswers).flatten),
-          SummaryListViewModel(locationOfGoodsRowsGenerator(userAnswers).flatten),
-          SummaryListViewModel(customsOfficeExitRowGenerator(userAnswers).flatten),
-          SummaryListViewModel(discrepancyRowsGenerator(userAnswers).flatten)
-        )
-      )
-    )
-  }
+      codeListService
+        .getTransportModeDescription(userAnswers.get(DiscrepancyConsignmentPage))
+        .map { description =>
+          Ok(
+            view(
+              SummaryListViewModel(exportOperationRowsGenerator(userAnswers).flatten),
+              SummaryListViewModel(locationOfGoodsRowsGenerator(userAnswers).flatten),
+              SummaryListViewModel(customsOfficeExitRowGenerator(userAnswers).flatten),
+              SummaryListViewModel(discrepancyRowsGenerator(userAnswers, description).flatten)
+            )
+          )
+        }
+    }
 
   private def exportOperationRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     Seq(
@@ -70,7 +78,9 @@ class CYASubmissionController @Inject() (
   private def customsOfficeExitRowGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] =
     Seq(OfficeOfExitSummary.row(answers))
 
-  private def discrepancyRowsGenerator(answers: UserAnswers)(implicit messages: Messages): Seq[Option[SummaryListRow]] = {
+  private def discrepancyRowsGenerator(answers: UserAnswers, transportDescription: Option[String])(
+    implicit messages: Messages
+  ): Seq[Option[SummaryListRow]] = {
 
     val transportEquipmentRows =
       (1 to DiscrepancyTransportEquipment.count(answers)).flatMap { transportEquipmentIndex =>
@@ -81,7 +91,7 @@ class CYASubmissionController @Inject() (
           .map(Some(_))
       }
 
-    Seq(DiscrepancyConsignmentSummary.row(answers)) ++
+    Seq(DiscrepancyConsignmentSummary.row(answers, transportDescription)) ++
       transportEquipmentRows ++
       // Seq(DiscrepancySealsSummary.row(answers)) ++ TODO: Add Seals summary once design is finalised
       // Seq(DiscrepancyReferenceSummary.row(answers)) ++ TODO: Add goods reference once design is finalised

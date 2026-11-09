@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyConsignmentFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, ModeOfTransportAtBorder}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendDiscrepancyConsignmentView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,33 +39,44 @@ class AmendDiscrepancyConsignmentController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   formProvider: AmendDiscrepancyConsignmentFormProvider,
+  codeListService: CodeListService,
   val controllerComponents: MessagesControllerComponents,
   view: AmendDiscrepancyConsignmentView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form: Form[ModeOfTransportAtBorder] = formProvider()
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      val page = AmendDiscrepancyConsignmentPage(submissionId)
 
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+      codeListService.getTransportModes().map { entries =>
+        val form = formProvider.forCodeList(entries)
+        val preparedForm = request.userAnswers.get(page).fold(form)(form.fill)
 
-    val preparedForm = request.userAnswers.get(AmendDiscrepancyConsignmentPage(submissionId)) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+        val options = CodeListService.selectItems(entries, messagesApi.preferred(request).apply("discrepancyConsignment.placeholder"))
+
+        Ok(view(preparedForm, mode, submissionId, options))
+      }
     }
 
-    Ok(view(preparedForm, mode, submissionId))
-  }
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      val page = AmendDiscrepancyConsignmentPage(submissionId)
 
-  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, submissionId))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendDiscrepancyConsignmentPage(submissionId), value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(amendNavigator.nextPage(AmendDiscrepancyConsignmentPage(submissionId), mode, updatedAnswers))
-      )
-  }
+      codeListService.getTransportModes().flatMap { entries =>
+        val options = CodeListService.selectItems(entries, messagesApi.preferred(request).apply("discrepancyConsignment.placeholder"))
+
+        formProvider
+          .forCodeList(entries)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, submissionId, options))),
+            code =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(page, code))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(amendNavigator.nextPage(page, mode, updatedAnswers))
+          )
+      }
+    }
 }
