@@ -21,6 +21,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
@@ -59,6 +60,8 @@ class ViewSingleSubmissionController @Inject() (
   sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
+
+  private val logger = Logger(classOf[ViewSingleSubmissionController])
 
   def onPageLoad(submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
     automatedExportSystemConnector.getSingleSubmission(submissionId).flatMap { submission =>
@@ -197,8 +200,14 @@ class ViewSingleSubmissionController @Inject() (
       automatedExportSystemConnector.getSingleSubmission(submissionId).flatMap { submission =>
         val maybeAnswers = amendmentAnswersMapper.toUserAnswers(request.sessionId, submission)
         maybeAnswers.fold(
-          _ => Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad())),
-          answers => sessionRepository.set(answers).map(_ => Redirect(amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, submissionId)))
+          exception => {
+            logger.warn(s"[ViewSingleSubmissionController] Failed to map amendment answers. submissionId=$submissionId", exception)
+            Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+          },
+          answers =>
+            sessionRepository
+              .set(answers)
+              .map(_ => Redirect(amendRoute.AmendCYASubmissionController.onPageLoad(NormalMode, submissionId)))
         )
       }
     }

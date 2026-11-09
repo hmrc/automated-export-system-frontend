@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyReferenceFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
@@ -47,6 +48,8 @@ class DiscrepancyReferenceController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[DiscrepancyReferenceController])
+
   val form: Form[Option[String]] = formProvider()
 
   def onPageLoad(discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
@@ -65,6 +68,9 @@ class DiscrepancyReferenceController @Inject() (
 
         Ok(view(preparedForm, discrepancyReferenceIndex, mode))
       } else {
+        logger.warn(
+          s"[DiscrepancyReferenceController] Invalid discrepancy reference index on page load. discrepancyReferenceIndex=$discrepancyReferenceIndex, nextIndex=$nextIndex"
+        )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
   }
@@ -96,6 +102,9 @@ class DiscrepancyReferenceController @Inject() (
             }
           )
       } else {
+        logger.warn(
+          s"[DiscrepancyReferenceController] Invalid discrepancy reference index on submit. discrepancyReferenceIndex=$discrepancyReferenceIndex, nextIndex=$nextIndex"
+        )
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
   }

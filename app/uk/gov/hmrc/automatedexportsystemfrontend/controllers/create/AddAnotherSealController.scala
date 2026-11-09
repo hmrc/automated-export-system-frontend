@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherSealFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
@@ -40,12 +41,17 @@ class AddAnotherSealController @Inject() (
   view: AddAnotherSealView
 ) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[AddAnotherSealController])
+
   def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherSealViewModel(request.userAnswers, page, mode)
 
     if (viewModel.numberOfSeals == 0) {
       Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
     } else if (!isValidPage(viewModel)) {
+      logger.warn(
+        s"[AddAnotherSealController] Invalid page on page load. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+      )
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     } else if (page != viewModel.pageParam) {
       Redirect(createRoute.AddAnotherSealController.onPageLoad(viewModel.pageParam, mode))
@@ -62,6 +68,9 @@ class AddAnotherSealController @Inject() (
     if (viewModel.numberOfSeals == 0) {
       Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
     } else if (!isValidPage(viewModel)) {
+      logger.warn(
+        s"[AddAnotherSealController] Invalid page on submit. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+      )
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     } else {
       formProvider(viewModel.allowMore)

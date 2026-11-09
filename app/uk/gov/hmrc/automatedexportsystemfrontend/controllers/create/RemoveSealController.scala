@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.RemoveSealFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
@@ -45,6 +46,8 @@ class RemoveSealController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[RemoveSealController])
+
   val form: Form[Boolean] = formProvider()
 
   def onPageLoad(sealIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
@@ -52,6 +55,7 @@ class RemoveSealController @Inject() (
       if (DiscrepancySeals.exists(request.userAnswers, sealIndex) && validReturnPage(request.userAnswers, returnPage, mode)) {
         Ok(view(form, sealIndex, returnPage, mode))
       } else {
+        logger.warn(s"[RemoveSealController] Invalid remove seal request on page load. sealIndex=$sealIndex, returnPage=$returnPage")
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
   }
@@ -78,6 +82,7 @@ class RemoveSealController @Inject() (
             }
           )
       } else {
+        logger.warn(s"[RemoveSealController] Invalid remove seal request on submit. sealIndex=$sealIndex, returnPage=$returnPage")
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
   }

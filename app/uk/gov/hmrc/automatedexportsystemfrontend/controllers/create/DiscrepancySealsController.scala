@@ -19,6 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
@@ -47,6 +48,8 @@ class DiscrepancySealsController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[DiscrepancySealsController])
+
   val form: Form[Option[String]] = formProvider()
 
   def onPageLoad(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
@@ -59,6 +62,7 @@ class DiscrepancySealsController @Inject() (
       }
       Ok(view(preparedForm, sealsIndex, mode))
     } else {
+      logger.warn(s"[DiscrepancySealsController] Invalid seal index on page load. sealsIndex=$sealsIndex, nextIndex=$nextIndex")
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     }
   }
@@ -88,6 +92,7 @@ class DiscrepancySealsController @Inject() (
         )
 
     } else {
+      logger.warn(s"[DiscrepancySealsController] Invalid seal index on submit. sealsIndex=$sealsIndex, nextIndex=$nextIndex")
       Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
     }
   }

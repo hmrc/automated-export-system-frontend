@@ -26,6 +26,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryLis
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.GoodsReferenceCYAView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.Logger
 
 import javax.inject.Inject
 
@@ -38,12 +39,16 @@ class GoodsReferenceCYAController @Inject() (
   view: GoodsReferenceCYAView
 ) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[GoodsReferenceCYAController])
+
   def onPageLoad(goodsReferenceIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
     val goodsReferenceRow: Option[SummaryListRow] = DiscrepancyReferenceSummary.row(goodsReferenceIndex, request.userAnswers, mode)
 
     goodsReferenceRow match {
-      case None      => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      case None =>
+        logger.warn(s"GoodsReferenceCYAController Unable to build goods reference summary. goodsReferenceIndex=$goodsReferenceIndex")
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       case Some(row) => Ok(view(goodsReferenceIndex, SummaryListViewModel(Seq(row)), mode))
     }
   }

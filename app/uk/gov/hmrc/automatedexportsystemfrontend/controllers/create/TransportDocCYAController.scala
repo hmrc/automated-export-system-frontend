@@ -20,6 +20,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyTransportDocSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
@@ -37,12 +38,17 @@ class TransportDocCYAController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: TransportDocCYAView
 ) extends FrontendBaseController with I18nSupport {
+
+  private val logger = Logger(classOf[TransportDocCYAController])
+
   def onPageLoad(docIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
     val transportDocRow: Option[Seq[SummaryListRow]] = DiscrepancyTransportDocSummary.rows(docIndex, request.userAnswers, mode)
 
     transportDocRow match {
-      case None       => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      case None =>
+        logger.warn(s"[TransportDocCYAController] Unable to build transport document summary. docIndex=$docIndex")
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       case Some(rows) => Ok(view(docIndex, SummaryListViewModel(rows), mode))
     }
   }
