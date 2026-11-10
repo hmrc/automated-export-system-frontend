@@ -21,15 +21,19 @@ import play.api.mvc.{ActionRefiner, Result}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesDataRequiredAction
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.{routes => problemRoute}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.requests.{DataRequest, OptionalDataRequest}
+import play.api.Logger
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AesDataRequiredActionImpl @Inject() (implicit val executionContext: ExecutionContext) extends AesDataRequiredAction {
 
+  private val logger = Logger(classOf[AesDataRequiredActionImpl])
+
   override protected def refine[A](request: OptionalDataRequest[A]): Future[Either[Result, DataRequest[A]]] =
     request.userAnswers match {
       case None =>
+        logger.warn(s"[AesDataRequiredActionImpl] Missing user answers. Redirecting to journey recovery. sessionId=${request.sessionId}")
         Future.successful(Left(Redirect(problemRoute.JourneyRecoveryController.onPageLoad())))
       case Some(data) =>
         Future.successful(Right(DataRequest(request.request, request.sessionId, request.eori, data)))

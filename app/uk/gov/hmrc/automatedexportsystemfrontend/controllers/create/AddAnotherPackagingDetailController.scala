@@ -29,6 +29,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AddAnotherPac
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
+import play.api.Logger
 
 class AddAnotherPackagingDetailController @Inject() (
   override val messagesApi: MessagesApi,
@@ -40,12 +41,17 @@ class AddAnotherPackagingDetailController @Inject() (
   view: AddAnotherPackagingDetailView
 ) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[AddAnotherPackagingDetailController])
+
   def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, mode)
 
     if (viewModel.numberOfPackagingDetails == 0) {
       Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
     } else if (!isValidPage(viewModel)) {
+      logger.warn(
+        s"[AddAnotherPackagingDetailController] Invalid page on page load. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+      )
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     } else if (page != viewModel.pageParam) {
       Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(viewModel.pageParam, mode))
@@ -60,6 +66,9 @@ class AddAnotherPackagingDetailController @Inject() (
     if (viewModel.numberOfPackagingDetails == 0) {
       Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
     } else if (!isValidPage(viewModel)) {
+      logger.warn(
+        s"[AddAnotherPackagingDetailController] Invalid page on submit. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+      )
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     } else {
       formProvider(viewModel.allowMore)
