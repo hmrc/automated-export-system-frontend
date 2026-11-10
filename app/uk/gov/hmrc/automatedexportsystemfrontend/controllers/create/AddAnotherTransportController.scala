@@ -44,9 +44,6 @@ class AddAnotherTransportController @Inject() (
 
   private val logger = Logger(classOf[AddAnotherTransportController])
 
-  def form(allowMore: Boolean): Form[Boolean] =
-    formProvider(allowMore)
-
   def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
 
@@ -69,7 +66,7 @@ class AddAnotherTransportController @Inject() (
             .onPageLoad(viewModel.pageParam, mode)
         )
       } else {
-        Ok(view(form(viewModel.allowMore), viewModel, mode))
+        Ok(view(formProvider(viewModel.allowMore), viewModel, mode))
       }
     }
 

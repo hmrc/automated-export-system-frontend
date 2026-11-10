@@ -24,6 +24,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.{
+  DiscrepancyGoods,
   DiscrepancyReference,
   DiscrepancySeals,
   DiscrepancyTransportDoc,
@@ -49,7 +50,7 @@ class CreateNavigator extends Navigator {
       userAnswers => discrepancyReferenceRoute(userAnswers, discrepancyReferenceIndex, NormalMode)
     case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
     case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex)
-    case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
+    case DiscrepancyGoodsPage(goodsItemIndex)         => userAnswers => discrepancyGoodsRoute(userAnswers, goodsItemIndex, NormalMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
   }
 
@@ -64,7 +65,7 @@ class CreateNavigator extends Navigator {
       userAnswers => discrepancyReferenceRoute(userAnswers, discrepancyReferenceIndex, CheckMode)
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage(docIndex)        => _ => createRoute.TransportDocCYAController.onPageLoad(docIndex, CheckMode)
-    case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
+    case DiscrepancyGoodsPage(goodsItemIndex)         => userAnswers => discrepancyGoodsRoute(userAnswers, goodsItemIndex, CheckMode)
     case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, CheckMode)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
   }
@@ -152,19 +153,7 @@ class CreateNavigator extends Navigator {
       case Some(_) => createRoute.TransportDocCYAController.onPageLoad(docIndex, NormalMode)
       case None if hasExistingTransportDocs(answers) =>
         problemRoute.JourneyRecoveryController.onPageLoad() // TODO: replace with transport doc list page
-      case None => createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
-      case _    => createRoute.CYASubmissionController.onPageLoad()
-    }
-
-  private def discrepancyTransportDocCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyGoodsPage) match {
-      case None => createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode)
-      case _    => createRoute.CYASubmissionController.onPageLoad()
-    }
-
-  private def discrepancyGoodsCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyPackingPage(1)) match {
-      case None => createRoute.DiscrepancyPackingController.onPageLoad(1, CheckMode)
+      case None => createRoute.DiscrepancyGoodsController.onPageLoad(1, NormalMode)
       case _    => createRoute.CYASubmissionController.onPageLoad()
     }
 
@@ -180,6 +169,19 @@ class CreateNavigator extends Navigator {
 
   private def hasExistingSeals(userAnswers: UserAnswers): Boolean =
     DiscrepancySeals.count(userAnswers) > 0
+
+  private def discrepancyGoodsRoute(userAnswers: UserAnswers, goodsItemIndex: Int, mode: Mode): Call =
+    (userAnswers.get(DiscrepancyGoodsPage(goodsItemIndex)), mode) match {
+      case (Some(_), _) =>
+        createRoute.GoodsItemCYAController.onPageLoad(goodsItemIndex, mode)
+      case (None, _) if hasExistingGoodsItem(userAnswers) =>
+        createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
+      case (None, NormalMode) => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
+      case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def hasExistingGoodsItem(userAnswers: UserAnswers): Boolean =
+    DiscrepancyGoods.count(userAnswers) > 0
 
   private def discrepancyTransportEquipmentRoute(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode): Call =
     userAnswers

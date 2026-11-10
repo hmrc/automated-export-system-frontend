@@ -20,47 +20,83 @@ import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{ducrRegex, grossMassRegex, netMassRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{IntFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyGoodsFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.WhatHasChangedDetails
 
 class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFieldBehaviours {
 
   val form = new DiscrepancyGoodsFormProvider()()
+  private def key(name: String): String = s"goodsItem.$name"
+
+  private val validData: Map[String, String] = Map(
+    key("declarationGoodsItemNumber") -> "1234",
+    key("declarationUniqueConsignmentReference") -> "5GB000000000000-12345",
+    key("newGrossMass") -> "20",
+    key("newNetMass") -> "10"
+  )
+
+  "the form as a whole" - {
+
+    "must bind to None when every field is blank" in {
+      val data =
+        Map("declarationGoodsItemNumber" -> "", "declarationUniqueConsignmentReference" -> "", "newGrossMass" -> "", "newNetMass" -> "")
+
+      val result = form.bind(data)
+
+      result.errors mustBe empty
+      result.value.value mustBe None
+    }
+
+    "must bind to None when no fields are submitted" in {
+      val result = form.bind(Map.empty[String, String])
+
+      result.errors mustBe empty
+      result.value.value mustBe None
+    }
+
+    "must bind to Some(details) when all fields are valid" in {
+      val result = form.bind(validData)
+
+      result.errors mustBe empty
+      result.value.value mustBe Some(WhatHasChangedDetails(Some(1234), Some("5GB000000000000-12345"), "20", "10"))
+    }
+
+    "must require both masses when only the DUCR is entered" in {
+      val data = Map(key("declarationUniqueConsignmentReference") -> "5GB000000000000-12345")
+
+      val result = form.bind(data)
+
+      result.errors.map(e => e.key -> e.message) must contain allOf (
+        key("newGrossMass") -> "discrepancyGoods.error.newGrossMass.required",
+        key("newNetMass") -> "discrepancyGoods.error.newNetMass.required"
+      )
+    }
+
+    "must fill the prefixed keys" in {
+      val filled = form.fill(Some(WhatHasChangedDetails(Some(1234), Some("5GB000000000000-12345"), "20", "10")))
+
+      filled.data mustBe validData
+      form.fill(None).data mustBe empty
+    }
+  }
 
   ".declarationGoodsItemNumber" - {
-
-    val fieldName = "declarationGoodsItemNumber"
+    val fieldName = key("declarationGoodsItemNumber")
     val requiredKey = "discrepancyGoods.error.goodsItemNumber.required"
     val lengthKey = "discrepancyGoods.error.goodsItemNumber.length"
-//    val invalidKey = "discrepancyGoods.error.goodsItemNumber.invalid"
     val maxLength = 9999
 
     behave like intFieldWithMaximum(form, fieldName, maxLength, FormError(fieldName, lengthKey, Seq(maxLength)))
 
     "bind successfully when no goods item number is provided" in {
-      val data =
-        Map(fieldName -> "", "declarationUniqueConsignmentReference" -> "5GB000000000000-12345", "newGrossMass" -> "20", "newNetMass" -> "10")
-
-      val result = form.bind(data)
-
+      val result = form.bind(validData.updated(fieldName, ""))
       result.errors mustBe empty
-      result.value.value.declarationGoodsItemNumber mustBe None
+      result.value.value.value.declarationGoodsItemNumber mustBe None
     }
-
-    // TODO possibly readd or delete as needed
-//    "must not bind invalid data" in {
-//
-//      val invalidValues: Seq[String] = Seq("abc123!", "abc?123")
-//
-//
-//      invalidValues.foreach { invalidValue =>
-//        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
-//        result.errors must contain(expectedError)
-//      }
-//    }
   }
 
   ".declarationUniqueConsignmentReference" - {
 
-    val fieldName = "declarationUniqueConsignmentReference"
+    val fieldName = key("declarationUniqueConsignmentReference")
     val optionalKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.optional"
     val lengthKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.length"
     val invalidKey = "discrepancyGoods.error.declarationUniqueConsignmentReference.invalid"
@@ -71,13 +107,10 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
     "bind successfully when no ducr value is provided" in {
-      val data =
-        Map("declarationGoodsItemNumber" -> "1234", "declarationUniqueConsignmentReference" -> "", "newGrossMass" -> "20", "newNetMass" -> "10")
-
-      val result = form.bind(data)
+      val result = form.bind(validData.updated(fieldName, ""))
 
       result.errors mustBe empty
-      result.value.value.declarationUniqueConsignmentReference mustBe None
+      result.value.value.value.declarationUniqueConsignmentReference mustBe None
     }
 
     "must not bind invalid data" in {
@@ -93,19 +126,15 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
     }
 
     "not bind when only spaces are entered, prompting an optional ducr error" in {
-      val data = Map("goodsItemNumber" -> "reference", "declarationUniqueConsignmentReference" -> " ", "newGrossMass" -> "20", "newNetMass" -> "10")
+      val result = form.bind(validData.updated(fieldName, " "))
 
-      val expectedError = FormError(fieldName, optionalKey)
-
-      val result = form.bind(data)
-
-      result.errors must contain(expectedError)
+      result.errors must contain(FormError(fieldName, optionalKey))
     }
   }
 
   ".newGrossMass" - {
 
-    val fieldName = "newGrossMass"
+    val fieldName = key("newGrossMass")
     val requiredKey = "discrepancyGoods.error.newGrossMass.required"
     val lengthKey = "discrepancyGoods.error.newGrossMass.length"
     val invalidKey = "discrepancyGoods.error.newGrossMass.invalid"
@@ -115,7 +144,17 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+    "must be required when the field is missing but another field is entered" in {
+      val result = form.bind(validData - fieldName).apply(fieldName)
+
+      result.errors mustBe Seq(FormError(fieldName, requiredKey))
+    }
+
+    "must be required when the field is blank but another field is entered" in {
+      val result = form.bind(validData.updated(fieldName, "")).apply(fieldName)
+
+      result.errors mustBe Seq(FormError(fieldName, requiredKey))
+    }
 
     "must not bind invalid data" in {
 
@@ -132,7 +171,7 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
 
   ".newNetMass" - {
 
-    val fieldName = "newNetMass"
+    val fieldName = key("newNetMass")
     val requiredKey = "discrepancyGoods.error.newNetMass.required"
     val lengthKey = "discrepancyGoods.error.newNetMass.length"
     val invalidKey = "discrepancyGoods.error.newNetMass.invalid"
@@ -142,7 +181,17 @@ class DiscrepancyGoodsFormProviderSpec extends StringFieldBehaviours with IntFie
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
+    "must be required when the field is missing but another field is entered" in {
+      val result = form.bind(validData - fieldName).apply(fieldName)
+
+      result.errors mustBe Seq(FormError(fieldName, requiredKey))
+    }
+
+    "must be required when the field is blank but another field is entered" in {
+      val result = form.bind(validData.updated(fieldName, "")).apply(fieldName)
+
+      result.errors mustBe Seq(FormError(fieldName, requiredKey))
+    }
 
     "must not bind invalid data" in {
 

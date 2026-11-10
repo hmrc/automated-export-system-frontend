@@ -394,6 +394,24 @@ discrepancyGoods.ducr.change.hidden = Declaration Unique Consignment Reference (
 discrepancyGoods.newGrossMass.change.hidden = new gross mass
 discrepancyGoods.newNetMass.change.hidden = new net mass
 
+goodsItemCYA.caption = Goods item {0}
+
+removeGoodsItem.title = Are you sure you want to remove goods item {0}?
+removeGoodsItem.heading = Are you sure you want to remove goods item {0}?
+removeGoodsItem.error.required = Select yes if you want to remove goods item {0}
+
+addAnotherGoodsItem.singular.title = You have added 1 goods item
+addAnotherGoodsItem.plural.title = You have added {0} goods items
+addAnotherGoodsItem.singular.heading = You have added 1 goods item
+addAnotherGoodsItem.plural.heading = You have added {0} goods items
+addAnotherGoodsItem.key = Goods item {0}
+addAnotherGoodsItem.hidden = goods item {0}
+addAnotherGoodsItem.singular.remaining = You can add up to 1 more goods item.
+addAnotherGoodsItem.plural.remaining = You can add up to {0} more goods items.
+addAnotherGoodsItem.addAnother = Do you need to add another goods item?
+addAnotherGoodsItem.maxLimit = You cannot add any more goods items. To add another, you need to remove one first.
+addAnotherGoodsItem.error.required = Select yes if you want to add another goods item.
+
 discrepancyPacking.title = Packing details
 discrepancyPacking.caption = Packaging detail {0}
 discrepancyPacking.heading = Packing details
