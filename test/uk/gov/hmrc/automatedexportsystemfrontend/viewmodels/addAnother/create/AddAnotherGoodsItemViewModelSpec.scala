@@ -56,14 +56,14 @@ class AddAnotherGoodsItemViewModelSpec extends SpecBase {
           .onPageLoad(1, NormalMode)
           .url
         change.content shouldBe Text(messages("site.change"))
-        change.visuallyHiddenText shouldBe Some(messages("addAnotherGoodsItem.change.hidden", 1))
+        change.visuallyHiddenText shouldBe Some(messages("addAnotherGoodsItem.hidden", 1))
 
         val remove = actions.items(1)
         remove.href shouldBe uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.RemoveGoodsItemController
           .onPageLoad(1, 1, NormalMode)
           .url
         remove.content shouldBe Text(messages("site.remove"))
-        remove.visuallyHiddenText shouldBe Some(messages("addAnotherGoodsItem.remove.hidden", 1))
+        remove.visuallyHiddenText shouldBe Some(messages("addAnotherGoodsItem.hidden", 1))
         result.numberOfGoodsItem shouldBe 1
         result.remainingGoodsItem shouldBe 998
         result.allowMore shouldBe true
