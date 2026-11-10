@@ -76,145 +76,143 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
     }
   }
 
-  // TODO: Readd when doing pagination
-  //    "pagination" - {
-  //      "should provide the correct model when one more item can be added" in {
-  //
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(98))
-  //          .success
-  //          .value
-  //
-  //        val result = addAnotherTransportDocViewModel(userAnswers, None, NormalMode)
-  //
-  //        result.numberOfSeals shouldBe 98
-  //        result.remainingSeals shouldBe 1
-  //        result.allowMore shouldBe true
-  //        result.addedSingularOrPlural shouldBe "plural"
-  //        result.remainingSingularOrPlural shouldBe "singular"
-  //        result.currentPage shouldBe 1
-  //        result.totalPages shouldBe 4
-  //        result.firstSeal shouldBe 1
-  //        result.lastSeal shouldBe 25
-  //        result.pageNumbers shouldBe (1 to 2)
-  //
-  //      }
-  //
-  //      "should provide the correct model when the maximum number of items has been reached" in {
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(maxSeals))
-  //          .success
-  //          .value
-  //
-  //        val result = addAnotherTransportDocViewModel(userAnswers, None, NormalMode)
-  //
-  //        result.numberOfSeals shouldBe 99
-  //        result.remainingSeals shouldBe 0
-  //        result.allowMore shouldBe false
-  //        result.addedSingularOrPlural shouldBe "plural"
-  //        result.remainingSingularOrPlural shouldBe "plural"
-  //        result.currentPage shouldBe 1
-  //        result.totalPages shouldBe 4
-  //        result.firstSeal shouldBe 1
-  //        result.lastSeal shouldBe 25
-  //        result.pageNumbers shouldBe (1 to 2)
-  //      }
-  //
-  //      "should put 25 seals on a single page with no pagination" in {
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(25))
-  //          .success
-  //          .value
-  //
-  //        val result = addAnotherTransportDocViewModel(userAnswers, None, NormalMode)
-  //
-  //        result.currentPage shouldBe 1
-  //        result.totalPages shouldBe 1
-  //        result.rows.size shouldBe 25
-  //        result.firstSeal shouldBe 1
-  //        result.lastSeal shouldBe 25
-  //        result.hasPreviousPage shouldBe false
-  //        result.hasNextPage shouldBe false
-  //        result.pageParam shouldBe None
-  //        result.pagination(NormalMode) shouldBe None
-  //      }
-  //
-  //      "should start pagination at 26 seals, showing 25 rows on page 1" in {
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(26))
-  //          .success
-  //          .value
-  //
-  //        val result = addAnotherTransportDocViewModel(userAnswers, None, NormalMode)
-  //
-  //        result.currentPage shouldBe 1
-  //        result.totalPages shouldBe 2
-  //        result.rows.size shouldBe 25
-  //        result.firstSeal shouldBe 1
-  //        result.lastSeal shouldBe 25
-  //        result.pageNumbers shouldBe (1 to 2)
-  //        result.hasPreviousPage shouldBe false
-  //        result.hasNextPage shouldBe true
-  //        result.nextPage shouldBe 2
-  //        result.pageParam shouldBe Some(1)
-  //      }
-  //
-  //      "should omit Previous on the first page" in {
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(26))
-  //          .success
-  //          .value
-  //
-  //        val pagination = addAnotherTransportDocViewModel(userAnswers, Some(1), NormalMode).pagination(NormalMode).value
-  //
-  //        pagination.previous shouldBe None
-  //        pagination.next.value.href shouldBe createRoute.addAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url
-  //      }
-  //
-  //      "should include both Previous and Next on a middle page" in {
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(75))
-  //          .success
-  //          .value
-  //
-  //        val pagination = addAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination(NormalMode).value
-  //
-  //        pagination.previous.value.href shouldBe createRoute.addAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
-  //        pagination.previous.value.text shouldBe Some(messages("site.pagination.previous"))
-  //        pagination.next.value.href shouldBe createRoute.addAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url
-  //        pagination.next.value.text shouldBe Some(messages("site.pagination.next"))
-  //      }
-  //
-  //      "should omit Next on the last page" in {
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(26))
-  //          .success
-  //          .value
-  //
-  //        val pagination = addAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination(NormalMode).value
-  //
-  //        pagination.next shouldBe None
-  //        pagination.previous.value.href shouldBe createRoute.addAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
-  //      }
-  //
-  //      "should show only the remaining seal on a partial final page" in {
-  //        val userAnswers = emptyUserAnswers
-  //          .set(DiscrepancyTransportDoc, sealsList(26))
-  //          .success
-  //          .value
-  //
-  //        val result = addAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode)
-  //
-  //        result.currentPage shouldBe 2
-  //        result.rows.size shouldBe 1
-  //        result.rows.head.key.content shouldBe Text("seal26")
-  //        result.firstSeal shouldBe 26
-  //        result.lastSeal shouldBe 26
-  //        result.hasPreviousPage shouldBe true
-  //        result.previousPage shouldBe 1
-  //        result.hasNextPage shouldBe false
-  //        result.pageParam shouldBe Some(2)
-  //      }
-  //    }
-  //  }
+  "pagination" - {
+    "should provide the correct model when one more item can be added" in {
+
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(98))
+        .success
+        .value
+
+      val result = AddAnotherTransportDocViewModel(userAnswers, None, NormalMode)
+
+      result.numberOfTransportDocs shouldBe 98
+      result.remainingTransportDocs shouldBe 1
+      result.allowMore shouldBe true
+      result.addedSingularOrPlural shouldBe "plural"
+      result.remainingSingularOrPlural shouldBe "singular"
+      result.currentPage shouldBe 1
+      result.totalPages shouldBe 4
+      result.firstTransportDoc shouldBe 1
+      result.lastTransportDoc shouldBe 25
+      result.pageNumbers shouldBe (1 to 2)
+
+    }
+
+    "should provide the correct model when the maximum number of items has been reached" in {
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(maxTransportDoc))
+        .success
+        .value
+
+      val result = AddAnotherTransportDocViewModel(userAnswers, None, NormalMode)
+
+      result.numberOfTransportDocs shouldBe 99
+      result.remainingTransportDocs shouldBe 0
+      result.allowMore shouldBe false
+      result.addedSingularOrPlural shouldBe "plural"
+      result.remainingSingularOrPlural shouldBe "plural"
+      result.currentPage shouldBe 1
+      result.totalPages shouldBe 4
+      result.firstTransportDoc shouldBe 1
+      result.lastTransportDoc shouldBe 25
+      result.pageNumbers shouldBe (1 to 2)
+    }
+
+    "should put 25 transport doucments on a single page with no pagination" in {
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(25))
+        .success
+        .value
+
+      val result = AddAnotherTransportDocViewModel(userAnswers, None, NormalMode)
+
+      result.currentPage shouldBe 1
+      result.totalPages shouldBe 1
+      result.rows.size shouldBe 25
+      result.firstTransportDoc shouldBe 1
+      result.lastTransportDoc shouldBe 25
+      result.hasPreviousPage shouldBe false
+      result.hasNextPage shouldBe false
+      result.pageParam shouldBe None
+      result.pagination(NormalMode) shouldBe None
+    }
+
+    "should start pagination at 26 transport documents, showing 25 rows on page 1" in {
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(26))
+        .success
+        .value
+
+      val result = AddAnotherTransportDocViewModel(userAnswers, None, NormalMode)
+
+      result.currentPage shouldBe 1
+      result.totalPages shouldBe 2
+      result.rows.size shouldBe 25
+      result.firstTransportDoc shouldBe 1
+      result.lastTransportDoc shouldBe 25
+      result.pageNumbers shouldBe (1 to 2)
+      result.hasPreviousPage shouldBe false
+      result.hasNextPage shouldBe true
+      result.nextPage shouldBe 2
+      result.pageParam shouldBe Some(1)
+    }
+
+    "should omit Previous on the first page" in {
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(26))
+        .success
+        .value
+
+      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(1), NormalMode).pagination(NormalMode).value
+
+      pagination.previous shouldBe None
+      pagination.next.value.href shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url
+    }
+
+    "should include both Previous and Next on a middle page" in {
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(75))
+        .success
+        .value
+
+      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination(NormalMode).value
+
+      pagination.previous.value.href shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
+      pagination.previous.value.text shouldBe Some(messages("site.pagination.previous"))
+      pagination.next.value.href shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url
+      pagination.next.value.text shouldBe Some(messages("site.pagination.next"))
+    }
+
+    "should omit Next on the last page" in {
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(26))
+        .success
+        .value
+
+      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination(NormalMode).value
+
+      pagination.next shouldBe None
+      pagination.previous.value.href shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
+    }
+
+    "should show only the remaining transport documents on a partial final page" in {
+      val userAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportDoc, transportDocList(26))
+        .success
+        .value
+
+      val result = AddAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode)
+
+      result.currentPage shouldBe 2
+      result.rows.size shouldBe 1
+      result.rows.head.key.content shouldBe Text(messages("transportDocCYA.caption"))
+      result.firstTransportDoc shouldBe 26
+      result.lastTransportDoc shouldBe 26
+      result.hasPreviousPage shouldBe true
+      result.previousPage shouldBe 1
+      result.hasNextPage shouldBe false
+      result.pageParam shouldBe Some(2)
+    }
+  }
 }
