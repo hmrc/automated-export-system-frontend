@@ -57,14 +57,14 @@ class AddAnotherGoodsItemControllerSpec extends SpecBase with MockitoSugar {
           val body = contentAsString(result)
           body should include("You have added 3 goods items")
           body should include("Goods item 1")
-          body should include("Change goods item 1")
-          body should include("Remove goods item 1")
+          body should include("""Change<span class="govuk-visually-hidden"> goods item 1</span>""")
+          body should include("""Remove<span class="govuk-visually-hidden"> goods item 1</span>""")
           body should include("Goods item 2")
-          body should include("Change goods item 2")
-          body should include("Remove goods item 2")
+          body should include("""Change<span class="govuk-visually-hidden"> goods item 2</span>""")
+          body should include("""Remove<span class="govuk-visually-hidden"> goods item 2</span>""")
           body should include("Goods item 3")
-          body should include("Change goods item 3")
-          body should include("Remove goods item 3")
+          body should include("""Change<span class="govuk-visually-hidden"> goods item 3</span>""")
+          body should include("""Remove<span class="govuk-visually-hidden"> goods item 3</span>""")
           body should include("You can add up to <strong>996</strong> more goods items.")
           body should include("<strong>Do you need to add another goods item?</strong>")
           body should include("Yes")
@@ -98,8 +98,8 @@ class AddAnotherGoodsItemControllerSpec extends SpecBase with MockitoSugar {
           body should include("You have added 25 goods items")
           (1 to 25).foreach { number =>
             body should include(s"Goods item $number")
-            body should include(s"Change goods item $number")
-            body should include(s"Remove goods item $number")
+            body should include(s"""Change<span class="govuk-visually-hidden"> goods item $number</span>""")
+            body should include(s"""Remove<span class="govuk-visually-hidden"> goods item $number</span>""")
           }
           body should not include "Showing 1-25 of 25 items"
           body should not include "Previous"
