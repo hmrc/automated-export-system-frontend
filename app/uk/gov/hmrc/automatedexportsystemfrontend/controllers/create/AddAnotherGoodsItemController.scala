@@ -50,11 +50,9 @@ class AddAnotherGoodsItemController @Inject() (
     } else if (page != viewModel.pageParam) {
       Redirect(createRoute.AddAnotherGoodsItemController.onPageLoad(viewModel.pageParam, mode))
     } else {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
+      Ok(view(formProvider(viewModel.allowMore), viewModel, mode))
     }
   }
-
-  private def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
   def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherGoodsItemViewModel(request.userAnswers, page, mode)

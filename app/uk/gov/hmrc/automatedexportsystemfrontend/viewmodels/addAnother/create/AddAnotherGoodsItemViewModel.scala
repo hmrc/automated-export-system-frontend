@@ -99,12 +99,12 @@ object AddAnotherGoodsItemViewModel {
               ActionItem(
                 href = createRoute.DiscrepancyGoodsController.onPageLoad(goodsIndex, mode).url,
                 content = Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("addAnotherGoodsItem.change.hidden", goodsIndex))
+                visuallyHiddenText = Some(messages("addAnotherGoodsItem.hidden", goodsIndex))
               ),
               ActionItem(
                 href = createRoute.RemoveGoodsItemController.onPageLoad(goodsIndex, currentPage, mode).url,
                 content = Text(messages("site.remove")),
-                visuallyHiddenText = Some(messages("addAnotherGoodsItem.remove.hidden", goodsIndex))
+                visuallyHiddenText = Some(messages("addAnotherGoodsItem.hidden", goodsIndex))
               )
             )
           )

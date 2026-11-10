@@ -40,8 +40,6 @@ class AddAnotherPackagingDetailController @Inject() (
   view: AddAnotherPackagingDetailView
 ) extends FrontendBaseController with I18nSupport {
 
-  def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
-
   def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
     val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, mode)
 
@@ -52,7 +50,7 @@ class AddAnotherPackagingDetailController @Inject() (
     } else if (page != viewModel.pageParam) {
       Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(viewModel.pageParam, mode))
     } else {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
+      Ok(view(formProvider(viewModel.allowMore), viewModel, mode))
     }
   }
 
