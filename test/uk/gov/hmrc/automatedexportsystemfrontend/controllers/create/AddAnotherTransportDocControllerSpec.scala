@@ -118,7 +118,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
       }
 
       "must return OK and the correct view for a GET with pagination" in {
-        val transportDocList = (1 to pageSize).map { number =>
+        val transportDocList = (1 to pageSize + 1).map { number =>
           DocumentDetails(Some(number), Some(number))
         }.toList
 
@@ -132,13 +132,13 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) mustEqual OK
           val body = contentAsString(result)
-          body should include("You have added 26 transport documents")
+          body should include("You have added 26 transport documents (page 1 of 2)")
           (1 to pageSize).foreach { number =>
             body should include(s"transport document $number")
             body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
@@ -357,7 +357,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
       }
 
       "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
-        val transportDocList = (1 to pageSize).map { number =>
+        val transportDocList = (1 to pageSize + 1).map { number =>
           DocumentDetails(Some(number), Some(number))
         }.toList
 
@@ -493,8 +493,8 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to SubmissionCYA when maximum items reached" in {
-        val transportDocList = (1 to pageSize).map { number =>
+      "must redirect to Discrepancy Goods when maximum items reached" in {
+        val transportDocList = (1 to maxTransportDoc).map { number =>
           DocumentDetails(Some(number), Some(number))
         }.toList
 
