@@ -38,7 +38,8 @@ case class AddAnotherTransportEquipmentViewModel(
   lastTransportEquipment: Int,
   rows: Seq[SummaryListRow],
   transportEquipmentNumbers: Seq[Int],
-  pageNumbers: Seq[Int]
+  pageNumbers: Seq[Int],
+  pagination: Option[Pagination]
 ) {
 
   def hasPreviousPage: Boolean = currentPage > 1
@@ -52,45 +53,20 @@ case class AddAnotherTransportEquipmentViewModel(
   def pageParam: Option[Int] =
     if (totalPages > 1) Some(currentPage)
     else None
-
-  def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
-    if (totalPages <= 1) None
-    else {
-      def href(page: Int): String =
-        createRoute.AddAnotherSealController.onPageLoad(Some(page), mode).url
-
-      Some(
-        Pagination(
-          items = Some(pageNumbers.map { number =>
-            PaginationItem(href = href(number), number = Some(number.toString), current = Some(number == currentPage))
-          }),
-          previous = Option.when(hasPreviousPage)(PaginationLink(href = href(previousPage), text = Some(messages("site.pagination.previous")))),
-          next = Option.when(hasNextPage)(PaginationLink(href = href(nextPage), text = Some(messages("site.pagination.next"))))
-        )
-      )
-    }
 }
 
 object AddAnotherTransportEquipmentViewModel {
-  private val pageSize = 25
   def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherTransportEquipmentViewModel = {
 
     val numberOfTransportEquipment: Int = DiscrepancyTransportEquipment.count(userAnswers)
 
     val remainingTransportEquipment: Int = DiscrepancyTransportEquipment.remaining(userAnswers)
 
-    val requestedPage: Int = page.getOrElse(1)
+    val currentPage: Int = page.getOrElse(1)
 
-    val totalPages: Int = math.max(1, ((numberOfTransportEquipment - 1) / pageSize) + 1)
+    val totalPages: Int = ((numberOfTransportEquipment - 1) / pageSize) + 1
 
-    val currentPage: Int = math.min(math.max(requestedPage, 1), totalPages)
-
-    val firstTransportEquipment: Int =
-      if (numberOfTransportEquipment == 0) {
-        0
-      } else {
-        ((currentPage - 1) * pageSize) + 1
-      }
+    val firstTransportEquipment: Int = ((currentPage - 1) * pageSize) + 1
 
     val lastTransportEquipment: Int = math.min(currentPage * pageSize, numberOfTransportEquipment)
 
@@ -98,12 +74,7 @@ object AddAnotherTransportEquipmentViewModel {
 
     val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
 
-    val transportEquipmentNumbers: Seq[Int] =
-      if (numberOfTransportEquipment == 0) {
-        Seq.empty
-      } else {
-        firstTransportEquipment to lastTransportEquipment
-      }
+    val transportEquipmentNumbers: Seq[Int] = firstTransportEquipment to lastTransportEquipment
 
     AddAnotherTransportEquipmentViewModel(
       numberOfTransportEquipment = numberOfTransportEquipment,
@@ -115,13 +86,14 @@ object AddAnotherTransportEquipmentViewModel {
       totalPages = totalPages,
       firstTransportEquipment = firstTransportEquipment,
       lastTransportEquipment = lastTransportEquipment,
-      rows = rows(transportEquipmentNumbers, mode),
+      rows = rows(transportEquipmentNumbers, currentPage, mode),
       transportEquipmentNumbers = transportEquipmentNumbers,
-      pageNumbers = firstPageNumber to lastPageNumber
+      pageNumbers = firstPageNumber to lastPageNumber,
+      pagination = buildPagination(currentPage, totalPages, mode)
     )
   }
 
-  private def rows(transportEquipmentNumbers: Seq[Int], mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+  private def rows(transportEquipmentNumbers: Seq[Int], currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
     transportEquipmentNumbers.map { transportEquipmentNumber =>
       SummaryListRow(
         key = Key(
@@ -138,9 +110,73 @@ object AddAnotherTransportEquipmentViewModel {
                   .url,
                 content = Text(messages("site.change")),
                 visuallyHiddenText = Some(messages("addAnotherTransportEquipment.change.hidden", transportEquipmentNumber))
+              ),
+              ActionItem(
+                href = createRoute.RemoveTransportEquipmentController
+                  .onPageLoad(transportEquipmentNumber, currentPage, mode)
+                  .url,
+                content = Text(messages("site.remove")),
+                visuallyHiddenText = Some(messages("addAnotherTransportEquipment.remove.hidden", transportEquipmentNumber))
               )
             )
           )
+        )
+      )
+    }
+
+  private def buildPagination(currentPage: Int, totalPages: Int, mode: Mode): Option[Pagination] =
+    if (totalPages <= 1) {
+      None
+    } else {
+
+      def href(number: Int) = createRoute.AddAnotherTransportController.onPageLoad(Some(number), mode).url
+
+      val neighbouringPages = math.max(1, currentPage - 1) to math.min(totalPages, currentPage + 1)
+
+      val visiblePages: Seq[Int] =
+        if (totalPages <= 4) {
+          neighbouringPages
+        } else {
+          (
+            Seq(1, totalPages) ++
+              neighbouringPages
+          ).distinct.sorted
+        }
+
+      def pageItem(number: Int): PaginationItem =
+        PaginationItem(href = href(number), number = Some(number.toString), current = if (number == currentPage) Some(true) else None)
+
+      val items: Seq[PaginationItem] =
+        visiblePages.zipWithIndex.flatMap {
+          case (number, 0) => Seq(pageItem(number))
+          case (number, index) =>
+            val previous = visiblePages(index - 1)
+
+            val gapItems =
+              if (number - previous == 2) {
+                Seq(pageItem(previous + 1))
+              } else if (number - previous > 2) {
+                Seq(PaginationItem(ellipsis = Some(true)))
+              } else {
+                Seq.empty
+              }
+
+            gapItems :+ pageItem(number)
+        }
+
+      Some(
+        Pagination(
+          items = Some(items),
+          previous = if (currentPage > 1) {
+            Some(PaginationLink(href = href(currentPage - 1)))
+          } else {
+            None
+          },
+          next = if (currentPage < totalPages) {
+            Some(PaginationLink(href = href(currentPage + 1)))
+          } else {
+            None
+          }
         )
       )
     }

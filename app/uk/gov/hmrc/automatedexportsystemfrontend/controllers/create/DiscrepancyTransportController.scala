@@ -18,15 +18,16 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, Mode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, Mode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
-import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
+import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyTransportView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
@@ -63,8 +64,10 @@ class DiscrepancyTransportController @Inject() (
       ) {
         val preparedForm =
           userAnswers
-            .get(DiscrepancyTransportPage(transportEquipmentIndex))
-            .fold(form)(form.fill)
+            .get(DiscrepancyTransportPage(transportEquipmentIndex)) match {
+            case None        => form
+            case Some(value) => form.fill(value)
+          }
 
         Ok(view(preparedForm, transportEquipmentIndex, mode))
       } else {
@@ -89,22 +92,31 @@ class DiscrepancyTransportController @Inject() (
           .fold(
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, mode))),
             value =>
-              if (isEmpty(value)) {
-                Future.successful(Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, userAnswers)))
-              } else {
-                for {
-                  updatedAnswers <- Future.fromTry(userAnswers.set(DiscrepancyTransportPage(transportEquipmentIndex), value))
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers))
-              }
+              for {
+                updatedAnswers <- value match {
+                  case equipment if equipment.containerId.isDefined || equipment.numberOfSeals.isDefined =>
+                    Future.fromTry(userAnswers.set(DiscrepancyTransportPage(transportEquipmentIndex), value))
+                  case _ => Future.fromTry(userAnswers.remove(DiscrepancyTransportPage(transportEquipmentIndex)))
+                }
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(value match {
+                case equipment if equipment.containerId.isDefined || equipment.numberOfSeals.isDefined =>
+                  createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers)
+                case _ => nextPageAfterBlank(updatedAnswers, mode)
+              })
           )
       } else {
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
     }
 
-  private def isEmpty(value: ContainerDetails): Boolean =
-    value.containerId.isEmpty &&
-      value.numberOfSeals.isEmpty
+  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
+    if (DiscrepancyTransportEquipment.count(answers) > 0)
+      createRoute.AddAnotherTransportController.onPageLoad(None, mode)
+    else
+      mode match {
+        case NormalMode => createRoute.DiscrepancySealsController.onPageLoad(1, mode)
+        case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
+      }
 
 }
