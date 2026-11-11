@@ -117,205 +117,205 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-            "must return OK and the correct view for a GET with pagination" in {
-              val transportDocList = (1 to pageSize).map { number =>
-                DocumentDetails(Some(number), Some(number))
-              }.toList
+      "must return OK and the correct view for a GET with pagination" in {
+        val transportDocList = (1 to pageSize).map { number =>
+          DocumentDetails(Some(number), Some(number))
+        }.toList
 
-              val userAnswers = emptyUserAnswers
-                .set(DiscrepancyTransportDoc, transportDocList)
-                .success
-                .value
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyTransportDoc, transportDocList)
+          .success
+          .value
 
-              val application = applicationBuilder(userAnswers = Some(userAnswers))
-                .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-                .build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
-              running(application) {
-                val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url)
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url)
 
-                val result = route(application, request).value
+          val result = route(application, request).value
 
-                status(result) mustEqual OK
-                val body = contentAsString(result)
-                body should include("You have added 26 transport documents")
-                (1 to pageSize).foreach { number =>
-                  body should include(s"transport document $number")
-                  body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
-                  body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
-                }
-                body should not include "transport document 26"
-                body should not include "Change transport document 26"
-                body should not include "Remove transport document 26"
-                body should include("Showing 1-25 of 26 items")
-                body should not include "Previous"
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url}"""")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
-                body should include("Next")
-                body should include("You can add up to <strong>73</strong> more transport documents")
-                body should include("<strong>Do you need to add another transport document?</strong>")
-                body should include("Yes")
-                body should include("No")
-                body should include("Continue")
-              }
-            }
-
-            "must return OK and the correct view for a GET when the max limit of items has been reached" - {
-              val transportDocList = (1 to maxTransportDoc).map { number =>
-                DocumentDetails(Some(number), Some(number))
-              }.toList
-
-              val userAnswers = emptyUserAnswers
-                .set(DiscrepancyTransportDoc, transportDocList)
-                .success
-                .value
-
-              "on page 1" in {
-
-                val application = applicationBuilder(userAnswers = Some(userAnswers))
-                  .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-                  .build()
-
-                running(application) {
-                  val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url)
-
-                  val result = route(application, request).value
-
-                  status(result) mustEqual OK
-                  val body = contentAsString(result)
-                  body should include("You have added 99 transport documents")
-                  (1 to pageSize).foreach { number =>
-                    body should include(s"transport document $number")
-                    body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
-                    body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
-                  }
-                  body should not include "transport document 26"
-                  body should not include(s"""Change<span class="govuk-visually-hidden"> transport document 26</span>""")
-                  body should not include(s"""Remove<span class="govuk-visually-hidden"> transport document 26</span>""")
-                  body should include("Showing 1-25 of 99 items")
-                  body should not include "Previous"
-                  body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url}"""")
-                  body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
-                  body should include("Next")
-                  body should not include "You can add up to"
-                  body should not include "<strong>Do you need to add another transport document?</strong>"
-                  body should not include "Yes"
-                  body should not include "No"
-                  body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
-                  body should include("Continue")
-                }
-              }
-
-            "on page 2" in {
-
-              val application = applicationBuilder(userAnswers = Some(userAnswers))
-                .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-                .build()
-
-              running(application) {
-                val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url)
-
-                val result = route(application, request).value
-
-                status(result) mustEqual OK
-                val body = contentAsString(result)
-                body should include("You have added 99 transport documents")
-                (26 to 50).foreach { number =>
-                  body should include(s"transport document $number")
-                  body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
-                  body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
-                }
-                body should not include "transport document 51"
-                body should not include(s"""Change<span class="govuk-visually-hidden"> transport document 51</span>""")
-                body should not include(s"""Remove<span class="govuk-visually-hidden"> transport document 51</span>""")
-                body should include("Showing 26-50 of 99 items")
-                body should include("Previous")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url}"""")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url}"""")
-                body should include("Next")
-                body should not include "You can add up to"
-                body should not include "<strong>Do you need to add another transport document?</strong>"
-                body should not include "Yes"
-                body should not include "No"
-                body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
-                body should include("Continue")
-              }
-            }
-
-            "on page 3" in {
-
-              val application = applicationBuilder(userAnswers = Some(userAnswers))
-                .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-                .build()
-
-              running(application) {
-                val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url)
-
-                val result = route(application, request).value
-
-                status(result) mustEqual OK
-                val body = contentAsString(result)
-                body should include("You have added 99 transport documents")
-                (51 to 75).foreach { number =>
-                  body should include(s"transport document $number")
-                  body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
-                  body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
-                }
-                body should not include "transport document 76"
-                body should not include(s"""Change<span class="govuk-visually-hidden"> transport document 76</span>""")
-                body should not include(s"""Remove<span class="govuk-visually-hidden"> transport document 76</span>""")
-                body should include("Showing 51-75 of 99 items")
-                body should include("Previous")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url}"""")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(4), NormalMode).url}"""")
-                body should include("Next")
-                body should not include "You can add up to"
-                body should not include "<strong>Do you need to add another transport document?</strong>"
-                body should not include "Yes"
-                body should not include "No"
-                body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
-                body should include("Continue")
-              }
-            }
-
-            "on page 4" in {
-
-              val application = applicationBuilder(userAnswers = Some(userAnswers))
-                .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-                .build()
-
-              running(application) {
-                val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(4), NormalMode).url)
-
-                val result = route(application, request).value
-
-                status(result) mustEqual OK
-                val body = contentAsString(result)
-                body should include("You have added 99 transport documents")
-                (76 to 99).foreach { number =>
-                  body should include(s"transport document $number")
-                  body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
-                  body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
-                }
-                body should not include "transport document 100"
-                body should not include(s"""Change<span class="govuk-visually-hidden"> transport document 100</span>""")
-                body should not include(s"""Remove<span class="govuk-visually-hidden"> transport document 100</span>""")
-                body should include("Showing 76-99 of 99 items")
-                body should include("Previous")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url}"""")
-                body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(4), NormalMode).url}"""")
-                body should not include "Next"
-                body should not include "You can add up to"
-                body should not include "<strong>Do you need to add another transport document?</strong>"
-                body should not include "Yes"
-                body should not include "No"
-                body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
-                body should include("Continue")
-              }
-            }
+          status(result) mustEqual OK
+          val body = contentAsString(result)
+          body should include("You have added 26 transport documents")
+          (1 to pageSize).foreach { number =>
+            body should include(s"transport document $number")
+            body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
+            body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
           }
+          body should not include "transport document 26"
+          body should not include "Change transport document 26"
+          body should not include "Remove transport document 26"
+          body should include("Showing 1-25 of 26 items")
+          body should not include "Previous"
+          body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url}"""")
+          body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
+          body should include("Next")
+          body should include("You can add up to <strong>73</strong> more transport documents")
+          body should include("<strong>Do you need to add another transport document?</strong>")
+          body should include("Yes")
+          body should include("No")
+          body should include("Continue")
+        }
+      }
+
+      "must return OK and the correct view for a GET when the max limit of items has been reached" - {
+        val transportDocList = (1 to maxTransportDoc).map { number =>
+          DocumentDetails(Some(number), Some(number))
+        }.toList
+
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyTransportDoc, transportDocList)
+          .success
+          .value
+
+        "on page 1" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 transport documents")
+            (1 to pageSize).foreach { number =>
+              body should include(s"transport document $number")
+              body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
+              body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
+            }
+            body should not include "transport document 26"
+            body should not include s"""Change<span class="govuk-visually-hidden"> transport document 26</span>"""
+            body should not include s"""Remove<span class="govuk-visually-hidden"> transport document 26</span>"""
+            body should include("Showing 1-25 of 99 items")
+            body should not include "Previous"
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include("Next")
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another transport document?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+
+        "on page 2" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 transport documents")
+            (26 to 50).foreach { number =>
+              body should include(s"transport document $number")
+              body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
+              body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
+            }
+            body should not include "transport document 51"
+            body should not include s"""Change<span class="govuk-visually-hidden"> transport document 51</span>"""
+            body should not include s"""Remove<span class="govuk-visually-hidden"> transport document 51</span>"""
+            body should include("Showing 26-50 of 99 items")
+            body should include("Previous")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include("Next")
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another transport document?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+
+        "on page 3" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 transport documents")
+            (51 to 75).foreach { number =>
+              body should include(s"transport document $number")
+              body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
+              body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
+            }
+            body should not include "transport document 76"
+            body should not include s"""Change<span class="govuk-visually-hidden"> transport document 76</span>"""
+            body should not include s"""Remove<span class="govuk-visually-hidden"> transport document 76</span>"""
+            body should include("Showing 51-75 of 99 items")
+            body should include("Previous")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should include("Next")
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another transport document?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+
+        "on page 4" in {
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(4), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) mustEqual OK
+            val body = contentAsString(result)
+            body should include("You have added 99 transport documents")
+            (76 to 99).foreach { number =>
+              body should include(s"transport document $number")
+              body should include(s"""Change<span class="govuk-visually-hidden"> transport document $number</span>""")
+              body should include(s"""Remove<span class="govuk-visually-hidden"> transport document $number</span>""")
+            }
+            body should not include "transport document 100"
+            body should not include s"""Change<span class="govuk-visually-hidden"> transport document 100</span>"""
+            body should not include s"""Remove<span class="govuk-visually-hidden"> transport document 100</span>"""
+            body should include("Showing 76-99 of 99 items")
+            body should include("Previous")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should not include "Next"
+            body should not include "You can add up to"
+            body should not include "<strong>Do you need to add another transport document?</strong>"
+            body should not include "Yes"
+            body should not include "No"
+            body should include("You cannot add any more transport documents. To add another, you need to remove one first.")
+            body should include("Continue")
+          }
+        }
+      }
 
       "must redirect to DiscrepancyTransportDocPage at the first index if zero items added" in {
 
@@ -333,51 +333,51 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-            "must redirect back to AddAnother without a page when pagination has not started but page 1 is provided for a GET" in {
-              val transportDocList = (1 to pageSize).map { number =>
-                DocumentDetails(Some(number), Some(number))
-              }.toList
+      "must redirect back to AddAnother without a page when pagination has not started but page 1 is provided for a GET" in {
+        val transportDocList = (1 to pageSize).map { number =>
+          DocumentDetails(Some(number), Some(number))
+        }.toList
 
-              val userAnswers = emptyUserAnswers
-                .set(DiscrepancyTransportDoc, transportDocList)
-                .success
-                .value
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyTransportDoc, transportDocList)
+          .success
+          .value
 
-              val application = applicationBuilder(userAnswers = Some(userAnswers))
-                .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-                .build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
-              running(application) {
-                val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url)
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url)
 
-                val result = route(application, request).value
-                status(result) shouldBe SEE_OTHER
-                redirectLocation(result).value shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url
-              }
-            }
+          val result = route(application, request).value
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url
+        }
+      }
 
-            "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
-              val transportDocList = (1 to pageSize).map { number =>
-                DocumentDetails(Some(number), Some(number))
-              }.toList
+      "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
+        val transportDocList = (1 to pageSize).map { number =>
+          DocumentDetails(Some(number), Some(number))
+        }.toList
 
-              val userAnswers = emptyUserAnswers
-                .set(DiscrepancyTransportDoc, transportDocList)
-                .success
-                .value
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyTransportDoc, transportDocList)
+          .success
+          .value
 
-              val application = applicationBuilder(userAnswers = Some(userAnswers))
-                .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-                .build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
-              running(application) {
-                val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url)
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url)
 
-                val result = route(application, request).value
-                status(result) shouldBe SEE_OTHER
-                redirectLocation(result).value shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
-              }
-            }
+          val result = route(application, request).value
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
+        }
+      }
 
       "must redirect to Journey Recovery if the page doesn't exist for a GET" in {
 
@@ -464,58 +464,58 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-          "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
-            val transportDocList = (1 to 51).map { number =>
-              DocumentDetails(Some(number), Some(number))
-            }.toList
+      "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
+        val transportDocList = (1 to 51).map { number =>
+          DocumentDetails(Some(number), Some(number))
+        }.toList
 
-            val userAnswers = emptyUserAnswers
-              .set(DiscrepancyTransportDoc, transportDocList)
-              .success
-              .value
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyTransportDoc, transportDocList)
+          .success
+          .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers))
-              .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-              .build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
-            running(application) {
-              val request = FakeRequest(POST, createRoute.AddAnotherTransportDocController.onSubmit(Some(2), NormalMode).url)
+        running(application) {
+          val request = FakeRequest(POST, createRoute.AddAnotherTransportDocController.onSubmit(Some(2), NormalMode).url)
 
-              val result = route(application, request).value
+          val result = route(application, request).value
 
-              status(result) shouldBe BAD_REQUEST
-              val body = contentAsString(result)
-              body should include("Select yes if you want to add another transport document")
-              body should not include "transport document 25"
-              body should include("transport document 26")
-              body should include("transport document 50")
-              body should not include "transport document 51"
-            }
-          }
+          status(result) shouldBe BAD_REQUEST
+          val body = contentAsString(result)
+          body should include("Select yes if you want to add another transport document")
+          body should not include "transport document 25"
+          body should include("transport document 26")
+          body should include("transport document 50")
+          body should not include "transport document 51"
+        }
+      }
 
-          "must redirect to SubmissionCYA when maximum items reached" in {
-            val transportDocList = (1 to pageSize).map { number =>
-              DocumentDetails(Some(number), Some(number))
-            }.toList
+      "must redirect to SubmissionCYA when maximum items reached" in {
+        val transportDocList = (1 to pageSize).map { number =>
+          DocumentDetails(Some(number), Some(number))
+        }.toList
 
-            val userAnswers = emptyUserAnswers
-              .set(DiscrepancyTransportDoc, transportDocList)
-              .success
-              .value
+        val userAnswers = emptyUserAnswers
+          .set(DiscrepancyTransportDoc, transportDocList)
+          .success
+          .value
 
-            val application = applicationBuilder(userAnswers = Some(userAnswers))
-              .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-              .build()
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
 
-            running(application) {
-              val request = FakeRequest(POST, createRoute.AddAnotherTransportDocController.onSubmit(None, NormalMode).url)
+        running(application) {
+          val request = FakeRequest(POST, createRoute.AddAnotherTransportDocController.onSubmit(None, NormalMode).url)
 
-              val result = route(application, request).value
+          val result = route(application, request).value
 
-              status(result) shouldBe SEE_OTHER
-              redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode).url
-            }
-          }
+          status(result) shouldBe SEE_OTHER
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode).url
+        }
+      }
 
       "must redirect to DiscrepancyTransportDocPage at the first index if zero items added for a POST" in {
 
