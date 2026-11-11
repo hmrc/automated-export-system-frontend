@@ -22,6 +22,8 @@ The system will redirect to the stubs. See details on required enrolments [here]
 ### Test locally
 `sbt test it/it`
 
+### License
 
+This code is open source software licensed under the [Apache 2.0 License]("http://www.apache.org/licenses/LICENSE-2.0.html").
 
 
