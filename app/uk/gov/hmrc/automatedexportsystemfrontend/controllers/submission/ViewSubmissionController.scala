@@ -21,12 +21,13 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SubmissionSummaryResponseList, SubmissionViewModelMapper, ViewSubmissionViewModelMapper}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.ViewSubmissionViewModelMapper
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.AmendmentAnswersMapper
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.http.UpstreamErrorResponse
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -38,6 +39,7 @@ class ViewSubmissionController @Inject() (
   automatedExportSystemConnector: AutomatedExportSystemConnector,
   answerMapper: AmendmentAnswersMapper,
   sessionRepository: SessionRepository,
+  codeListService: CodeListService,
   actionBuilder: AesAuthRequestActionBuilder
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport with Logging {
@@ -47,7 +49,15 @@ class ViewSubmissionController @Inject() (
       (for {
         response <- automatedExportSystemConnector.getSingleSubmission(submissionId)
         answers <- Future.fromTry(answerMapper.toUserAnswers(submissionId, response))
-        viewModel = ViewSubmissionViewModelMapper.toViewModel(response)
+        transportCode = response.goodsShipment
+          .flatMap(_.consignment.modeOfTransportAtTheBorder)
+          .map(_.toString)
+        transportDescription <- codeListService.getTransportModeDescription(transportCode)
+        viewModel = ViewSubmissionViewModelMapper
+          .toViewModel(response)
+          .copy(discrepancyConsignment = transportCode.map { _ =>
+            transportDescription.getOrElse(messagesApi.preferred(request).apply("discrepancyConsignment.descriptionUnavailable"))
+          })
         _ <- sessionRepository.set(answers)
       } yield Ok(view(viewModel))).recover { case UpstreamErrorResponse(_, NOT_FOUND, _, _) =>
         logger.warn(s"No submission found for submission Id $submissionId")

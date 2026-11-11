@@ -233,6 +233,9 @@ discrepancyConsignment.air = Air
 discrepancyConsignment.checkYourAnswersLabel = How will the goods cross the border?
 discrepancyConsignment.error.required = Select how the goods will cross the border
 discrepancyConsignment.change.hidden = how the goods will cross the border
+discrepancyConsignment.error.invalid = Select a valid mode of transport
+discrepancyConsignment.placeholder = Select a mode of transport
+discrepancyConsignment.descriptionUnavailable = Transport mode description unavailable
 
 discrepancyTransport.title = Container details
 discrepancyTransport.heading = Container details

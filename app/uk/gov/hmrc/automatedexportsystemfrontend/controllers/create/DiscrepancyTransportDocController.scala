@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportDocFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
@@ -46,6 +47,8 @@ class DiscrepancyTransportDocController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[DiscrepancyTransportDocController])
+
   val form: Form[DocumentDetails] = formProvider()
 
   def onPageLoad(docIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
@@ -64,6 +67,7 @@ class DiscrepancyTransportDocController @Inject() (
 
       Ok(view(preparedForm, docIndex, mode))
     } else {
+      logger.warn(s"[DiscrepancyTransportDocController] Invalid transport document index on page load. docIndex=$docIndex, nextIndex=$nextIndex")
       Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     }
   }
@@ -94,6 +98,7 @@ class DiscrepancyTransportDocController @Inject() (
             } yield Redirect(createNavigator.nextPage(DiscrepancyTransportDocPage(docIndex), mode, updatedAnswers))
         )
     } else {
+      logger.warn(s"[DiscrepancyTransportDocController] Invalid transport document index on submit. docIndex=$docIndex, nextIndex=$nextIndex")
       Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
     }
   }

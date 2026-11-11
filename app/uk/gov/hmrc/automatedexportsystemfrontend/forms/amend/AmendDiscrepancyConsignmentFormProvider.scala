@@ -19,11 +19,21 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 import play.api.data.Form
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
+import uk.gov.hmrc.automatedexportsystemfrontend.models.codelists.CodeListEntry
 
 import javax.inject.Inject
 
 class AmendDiscrepancyConsignmentFormProvider @Inject() extends Mappings {
 
-  def apply(): Form[ModeOfTransportAtBorder] =
-    Form("value" -> enumerable[ModeOfTransportAtBorder]("discrepancyConsignment.error.required"))
+  /*def apply(): Form[ModeOfTransportAtBorder] =
+    Form("value" -> enumerable[ModeOfTransportAtBorder]("discrepancyConsignment.error.required"))*/
+
+  def forCodeList(entries: Seq[CodeListEntry]): Form[String] = {
+    val allowedCodes = entries.map(_.key).toSet
+
+    Form(
+      "value" -> text("discrepancyConsignment.error.required")
+        .verifying("discrepancyConsignment.error.invalid", code => allowedCodes.contains(code))
+    )
+  }
 }

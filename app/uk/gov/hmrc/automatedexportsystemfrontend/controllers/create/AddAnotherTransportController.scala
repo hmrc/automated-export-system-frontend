@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherTransportEquipmentFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
@@ -41,6 +42,8 @@ class AddAnotherTransportController @Inject() (
   view: AddAnotherTransportEquipmentView
 ) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[AddAnotherTransportController])
+
   def form(allowMore: Boolean): Form[Boolean] =
     formProvider(allowMore)
 
@@ -56,6 +59,9 @@ class AddAnotherTransportController @Inject() (
             .onPageLoad(DiscrepancyTransportEquipment.nextIndex(request.userAnswers), mode)
         )
       } else if (!isValidPage(viewModel)) {
+        logger.warn(
+          s"[AddAnotherTransportController] Invalid page on page load. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+        )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       } else if (page != viewModel.pageParam) {
         Redirect(
@@ -79,6 +85,9 @@ class AddAnotherTransportController @Inject() (
             .onPageLoad(DiscrepancyTransportEquipment.nextIndex(request.userAnswers), mode)
         )
       } else if (!isValidPage(viewModel)) {
+        logger.warn(
+          s"[AddAnotherTransportController] Invalid page on submit. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+        )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       } else {
         formProvider(viewModel.allowMore)

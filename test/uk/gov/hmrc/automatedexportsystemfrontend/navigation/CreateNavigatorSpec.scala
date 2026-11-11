@@ -72,7 +72,7 @@ class CreateNavigatorSpec extends SpecBase {
         "to the first DiscrepancyTransportPage" in {
           val userAnswers =
             emptyUserAnswers
-              .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.values.head)
+              .set(DiscrepancyConsignmentPage, "1")
               .success
               .value
 
@@ -252,7 +252,7 @@ class CreateNavigatorSpec extends SpecBase {
             .set(IsSplitExitPage, true)
             .success
             .value
-            .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
+            .set(DiscrepancyConsignmentPage, "1")
             .success
             .value
           navigator.nextPage(IsSplitExitPage, CheckMode, userAnswers) shouldBe
@@ -295,7 +295,7 @@ class CreateNavigatorSpec extends SpecBase {
             .set(AnyDiscrepanciesPage, true)
             .success
             .value
-            .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
+            .set(DiscrepancyConsignmentPage, "1")
             .success
             .value
           navigator.nextPage(AnyDiscrepanciesPage, CheckMode, userAnswers) shouldBe

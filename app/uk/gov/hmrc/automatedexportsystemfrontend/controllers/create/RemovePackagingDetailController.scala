@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.RemovePackagingDetailFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
@@ -45,6 +46,8 @@ class RemovePackagingDetailController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[RemovePackagingDetailController])
+
   def form(packagingDetailIndex: Int): Form[Boolean] = formProvider(packagingDetailIndex)
 
   def onPageLoad(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
@@ -55,6 +58,9 @@ class RemovePackagingDetailController @Inject() (
       if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(addAnotherPackagingDetailViewModel, returnPage)) {
         Ok(view(form(packagingDetailIndex), packagingDetailIndex, returnPage, mode))
       } else {
+        logger.warn(
+          s"[RemovePackagingDetailController] Invalid remove packaging detail request on page load. packagingDetailIndex=$packagingDetailIndex, returnPage=$returnPage"
+        )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
     }
@@ -94,6 +100,9 @@ class RemovePackagingDetailController @Inject() (
             }
           )
       } else {
+        logger.warn(
+          s"[RemovePackagingDetailController] Invalid remove packaging detail request on submit. packagingDetailIndex=$packagingDetailIndex, returnPage=$returnPage"
+        )
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
     }

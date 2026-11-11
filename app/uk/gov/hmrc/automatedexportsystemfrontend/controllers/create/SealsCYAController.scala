@@ -23,6 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.SealsCYAView
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
@@ -37,12 +38,17 @@ class SealsCYAController @Inject() (
   val controllerComponents: MessagesControllerComponents,
   view: SealsCYAView
 ) extends FrontendBaseController with I18nSupport {
+
+  private val logger = Logger(classOf[SealsCYAController])
+
   def onPageLoad(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
 
     val sealIdentifierRow: Option[SummaryListRow] = DiscrepancySealsSummary.row(sealsIndex, request.userAnswers, mode)
 
     sealIdentifierRow match {
-      case None      => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      case None =>
+        logger.warn(s"[SealsCYAController] Unable to build seal summary. sealsIndex=$sealsIndex")
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       case Some(row) => Ok(view(sealsIndex, SummaryListViewModel(Seq(row)), mode))
     }
   }
