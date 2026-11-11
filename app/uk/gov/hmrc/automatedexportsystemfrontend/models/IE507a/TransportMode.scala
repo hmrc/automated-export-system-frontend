@@ -16,54 +16,16 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
-import play.api.libs.json.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
+import play.api.libs.json.{Format, Reads, Writes}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
 import scala.xml.Text
 
-// TODO fetch this mapping from CRDL rather than hardcoding
-enum TransportMode(val value: Int) extends Enum[TransportMode] {
-  case Sea extends TransportMode(1)
-  case Rail extends TransportMode(2)
-  case Road extends TransportMode(3)
-  case Air extends TransportMode(4)
-  case Post extends TransportMode(5)
-  // Mode 6 appears to be intentionally missing in Europa
-  case FixedInstallations extends TransportMode(7)
-  case InlandWaterways extends TransportMode(8)
-  case OwnPropulsion extends TransportMode(9)
-}
+final case class TransportMode(value: String)
 
 object TransportMode {
-  private val nameMap: Map[String, TransportMode] = values.map(v => v.name() -> v).toMap
+  given Format[TransportMode] = Format(Reads.of[String].map(TransportMode.apply), Writes.of[String].contramap[TransportMode](_.value))
 
-  def fromUserAnswers(mode: ModeOfTransportAtBorder): TransportMode =
-    mode match {
-      case ModeOfTransportAtBorder.Sea  => TransportMode.Sea
-      case ModeOfTransportAtBorder.Rail => TransportMode.Rail
-      case ModeOfTransportAtBorder.Road => TransportMode.Road
-      case ModeOfTransportAtBorder.Air  => TransportMode.Air
-    }
-
-  def fromXmlPayload(mode: Int): TransportMode =
-    mode match {
-      case 1 => TransportMode.Sea
-      case 2 => TransportMode.Rail
-      case 3 => TransportMode.Road
-      case 4 => TransportMode.Air
-    }
-
-  given reads: Reads[TransportMode] = Reads.of[String].flatMapResult { value =>
-    if (nameMap.contains(value)) JsSuccess(nameMap(value))
-    else JsError(s"Invalid TransportMode: $value")
-  }
-
-  given writes: Writes[TransportMode] =
-    Writes.of[String].contramap(_.value.toString)
-
-  given format: Format[TransportMode] = Format(reads, writes)
-
-  given xmlWrites: XmlWrites[TransportMode] =
-    XmlWrites.instance(t => Text(t.value.toString))
+  given XmlWrites[TransportMode] =
+    XmlWrites.instance(mode => Text(mode.value))
 }

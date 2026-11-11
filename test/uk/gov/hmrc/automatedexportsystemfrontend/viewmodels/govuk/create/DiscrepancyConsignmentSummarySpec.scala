@@ -20,7 +20,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyConsignmentSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
@@ -31,29 +32,28 @@ class DiscrepancyConsignmentSummarySpec extends AnyFreeSpec with Matchers {
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answered, return the summary row" in {
+
+    "when answered, return the summary row with the transport description" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
+        .set(DiscrepancyConsignmentPage, "1")
         .get
 
-      DiscrepancyConsignmentSummary.row(userAnswers) shouldBe Some(
+      DiscrepancyConsignmentSummary.row(userAnswers, Some("Sea transport")) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyConsignment.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent("discrepancyConsignment.sea")),
+          value = ValueViewModel(HtmlContent("Sea transport")),
           actions = Seq(
-            ActionItemViewModel(
-              "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyConsignmentController.onPageLoad(CheckMode).url
-            )
+            ActionItemViewModel("site.change", createRoute.DiscrepancyConsignmentController.onPageLoad(CheckMode).url)
               .withVisuallyHiddenText("discrepancyConsignment.change.hidden")
           )
         )
       )
     }
 
-    "when answer unavailable, return empty" in {
+    "when there is no saved answer, return no summary row" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyConsignmentSummary.row(userAnswers) shouldBe None
+
+      DiscrepancyConsignmentSummary.row(userAnswers, None) shouldBe None
     }
   }
 }

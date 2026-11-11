@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustEqual
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -30,9 +29,10 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionResponseParser
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSingleSubmissionView
-import uk.gov.hmrc.http.SessionKeys
 import scala.xml.XML
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 
 import scala.concurrent.Future
 
@@ -44,6 +44,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
 
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
       val mockAutomatedExportSystemConnector = mock[AutomatedExportSystemConnector]
+      val mockCodeListService = mock[CodeListService]
 
       val enrolmentIdentifier =
         uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
@@ -170,10 +171,14 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
       when(mockAutomatedExportSystemConnector.getSingleSubmission(any[String])(any()))
         .thenReturn(Future.successful(SingleSubmissionResponseParser.parse(XML.loadString(mockResponseBody))))
 
+      when(mockCodeListService.getTransportModeDescription(eqTo[Option[String]](Some("1")))(using any[HeaderCarrier]()))
+        .thenReturn(Future.successful(Some("Sea transport")))
+
       val application = applicationBuilder(userAnswers = None)
         .overrides(
           bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector),
-          bind[AutomatedExportSystemConnector].toInstance(mockAutomatedExportSystemConnector)
+          bind[AutomatedExportSystemConnector].toInstance(mockAutomatedExportSystemConnector),
+          bind[CodeListService].toInstance(mockCodeListService)
         )
         .build()
 
@@ -202,7 +207,7 @@ class ViewSingleSubmissionControllerSpec extends SpecBase {
 
         body should include("Consignment")
         body should include("How will the goods cross the border?")
-        body should include("Sea")
+        body should include("Sea transport")
         body should include("DUCR")
         body should include("referenceNumberUcr")
         body should include("MUCR")

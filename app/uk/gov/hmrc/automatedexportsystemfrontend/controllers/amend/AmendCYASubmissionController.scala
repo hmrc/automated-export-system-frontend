@@ -26,7 +26,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as p
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendEnterDucrPage, AmendEnterMrnPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendDiscrepancyConsignmentPage, AmendEnterDucrPage, AmendEnterMrnPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.services.AmendSubmissionDataService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
@@ -36,6 +36,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmis
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -52,6 +53,7 @@ class AmendCYASubmissionController @Inject() (
   submissionDataService: AmendSubmissionDataService,
   automatedExportSystemConnector: AutomatedExportSystemConnector,
   sessionRepository: SessionRepository,
+  codeListService: CodeListService,
   userAnswerHelper: UserAnswerHelper
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
@@ -62,70 +64,72 @@ class AmendCYASubmissionController @Inject() (
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
       val answers = request.userAnswers
 
-      val eori = request.eori
-      val exportOperationList =
-        SummaryListViewModel(
-          Seq(
-            answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
-              AmendEnterMrnSummary.lockedRow(answer, submissionId)
-            },
-            AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
-            AmendIsSplitExitSummary.row(answers)(submissionId)
-          ).flatten
-        )
+      codeListService
+        .getTransportModeDescription(answers.get(AmendDiscrepancyConsignmentPage(submissionId)))
+        .map { transportDescription =>
+          val eori = request.eori
+          val exportOperationList =
+            SummaryListViewModel(
+              Seq(
+                answers.get(AmendEnterMrnPage(submissionId)).flatMap { answer =>
+                  AmendEnterMrnSummary.lockedRow(answer, submissionId)
+                },
+                AmendAnyDiscrepanciesSummary.row(answers)(submissionId),
+                AmendIsSplitExitSummary.row(answers)(submissionId)
+              ).flatten
+            )
 
-      val consignmentList =
-        SummaryListViewModel(
-          Seq(
-            answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
-              AmendEnterDucrSummary.lockedRow(answer, submissionId)
-            },
-            AmendPartOfConsolidationSummary.row(answers)(submissionId)
-          ).flatten
-        )
+          val consignmentList =
+            SummaryListViewModel(
+              Seq(
+                answers.get(AmendEnterDucrPage(submissionId)).flatMap { answer =>
+                  AmendEnterDucrSummary.lockedRow(answer, submissionId)
+                },
+                AmendPartOfConsolidationSummary.row(answers)(submissionId)
+              ).flatten
+            )
 
-      val customsOfficeExitList =
-        SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
+          val customsOfficeExitList =
+            SummaryListViewModel(Seq(AmendOfficeOfExitSummary.row(answers)(submissionId)).flatten)
 
-      val locationTypeRows =
-        AmendLocationTypeSummary.row(answers)(submissionId).toSeq
+          val locationTypeRows =
+            AmendLocationTypeSummary.row(answers)(submissionId).toSeq
 
-      val locationIdRows =
-        AmendLocationIdSummary.row(answers)(submissionId).toSeq.flatten
+          val locationIdRows =
+            AmendLocationIdSummary.row(answers)(submissionId).toSeq.flatten
 
-      val locationOfGoodsList =
-        SummaryListViewModel(locationTypeRows ++ locationIdRows)
+          val locationOfGoodsList =
+            SummaryListViewModel(locationTypeRows ++ locationIdRows)
 
-      val discrepancyRows: Seq[SummaryListRow] =
-        Seq(AmendDiscrepancyConsignmentSummary.row(answers)(submissionId)).flatten ++
-          AmendDiscrepancyTransportSummary.rows(answers)(submissionId).flatten ++
-          Seq(AmendDiscrepancySealsSummary.row(answers)(submissionId), AmendDiscrepancyReferenceSummary.row(answers)(submissionId)).flatten ++
-          AmendDiscrepancyTransportMeansSummary.rows(answers)(submissionId).flatten ++
-          AmendDiscrepancyTransportDocSummary.rows(answers)(submissionId).flatten ++
-          AmendDiscrepancyGoodsSummary.rows(answers)(submissionId).flatten
+          val discrepancyRows: Seq[SummaryListRow] =
+            Seq(AmendDiscrepancyConsignmentSummary.row(answers)(submissionId, transportDescription)).flatten ++
+              AmendDiscrepancyTransportSummary.rows(answers)(submissionId).flatten ++
+              Seq(AmendDiscrepancySealsSummary.row(answers)(submissionId), AmendDiscrepancyReferenceSummary.row(answers)(submissionId)).flatten ++
+              AmendDiscrepancyTransportMeansSummary.rows(answers)(submissionId).flatten ++
+              AmendDiscrepancyTransportDocSummary.rows(answers)(submissionId).flatten ++
+              AmendDiscrepancyGoodsSummary.rows(answers)(submissionId).flatten
 
-      val discrepancyList =
-        SummaryListViewModel(discrepancyRows)
+          val discrepancyList =
+            SummaryListViewModel(discrepancyRows)
 
-      val authorisationList = SummaryListViewModel(
-        Seq(AmendLocationIdSummary.authorisationTypeRow, AmendLocationIdSummary.referenceNumberRow(answers)(submissionId)).flatten
-      )
-
-      Future.successful(
-        Ok(
-          view(
-            mode,
-            submissionId,
-            eori,
-            exportOperationList,
-            consignmentList,
-            customsOfficeExitList,
-            discrepancyList,
-            locationOfGoodsList,
-            authorisationList
+          val authorisationList = SummaryListViewModel(
+            Seq(AmendLocationIdSummary.authorisationTypeRow, AmendLocationIdSummary.referenceNumberRow(answers)(submissionId)).flatten
           )
-        )
-      )
+
+          Ok(
+            view(
+              mode,
+              submissionId,
+              eori,
+              exportOperationList,
+              consignmentList,
+              customsOfficeExitList,
+              discrepancyList,
+              locationOfGoodsList,
+              authorisationList
+            )
+          )
+        }
     }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] =

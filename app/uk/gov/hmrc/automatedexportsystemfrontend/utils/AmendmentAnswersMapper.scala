@@ -159,9 +159,11 @@ class AmendmentAnswersMapper {
             AmendPartOfConsolidationPage(submissionId),
             PartOfConsolidationAnswer(boolean = consignment.parentUCRID.isDefined, mucr = consignment.parentUCRID)
           )
-          b4 <- consignment.modeOfTransportAtTheBorder.flatMap(ModeOfTransportAtBorder.fromCode) match {
-            case Some(mode) => b3.set(AmendDiscrepancyConsignmentPage(submissionId), mode)
-            case None       => Try(b3)
+          b4 <- consignment.modeOfTransportAtTheBorder match {
+            case Some(code) =>
+              b3.set(AmendDiscrepancyConsignmentPage(submissionId), code.toString)
+            case None =>
+              Try(b3)
           }
           b5 <- consignment.activeBorderTransportMeans.fold(Try(b4)) { transportMeans =>
             setTransportMeans(b4, submissionId, transportMeans)
