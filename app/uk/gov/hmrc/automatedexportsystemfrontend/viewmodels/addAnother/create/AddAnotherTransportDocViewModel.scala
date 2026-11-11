@@ -49,7 +49,6 @@ case class AddAnotherTransportDocViewModel(
 
   def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
 
-  // TODO Covered in future pagination ticket
   def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
     if (totalPages <= 1) None
     else {
