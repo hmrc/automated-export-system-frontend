@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth
 
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
@@ -24,6 +23,7 @@ import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
 import java.net.URLEncoder

@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendAnyDiscrepanciesFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 
 class AmendAnyDiscrepanciesFormProviderSpec extends BooleanFieldBehaviours {
 

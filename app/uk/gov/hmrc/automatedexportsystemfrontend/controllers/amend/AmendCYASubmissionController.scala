@@ -22,21 +22,20 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{AmendDiscrepancyConsignmentPage, AmendEnterDucrPage, AmendEnterMrnPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.services.AmendSubmissionDataService
+import uk.gov.hmrc.automatedexportsystemfrontend.services.{AmendSubmissionDataService, CodeListService}
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.UserAnswerHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendCYASubmissionView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

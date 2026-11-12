@@ -29,8 +29,8 @@ import uk.gov.hmrc.auth.core.AuthConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.codelists.CodeListEntry
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository

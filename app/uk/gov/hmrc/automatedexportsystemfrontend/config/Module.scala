@@ -17,8 +17,12 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.config
 
 import com.google.inject.AbstractModule
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesDataRequiredAction, AesDataRequiredActionImpl}
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesDataRetrievalAction, AesDataRetrievalActionImpl}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{
+  AesDataRequiredAction,
+  AesDataRequiredActionImpl,
+  AesDataRetrievalAction,
+  AesDataRetrievalActionImpl
+}
 
 import java.time.{Clock, ZoneOffset}
 

@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancySealsSummary
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
+import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.SealsCYAView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import play.api.Logger
-import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.SealsCYAView
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
 
 import javax.inject.Inject
 

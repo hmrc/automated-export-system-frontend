@@ -18,8 +18,8 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.identificationNumberRegex
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyTransportMeansFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.models.TransportAcrossBorderDetails
 
 class AmendDiscrepancyTransportMeansFormProviderSpec extends StringFieldBehaviours {

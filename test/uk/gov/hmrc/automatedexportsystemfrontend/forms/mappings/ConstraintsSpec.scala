@@ -20,9 +20,9 @@ import generators.Generators
 import org.scalacheck.Gen
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.data.validation.{Invalid, Valid}
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.config.CurrencyFormatter
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Constraints
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 
 import java.time.LocalDate
 

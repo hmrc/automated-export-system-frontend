@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.IsSplitExitFormProvider
 
 class IsSplitExitFormProviderSpec extends BooleanFieldBehaviours {

@@ -20,12 +20,11 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.{Amend, Standard}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
-import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
 class AmendSubmissionDataService @Inject() extends Logging {
 

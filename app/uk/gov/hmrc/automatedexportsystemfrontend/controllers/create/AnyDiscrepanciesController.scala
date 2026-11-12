@@ -47,23 +47,16 @@ class AnyDiscrepanciesController @Inject() (
 
   val form = formProvider()
 
-  //  def onPageLoad(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
 
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
-    //      val preparedForm = request.userAnswers.get(AnyDiscrepanciesPage) match {
     val preparedForm: Form[Boolean] =
-      answers.get(AnyDiscrepanciesPage).fold(form)(form.fill)
+      request.userAnswers.get(AnyDiscrepanciesPage).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode)
     Future.successful(Ok(preparedView))
   }
 
-  //  def onSubmit(mode: Mode): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
 
     form
       .bindFromRequest()
@@ -74,8 +67,7 @@ class AnyDiscrepanciesController @Inject() (
         },
         value =>
           for {
-            //            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyDiscrepanciesPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(AnyDiscrepanciesPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AnyDiscrepanciesPage, value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(createNavigator.nextPage(AnyDiscrepanciesPage, mode, updatedAnswers))
       )

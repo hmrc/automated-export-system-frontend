@@ -17,8 +17,8 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendLocationTypeFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationType
 
 class AmendLocationTypeFormProviderSpec extends OptionFieldBehaviours {

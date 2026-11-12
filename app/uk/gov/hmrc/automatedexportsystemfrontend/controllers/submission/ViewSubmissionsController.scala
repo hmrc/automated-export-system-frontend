@@ -24,8 +24,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.SubmissionViewModelMappe
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionsView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
-import scala.concurrent.ExecutionContext
 import javax.inject.Inject
+import scala.concurrent.ExecutionContext
 
 class ViewSubmissionsController @Inject() (
   override val messagesApi: MessagesApi,

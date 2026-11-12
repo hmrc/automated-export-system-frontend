@@ -18,8 +18,8 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings
 
 import org.scalatest.OptionValues
 import play.api.data.{Form, FormError}
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.Enumerable
 
 object MappingsSpec {

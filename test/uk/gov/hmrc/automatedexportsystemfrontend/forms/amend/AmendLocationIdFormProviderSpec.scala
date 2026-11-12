@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
+import org.scalacheck.Gen
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{additionalIdentifierRegex, authorisationNumberRegex}
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendLocationIdFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier}
-import org.scalacheck.Gen
 
 class AmendLocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehaviours {
 

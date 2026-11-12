@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterMrnFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendEnterMrnPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.amend.AmendEnterMrnView
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -46,22 +46,16 @@ class AmendEnterMrnController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
+    implicit request =>
 
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REPLACED WITH
+      val preparedForm = request.userAnswers.get(AmendEnterMrnPage(submissionId)).fold(form)(form.fill)
 
-    val preparedForm = answers.get(AmendEnterMrnPage(submissionId)).fold(form)(form.fill)
-
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
-    Future.successful(Ok(preparedView))
+      val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
+      Future.successful(Ok(preparedView))
   }
 
-  // TO BE REPLACED WITH
-  // def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -71,8 +65,7 @@ class AmendEnterMrnController @Inject() (
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(answers.set(AmendEnterMrnPage(submissionId), value))
-            // updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendEnterMrnPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(amendNavigator.nextPage(AmendEnterMrnPage(submissionId), mode, updatedAnswers))
       )

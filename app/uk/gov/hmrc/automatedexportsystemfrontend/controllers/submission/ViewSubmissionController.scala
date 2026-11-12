@@ -23,11 +23,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSyste
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystemfrontend.models.ViewSubmissionViewModelMapper
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.AmendmentAnswersMapper
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.ViewSubmissionView
-import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import uk.gov.hmrc.http.UpstreamErrorResponse
-import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
+import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

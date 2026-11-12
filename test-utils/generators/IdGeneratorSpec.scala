@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.utils
 
+import org.mockito.Mockito.{spy, when}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
-import org.mockito.Mockito.{spy, when}
 
 import java.util.UUID
 

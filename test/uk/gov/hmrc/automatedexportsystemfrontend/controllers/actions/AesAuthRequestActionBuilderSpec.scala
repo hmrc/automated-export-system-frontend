@@ -26,11 +26,11 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.*
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.*
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.requests.AesAuthRequest
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.*
 
 import java.net.URLDecoder
 import scala.concurrent.Future

@@ -25,8 +25,8 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes as mainRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes as submissionRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   SingleSubmissionCustomsOfficeOfExitActual,
