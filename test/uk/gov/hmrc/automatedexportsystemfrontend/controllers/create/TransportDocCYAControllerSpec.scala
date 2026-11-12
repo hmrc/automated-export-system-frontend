@@ -59,6 +59,7 @@ class TransportDocCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("2")
 
         body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url}"""")
+
       }
     }
 
@@ -82,7 +83,7 @@ class TransportDocCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Transport document reference")
         body should include("2")
 
-        body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(None, CheckMode).url}"""")
       }
     }
 
