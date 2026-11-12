@@ -21,6 +21,11 @@ import org.scalacheck.{Arbitrary, Gen}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
 
 trait ModelGenerators {
+
+  implicit lazy val arbitraryWhatDoYouWantToDo: Arbitrary[WhatDoYouWantToDo] =
+    Arbitrary {
+      Gen.oneOf(WhatDoYouWantToDo.values.toSeq)
+    }
   // Lowercase alpha chars are not allowed in most identifiers
   private val alphaNumChar: Gen[Char] = Gen.oneOf(Gen.alphaUpperChar, Gen.numChar)
 

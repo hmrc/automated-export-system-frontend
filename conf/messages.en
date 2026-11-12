@@ -583,3 +583,11 @@ addAnotherTransportEquipment.plural.remaining=You can add <strong>{0}</strong> m
 addAnotherTransportEquipment.addAnother=Do you want to add another transport equipment entry?
 addAnotherTransportEquipment.change.hidden=transport equipment {0}
 
+
+whatDoYouWantToDo.title = What do you want to do?
+whatDoYouWantToDo.heading = What do you want to do?
+whatDoYouWantToDo.submitNew = Submit a new notification
+whatDoYouWantToDo.viewOrCancel = View or cancel an existing notification
+whatDoYouWantToDo.checkYourAnswersLabel = What do you want to do?
+whatDoYouWantToDo.error.required = Select whatDoYouWantToDo
+whatDoYouWantToDo.change.hidden = WhatDoYouWantToDo

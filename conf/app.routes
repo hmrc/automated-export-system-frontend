@@ -275,3 +275,7 @@ POST       /change-add-another-transport-equipment                       uk.gov.
 
 GET        /transport-equipment-check-answers/:transportEquipmentIndex      uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.TransportEquipmentCYAController.onPageLoad(transportEquipmentIndex: Int, mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode)
 GET        /change-transport-equipment-check-answers/:transportEquipmentIndex uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.TransportEquipmentCYAController.onPageLoad(transportEquipmentIndex: Int, mode: uk.gov.hmrc.automatedexportsystemfrontend.models.Mode = uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode)
+GET        /whatDoYouWantToDo                        controllers.WhatDoYouWantToDoController.onPageLoad(mode: Mode = NormalMode)
+POST       /whatDoYouWantToDo                        controllers.WhatDoYouWantToDoController.onSubmit(mode: Mode = NormalMode)
+GET        /changeWhatDoYouWantToDo                  controllers.WhatDoYouWantToDoController.onPageLoad(mode: Mode = CheckMode)
+POST       /changeWhatDoYouWantToDo                  controllers.WhatDoYouWantToDoController.onSubmit(mode: Mode = CheckMode)
