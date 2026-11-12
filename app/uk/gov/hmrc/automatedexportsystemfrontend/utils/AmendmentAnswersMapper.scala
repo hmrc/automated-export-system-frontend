@@ -126,7 +126,11 @@ class AmendmentAnswersMapper {
                   case Some(code) =>
                     ua.set(
                       AmendDiscrepancyPackingPage(submissionId),
-                      PackingDetails(code, pack.numberOfPackages.flatMap(_.toIntOption).getOrElse(0), pack.shippingMarks.getOrElse(""))
+                      PackingDetails(
+                        packagingCode = Some(code),
+                        numberOfPackages = pack.numberOfPackages.flatMap(_.toIntOption),
+                        shippingMarks = pack.shippingMarks
+                      )
                     )
                   case None =>
                     Try(ua)

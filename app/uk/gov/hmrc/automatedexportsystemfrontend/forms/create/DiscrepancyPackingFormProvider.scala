@@ -28,20 +28,26 @@ class DiscrepancyPackingFormProvider @Inject() extends Mappings {
 
   def apply(): Form[PackingDetails] = Form(
     mapping(
-      "packagingCode" -> text("discrepancyPacking.error.packagingCode.required")
-        .verifying(maxLength(100, "discrepancyPacking.error.packagingCode.length")),
-      "numberOfPackages" -> int("discrepancyPacking.error.numberOfPackages.required")
-        .verifying(
-          minimumValue(0, "discrepancyPacking.error.numberOfPackages.length"),
-          maximumValue(numberOfPackagesMaxValue, "discrepancyPacking.error.numberOfPackages.length")
-        ),
-      "shippingMarks" -> text("discrepancyPacking.error.shippingMarks.required")
-        .verifying(
-          firstError(
-            maxLength(shippingMarksMaxLength, "discrepancyPacking.error.shippingMarks.length"),
-            regexp(shippingMarksRegex, "discrepancyPacking.error.shippingMarks.invalid")
+      "packagingCode" -> optional(
+        text("discrepancyPacking.error.packagingCode.required")
+          .verifying(maxLength(100, "discrepancyPacking.error.packagingCode.length"))
+      ),
+      "numberOfPackages" -> optional(
+        int("discrepancyPacking.error.numberOfPackages.required")
+          .verifying(
+            minimumValue(0, "discrepancyPacking.error.numberOfPackages.length"),
+            maximumValue(numberOfPackagesMaxValue, "discrepancyPacking.error.numberOfPackages.length")
           )
-        )
+      ),
+      "shippingMarks" -> optional(
+        text("discrepancyPacking.error.shippingMarks.required")
+          .verifying(
+            firstError(
+              maxLength(shippingMarksMaxLength, "discrepancyPacking.error.shippingMarks.length"),
+              regexp(shippingMarksRegex, "discrepancyPacking.error.shippingMarks.invalid")
+            )
+          )
+      )
     )(PackingDetails.apply)(x => Some((x.packagingCode, x.numberOfPackages, x.shippingMarks)))
   )
 }

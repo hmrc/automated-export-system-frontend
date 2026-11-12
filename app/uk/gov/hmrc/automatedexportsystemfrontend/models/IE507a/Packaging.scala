@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
-case class Packaging(sequenceNumber: Int, typeOfPackages: String, numberOfPackages: String, shippingMarks: String)
+case class Packaging(sequenceNumber: Int, typeOfPackages: Option[String], numberOfPackages: Option[String], shippingMarks: Option[String])
 
 object Packaging {
   given format: Format[Packaging] = Json.format[Packaging]

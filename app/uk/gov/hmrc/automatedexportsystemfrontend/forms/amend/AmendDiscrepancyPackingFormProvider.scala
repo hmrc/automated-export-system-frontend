@@ -42,6 +42,12 @@ class AmendDiscrepancyPackingFormProvider @Inject() extends Mappings {
             regexp(shippingMarksRegex, "discrepancyPacking.error.shippingMarks.invalid")
           )
         )
-    )(PackingDetails.apply)(x => Some((x.packagingCode, x.numberOfPackages, x.shippingMarks)))
+    )((packagingCode, numberOfPackages, shippingMarks) => PackingDetails(Some(packagingCode), Some(numberOfPackages), Some(shippingMarks)))(x =>
+      for
+        packagingCode <- x.packagingCode
+        numberOfPackages <- x.numberOfPackages
+        shippingMarks <- x.shippingMarks
+      yield (packagingCode, numberOfPackages, shippingMarks)
+    )
   )
 }
