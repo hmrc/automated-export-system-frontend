@@ -17,7 +17,8 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import org.mockito.ArgumentMatchers.any
@@ -44,7 +45,7 @@ class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new EnterMrnFormProvider()
   val form = formProvider()
 
-  lazy val enterMrnRoute = happyRoute.EnterMrnController.onPageLoad(NormalMode).url
+  lazy val enterMrnRoute = createRoute.EnterMrnController.onPageLoad(NormalMode).url
 
   "EnterMrn Controller" - {
 
@@ -142,36 +143,39 @@ class EnterMrnControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    // TODO readd when mongo set up
 
-    //    "must redirect to Journey Recovery for a GET if no existing data is found" in {
-//
-//      val application = applicationBuilder(userAnswers = None).build()
-//
-//      running(application) {
-//        val request = FakeRequest(GET, enterMrnRoute)
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
-//      }
-//    }
-//
-//    "must redirect to Journey Recovery for a POST if no existing data is found" in {
-//
-//      val application = applicationBuilder(userAnswers = None).build()
-//
-//      running(application) {
-//        val request =
-//          FakeRequest(POST, enterMrnRoute)
-//            .withFormUrlEncodedBody(("value", "answer"))
-//
-//        val result = route(application, request).value
-//
-//        status(result) mustEqual SEE_OTHER
-//        redirectLocation(result).value mustEqual controllers.problem.routes.JourneyRecoveryController.onPageLoad().url
-//      }
-//    }
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, enterMrnRoute)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, enterMrnRoute)
+            .withFormUrlEncodedBody(("value", "answer"))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
   }
 }
