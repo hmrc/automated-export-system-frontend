@@ -46,22 +46,16 @@ class AmendEnterMrnController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
+    implicit request =>
 
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REPLACED WITH
+      val preparedForm = request.userAnswers.get(AmendEnterMrnPage(submissionId)).fold(form)(form.fill)
 
-    val preparedForm = answers.get(AmendEnterMrnPage(submissionId)).fold(form)(form.fill)
-
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
-    Future.successful(Ok(preparedView))
+      val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
+      Future.successful(Ok(preparedView))
   }
 
-  // TO BE REPLACED WITH
-  // def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -71,8 +65,7 @@ class AmendEnterMrnController @Inject() (
         },
         value =>
           for {
-            updatedAnswers <- Future.fromTry(answers.set(AmendEnterMrnPage(submissionId), value))
-            // updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterDucrPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendEnterMrnPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(amendNavigator.nextPage(AmendEnterMrnPage(submissionId), mode, updatedAnswers))
       )

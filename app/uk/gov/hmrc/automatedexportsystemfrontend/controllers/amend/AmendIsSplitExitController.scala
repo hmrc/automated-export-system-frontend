@@ -46,23 +46,16 @@ class AmendIsSplitExitController @Inject() (
 
   val form = formProvider()
 
-//  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
-//      val preparedForm = request.userAnswers.get(AmendIsSplitExitPage) match {
-    val preparedForm = answers.get(AmendIsSplitExitPage(submissionId)).fold(form)(form.fill)
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+    
+    val preparedForm = request.userAnswers.get(AmendIsSplitExitPage(submissionId)).fold(form)(form.fill)
 
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
     Future.successful(Ok(preparedView))
   }
 
-//  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+    
     form
       .bindFromRequest()
       .fold(
@@ -72,8 +65,7 @@ class AmendIsSplitExitController @Inject() (
         },
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(IsSplitExitPage, value))
-            updatedAnswers <- Future.fromTry(answers.set(AmendIsSplitExitPage(submissionId), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendIsSplitExitPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(amendNavigator.nextPage(AmendIsSplitExitPage(submissionId), mode, updatedAnswers))
       )

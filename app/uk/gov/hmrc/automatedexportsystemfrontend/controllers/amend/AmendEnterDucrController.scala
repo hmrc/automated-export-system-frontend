@@ -47,21 +47,14 @@ class AmendEnterDucrController @Inject() (
 
   val form = formProvider()
 
-  // def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
 
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
-
-//      val preparedForm = request.userAnswers.get(AmendEnterDucrPage(submissionId) match {
-    val preparedForm: Form[String] = answers.get(AmendEnterDucrPage(submissionId)).fold(form)(form.fill)
+    val preparedForm: Form[String] = request.userAnswers.get(AmendEnterDucrPage(submissionId)).fold(form)(form.fill)
     val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
     Future.successful(Ok(preparedView))
   }
 
-//  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
 
     form
       .bindFromRequest()
@@ -72,8 +65,7 @@ class AmendEnterDucrController @Inject() (
         },
         value =>
           for {
-//            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendEnterDucrPage(submissionId), value))
-            updatedAnswers <- Future.fromTry(answers.set(AmendEnterDucrPage(submissionId), value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendEnterDucrPage(submissionId), value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(amendNavigator.nextPage(AmendEnterDucrPage(submissionId), mode, updatedAnswers))
       )

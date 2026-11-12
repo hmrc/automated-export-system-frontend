@@ -46,13 +46,12 @@ class EnterMrnController @Inject() (
 
   val form: Form[String] = formProvider()
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId))
-    val preparedForm = answers.get(EnterMrnPage).fold(form)(form.fill)
+  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+    val preparedForm = request.userAnswers.get(EnterMrnPage).fold(form)(form.fill)
     Future.successful(Ok(view(preparedForm, mode)))
   }
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -62,8 +61,7 @@ class EnterMrnController @Inject() (
         },
         value =>
           for {
-            answers <- Future.successful(request.userAnswers.getOrElse(UserAnswers(request.sessionId)))
-            updatedAnswers <- Future.fromTry(answers.set(EnterMrnPage, value))
+            updatedAnswers <- Future.fromTry(request.userAnswers.set(EnterMrnPage, value))
             _ <- sessionRepository.set(updatedAnswers)
           } yield Redirect(createNavigator.nextPage(EnterMrnPage, mode, updatedAnswers))
       )
