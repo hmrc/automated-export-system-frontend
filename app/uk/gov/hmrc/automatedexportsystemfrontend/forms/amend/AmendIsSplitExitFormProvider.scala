@@ -16,8 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 
 import javax.inject.Inject
 

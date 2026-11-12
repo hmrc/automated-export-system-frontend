@@ -24,9 +24,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyConsignmentView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}

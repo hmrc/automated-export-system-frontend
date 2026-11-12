@@ -21,24 +21,7 @@ import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
-  AmendAnyDiscrepanciesPage,
-  AmendDiscrepancyConsignmentPage,
-  AmendDiscrepancyGoodsPage,
-  AmendDiscrepancyReferencePage,
-  AmendDiscrepancySealsPage,
-  AmendDiscrepancyTransportDocPage,
-  AmendDiscrepancyTransportMeansPage,
-  AmendDiscrepancyTransportPage,
-  AmendEnterDucrPage,
-  AmendEnterMrnPage,
-  AmendIsSplitExitPage,
-  AmendLocationIdPage,
-  AmendLocationTypePage,
-  AmendOfficeOfExitPage,
-  AmendPartOfConsolidationPage
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.*
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps

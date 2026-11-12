@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 trait Enumerable[A] {
 

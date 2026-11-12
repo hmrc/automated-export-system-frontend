@@ -32,9 +32,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.OfficeOfExit
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
 case object OfficeOfExitPage extends QuestionPage[OfficeOfExit] {
 

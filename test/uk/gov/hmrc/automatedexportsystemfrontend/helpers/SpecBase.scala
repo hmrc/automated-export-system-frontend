@@ -16,12 +16,14 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.helpers
 
-import org.scalatest.matchers.should.Matchers
 import org.apache.pekko.actor.ActorSystem
 import org.apache.pekko.stream.Materializer
 import org.mockito.ArgumentMatchers.any
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
+import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
+import org.scalatest.freespec.AnyFreeSpecLike
+import org.scalatest.matchers.should.Matchers
+import org.scalatest.matchers.should.Matchers as ShouldMatch
 import org.scalatest.{BeforeAndAfterEach, Inside, OptionValues, TryValues}
 import play.api.Application
 import play.api.http.{HeaderNames, Status}
@@ -29,16 +31,13 @@ import play.api.i18n.{Messages, MessagesApi}
 import play.api.inject.bind
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.{DefaultAwaitTimeout, FakeRequest, FutureAwaits, ResultExtractors}
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesDataRequiredAction, AesDataRequiredActionImpl, AesDataRetrievalAction}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
-import uk.gov.hmrc.play.audit.http.HttpAuditing
-import org.scalatest.matchers.should.Matchers as ShouldMatch
-import uk.gov.hmrc.http.HeaderCarrier
-import org.scalatest.freespec.AnyFreeSpecLike
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
-import org.mockito.Mockito.when
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
+import uk.gov.hmrc.http.HeaderCarrier
+import uk.gov.hmrc.play.audit.http.HttpAuditing
 
 import scala.concurrent.{ExecutionContext, Future}
 

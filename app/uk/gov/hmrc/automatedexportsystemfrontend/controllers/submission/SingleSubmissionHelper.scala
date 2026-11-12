@@ -18,19 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsReference
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
-  AmendDiscrepancyConsignmentSummary,
-  AmendDiscrepancyGoodsSummary,
-  AmendDiscrepancyPackingSummary,
-  AmendDiscrepancyReferenceSummary,
-  AmendDiscrepancySealsSummary,
-  AmendDiscrepancyTransportDocSummary,
-  AmendDiscrepancyTransportMeansSummary,
-  AmendDiscrepancyTransportSummary,
-  AmendLocationIdSummary,
-  AmendLocationTypeSummary,
-  AmendPartOfConsolidationSummary
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class SingleSubmissionHelper {

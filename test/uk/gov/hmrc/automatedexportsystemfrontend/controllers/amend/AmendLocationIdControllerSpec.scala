@@ -16,11 +16,11 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
+import org.jsoup.Jsoup
+import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import org.jsoup.Jsoup
-import org.mockito.ArgumentCaptor
 import play.api.data.Form
 import play.api.inject.bind
 import play.api.libs.json.Json

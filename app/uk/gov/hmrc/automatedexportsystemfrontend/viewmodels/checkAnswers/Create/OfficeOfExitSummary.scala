@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
 import controllers.routes
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.stringToText
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.stringToKey
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.stringToKey
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 

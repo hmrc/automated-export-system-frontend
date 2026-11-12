@@ -18,12 +18,12 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create
 
 import play.api.i18n.Messages
 import play.api.test.Helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 
 class AddAnotherSealViewModelSpec extends SpecBase {
   private implicit val messages: Messages = Helpers.stubMessages()

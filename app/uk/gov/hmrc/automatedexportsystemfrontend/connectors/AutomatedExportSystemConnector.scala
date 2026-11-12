@@ -19,10 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.connectors
 import com.google.inject.*
 import org.apache.pekko.Done
 import play.api.Logging
-import play.api.http.Status.{ACCEPTED, OK}
-import uk.gov.hmrc.http.HttpReads.Implicits.*
-import uk.gov.hmrc.http.client.HttpClientV2
-import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
+import play.api.http.Status.{ACCEPTED, NO_CONTENT, OK}
 import play.api.libs.ws.writeableOf_String
 import uk.gov.hmrc.automatedexportsystemfrontend.config.FrontendAppConfig
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
@@ -31,7 +28,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   SubmissionSummaryResponseList,
   SubmissionSummaryResponseParser
 }
-import play.api.http.Status.NO_CONTENT
+import uk.gov.hmrc.http.HttpReads.Implicits.*
+import uk.gov.hmrc.http.client.HttpClientV2
+import uk.gov.hmrc.http.{HeaderCarrier, HttpResponse, StringContextOps, UpstreamErrorResponse}
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.xml.XML

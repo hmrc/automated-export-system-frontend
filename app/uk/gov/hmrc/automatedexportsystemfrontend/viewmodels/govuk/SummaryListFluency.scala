@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk
 
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Content
-import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist._
+import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.*
 
 object summarylist extends SummaryListFluency
 

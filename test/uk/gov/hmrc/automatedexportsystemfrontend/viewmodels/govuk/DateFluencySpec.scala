@@ -16,14 +16,14 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import org.scalatest.OptionValues
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.data.Form
 import play.api.i18n.Messages
 import play.api.test.Helpers.stubMessages
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all._
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
 
 import java.time.LocalDate
 

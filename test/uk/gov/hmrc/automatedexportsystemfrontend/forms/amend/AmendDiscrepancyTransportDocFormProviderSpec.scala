@@ -24,8 +24,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
   referenceNumberMaxLength,
   referenceNumberRegex
 }
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyTransportDocFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 
 class AmendDiscrepancyTransportDocFormProviderSpec extends StringFieldBehaviours {
 

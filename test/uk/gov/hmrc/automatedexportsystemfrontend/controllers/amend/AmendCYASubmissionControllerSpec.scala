@@ -16,15 +16,15 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend
 
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.when
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Element
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
-import uk.gov.hmrc.auth.core.{EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
+import uk.gov.hmrc.auth.core.{EnrolmentIdentifier, Enrolments}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase

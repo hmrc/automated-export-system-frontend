@@ -25,18 +25,17 @@ import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyTransportMeansFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportMeansFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, TransportAcrossBorderDetails, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{AmendNavigator, CreateNavigator, FakeAmendNavigator, FakeCreateNavigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyTransportMeansPage
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportMeansPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyTransportMeansFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{AmendNavigator, FakeAmendNavigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyTransportMeansPage
 
 import scala.concurrent.Future
 

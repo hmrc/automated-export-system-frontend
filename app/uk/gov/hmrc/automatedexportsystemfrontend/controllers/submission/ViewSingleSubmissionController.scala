@@ -16,15 +16,14 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
+import play.api.Logger
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
-import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   NormalMode,
   SingleSubmissionActiveBorderTransportMeans,
@@ -37,6 +36,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   SingleSubmissionTransportEquipment
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 import uk.gov.hmrc.automatedexportsystemfrontend.utils.AmendmentAnswersMapper
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel

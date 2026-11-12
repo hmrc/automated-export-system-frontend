@@ -16,12 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth
 
-import javax.inject.Inject
 import play.api.i18n.I18nSupport
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.Html
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.auth.SignedOutView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+
+import javax.inject.Inject
 
 class SignedOutController @Inject() (val controllerComponents: MessagesControllerComponents, view: SignedOutView)
     extends FrontendBaseController with I18nSupport {

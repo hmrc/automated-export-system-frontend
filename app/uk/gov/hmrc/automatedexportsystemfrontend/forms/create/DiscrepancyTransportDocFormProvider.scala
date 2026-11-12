@@ -18,13 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import play.api.data.Forms.*
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
-  documentTypeMaxLength,
-  documentTypeRegex,
-  referenceNumberMaxLength,
-  referenceNumberRegex
-}
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{transportDocumentReferenceNumberRegex, transportDocumentTypeRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.DocumentDetails
 

@@ -18,6 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
 import play.api.libs.json.*
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
+
 import scala.xml.Text
 
 enum ExportOperationType(val status: Int):

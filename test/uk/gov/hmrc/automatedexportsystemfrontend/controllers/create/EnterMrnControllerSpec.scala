@@ -16,11 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustEqual
@@ -29,8 +24,12 @@ import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterMrnFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.FakeNavigator
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.EnterMrnPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.EnterMrnView

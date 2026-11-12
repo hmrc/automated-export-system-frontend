@@ -17,9 +17,9 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth
 
 import play.api.inject.bind
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.auth.SignedOutView
 
 class SignedOutControllerSpec extends SpecBase {

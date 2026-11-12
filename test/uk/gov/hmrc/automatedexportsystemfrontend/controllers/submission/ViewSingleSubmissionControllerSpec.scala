@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import org.scalatest.matchers.must.Matchers.mustEqual
 import play.api.inject.bind
@@ -29,12 +29,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionResponseParser
-import scala.xml.XML
 import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
-import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 
 import scala.concurrent.Future
+import scala.xml.XML
 
 class ViewSingleSubmissionControllerSpec extends SpecBase {
 

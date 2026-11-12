@@ -16,10 +16,10 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import play.api.data.Form
 import play.api.data.Forms.{mapping, optional}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{mucrMaxLength, mucrRegex}
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
 
 import javax.inject.Inject

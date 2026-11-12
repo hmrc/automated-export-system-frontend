@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
+import org.scalatest.matchers.should.Matchers.shouldBe
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
   documentTypeMaxLength,
@@ -23,7 +24,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
   referenceNumberMaxLength,
   referenceNumberRegex
 }
-import org.scalatest.matchers.should.Matchers.shouldBe
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportDocFormProvider
 
