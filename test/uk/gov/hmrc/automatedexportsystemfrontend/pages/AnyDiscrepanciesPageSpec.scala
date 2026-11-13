@@ -51,7 +51,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
             .success
             .value
-            .set(DiscrepancyPackingPage(index), PackingDetails("packagingCode", 2, "shippingMarks"))
+            .set(DiscrepancyPackingPage(index), PackingDetails(Some("packagingCode"), Some(2), Some("shippingMarks")))
             .success
             .value
 
@@ -92,7 +92,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
             .success
             .value
-            .set(DiscrepancyPackingPage(index), PackingDetails("packagingCode", 2, "shippingMarks"))
+            .set(DiscrepancyPackingPage(index), PackingDetails(Some("packagingCode"), Some(2), Some("shippingMarks")))
             .success
             .value
 

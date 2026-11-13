@@ -76,7 +76,7 @@ trait ModelGenerators {
         packagingCode <- arbitrary[String]
         numberOfPackages <- arbitrary[Int]
         shippingMarks <- arbitrary[String]
-      } yield PackingDetails(packagingCode, numberOfPackages, shippingMarks)
+      } yield PackingDetails(Some(packagingCode), Some(numberOfPackages), Some(shippingMarks))
     }
 
   given arbitraryDiscrepancyGoods: Arbitrary[WhatHasChangedDetails] =
