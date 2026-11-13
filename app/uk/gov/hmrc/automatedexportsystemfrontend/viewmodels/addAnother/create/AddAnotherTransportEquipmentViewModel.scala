@@ -37,38 +37,12 @@ case class AddAnotherTransportEquipmentViewModel(
   firstTransportEquipment: Int,
   lastTransportEquipment: Int,
   rows: Seq[SummaryListRow],
-  transportEquipmentNumbers: Seq[Int],
-  pageNumbers: Seq[Int]
+  pagination: Option[Pagination]
 ) {
-
-  def hasPreviousPage: Boolean = currentPage > 1
-
-  def hasNextPage: Boolean = currentPage < totalPages
-
-  def previousPage: Int = currentPage - 1
-
-  def nextPage: Int = currentPage + 1
 
   def pageParam: Option[Int] =
     if (totalPages > 1) Some(currentPage)
     else None
-
-  def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
-    if (totalPages <= 1) None
-    else {
-      def href(page: Int): String =
-        createRoute.AddAnotherSealController.onPageLoad(Some(page), mode).url
-
-      Some(
-        Pagination(
-          items = Some(pageNumbers.map { number =>
-            PaginationItem(href = href(number), number = Some(number.toString), current = Some(number == currentPage))
-          }),
-          previous = Option.when(hasPreviousPage)(PaginationLink(href = href(previousPage), text = Some(messages("site.pagination.previous")))),
-          next = Option.when(hasNextPage)(PaginationLink(href = href(nextPage), text = Some(messages("site.pagination.next"))))
-        )
-      )
-    }
 }
 
 object AddAnotherTransportEquipmentViewModel {
@@ -81,29 +55,9 @@ object AddAnotherTransportEquipmentViewModel {
 
     val requestedPage: Int = page.getOrElse(1)
 
-    val totalPages: Int = math.max(1, ((numberOfTransportEquipment - 1) / pageSize) + 1)
+    val totalPages: Int = PaginationBuilder.totalPages(numberOfTransportEquipment)
 
     val currentPage: Int = math.min(math.max(requestedPage, 1), totalPages)
-
-    val firstTransportEquipment: Int =
-      if (numberOfTransportEquipment == 0) {
-        0
-      } else {
-        ((currentPage - 1) * pageSize) + 1
-      }
-
-    val lastTransportEquipment: Int = math.min(currentPage * pageSize, numberOfTransportEquipment)
-
-    val firstPageNumber: Int = math.max(1, currentPage - 1)
-
-    val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
-
-    val transportEquipmentNumbers: Seq[Int] =
-      if (numberOfTransportEquipment == 0) {
-        Seq.empty
-      } else {
-        firstTransportEquipment to lastTransportEquipment
-      }
 
     AddAnotherTransportEquipmentViewModel(
       numberOfTransportEquipment = numberOfTransportEquipment,
@@ -113,16 +67,17 @@ object AddAnotherTransportEquipmentViewModel {
       remainingSingularOrPlural = if (remainingTransportEquipment == 1) "singular" else "plural",
       currentPage = currentPage,
       totalPages = totalPages,
-      firstTransportEquipment = firstTransportEquipment,
-      lastTransportEquipment = lastTransportEquipment,
-      rows = rows(transportEquipmentNumbers, mode),
-      transportEquipmentNumbers = transportEquipmentNumbers,
-      pageNumbers = firstPageNumber to lastPageNumber
+      firstTransportEquipment = PaginationBuilder.firstItem(currentPage),
+      lastTransportEquipment = PaginationBuilder.lastItem(currentPage, numberOfTransportEquipment),
+      rows = rows(userAnswers, currentPage, mode),
+      pagination =
+        PaginationBuilder.pagination(currentPage, totalPages, index => createRoute.AddAnotherTransportController.onPageLoad(Some(index), mode).url)
     )
   }
 
-  private def rows(transportEquipmentNumbers: Seq[Int], mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    transportEquipmentNumbers.map { transportEquipmentNumber =>
+  private def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+    PaginationBuilder.slice(DiscrepancyTransportEquipment.getAll(userAnswers).zipWithIndex, currentPage).map { case (_, i) =>
+      val transportEquipmentNumber = i + 1
       SummaryListRow(
         key = Key(
           content = Text(messages("addAnotherTransportEquipment.key", transportEquipmentNumber)),

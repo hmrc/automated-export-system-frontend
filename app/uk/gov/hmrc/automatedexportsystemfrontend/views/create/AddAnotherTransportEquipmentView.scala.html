@@ -39,7 +39,7 @@
 
     @govukSummaryList(SummaryList(rows = viewModel.rows))
 
-    @viewModel.pagination(mode).map { pagination =>
+    @viewModel.pagination.map { pagination =>
         <p class="govuk-body">@messages( "site.pagination.itemsShowing", viewModel.firstTransportEquipment, viewModel.lastTransportEquipment, viewModel.numberOfTransportEquipment )</p>
         @govukPagination(pagination)
     }
