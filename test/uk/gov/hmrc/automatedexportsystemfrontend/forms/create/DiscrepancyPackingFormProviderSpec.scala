@@ -28,35 +28,28 @@ class DiscrepancyPackingFormProviderSpec extends StringFieldBehaviours with IntF
   ".packagingCode" - {
 
     val fieldName = "packagingCode"
-    val requiredKey = "discrepancyPacking.error.packagingCode.required"
     val lengthKey = "discrepancyPacking.error.packagingCode.length"
     val maxLength = 100
 
     behave like fieldThatBindsValidData(form, fieldName, stringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
   }
 
   ".numberOfPackages" - {
 
     val fieldName = "numberOfPackages"
-    val requiredKey = "discrepancyPacking.error.numberOfPackages.required"
     val lengthKey = "discrepancyPacking.error.numberOfPackages.length"
     val maxLength = 99999999
 
     behave like intFieldWithMaximum(form, fieldName, maxLength, FormError(fieldName, lengthKey, Seq(maxLength)))
 
 //    behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
   }
 
   ".shippingMarks" - {
 
     val fieldName = "shippingMarks"
-    val requiredKey = "discrepancyPacking.error.shippingMarks.required"
     val lengthKey = "discrepancyPacking.error.shippingMarks.length"
     val invalidKey = "discrepancyPacking.error.shippingMarks.invalid"
     val maxLength = 512
@@ -64,8 +57,6 @@ class DiscrepancyPackingFormProviderSpec extends StringFieldBehaviours with IntF
     behave like fieldThatBindsValidData(form, fieldName, alphaNumStringsWithMaxLength(maxLength))
 
     behave like fieldWithMaxLength(form, fieldName, maxLength = maxLength, lengthError = FormError(fieldName, lengthKey, Seq(maxLength)))
-
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))
 
     "must not bind invalid data" in {
 

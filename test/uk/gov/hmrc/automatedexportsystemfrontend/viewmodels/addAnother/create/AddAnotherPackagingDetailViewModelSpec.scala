@@ -33,10 +33,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
   val maxPackagingDetails: Int = DiscrepancyPacking.maxPackagingDetails
 
-  val userAnswers: UserAnswers = emptyUserAnswers.set(DiscrepancyPackingPage(1), PackingDetails("packagingCode1", 1, "shippingMarks1")).success.value
+  val userAnswers: UserAnswers =
+    emptyUserAnswers.set(DiscrepancyPackingPage(1), PackingDetails(Some("packagingCode1"), Some(1), Some("shippingMarks1"))).success.value
 
   val packingDetailsListMax: List[PackingDetails] = (1 to maxPackagingDetails).map { number =>
-    PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+    PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
   }.toList
 
   "AddAnotherPackagingDetailViewModel" - {
@@ -114,7 +115,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
     ".pagination" - {
       "must return None when there is 25 items or less" in {
         val packagingDetailsList: List[PackingDetails] = (1 to 25).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -129,7 +130,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must return None when there is 25 items or less in CheckMode" in {
         val packagingDetailsList: List[PackingDetails] = (1 to 25).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -145,7 +146,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
       "must return Pagination for page 1 when there is 26 items" in {
 
         val packingDetailsList = (1 to 26).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -172,7 +173,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
       "must return Pagination for page 1 when there is 26 items in CheckMode" in {
 
         val packingDetailsList = (1 to 26).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -199,7 +200,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
       "must return Pagination for page 2 when there is 26 items" in {
 
         val packingDetailsList = (1 to 26).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -225,7 +226,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must return Pagination when there is 99 items" - {
         val packingDetailsList = (1 to 99).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -346,7 +347,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model when 1 more item can be added" in {
         val packingDetailsList = (1 until maxPackagingDetails).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -396,7 +397,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
     "when calculating pagination" - {
       "must provide the correct model before pagination starts" in {
         val packingDetailsList = (1 to 25).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -426,7 +427,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model before pagination starts in CheckMode" in {
         val packingDetailsList = (1 to 25).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -456,7 +457,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for when pagination starts at 26 items added" in {
         val packingDetailsList = (1 to 26).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -487,7 +488,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for a final but partially completed page" in {
         val packingDetailsList = (1 to 26).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers

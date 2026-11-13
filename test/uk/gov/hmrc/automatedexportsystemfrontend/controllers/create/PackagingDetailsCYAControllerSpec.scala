@@ -30,9 +30,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPacking
 class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+    .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
+    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
     .success
     .value
 
@@ -97,7 +97,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a GET if it is an empty index" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS123"))
+        .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS123")))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))

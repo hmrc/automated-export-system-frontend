@@ -18,19 +18,26 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
+import scala.xml.NodeSeq
 
 case class Packaging(sequenceNumber: Int, typeOfPackages: Option[String], numberOfPackages: Option[String], shippingMarks: Option[String])
 
 object Packaging {
   given format: Format[Packaging] = Json.format[Packaging]
 
-  given xmlWrites: XmlWrites[Packaging] = XmlWrites.instance { p =>
+  given xmlWrites: XmlWrites[Packaging] = XmlWrites.instance { packaging =>
     XmlWrites.elem(
       "Packaging",
-      XmlWrites.textElem("sequenceNumber", p.sequenceNumber),
-      XmlWrites.textElem("typeOfPackages", p.typeOfPackages),
-      XmlWrites.textElem("numberOfPackages", p.numberOfPackages),
-      XmlWrites.textElem("shippingMarks", p.shippingMarks)
+      XmlWrites.textElem("sequenceNumber", packaging.sequenceNumber),
+      packaging.typeOfPackages
+        .map(XmlWrites.textElem("typeOfPackages", _))
+        .getOrElse(NodeSeq.Empty),
+      packaging.numberOfPackages
+        .map(XmlWrites.textElem("numberOfPackages", _))
+        .getOrElse(NodeSeq.Empty),
+      packaging.shippingMarks
+        .map(XmlWrites.textElem("shippingMarks", _))
+        .getOrElse(NodeSeq.Empty)
     )
   }
 }

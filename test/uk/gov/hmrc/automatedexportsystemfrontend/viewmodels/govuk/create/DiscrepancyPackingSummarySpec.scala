@@ -33,7 +33,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
 
   "rows" - {
     "when answered, return the summary rows in NormalMode" in {
-      val packingDetails = PackingDetails("BX", 2, "MARKS123")
+      val packingDetails = PackingDetails(Some("BX"), Some(2), Some("MARKS123"))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyPackingPage(1), packingDetails)
         .get
@@ -78,7 +78,7 @@ class DiscrepancyPackingSummarySpec extends AnyFreeSpec with Matchers with Gener
     }
 
     "when answered, return the summary rows in CheckMode" in {
-      val packingDetails = PackingDetails("BX", 2, "MARKS123")
+      val packingDetails = PackingDetails(Some("BX"), Some(2), Some("MARKS123"))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyPackingPage(1), packingDetails)
         .get

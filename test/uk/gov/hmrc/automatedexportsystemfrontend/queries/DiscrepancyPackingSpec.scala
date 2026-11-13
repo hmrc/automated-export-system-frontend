@@ -24,16 +24,20 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 class DiscrepancyPackingSpec extends SpecBase {
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+    .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
+    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
     .success
     .value
 
   "DiscrepancyPacking" - {
     ".getAll" - {
       "must get all of the DiscrepancyPacking data" in {
-        val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("CT", 2, "MARKS2"), PackingDetails("PK", 3, "MARKS3"))
+        val expected = List(
+          PackingDetails(Some("BX"), Some(1), Some("MARKS1")),
+          PackingDetails(Some("CT"), Some(2), Some("MARKS2")),
+          PackingDetails(Some("PK"), Some(3), Some("MARKS3"))
+        )
 
         DiscrepancyPacking.getAll(userAnswers) mustBe expected
       }
@@ -77,7 +81,7 @@ class DiscrepancyPackingSpec extends SpecBase {
       "must remove one DiscrepancyPacking item at the correct index" in {
         val updatedUserAnswers = DiscrepancyPacking.removeOne(userAnswers, 2).success.value
 
-        val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("PK", 3, "MARKS3"))
+        val expected = List(PackingDetails(Some("BX"), Some(1), Some("MARKS1")), PackingDetails(Some("PK"), Some(3), Some("MARKS3")))
 
         DiscrepancyPacking.getAll(updatedUserAnswers) mustBe expected
       }
