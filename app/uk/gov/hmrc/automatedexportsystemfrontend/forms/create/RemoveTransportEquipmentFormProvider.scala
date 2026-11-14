@@ -23,6 +23,6 @@ import javax.inject.Inject
 
 class RemoveTransportEquipmentFormProvider @Inject() extends Mappings {
 
-  def apply(transportEquipmentIndex: Int): Form[Boolean] =
-    Form("value" -> boolean("removeTransportEquipment.error.required", args = Seq(transportEquipmentIndex.toString)))
+  def apply(containerId: String): Form[Boolean] =
+    Form("value" -> boolean("removeTransportEquipment.error.required", args = Seq(containerId)))
 }

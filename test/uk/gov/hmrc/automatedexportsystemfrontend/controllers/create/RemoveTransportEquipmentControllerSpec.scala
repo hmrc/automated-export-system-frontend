@@ -41,7 +41,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with MockitoSugar 
   val transportEquipmentIndex = 30
 
   val transportEquipmentList50: List[ContainerDetails] = (1 to 50).map { number =>
-    ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+    ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
   }.toList
 
   val userAnswers: UserAnswers = emptyUserAnswers
@@ -51,20 +51,50 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with MockitoSugar 
 
   "RemoveTransportEquipment Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET when the containerId is provided" in {
+
+      val userAnswers: UserAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportPage(1), ContainerDetails(Some(s"CONT1"), Some(2)))
+        .success
+        .value
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveTransportEquipmentController.onPageLoad(transportEquipmentIndex, 2, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemoveTransportEquipmentController.onPageLoad(1, 1, NormalMode).url)
 
         val result = route(application, request).value
 
         status(result) shouldBe OK
         val body = contentAsString(result)
-        body should include("Are you sure you want to remove transport equipment 30?")
+        body should include("Are you sure you want to remove transport equipment CONT1?")
+        body should include("This will also remove associated seals and goods references.")
+        body should include("Yes")
+        body should include("No")
+      }
+    }
+
+    "must return OK and the correct view for a GET when the containerId is not provided" in {
+
+      val userAnswers: UserAnswers = emptyUserAnswers
+        .set(DiscrepancyTransportPage(1), ContainerDetails(None, Some(2)))
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, createRoute.RemoveTransportEquipmentController.onPageLoad(1, 1, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe OK
+        val body = contentAsString(result)
+        body should include("Are you sure you want to remove transport equipment 1?")
         body should include("This will also remove associated seals and goods references.")
         body should include("Yes")
         body should include("No")
@@ -238,7 +268,7 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with MockitoSugar 
 
         status(result) shouldBe BAD_REQUEST
         val body = contentAsString(result)
-        body should include("Select yes if you want to remove transport equipment 30")
+        body should include("Select yes if you want to remove transport equipment CONT30")
       }
     }
 

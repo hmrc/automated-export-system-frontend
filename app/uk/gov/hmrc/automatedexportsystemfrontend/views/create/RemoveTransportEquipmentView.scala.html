@@ -24,7 +24,7 @@
     govukButton: GovukButton
 )
 
-@(form: Form[_], transportEquipmentIndex: Int, returnPage: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], containerId: String, transportEquipmentIndex: Int, returnPage: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @content = {
     <div id="removeTransportEquipmentHint" class="govuk-hint">
@@ -32,7 +32,7 @@
     </div>
 }
 
-@layout(pageTitle = title(form, messages("removeTransportEquipment.title", transportEquipmentIndex))) {
+@layout(pageTitle = title(form, messages("removeTransportEquipment.title", containerId))) {
 
     @formHelper(action = createRoute.RemoveTransportEquipmentController.onSubmit(transportEquipmentIndex, returnPage, mode), Symbol("autoComplete") -> "off") {
 
@@ -43,7 +43,7 @@
         @govukRadios(
             RadiosViewModel.yesNoStacked(
                 field = form("value"),
-                legend = LegendViewModel(messages("removeTransportEquipment.heading", transportEquipmentIndex)).asPageHeading()
+                legend = LegendViewModel(messages("removeTransportEquipment.heading", containerId)).asPageHeading()
             ).withHint(HintViewModel(HtmlContent(content)))
         )
 

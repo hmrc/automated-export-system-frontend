@@ -244,7 +244,9 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
                 number = Some("1"),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url, number = Some("2"))
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url, number = Some("3")),
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url, number = Some("4"))
             )
           )
           pagination.previous mustBe None
@@ -263,7 +265,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
                 number = Some("2"),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url, number = Some("3"))
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url, number = Some("3")),
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url, number = Some("4"))
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url
@@ -276,6 +279,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
               PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
               PaginationItem(
                 href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url,
@@ -295,6 +299,8 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
               PaginationItem(href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url, number = Some("3")),
               PaginationItem(
                 href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url,
@@ -365,7 +371,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.totalPages mustBe 4
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 25
-        result.pageNumbers mustBe (1 to 2)
+        result.pageNumbers mustBe (1 to 4)
         result.rows.size mustBe 25
         result.pagination.isDefined mustBe true
       }
@@ -387,7 +393,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.totalPages mustBe 4
         result.firstPackagingDetail mustBe 1
         result.lastPackagingDetail mustBe 25
-        result.pageNumbers mustBe (1 to 2)
+        result.pageNumbers mustBe (1 to 4)
         result.rows.size mustBe 25
         result.pagination.isDefined mustBe true
       }
@@ -533,7 +539,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.totalPages mustBe 4
         result.firstPackagingDetail mustBe 26
         result.lastPackagingDetail mustBe 50
-        result.pageNumbers mustBe (1 to 3)
+        result.pageNumbers mustBe (1 to 4)
         result.rows.size mustBe 25
         result.pagination.isDefined mustBe true
 
@@ -560,7 +566,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.totalPages mustBe 4
         result.firstPackagingDetail mustBe 51
         result.lastPackagingDetail mustBe 75
-        result.pageNumbers mustBe (2 to 4)
+        result.pageNumbers mustBe (1 to 4)
         result.rows.size mustBe 25
         result.pagination.isDefined mustBe true
 
@@ -587,7 +593,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         result.totalPages mustBe 4
         result.firstPackagingDetail mustBe 76
         result.lastPackagingDetail mustBe 99
-        result.pageNumbers mustBe (3 to 4)
+        result.pageNumbers mustBe (1 to 4)
         result.rows.size mustBe 24
         result.pagination.isDefined mustBe true
 

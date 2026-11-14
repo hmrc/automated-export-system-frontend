@@ -67,11 +67,7 @@ object AddAnotherPackagingDetailViewModel {
 
     val lastPackagingDetail: Int = math.min(currentPage * pageSize, numberOfPackagingDetails)
 
-    val firstPageNumber: Int = math.max(1, currentPage - 1)
-
-    val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
-
-    val pageNumbers: Seq[Int] = firstPageNumber to lastPageNumber
+    val pageNumbers: Seq[Int] = 1 to totalPages
 
     AddAnotherPackagingDetailViewModel(
       numberOfPackagingDetails = numberOfPackagingDetails,

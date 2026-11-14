@@ -24,16 +24,16 @@ class RemoveTransportEquipmentFormProviderSpec extends BooleanFieldBehaviours {
 
   val requiredKey = "removeTransportEquipment.error.required"
   val invalidKey = "error.boolean"
-  val transportEquipmentIndex = 1
+  val containerId = "CONT1"
 
-  val form = new RemoveTransportEquipmentFormProvider()(transportEquipmentIndex)
+  val form = new RemoveTransportEquipmentFormProvider()(containerId)
 
   ".value" - {
 
     val fieldName = "value"
 
-    behave like booleanField(form, fieldName, invalidError = FormError(fieldName, invalidKey, Seq(transportEquipmentIndex.toString)))
+    behave like booleanField(form, fieldName, invalidError = FormError(fieldName, invalidKey, Seq(containerId)))
 
-    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey, Seq(transportEquipmentIndex.toString)))
+    behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey, Seq(containerId)))
   }
 }

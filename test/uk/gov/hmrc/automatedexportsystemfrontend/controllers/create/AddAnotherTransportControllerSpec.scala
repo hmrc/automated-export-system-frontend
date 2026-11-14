@@ -33,20 +33,27 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
   val maxTransportEquipment: Int = DiscrepancyTransportEquipment.maxTransportEquipment
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId1"), Some(1)))
-    .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(Some("containerId2"), Some(2))))
-    .flatMap(_.set(DiscrepancyTransportPage(3), ContainerDetails(Some("containerId3"), Some(3))))
+    .set(DiscrepancyTransportPage(1), ContainerDetails(Some("CONT1"), Some(1)))
+    .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(Some("CONT2"), Some(2))))
+    .flatMap(_.set(DiscrepancyTransportPage(3), ContainerDetails(Some("CONT3"), Some(3))))
     .success
     .value
 
   val transportEquipmentList: List[ContainerDetails] = (1 to maxTransportEquipment).map { number =>
-    ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+    ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
   }.toList
 
   "AddAnotherTransport Controller" - {
 
     "onPageLoad" - {
-      "must return OK and the correct view for a GET when allowed to add more items" in {
+      "must return OK and the correct view for a GET when allowed to add more items and no container id's provided" in {
+
+        val userAnswers: UserAnswers = emptyUserAnswers
+          .set(DiscrepancyTransportPage(1), ContainerDetails(None, Some(1)))
+          .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(None, Some(2))))
+          .flatMap(_.set(DiscrepancyTransportPage(3), ContainerDetails(None, Some(3))))
+          .success
+          .value
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -77,10 +84,41 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
+      "must return OK and the correct view for a GET when allowed to add more items and container id's provided" in {
+
+        val application = applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+          .build()
+
+        running(application) {
+          val request = FakeRequest(GET, createRoute.AddAnotherTransportController.onPageLoad(None, NormalMode).url)
+
+          val result = route(application, request).value
+
+          status(result) mustEqual OK
+          val body = contentAsString(result)
+          body should include("You have added 3 transport equipment entries")
+          body should include("Transport equipment CONT1")
+          body should include("""Change<span class="govuk-visually-hidden"> transport equipment CONT1</span>""")
+          body should include("""Remove<span class="govuk-visually-hidden"> transport equipment CONT1</span>""")
+          body should include("Transport equipment CONT2")
+          body should include("""Change<span class="govuk-visually-hidden"> transport equipment CONT2</span>""")
+          body should include("""Remove<span class="govuk-visually-hidden"> transport equipment CONT2</span>""")
+          body should include("Transport equipment CONT3")
+          body should include("""Change<span class="govuk-visually-hidden"> transport equipment CONT3</span>""")
+          body should include("""Remove<span class="govuk-visually-hidden"> transport equipment CONT3</span>""")
+          body should include("You can add up to <strong>9,996</strong> more transport equipment entries")
+          body should include("<strong>Do you want to add another transport equipment entry?</strong>")
+          body should include("Yes")
+          body should include("No")
+          body should include("Continue")
+        }
+      }
+
       "must return OK and the correct view for a GET without pagination" in {
 
         val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -101,9 +139,9 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val body = contentAsString(result)
           body should include("You have added 25 transport equipment entries")
           (1 to 25).foreach { number =>
-            body should include(s"Transport equipment $number")
-            body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment $number</span>""")
-            body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment $number</span>""")
+            body should include(s"Transport equipment CONT$number")
+            body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
+            body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
           }
           body should not include "Showing 1-25 of 25 items"
           body should not include "Previous"
@@ -121,7 +159,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
       "must return OK and the correct view for a GET with pagination" in {
 
         val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -142,11 +180,11 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val body = contentAsString(result)
           body should include("You have added 26 transport equipment entries (page 1 of 2)")
           (1 to 25).foreach { number =>
-            body should include(s"Transport equipment $number")
-            body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment $number</span>""")
-            body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment $number</span>""")
+            body should include(s"Transport equipment CONT$number")
+            body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
+            body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
           }
-          body should not include "Transport equipment 26"
+          body should not include "Transport equipment CONT26"
           body should include("Showing 1-25 of 26 items")
           body should not include "Previous"
           body should include(s"""href="${createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url}"""")
@@ -181,11 +219,11 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
             val body = contentAsString(result)
             body should include("You have added 9,999 transport equipment entries (page 1 of 400)")
             (1 to 25).foreach { number =>
-              body should include(s"Transport equipment $number")
-              body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment $number</span>""")
-              body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment $number</span>""")
+              body should include(s"Transport equipment CONT$number")
+              body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
+              body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
             }
-            body should not include "Transport equipment 26"
+            body should not include "Transport equipment CONT26"
             body should include("Showing 1-25 of 9,999 items")
             body should not include "Previous"
             body should include(s"""href="${createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url}"""")
@@ -220,12 +258,12 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
             val body = contentAsString(result)
             body should include("You have added 9,999 transport equipment entries (page 200 of 400)")
             (4976 to 5000).foreach { number =>
-              body should include(f"Transport equipment $number%,d")
-              body should include(f"""Change<span class="govuk-visually-hidden"> transport equipment $number%,d</span>""")
-              body should include(f"""Remove<span class="govuk-visually-hidden"> transport equipment $number%,d</span>""")
+              body should include(s"Transport equipment CONT$number")
+              body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
+              body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
             }
-            body should not include "Transport equipment 4,975"
-            body should not include "Transport equipment 5,001"
+            body should not include "Transport equipment CONT4975"
+            body should not include "Transport equipment CONT5001"
             body should include("Showing 4,976-5,000 of 9,999 items")
             body should include("Previous")
             body should include(s"""href="${createRoute.AddAnotherTransportController.onPageLoad(Some(199), NormalMode).url}"""")
@@ -261,11 +299,11 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
             val body = contentAsString(result)
             body should include("You have added 9,999 transport equipment entries (page 400 of 400)")
             (9976 to 9999).foreach { number =>
-              body should include(f"Transport equipment $number%,d")
-              body should include(f"""Change<span class="govuk-visually-hidden"> transport equipment $number%,d</span>""")
-              body should include(f"""Remove<span class="govuk-visually-hidden"> transport equipment $number%,d</span>""")
+              body should include(s"Transport equipment CONT$number")
+              body should include(s"""Change<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
+              body should include(s"""Remove<span class="govuk-visually-hidden"> transport equipment CONT$number</span>""")
             }
-            body should not include "Transport equipment 9,975"
+            body should not include s"Transport equipment CONT9975"
             body should include("Showing 9,976-9,999 of 9,999 items")
             body should include("Previous")
             body should include(s"""href="${createRoute.AddAnotherTransportController.onPageLoad(Some(399), NormalMode).url}"""")
@@ -316,7 +354,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
       "must redirect back to AddAnother without a page when pagination has not started but page 1 is provided for a GET" in {
 
         val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -341,7 +379,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
       "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
 
         val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -455,7 +493,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
       "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
 
         val transportEquipmentList: List[ContainerDetails] = (1 to 51).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -475,10 +513,10 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           status(result) shouldBe BAD_REQUEST
           val body = contentAsString(result)
           body should include("Select yes if you want to add another transport equipment")
-          body should not include "Transport equipment 25"
-          body should include("Transport equipment 26")
-          body should include("Transport equipment 50")
-          body should not include "Transport equipment 51"
+          body should not include "Transport equipment CONT25"
+          body should include("Transport equipment CONT26")
+          body should include("Transport equipment CONT50")
+          body should not include "Transport equipment CONT51"
         }
       }
 

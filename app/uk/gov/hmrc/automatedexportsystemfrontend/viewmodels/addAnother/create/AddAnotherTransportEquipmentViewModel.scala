@@ -37,7 +37,6 @@ case class AddAnotherTransportEquipmentViewModel(
   firstTransportEquipment: Int,
   lastTransportEquipment: Int,
   rows: Seq[SummaryListRow],
-  transportEquipmentNumbers: Seq[Int],
   pageNumbers: Seq[Int],
   pagination: Option[Pagination]
 ) {
@@ -74,8 +73,6 @@ object AddAnotherTransportEquipmentViewModel {
 
     val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
 
-    val transportEquipmentNumbers: Seq[Int] = firstTransportEquipment to lastTransportEquipment
-
     AddAnotherTransportEquipmentViewModel(
       numberOfTransportEquipment = numberOfTransportEquipment,
       remainingTransportEquipment = remainingTransportEquipment,
@@ -86,42 +83,46 @@ object AddAnotherTransportEquipmentViewModel {
       totalPages = totalPages,
       firstTransportEquipment = firstTransportEquipment,
       lastTransportEquipment = lastTransportEquipment,
-      rows = rows(transportEquipmentNumbers, currentPage, mode),
-      transportEquipmentNumbers = transportEquipmentNumbers,
+      rows = rows(userAnswers, currentPage, mode),
       pageNumbers = firstPageNumber to lastPageNumber,
       pagination = buildPagination(currentPage, totalPages, mode)
     )
   }
 
-  private def rows(transportEquipmentNumbers: Seq[Int], currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    transportEquipmentNumbers.map { transportEquipmentNumber =>
-      SummaryListRow(
-        key = Key(
-          content = Text(messages("addAnotherTransportEquipment.key", transportEquipmentNumber)),
-          classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
-        ),
-        value = Value(content = Empty, classes = "govuk-!-display-none"),
-        actions = Some(
-          Actions(items =
-            Seq(
-              ActionItem(
-                href = createRoute.DiscrepancyTransportController
-                  .onPageLoad(transportEquipmentNumber, mode)
-                  .url,
-                content = Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("addAnotherTransportEquipment.change.hidden", transportEquipmentNumber))
-              ),
-              ActionItem(
-                href = createRoute.RemoveTransportEquipmentController
-                  .onPageLoad(transportEquipmentNumber, currentPage, mode)
-                  .url,
-                content = Text(messages("site.remove")),
-                visuallyHiddenText = Some(messages("addAnotherTransportEquipment.remove.hidden", transportEquipmentNumber))
+  private def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+    DiscrepancyTransportEquipment.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map {
+      case (containerDetails, i) =>
+        val index = i + 1
+
+        val containerIdOrIndex = containerDetails.containerId.getOrElse(f"$index%,d")
+
+        SummaryListRow(
+          key = Key(
+            content = Text(messages("addAnotherTransportEquipment.key", containerIdOrIndex)),
+            classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
+          ),
+          value = Value(content = Empty, classes = "govuk-!-display-none"),
+          actions = Some(
+            Actions(items =
+              Seq(
+                ActionItem(
+                  href = createRoute.DiscrepancyTransportController
+                    .onPageLoad(index, mode)
+                    .url,
+                  content = Text(messages("site.change")),
+                  visuallyHiddenText = Some(messages("addAnotherTransportEquipment.change.hidden", containerIdOrIndex))
+                ),
+                ActionItem(
+                  href = createRoute.RemoveTransportEquipmentController
+                    .onPageLoad(index, currentPage, mode)
+                    .url,
+                  content = Text(messages("site.remove")),
+                  visuallyHiddenText = Some(messages("addAnotherTransportEquipment.remove.hidden", containerIdOrIndex))
+                )
               )
             )
           )
         )
-      )
     }
 
   private def buildPagination(currentPage: Int, totalPages: Int, mode: Mode): Option[Pagination] =
@@ -135,7 +136,7 @@ object AddAnotherTransportEquipmentViewModel {
 
       val visiblePages: Seq[Int] =
         if (totalPages <= 4) {
-          neighbouringPages
+          1 to totalPages
         } else {
           (
             Seq(1, totalPages) ++

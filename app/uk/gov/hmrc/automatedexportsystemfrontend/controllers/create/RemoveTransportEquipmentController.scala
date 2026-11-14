@@ -46,7 +46,7 @@ class RemoveTransportEquipmentController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  def form(transportEquipmentIndex: Int): Form[Boolean] = formProvider(transportEquipmentIndex)
+  def form(transportEquipmentIndex: String): Form[Boolean] = formProvider(transportEquipmentIndex)
 
   def onPageLoad(transportEquipmentIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
@@ -57,7 +57,12 @@ class RemoveTransportEquipmentController @Inject() (
         DiscrepancyTransportEquipment
           .exists(request.userAnswers, transportEquipmentIndex) && validReturnPage(addAnotherTransportEquipmentViewModel, returnPage)
       ) {
-        Ok(view(form(transportEquipmentIndex), transportEquipmentIndex, returnPage, mode))
+        val containerId = request.userAnswers
+          .get(DiscrepancyTransportPage(transportEquipmentIndex))
+          .flatMap(_.containerId)
+          .getOrElse(f"$transportEquipmentIndex%,d")
+
+        Ok(view(form(containerId), containerId, transportEquipmentIndex, returnPage, mode))
       } else {
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
@@ -74,10 +79,15 @@ class RemoveTransportEquipmentController @Inject() (
           returnPage
         )
       ) {
-        form(transportEquipmentIndex)
+        val containerId = request.userAnswers
+          .get(DiscrepancyTransportPage(transportEquipmentIndex))
+          .flatMap(_.containerId)
+          .getOrElse(transportEquipmentIndex.toString)
+
+        form(containerId)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, returnPage, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, containerId, transportEquipmentIndex, returnPage, mode))),
             {
               case true =>
                 for {

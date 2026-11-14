@@ -83,11 +83,7 @@ object AddAnotherSealViewModel {
 
     val lastSeal: Int = math.min(currentPage * pageSize, numberOfSeals)
 
-    val firstPageNumber: Int = math.max(1, currentPage - 1)
-
-    val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
-
-    val pageNumbers = firstPageNumber to lastPageNumber
+    val pageNumbers = 1 to totalPages
 
     AddAnotherSealViewModel(
       numberOfSeals = numberOfSeals,
