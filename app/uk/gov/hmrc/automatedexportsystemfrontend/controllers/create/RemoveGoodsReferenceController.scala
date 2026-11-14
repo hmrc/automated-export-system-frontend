@@ -62,11 +62,15 @@ class RemoveGoodsReferenceController @Inject() (
         request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
           case Some(reference) => Ok(view(form(reference), reference, discrepancyReferenceIndex, returnPage, mode))
           case None =>
-            logger.warn(s"[RemoveGoodsReferenceController] Missing goods reference when loading remove page. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage")
+            logger.warn(
+              s"[RemoveGoodsReferenceController] Missing goods reference when loading remove page. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage"
+            )
             Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
         }
       } else {
-        logger.warn(s"[RemoveGoodsReferenceController] Invalid remove goods reference request on page load. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage")
+        logger.warn(
+          s"[RemoveGoodsReferenceController] Invalid remove goods reference request on page load. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage"
+        )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
     }
@@ -108,11 +112,15 @@ class RemoveGoodsReferenceController @Inject() (
                 }
               )
           case None =>
-            logger.warn(s"[RemoveGoodsReferenceController] Missing goods reference when submitting remove page. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage")
+            logger.warn(
+              s"[RemoveGoodsReferenceController] Missing goods reference when submitting remove page. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage"
+            )
             Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
         }
       } else {
-        logger.warn(s"[RemoveGoodsReferenceController] Invalid remove goods reference request on submit. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage")
+        logger.warn(
+          s"[RemoveGoodsReferenceController] Invalid remove goods reference request on submit. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage"
+        )
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
     }

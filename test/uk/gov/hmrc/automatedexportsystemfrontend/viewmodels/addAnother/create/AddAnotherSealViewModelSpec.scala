@@ -91,7 +91,7 @@ class AddAnotherSealViewModelSpec extends SpecBase {
         result.totalPages shouldBe 4
         result.firstSeal shouldBe 1
         result.lastSeal shouldBe 25
-        result.pageNumbers shouldBe (1 to 2)
+        result.pageNumbers shouldBe (1 to 4)
 
       }
 
@@ -112,7 +112,7 @@ class AddAnotherSealViewModelSpec extends SpecBase {
         result.totalPages shouldBe 4
         result.firstSeal shouldBe 1
         result.lastSeal shouldBe 25
-        result.pageNumbers shouldBe (1 to 2)
+        result.pageNumbers shouldBe (1 to 4)
       }
 
       "should put 25 seals on a single page with no pagination" in {

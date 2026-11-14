@@ -122,7 +122,7 @@ object AddAnotherGoodsReferenceViewModel {
 
       val visiblePages: Seq[Int] =
         if (totalPages <= 4) {
-          neighbouringPages
+          1 to totalPages
         } else {
           (
             Seq(1, totalPages) ++

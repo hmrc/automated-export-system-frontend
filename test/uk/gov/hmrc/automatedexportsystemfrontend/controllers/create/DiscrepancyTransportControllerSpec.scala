@@ -16,14 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify, when}
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
-import play.api.libs.json.Json
 import play.api.mvc.Call
 import play.api.test.FakeRequest
 import play.api.test.Helpers.*
@@ -31,9 +29,10 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
 import scala.concurrent.Future
@@ -60,7 +59,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
   "DiscrepancyTransport Controller" - {
 
-    "must return OK and the correct view for a GET" in {
+    "must return OK and the correct view for a GET at the next index" in {
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -74,6 +73,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Transport Equipment 1")
         body should include("Container details")
         body should include("If the goods are being transported in a container, enter the details.")
         body should include("Container identification number")
@@ -81,7 +81,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-    "must populate the view correctly on a GET when the question has previously been answered" in {
+    "must populate the view correctly on a GET when the question has previously been answered at an existing index" in {
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -94,6 +94,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
+        body should include("Transport Equipment 1")
         body should include("Container details")
         body should include("If the goods are being transported in a container, enter the details.")
         body should include("Container identification number")
@@ -158,7 +159,37 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe onwardRoute.url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+      }
+    }
+
+    "must redirect to the CYASubmissionController when no data is entered and no transport equipment entries remain in CheckMode" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, createRoute.DiscrepancyTransportController.onSubmit(1, CheckMode).url)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancyTransportEquipment.getAll(captor.getValue) shouldBe List.empty
       }
     }
 
@@ -179,6 +210,71 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
         val body =
           contentAsString(result) should include("The container identification number must be in the correct format, for example CONT1234567890123")
+      }
+    }
+
+    "must remove answer and redirect to the add another page when no data is entered and other transport equipment entries remain" in {
+      val userAnswers = UserAnswers(userAnswersId)
+        .set(DiscrepancyTransportEquipment, List(ContainerDetails(Some("containerId1"), Some(1)), ContainerDetails(Some("containerId2"), Some(2))))
+        .success
+        .value
+
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
+      val application =
+        applicationBuilder(userAnswers = Some(userAnswers))
+          .overrides(
+            bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
+            bind[SessionRepository].toInstance(mockSessionRepository),
+            bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector)
+          )
+          .build()
+
+      running(application) {
+        val request =
+          FakeRequest(POST, createRoute.DiscrepancyTransportController.onSubmit(1, NormalMode).url)
+            .withFormUrlEncodedBody(("value", ""))
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe createRoute.AddAnotherTransportController.onPageLoad(None, NormalMode).url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        DiscrepancyTransportEquipment.getAll(captor.getValue) shouldBe List(ContainerDetails(Some("containerId2"), Some(2)))
+      }
+    }
+
+    "must redirect to Journey Recovery for a GET where the index doesn't exist and is not the next index" in {
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(GET, createRoute.DiscrepancyTransportController.onPageLoad(5, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
+
+    "must redirect to Journey Recovery for a POST where the index doesn't exist and is not the next index" in {
+      val application = applicationBuilder(userAnswers = Some(userAnswers))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
+      running(application) {
+        val request = FakeRequest(POST, createRoute.DiscrepancyTransportController.onPageLoad(5, NormalMode).url)
+
+        val result = route(application, request).value
+
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
       }
     }
 
