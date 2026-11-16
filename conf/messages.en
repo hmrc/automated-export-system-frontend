@@ -49,6 +49,9 @@ error.title.prefix = Error:
 error.prefix = Error
 error.summary.title = There is a problem
 
+error.nonNumeric = Enter a valid number
+error.wholeNumber = Enter a whole number
+
 index.title = automated-export-system-frontend
 index.heading = automated-export-system-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
@@ -578,8 +581,15 @@ addAnotherTransportEquipment.plural.title=You have added {0} transport equipment
 addAnotherTransportEquipment.singular.heading=You have added 1 transport equipment
 addAnotherTransportEquipment.plural.heading=You have added {0} transport equipment entries
 addAnotherTransportEquipment.key=Transport equipment {0}
-addAnotherTransportEquipment.singular.remaining=You can add <strong>{0}</strong> more transport equipment entry.
-addAnotherTransportEquipment.plural.remaining=You can add <strong>{0}</strong> more transport equipment entries.
+addAnotherTransportEquipment.singular.remaining=You can add up to 1 more transport equipment entry.
+addAnotherTransportEquipment.plural.remaining=You can add up to {0} more transport equipment entries.
 addAnotherTransportEquipment.addAnother=Do you want to add another transport equipment entry?
 addAnotherTransportEquipment.change.hidden=transport equipment {0}
+addAnotherTransportEquipment.remove.hidden = transport equipment {0}
+addAnotherTransportEquipment.maxLimit = You cannot add any more transport equipment entries. To add another, you need to remove one first.
+addAnotherTransportEquipment.error.required = Select yes if you want to add another transport equipment
 
+removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
+removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
+removeTransportEquipment.hint = This will also remove associated seals and goods references.
+removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}

@@ -21,7 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyTransportSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
@@ -33,7 +33,47 @@ class DiscrepancyTransportSummarySpec extends AnyFreeSpec with Matchers with Gen
   private val transportEquipmentIndex = 1
 
   "rows" - {
-    "when answered, return the summary rows" in {
+    "when answered, return the summary rows in NormalMode" in {
+      val containerDetails = ContainerDetails(Some("containerId"), Some(99))
+      val userAnswers =
+        UserAnswers("id")
+          .set(DiscrepancyTransportPage(transportEquipmentIndex), containerDetails)
+          .get
+
+      DiscrepancyTransportSummary
+        .rows(transportEquipmentIndex, userAnswers, NormalMode) shouldBe Some(
+        Seq(
+          SummaryListRowViewModel(
+            key = "discrepancyTransport.containerId.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("containerId")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController
+                  .onPageLoad(transportEquipmentIndex, NormalMode)
+                  .url
+              )
+                .withVisuallyHiddenText("discrepancyTransport.containerId.change.hidden")
+            )
+          ),
+          SummaryListRowViewModel(
+            key = "discrepancyTransport.numberOfSeals.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent("99")),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyTransportController
+                  .onPageLoad(transportEquipmentIndex, NormalMode)
+                  .url
+              )
+                .withVisuallyHiddenText("discrepancyTransport.numberOfSeals.change.hidden")
+            )
+          )
+        )
+      )
+    }
+
+    "when answered, return the summary rows in CheckMode" in {
       val containerDetails = ContainerDetails(Some("containerId"), Some(99))
       val userAnswers =
         UserAnswers("id")
