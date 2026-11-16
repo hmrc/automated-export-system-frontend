@@ -28,12 +28,12 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 class AddAnotherTransportDocViewModelSpec extends SpecBase {
   private implicit val messages: Messages = Helpers.stubMessages()
   val userAnswers = emptyUserAnswers
-    .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(123), Some(123)))
+    .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("123"), Some(123)))
     .get
   val maxTransportDoc: Int = DiscrepancyTransportDoc.maxTransportDocuments
 
   private def transportDocList(n: Int): List[DocumentDetails] =
-    (1 to n).map(i => DocumentDetails(Some(i), Some(i))).toList
+    (1 to n).map(i => DocumentDetails(Some(s"$i"), Some(i))).toList
 
   "AddAnotherTransportDocViewModel" - {
     "rows" - {

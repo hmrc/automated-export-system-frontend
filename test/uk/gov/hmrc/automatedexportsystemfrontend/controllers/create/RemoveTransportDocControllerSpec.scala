@@ -45,7 +45,7 @@ class RemoveTransportDocControllerSpec extends SpecBase with MockitoSugar {
   val form: Form[Boolean] = formProvider()
 
   val transportDocList = (1 to 50).map { number =>
-    DocumentDetails(Some(number), Some(number))
+    DocumentDetails(Some(s"$number"), Some(number))
   }.toList
 
   val userAnswers = emptyUserAnswers
@@ -131,7 +131,7 @@ class RemoveTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
     "must redirect to DiscrepancyTransportDoc and update user answers when the only document type is deleted" in {
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), None))
+        .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), None))
         .success
         .value
 
@@ -192,7 +192,7 @@ class RemoveTransportDocControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to AddAnotherTransportDoc at next valid page when true and last item is removed from the expected return page" in {
 
       val transportDocList = (1 to 51).map { number =>
-        DocumentDetails(Some(number), Some(number))
+        DocumentDetails(Some(s"$number"), Some(number))
       }.toList
 
       val userAnswers = emptyUserAnswers
