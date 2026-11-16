@@ -37,7 +37,6 @@ class DiscrepancyTransportDocFormProvider @Inject() extends Mappings {
       "documentType" -> optional(
         text()
           .verifying(regexp(transportDocumentTypeRegex, "discrepancyTransportDoc.error.documentType.invalid"))
-          .transform[Int](_.toInt, _.toString)
       ),
       "referenceNumber" -> optional(
         text()

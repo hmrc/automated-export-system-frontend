@@ -30,9 +30,9 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTranspo
 class TransportDocCYAControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-    .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-    .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+    .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+    .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+    .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
     .success
     .value
 
@@ -91,7 +91,7 @@ class TransportDocCYAControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a GET if it is an empty index" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
+        .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))

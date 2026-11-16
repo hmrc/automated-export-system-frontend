@@ -34,9 +34,9 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
   val maxTransportDoc: Int = DiscrepancyTransportDoc.maxTransportDocuments
   val sealIdentifier = "testSealIdentifier"
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-    .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-    .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+    .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+    .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+    .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
     .success
     .value
 
@@ -79,7 +79,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
       "must return OK and the correct view for a GET without pagination" in {
 
         val transportDocList = (1 to pageSize).map { number =>
-          DocumentDetails(Some(number), Some(number))
+          DocumentDetails(Some(s"$number"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
