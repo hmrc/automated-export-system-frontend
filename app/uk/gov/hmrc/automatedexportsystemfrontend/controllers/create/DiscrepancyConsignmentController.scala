@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyConsignmentFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, ModeOfTransportAtBorder}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyConsignmentView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 
 import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
@@ -39,33 +39,41 @@ class DiscrepancyConsignmentController @Inject() (
   getData: AesDataRetrievalAction,
   requireData: AesDataRequiredAction,
   formProvider: DiscrepancyConsignmentFormProvider,
+  codeListService: CodeListService,
   val controllerComponents: MessagesControllerComponents,
   view: DiscrepancyConsignmentView
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
-  val form: Form[ModeOfTransportAtBorder] = formProvider()
+  def onPageLoad(mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      codeListService.getTransportModes().map { entries =>
+        val form = formProvider.forCodeList(entries)
+        val preparedForm =
+          request.userAnswers.get(DiscrepancyConsignmentPage).fold(form)(form.fill)
 
-  def onPageLoad(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+        val options = CodeListService.selectItems(entries, messagesApi.preferred(request).apply("discrepancyConsignment.placeholder"))
 
-    val preparedForm = request.userAnswers.get(DiscrepancyConsignmentPage) match {
-      case None        => form
-      case Some(value) => form.fill(value)
+        Ok(view(preparedForm, mode, options))
+      }
     }
 
-    Ok(view(preparedForm, mode))
-  }
+  def onSubmit(mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      codeListService.getTransportModes().flatMap { entries =>
+        val options = CodeListService.selectItems(entries, messagesApi.preferred(request).apply("discrepancyConsignment.placeholder"))
 
-  def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    form
-      .bindFromRequest()
-      .fold(
-        formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode))),
-        value =>
-          for {
-            updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyConsignmentPage, value))
-            _ <- sessionRepository.set(updatedAnswers)
-          } yield Redirect(createNavigator.nextPage(DiscrepancyConsignmentPage, mode, updatedAnswers))
-      )
-  }
+        formProvider
+          .forCodeList(entries)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, mode, options))),
+            code =>
+              for {
+                updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyConsignmentPage, code))
+                _ <- sessionRepository.set(updatedAnswers)
+              } yield Redirect(createNavigator.nextPage(DiscrepancyConsignmentPage, mode, updatedAnswers))
+          )
+      }
+    }
 }

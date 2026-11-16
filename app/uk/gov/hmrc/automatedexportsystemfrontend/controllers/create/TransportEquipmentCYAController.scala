@@ -26,6 +26,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryLis
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.TransportEquipmentCYAView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
+import play.api.Logger
 
 import javax.inject.Inject
 
@@ -38,6 +39,8 @@ class TransportEquipmentCYAController @Inject() (
   view: TransportEquipmentCYAView
 ) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[TransportEquipmentCYAController])
+
   def onPageLoad(transportEquipmentIndex: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
 
@@ -46,6 +49,9 @@ class TransportEquipmentCYAController @Inject() (
 
       transportEquipmentRows match {
         case None =>
+          logger.warn(
+            s"[TransportEquipmentCYAController] Unable to build transport equipment summary. transportEquipmentIndex=$transportEquipmentIndex"
+          )
           Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
 
         case Some(rows) =>

@@ -30,7 +30,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
       "when no is selected" - {
         "must remove the discrepancy answers" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
+            .set(DiscrepancyConsignmentPage, "1")
             .success
             .value
             .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99)))
@@ -71,7 +71,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
       "when yes is selected" - {
         "must not remove the discrepancy answers" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyConsignmentPage, ModeOfTransportAtBorder.Sea)
+            .set(DiscrepancyConsignmentPage, "1")
             .success
             .value
             .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99)))

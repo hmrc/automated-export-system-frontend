@@ -21,6 +21,7 @@ import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyPackingFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PackingDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
@@ -46,6 +47,8 @@ class DiscrepancyPackingController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[DiscrepancyPackingController])
+
   val form: Form[PackingDetails] = formProvider()
 
   def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
@@ -64,6 +67,9 @@ class DiscrepancyPackingController @Inject() (
 
         Ok(view(preparedForm, packagingDetailIndex, mode))
       } else {
+        logger.warn(
+          s"[DiscrepancyPackingController] Invalid packaging detail index on page load. packagingDetailIndex=$packagingDetailIndex, nextIndex=$nextIndex"
+        )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
   }
@@ -88,6 +94,9 @@ class DiscrepancyPackingController @Inject() (
               } yield Redirect(createNavigator.nextPage(DiscrepancyPackingPage(packagingDetailIndex), mode, updatedAnswers))
           )
       } else {
+        logger.warn(
+          s"[DiscrepancyPackingController] Invalid packaging detail index on submit. packagingDetailIndex=$packagingDetailIndex, nextIndex=$nextIndex"
+        )
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
   }

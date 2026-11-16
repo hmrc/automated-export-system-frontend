@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
-import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.{any, eq as eqTo}
 import org.mockito.Mockito.when
 import play.api.inject.bind
 import play.api.test.FakeRequest
@@ -28,21 +28,17 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as p
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier.AuthorisationNumber
-import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder.Sea
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   ContainerDetails,
   LocationDetails,
   LocationType,
-  ModeOfTransportAtBorder,
   OfficeOfExit,
   PartOfConsolidationAnswer,
   TransportAcrossBorderDetails
 }
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryListViewModel
-import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.CYASubmissionView
-import uk.gov.hmrc.http.SessionKeys
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
+import uk.gov.hmrc.http.{HeaderCarrier, SessionKeys}
 
 import scala.concurrent.Future
 
@@ -52,11 +48,15 @@ class CYASubmissionControllerSpec extends SpecBase {
 
     "must return OK and the correct view for a GET with no discrepancies present" in {
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+      val mockCodeListService = mock[CodeListService]
       val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
       val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
 
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+      when(mockCodeListService.getTransportModeDescription(eqTo[Option[String]](None))(using any[HeaderCarrier]()))
+        .thenReturn(Future.successful(None))
 
       val userAnswers = emptyUserAnswers
         .set(EnterMrnPage, "MRN")
@@ -77,27 +77,14 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector), bind[CodeListService].toInstance(mockCodeListService))
         .build()
-
-      val exportOperationList = SummaryListViewModel(
-        Seq(EnterMrnSummary.row(userAnswers)(messages(application)), IsSplitExitSummary.row(userAnswers)(messages(application))).flatten
-      )
-
-      val consignmentList = SummaryListViewModel(
-        Seq(EnterDucrSummary.row(userAnswers)(messages(application)), PartOfConsolidationSummary.row(userAnswers)(messages(application))).flatten
-      )
-
-      val customsOfficeExitList = SummaryListViewModel(Seq(OfficeOfExitSummary.row(userAnswers)(messages(application))).flatten)
-
-      val extraRowsList = SummaryListViewModel(Seq(AnyDiscrepanciesSummary.row(userAnswers)(messages(application))).flatten)
 
       running(application) {
         val request = FakeRequest(GET, happyRoute.CYASubmissionController.onPageLoad().url)
           .withSession(SessionKeys.sessionId -> "some-session-id")
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CYASubmissionView]
         status(result) shouldBe OK
         val body = contentAsString(result)
         body should include("Export operation")
@@ -125,11 +112,15 @@ class CYASubmissionControllerSpec extends SpecBase {
 
     "must return OK and the correct view for a GET with discrepancies present" in {
       val mockAuthConnector = mock[uk.gov.hmrc.auth.core.AuthConnector]
+      val mockCodeListService = mock[CodeListService]
       val enrolmentIdentifier = uk.gov.hmrc.auth.core.EnrolmentIdentifier("EORINumber", "some-eori")
       val enrolments = Enrolments(Set(uk.gov.hmrc.auth.core.Enrolment("HMRC-CUS-ORG", Seq(enrolmentIdentifier), "active")))
 
       when(mockAuthConnector.authorise[Option[Credentials] ~ Option[String] ~ Enrolments](any(), any())(any(), any()))
         .thenReturn(Future.successful(new ~(new ~(Some(Credentials(testAuthorityId, "government-gateway")), Some(testGroupId)), enrolments)))
+
+      when(mockCodeListService.getTransportModeDescription(eqTo[Option[String]](Some("1")))(using any[HeaderCarrier]()))
+        .thenReturn(Future.successful(Some("Sea transport")))
 
       val userAnswers = emptyUserAnswers
         .set(EnterMrnPage, "MRN")
@@ -148,7 +139,7 @@ class CYASubmissionControllerSpec extends SpecBase {
         .get
         .set(LocationIdPage, LocationDetails(AuthorisationNumber, Some("unlocode"), Some("1234"), Some("authorisationReferenceNumber")))
         .get
-        .set(DiscrepancyConsignmentPage, Sea)
+        .set(DiscrepancyConsignmentPage, "1")
         .get
         .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId123"), Some(99)))
         .get
@@ -161,7 +152,7 @@ class CYASubmissionControllerSpec extends SpecBase {
 //        .get TODO: revisit during CYA
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
-        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector), bind[CodeListService].toInstance(mockCodeListService))
         .build()
 
       running(application) {
@@ -169,7 +160,6 @@ class CYASubmissionControllerSpec extends SpecBase {
           .withSession(SessionKeys.sessionId -> "some-session-id")
         val result = route(application, request).value
 
-        val view = application.injector.instanceOf[CYASubmissionView]
         status(result) shouldBe OK
         val body = contentAsString(result)
         body should include("Export operation")
@@ -193,7 +183,7 @@ class CYASubmissionControllerSpec extends SpecBase {
         body should include("Belfast")
         body should include("Discrepancy details")
         body should include("How will the goods cross the border?")
-        body should include("Sea")
+        body should include("Sea transport")
         body should include("Container identification number")
         body should include("containerId123")
         body should include("Number of seals")
@@ -204,7 +194,7 @@ class CYASubmissionControllerSpec extends SpecBase {
         body should include("transportIdNumber")
         body should include("Transport means nationality")
         body should include("countryOfRegistration")
-        // TODO revist CYA
+        // TODO: Revisit the transport document assertions when the CYA section is ready.
 //        body should include("Transport document type")
 //        body should include("1")
 //        body should include("Transport document reference")
@@ -234,7 +224,6 @@ class CYASubmissionControllerSpec extends SpecBase {
 
       running(application) {
         val request = FakeRequest(GET, happyRoute.CYASubmissionController.onPageLoad().url)
-
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER

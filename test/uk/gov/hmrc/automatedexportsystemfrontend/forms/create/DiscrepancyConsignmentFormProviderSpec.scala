@@ -19,22 +19,26 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyConsignmentFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
+import uk.gov.hmrc.automatedexportsystemfrontend.models.codelists.CodeListEntry
+
+import play.api.libs.json.Json
 
 class DiscrepancyConsignmentFormProviderSpec extends OptionFieldBehaviours {
 
-  val form = new DiscrepancyConsignmentFormProvider()()
+  private val entries = Seq(CodeListEntry("1", "Sea transport", Json.obj()), CodeListEntry("7", "Fixed transport installations", Json.obj()))
+
+  val form = new DiscrepancyConsignmentFormProvider().forCodeList(entries)
 
   ".value" - {
 
     val fieldName = "value"
     val requiredKey = "discrepancyConsignment.error.required"
 
-    behave like optionsField[ModeOfTransportAtBorder](
+    behave like optionsField[String](
       form,
       fieldName,
-      validValues = ModeOfTransportAtBorder.values,
-      invalidError = FormError(fieldName, "error.invalid")
+      validValues = entries.map(_.key),
+      invalidError = FormError(fieldName, "discrepancyConsignment.error.invalid")
     )
 
     behave like mandatoryField(form, fieldName, requiredError = FormError(fieldName, requiredKey))

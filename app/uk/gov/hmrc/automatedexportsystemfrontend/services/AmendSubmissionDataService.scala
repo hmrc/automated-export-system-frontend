@@ -110,7 +110,7 @@ class AmendSubmissionDataService @Inject() extends Logging {
       location <- collectAmendGoodsLocation(userAnswers, submissionId)
     } yield {
       val transportMode =
-        userAnswers.get(AmendDiscrepancyConsignmentPage(submissionId)).map(TransportMode.fromUserAnswers)
+        userAnswers.get(AmendDiscrepancyConsignmentPage(submissionId)).map(TransportMode.apply)
 
       val mucr =
         userAnswers.get(AmendPartOfConsolidationPage(submissionId)).flatMap(_.mucr)

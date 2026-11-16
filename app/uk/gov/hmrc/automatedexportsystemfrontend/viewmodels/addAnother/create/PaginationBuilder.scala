@@ -44,14 +44,8 @@ object PaginationBuilder {
       val neighbouringPages = math.max(1, currentPage - 1) to math.min(totalPages, currentPage + 1)
 
       val visiblePages: Seq[Int] =
-        if (totalPages <= 4) {
-          neighbouringPages
-        } else {
-          (
-            Seq(1, totalPages) ++
-              neighbouringPages
-          ).distinct.sorted
-        }
+        if (totalPages <= 4) { 1 to totalPages }
+        else { (Seq(1, totalPages) ++ neighbouringPages).distinct.sorted }
 
       def pageItem(number: Int): PaginationItem =
         PaginationItem(

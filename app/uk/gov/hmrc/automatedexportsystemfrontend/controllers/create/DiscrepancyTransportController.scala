@@ -22,6 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
@@ -46,6 +47,8 @@ class DiscrepancyTransportController @Inject() (
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[DiscrepancyTransportController])
+
   val form: Form[ContainerDetails] = formProvider()
 
   def onPageLoad(transportEquipmentIndex: Int, mode: Mode): Action[AnyContent] =
@@ -68,6 +71,9 @@ class DiscrepancyTransportController @Inject() (
 
         Ok(view(preparedForm, transportEquipmentIndex, mode))
       } else {
+        logger.warn(
+          s"[DiscrepancyTransportController] Invalid transport equipment index on page load. transportEquipmentIndex=$transportEquipmentIndex, nextIndex=$nextIndex"
+        )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
     }
@@ -99,6 +105,9 @@ class DiscrepancyTransportController @Inject() (
               }
           )
       } else {
+        logger.warn(
+          s"[DiscrepancyTransportController] Invalid transport equipment index on submit. transportEquipmentIndex=$transportEquipmentIndex, nextIndex=$nextIndex"
+        )
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
     }

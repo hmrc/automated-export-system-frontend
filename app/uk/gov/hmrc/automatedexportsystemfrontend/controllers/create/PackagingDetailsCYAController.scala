@@ -17,6 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import play.api.i18n.{I18nSupport, MessagesApi}
+import play.api.Logger
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
@@ -38,14 +39,20 @@ class PackagingDetailsCYAController @Inject() (
   view: PackagingDetailsCYAView
 ) extends FrontendBaseController with I18nSupport {
 
+  private val logger = Logger(classOf[PackagingDetailsCYAController])
+
   def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
     implicit request =>
 
       val packagingDetailsRows: Option[Seq[SummaryListRow]] = DiscrepancyPackingSummary.rows(packagingDetailIndex, request.userAnswers, mode)
 
       packagingDetailsRows match {
-        case None       => Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-        case Some(rows) => Ok(view(packagingDetailIndex, SummaryListViewModel(rows), mode))
+        case None =>
+          logger.warn(s"[PackagingDetailsCYAController] Unable to build packaging details summary. packagingDetailIndex=$packagingDetailIndex")
+          Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+
+        case Some(rows) =>
+          Ok(view(packagingDetailIndex, SummaryListViewModel(rows), mode))
       }
   }
 }
