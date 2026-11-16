@@ -35,10 +35,12 @@
     ) {
 
         @if(form.errors.nonEmpty) {
-            <h1 class="govuk-heading-l govuk-!-margin-bottom-3">
-            @messages("discrepancyTransport.heading")
-            </h1>
+            @govukErrorSummary(ErrorSummaryViewModel(form))
         }
+
+        <span class="govuk-caption-l">
+            @messages("transportEquipmentCYA.caption", transportEquipmentIndex)
+        </span>
 
         <h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("discrepancyTransport.heading")</h1>
 

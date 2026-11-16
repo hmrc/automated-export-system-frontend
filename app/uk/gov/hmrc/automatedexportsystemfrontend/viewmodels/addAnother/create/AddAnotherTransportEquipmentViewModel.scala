@@ -46,18 +46,15 @@ case class AddAnotherTransportEquipmentViewModel(
 }
 
 object AddAnotherTransportEquipmentViewModel {
-  private val pageSize = 25
   def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherTransportEquipmentViewModel = {
 
     val numberOfTransportEquipment: Int = DiscrepancyTransportEquipment.count(userAnswers)
 
     val remainingTransportEquipment: Int = DiscrepancyTransportEquipment.remaining(userAnswers)
 
-    val requestedPage: Int = page.getOrElse(1)
+    val currentPage: Int = page.getOrElse(1)
 
     val totalPages: Int = PaginationBuilder.totalPages(numberOfTransportEquipment)
-
-    val currentPage: Int = math.min(math.max(requestedPage, 1), totalPages)
 
     AddAnotherTransportEquipmentViewModel(
       numberOfTransportEquipment = numberOfTransportEquipment,
@@ -76,11 +73,14 @@ object AddAnotherTransportEquipmentViewModel {
   }
 
   private def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    PaginationBuilder.slice(DiscrepancyTransportEquipment.getAll(userAnswers).zipWithIndex, currentPage).map { case (_, i) =>
-      val transportEquipmentNumber = i + 1
+    PaginationBuilder.slice(DiscrepancyTransportEquipment.getAll(userAnswers).zipWithIndex, currentPage).map { case (containerDetails, i) =>
+      val index = i + 1
+
+      val containerIdOrIndex = containerDetails.containerId.getOrElse(f"$index%,d")
+
       SummaryListRow(
         key = Key(
-          content = Text(messages("addAnotherTransportEquipment.key", transportEquipmentNumber)),
+          content = Text(messages("addAnotherTransportEquipment.key", containerIdOrIndex)),
           classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
         ),
         value = Value(content = Empty, classes = "govuk-!-display-none"),
@@ -89,10 +89,17 @@ object AddAnotherTransportEquipmentViewModel {
             Seq(
               ActionItem(
                 href = createRoute.DiscrepancyTransportController
-                  .onPageLoad(transportEquipmentNumber, mode)
+                  .onPageLoad(index, mode)
                   .url,
                 content = Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("addAnotherTransportEquipment.change.hidden", transportEquipmentNumber))
+                visuallyHiddenText = Some(messages("addAnotherTransportEquipment.change.hidden", containerIdOrIndex))
+              ),
+              ActionItem(
+                href = createRoute.RemoveTransportEquipmentController
+                  .onPageLoad(index, currentPage, mode)
+                  .url,
+                content = Text(messages("site.remove")),
+                visuallyHiddenText = Some(messages("addAnotherTransportEquipment.remove.hidden", containerIdOrIndex))
               )
             )
           )
