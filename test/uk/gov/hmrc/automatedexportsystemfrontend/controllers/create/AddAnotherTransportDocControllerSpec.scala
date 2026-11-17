@@ -119,7 +119,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       "must return OK and the correct view for a GET with pagination" in {
         val transportDocList = (1 to pageSize + 1).map { number =>
-          DocumentDetails(Some(number), Some(number))
+          DocumentDetails(Some(s"$number"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -162,7 +162,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       "must return OK and the correct view for a GET when the max limit of items has been reached" - {
         val transportDocList = (1 to maxTransportDoc).map { number =>
-          DocumentDetails(Some(number), Some(number))
+          DocumentDetails(Some(s"$number"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -335,7 +335,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect back to AddAnother without a page when pagination has not started but page 1 is provided for a GET" in {
         val transportDocList = (1 to pageSize).map { number =>
-          DocumentDetails(Some(number), Some(number))
+          DocumentDetails(Some(s"$number"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -358,7 +358,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
         val transportDocList = (1 to pageSize + 1).map { number =>
-          DocumentDetails(Some(number), Some(number))
+          DocumentDetails(Some(s"$number"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -466,7 +466,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
         val transportDocList = (1 to 51).map { number =>
-          DocumentDetails(Some(number), Some(number))
+          DocumentDetails(Some(s"$number"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -495,7 +495,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect to Discrepancy Goods when maximum items reached" in {
         val transportDocList = (1 to maxTransportDoc).map { number =>
-          DocumentDetails(Some(number), Some(number))
+          DocumentDetails(Some(s"$number"), Some(number))
         }.toList
 
         val userAnswers = emptyUserAnswers
