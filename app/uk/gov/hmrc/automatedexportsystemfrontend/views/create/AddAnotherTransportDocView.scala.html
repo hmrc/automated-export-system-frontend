@@ -23,12 +23,24 @@
         govukButton: GovukButton,
         govukErrorSummary: GovukErrorSummary,
         govukRadios: GovukRadios,
-        govukSummaryList: GovukSummaryList
+        govukSummaryList: GovukSummaryList,
+        govukPagination: GovukPagination
 )
 
 @(form: Form[_], viewModel: AddAnotherTransportDocViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"addAnotherTransportDoc.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportDocs))) {
+@baseTitle = @{
+    messages(s"addAnotherTransportDoc.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportDocs)
+}
+
+@pageTitle = @{
+    if (viewModel.totalPages > 1)
+        s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
+    else
+        baseTitle
+}
+
+@layout(pageTitle = title(form, pageTitle)) {
 
   @if(form.errors.nonEmpty) {
     @govukErrorSummary(ErrorSummaryViewModel(form))
@@ -38,6 +50,10 @@
 
   @govukSummaryList(SummaryList(rows= viewModel.rows))
 
+    @viewModel.pagination(mode).map { pagination =>
+        <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstTransportDoc, viewModel.lastTransportDoc, viewModel.numberOfTransportDocs)</p>
+        @govukPagination(pagination)
+    }
 
   @formHelper(action = createRoute.AddAnotherTransportDocController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
 

@@ -58,8 +58,8 @@ class TransportDocCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Transport document reference")
         body should include("2")
 
-        //        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url}"""")
-        // TODO implement above for AddAnotherTransportDoc when this is created in a future ticket
+        body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url}"""")
+
       }
     }
 
@@ -83,8 +83,7 @@ class TransportDocCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Transport document reference")
         body should include("2")
 
-        //        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url}"""")
-        // TODO implement above for AddAnotherTransportDoc when this is created in a future ticket      }
+        body should include(s"""href="${createRoute.AddAnotherTransportDocController.onPageLoad(None, CheckMode).url}"""")
       }
     }
 
