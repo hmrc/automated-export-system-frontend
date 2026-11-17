@@ -18,7 +18,12 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import play.api.libs.json.*
 
-case class PackingDetails(packagingCode: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String])
+case class PackingDetails(packagingCode: Option[String], numberOfPackages: Option[Int], shippingMarks: Option[String]) {
+  def isEmpty: Boolean =
+    packagingCode.isEmpty &&
+      numberOfPackages.isEmpty &&
+      shippingMarks.isEmpty
+}
 
 object PackingDetails {
 
