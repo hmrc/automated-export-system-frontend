@@ -14,21 +14,21 @@
  * limitations under the License.
  */
 
-package controllers
+package uk.gov.hmrc.automatedexportsystemfrontend.controllers
 
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers, WhatDoYouWantToDo}
-import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatestplus.mockito.MockitoSugar
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.WhatDoYouWantToDoPage
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest
-import play.api.test.Helpers._
+import play.api.test.Helpers.*
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.WhatDoYouWantToDoFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{NormalMode, UserAnswers, WhatDoYouWantToDo}
+import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.WhatDoYouWantToDoPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.WhatDoYouWantToDoView
 

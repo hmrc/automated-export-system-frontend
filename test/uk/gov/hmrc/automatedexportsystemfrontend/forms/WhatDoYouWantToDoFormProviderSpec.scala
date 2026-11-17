@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package forms
+package uk.gov.hmrc.automatedexportsystemfrontend.forms
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.models.WhatDoYouWantToDo
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.WhatDoYouWantToDoFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
+import uk.gov.hmrc.automatedexportsystemfrontend.models.WhatDoYouWantToDo
 
 class WhatDoYouWantToDoFormProviderSpec extends OptionFieldBehaviours {
 
