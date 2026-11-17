@@ -265,35 +265,35 @@ class AddAnotherGoodsItemControllerSpec extends SpecBase with MockitoSugar {
           }
         }
 
-// TODO:fix after pagination        "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
-//
-//          val goodsItemsList = (1 to 51).map { number =>
-//            WhatHasChangedDetails(Some(number), Some(s"5GB0000000-$number"), number.toString, number.toString)
-//          }.toList
-//
-//          val userAnswers = emptyUserAnswers
-//            .set(DiscrepancyGoods, goodsItemsList)
-//            .success
-//            .value
-//
-//          val application = applicationBuilder(userAnswers = Some(userAnswers))
-//            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-//            .build()
-//
-//          running(application) {
-//            val request = FakeRequest(POST, createRoute.AddAnotherGoodsItemController.onSubmit(Some(2), NormalMode).url)
-//
-//            val result = route(application, request).value
-//
-//            status(result) shouldBe BAD_REQUEST
-//            val body = contentAsString(result)
-//            body should include("Select yes if you want to add another goods item")
-//            body should not include "Goods item 25"
-//            body should include("Goods item 26")
-//            body should include("Goods item 50")
-//            body should not include "Goods item 51"
-//          }
-//        }
+        "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
+
+          val goodsItemsList = (1 to 51).map { number =>
+            WhatHasChangedDetails(Some(number), Some(s"5GB0000000-$number"), number.toString, number.toString)
+          }.toList
+
+          val userAnswers = emptyUserAnswers
+            .set(DiscrepancyGoods, goodsItemsList)
+            .success
+            .value
+
+          val application = applicationBuilder(userAnswers = Some(userAnswers))
+            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+            .build()
+
+          running(application) {
+            val request = FakeRequest(POST, createRoute.AddAnotherGoodsItemController.onSubmit(Some(2), NormalMode).url)
+
+            val result = route(application, request).value
+
+            status(result) shouldBe BAD_REQUEST
+            val body = contentAsString(result)
+            body should include("Select yes if you want to add another goods item")
+            body should not include "Goods item 25"
+            body should include("Goods item 26")
+            body should include("Goods item 50")
+            body should not include "Goods item 51"
+          }
+        }
 
         "must redirect to packaging page when maximum items reached" in {
 
