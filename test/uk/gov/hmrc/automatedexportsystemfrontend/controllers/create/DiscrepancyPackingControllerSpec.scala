@@ -153,7 +153,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyPackingRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            .withFormUrlEncodedBody(("numberOfPackages", "not-a-number"))
 
         val result = route(application, request).value
 

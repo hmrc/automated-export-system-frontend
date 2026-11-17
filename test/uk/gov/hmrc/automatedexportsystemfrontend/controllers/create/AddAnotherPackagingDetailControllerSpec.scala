@@ -33,9 +33,9 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
   val maxPackagingDetails: Int = DiscrepancyPacking.maxPackagingDetails
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+    .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
+    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
     .success
     .value
 
@@ -76,7 +76,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       "must return OK and the correct view for a GET without pagination" in {
 
         val packingDetailsList = (1 to 25).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -117,7 +117,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       "must return OK and the correct view for a GET with pagination" in {
 
         val packingDetailsList = (1 to 26).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -161,7 +161,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       "must return OK and the correct view for a GET when the max limit of items has been reached" - {
 
         val packingDetailsList = (1 to maxPackagingDetails).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -351,7 +351,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       "must redirect back to AddAnother without a page when pagination has not started but page 1 is provided for a GET" in {
 
         val packingDetailsList = (1 to 25).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -376,7 +376,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
 
         val packingDetailsList = (1 to 26).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -453,9 +453,9 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
       "must redirect to CYASubmission when No is selected" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+          .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
+          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
           .success
           .value
 
@@ -478,7 +478,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
 
         val packingDetailsList = (1 to 51).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -508,7 +508,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
       "must redirect to CYASubmission when maximum items reached" in {
 
         val packingDetailsList = (1 to maxPackagingDetails).map { number =>
-          PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+          PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers

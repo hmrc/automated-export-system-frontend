@@ -29,25 +29,28 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 object AmendDiscrepancyPackingSummary {
 
   def typeOfPackagesRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendDiscrepancyPackingPage(submissionId)).map { answer =>
-      buildPackagingCode(answer.packagingCode, submissionId, withAmendLink = true)
-    }
+    answers
+      .get(AmendDiscrepancyPackingPage(submissionId))
+      .flatMap(_.packagingCode)
+      .map(buildPackagingCode(_, submissionId, withAmendLink = true))
 
   def typeOfPackagesRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(buildPackagingCode(answerFromXml, submissionId, withAmendLink))
 
   def numberOfPackagesRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendDiscrepancyPackingPage(submissionId)).map { answer =>
-      buildNumberOfPackages(answer.numberOfPackages, submissionId, withAmendLink = true)
-    }
+    answers
+      .get(AmendDiscrepancyPackingPage(submissionId))
+      .flatMap(_.numberOfPackages)
+      .map(buildNumberOfPackages(_, submissionId, withAmendLink = true))
 
   def numberOfPackagesRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(buildNumberOfPackages(answerFromXml, submissionId, withAmendLink))
 
   def shippingMarksRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendDiscrepancyPackingPage(submissionId)).map { answer =>
-      buildShippingMarks(answer.shippingMarks, submissionId, withAmendLink = true)
-    }
+    answers
+      .get(AmendDiscrepancyPackingPage(submissionId))
+      .flatMap(_.shippingMarks)
+      .map(buildShippingMarks(_, submissionId, withAmendLink = true))
 
   def shippingMarksRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(buildShippingMarks(answerFromXml, submissionId, withAmendLink))
