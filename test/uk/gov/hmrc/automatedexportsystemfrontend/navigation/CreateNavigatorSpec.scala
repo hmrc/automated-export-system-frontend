@@ -167,7 +167,7 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyTransportDocPage" - {
         "to TransportDocCYA when NOT empty" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
             .success
             .value
           navigator.nextPage(DiscrepancyTransportDocPage(index), NormalMode, userAnswers) shouldBe
@@ -421,7 +421,7 @@ class CreateNavigatorSpec extends SpecBase {
 
         "to TransportDocCYA when DiscrepancyTransportDocPage is answered" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1)))
             .success
             .value
           navigator.nextPage(DiscrepancyTransportDocPage(index), CheckMode, userAnswers) shouldBe
@@ -430,7 +430,7 @@ class CreateNavigatorSpec extends SpecBase {
 
         "to AddAnotherTransportDocPage when DiscrepancyTransportDoc is unanswered at current index but there are existing documents" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1)))
             .success
             .value
           navigator.nextPage(DiscrepancyTransportDocPage(index + 1), CheckMode, userAnswers) shouldBe

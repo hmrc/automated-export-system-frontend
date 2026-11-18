@@ -33,7 +33,7 @@ class AmendDiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers 
 
   "rows" - {
     "when answered, return the both optional summary rows with change links" in {
-      val documentType = 1
+      val documentType = "1"
       val referenceNumber = "1234"
 
       AmendDiscrepancyTransportDocSummary.transportTypeRow(documentType, "submissionId", true) shouldBe Some(
@@ -69,7 +69,7 @@ class AmendDiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers 
     }
 
     "when answered, return the both optional summary rows without change links" in {
-      val documentType = 1
+      val documentType = "1"
       val referenceNumber = "1234"
 
       AmendDiscrepancyTransportDocSummary.transportTypeRow(documentType, "submissionId", false) shouldBe Some(

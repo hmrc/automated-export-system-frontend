@@ -27,13 +27,13 @@ class DiscrepancyTransportDocSpec extends SpecBase {
     ".getAll" - {
       "must get all of the DiscrepancyTransportDoc data" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
           .success
           .value
 
-        val expected = List(DocumentDetails(Some(1), Some(1)), DocumentDetails(Some(2), Some(2)), DocumentDetails(Some(3), Some(3)))
+        val expected = List(DocumentDetails(Some("1"), Some(1)), DocumentDetails(Some("2"), Some(2)), DocumentDetails(Some("3"), Some(3)))
 
         DiscrepancyTransportDoc.getAll(userAnswers) mustBe expected
       }
@@ -42,9 +42,9 @@ class DiscrepancyTransportDocSpec extends SpecBase {
     ".count" - {
       "must return how many DiscrepancyTransportDoc data items have been added" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
           .success
           .value
 
@@ -55,9 +55,9 @@ class DiscrepancyTransportDocSpec extends SpecBase {
     ".remaining" - {
       "must return how many remaining DiscrepancyTransportDoc data items can be added" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
           .success
           .value
 
@@ -74,9 +74,9 @@ class DiscrepancyTransportDocSpec extends SpecBase {
     ".exists" - {
       "must return true if the index is defined" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
           .success
           .value
 
@@ -85,9 +85,9 @@ class DiscrepancyTransportDocSpec extends SpecBase {
 
       "must return false if the index is not defined" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
           .success
           .value
 
@@ -98,9 +98,9 @@ class DiscrepancyTransportDocSpec extends SpecBase {
     ".nextIndex" - {
       "must return the next empty index positon" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
           .success
           .value
 
@@ -111,15 +111,15 @@ class DiscrepancyTransportDocSpec extends SpecBase {
     ".removeOne" - {
       "must remove one DiscrepancyTransportDoc item at the correct index" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+          .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+          .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+          .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
           .success
           .value
 
         val updatedUserAnswers = DiscrepancyTransportDoc.removeOne(userAnswers, 2).success.value
 
-        val expected = List(DocumentDetails(Some(1), Some(1)), DocumentDetails(Some(3), Some(3)))
+        val expected = List(DocumentDetails(Some("1"), Some(1)), DocumentDetails(Some("3"), Some(3)))
 
         DiscrepancyTransportDoc.getAll(updatedUserAnswers) mustBe expected
       }
@@ -127,9 +127,9 @@ class DiscrepancyTransportDocSpec extends SpecBase {
 
     "must be able to remove all DiscrepancyTransportDoc data from user answers" in {
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some(1), Some(1)))
-        .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some(2), Some(2))))
-        .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some(3), Some(3))))
+        .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
+        .flatMap(_.set(DiscrepancyTransportDocPage(2), DocumentDetails(Some("2"), Some(2))))
+        .flatMap(_.set(DiscrepancyTransportDocPage(3), DocumentDetails(Some("3"), Some(3))))
         .success
         .value
 

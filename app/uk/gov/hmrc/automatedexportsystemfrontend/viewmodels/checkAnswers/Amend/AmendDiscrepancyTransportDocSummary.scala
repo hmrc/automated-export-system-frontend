@@ -48,7 +48,7 @@ object AmendDiscrepancyTransportDocSummary {
       }
     }
 
-  def transportTypeRow(answerFromXml: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  def transportTypeRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(buildTransportType(answerFromXml, submissionId, withAmendLink))
 
   def docReferenceRow(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
@@ -61,7 +61,7 @@ object AmendDiscrepancyTransportDocSummary {
   def docReferenceRow(answerFromXml: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     Some(buildDocReference(answerFromXml, submissionId, withAmendLink))
 
-  private def buildTransportType(value: Int, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
+  private def buildTransportType(value: String, submissionId: String, withAmendLink: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = "discrepancyTransportDoc.documentType.checkYourAnswersLabel",
       value = ValueViewModel(HtmlContent(HtmlFormat.escape(value.toString))),

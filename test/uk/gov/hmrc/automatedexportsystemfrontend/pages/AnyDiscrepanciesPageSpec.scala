@@ -46,7 +46,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
-            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
             .success
             .value
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
@@ -87,7 +87,7 @@ class AnyDiscrepanciesPageSpec extends SpecBase {
             .set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("transportType"), Some("transportId"), Some("countryOfReg")))
             .success
             .value
-            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some(1), Some(1234)))
+            .set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
             .success
             .value
             .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("ducr"), "newGrossMass", "newNetMass"))
