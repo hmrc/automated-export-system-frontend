@@ -43,47 +43,49 @@ class AddAnotherSealController @Inject() (
 
   private val logger = Logger(classOf[AddAnotherSealController])
 
-  def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherSealViewModel(request.userAnswers, page, mode)
+  def onPageLoad(transportEquipmentIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
+      val viewModel = AddAnotherSealViewModel(request.userAnswers, transportEquipmentIndex, page, mode)
 
-    if (viewModel.numberOfSeals == 0) {
-      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
-    } else if (!isValidPage(viewModel)) {
-      logger.warn(
-        s"[AddAnotherSealController] Invalid page on page load. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
-      )
-      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-    } else if (page != viewModel.pageParam) {
-      Redirect(createRoute.AddAnotherSealController.onPageLoad(viewModel.pageParam, mode))
-    } else {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
+      if (viewModel.numberOfSeals == 0) {
+        Redirect(createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, mode))
+      } else if (!isValidPage(viewModel)) {
+        logger.warn(
+          s"[AddAnotherSealController] Invalid page on page load. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+        )
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      } else if (page != viewModel.pageParam) {
+        Redirect(createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, viewModel.pageParam, mode))
+      } else {
+        Ok(view(form(viewModel.allowMore), viewModel, transportEquipmentIndex, mode))
+      }
     }
-  }
 
   private def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
-  def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherSealViewModel(request.userAnswers, page, mode)
+  def onSubmit(transportEquipmentIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
+      val viewModel = AddAnotherSealViewModel(request.userAnswers, transportEquipmentIndex, page, mode)
 
-    if (viewModel.numberOfSeals == 0) {
-      Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
-    } else if (!isValidPage(viewModel)) {
-      logger.warn(
-        s"[AddAnotherSealController] Invalid page on submit. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
-      )
-      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-    } else {
-      formProvider(viewModel.allowMore)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
-          {
-            case true  => Redirect(createRoute.DiscrepancySealsController.onPageLoad(viewModel.numberOfSeals + 1, mode))
-            case false => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
-          }
+      if (viewModel.numberOfSeals == 0) {
+        Redirect(createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, mode))
+      } else if (!isValidPage(viewModel)) {
+        logger.warn(
+          s"[AddAnotherSealController] Invalid page on submit. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
         )
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      } else {
+        formProvider(viewModel.allowMore)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(view(formWithErrors, viewModel, transportEquipmentIndex, mode)),
+            {
+              case true  => Redirect(createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, viewModel.numberOfSeals + 1, mode))
+              case false => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, mode))
+            }
+          )
+      }
     }
-  }
 
   private def isValidPage(viewModel: AddAnotherSealViewModel): Boolean =
     viewModel.currentPage >= 1 && viewModel.currentPage <= viewModel.totalPages

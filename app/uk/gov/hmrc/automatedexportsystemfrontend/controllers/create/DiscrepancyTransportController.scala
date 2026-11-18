@@ -108,7 +108,7 @@ class DiscrepancyTransportController @Inject() (
               } yield Redirect(value match {
                 case equipment if equipment.containerId.isDefined || equipment.numberOfSeals.isDefined =>
                   createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers)
-                case _ => nextPageAfterBlank(updatedAnswers, mode)
+                case _ => nextPageAfterBlank(transportEquipmentIndex, updatedAnswers, mode)
               })
           )
       } else {
@@ -119,12 +119,12 @@ class DiscrepancyTransportController @Inject() (
       }
     }
 
-  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
+  private def nextPageAfterBlank(transportEquipmentIndex: Int, answers: UserAnswers, mode: Mode): Call =
     if (DiscrepancyTransportEquipment.count(answers) > 0)
       createRoute.AddAnotherTransportController.onPageLoad(None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancySealsController.onPageLoad(1, mode)
+        case NormalMode => createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, mode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 

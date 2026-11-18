@@ -73,7 +73,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("Transport Equipment 1")
+        body should include("Transport equipment 1")
         body should include("Container details")
         body should include("If the goods are being transported in a container, enter the details.")
         body should include("Container identification number")
@@ -94,7 +94,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("Transport Equipment 1")
+        body should include("Transport equipment 1")
         body should include("Container details")
         body should include("If the goods are being transported in a container, enter the details.")
         body should include("Container identification number")
@@ -159,7 +159,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, 1, NormalMode).url
       }
     }
 
@@ -544,7 +544,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
       redirectLocation(result).value shouldBe
         createRoute.DiscrepancySealsController
-          .onPageLoad(1, NormalMode)
+          .onPageLoad(1, 1, NormalMode)
           .url
     }
   }

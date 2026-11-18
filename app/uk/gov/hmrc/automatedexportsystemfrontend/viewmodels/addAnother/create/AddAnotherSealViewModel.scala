@@ -49,11 +49,11 @@ case class AddAnotherSealViewModel(
 
   def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
 
-  def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
+  def pagination(transportEquipmentIndex: Int, mode: Mode)(implicit messages: Messages): Option[Pagination] =
     if (totalPages <= 1) None
     else {
       def href(page: Int): String =
-        createRoute.AddAnotherSealController.onPageLoad(Some(page), mode).url
+        createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(page), mode).url
 
       Some(
         Pagination(
@@ -69,11 +69,13 @@ case class AddAnotherSealViewModel(
 }
 
 object AddAnotherSealViewModel {
-  def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherSealViewModel = {
+  def apply(userAnswers: UserAnswers, transportEquipmentIndex: Int, page: Option[Int], mode: Mode)(
+    implicit messages: Messages
+  ): AddAnotherSealViewModel = {
 
-    val numberOfSeals: Int = DiscrepancySeals.count(userAnswers)
+    val numberOfSeals: Int = DiscrepancySeals(transportEquipmentIndex).count(userAnswers)
 
-    val remainingSeals: Int = DiscrepancySeals.remaining(userAnswers)
+    val remainingSeals: Int = DiscrepancySeals(transportEquipmentIndex).remaining(userAnswers)
 
     val currentPage: Int = page.getOrElse(1)
 
@@ -91,7 +93,7 @@ object AddAnotherSealViewModel {
       allowMore = remainingSeals > 0,
       addedSingularOrPlural = if (numberOfSeals == 1) "singular" else "plural",
       remainingSingularOrPlural = if (remainingSeals == 1) "singular" else "plural",
-      rows = rows(userAnswers, mode, currentPage),
+      rows = rows(userAnswers, transportEquipmentIndex, mode, currentPage),
       currentPage = currentPage,
       totalPages = totalPages,
       firstSeal = firstSeal,
@@ -101,28 +103,29 @@ object AddAnotherSealViewModel {
 
   }
 
-  def rows(userAnswers: UserAnswers, mode: Mode, currentPage: Int)(implicit messages: Messages): Seq[SummaryListRow] =
-    DiscrepancySeals.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map { case (sealIdentifier, i) =>
-      val index = i + 1
-      SummaryListRow(
-        key = Key(content = Text(sealIdentifier), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
-        value = Value(content = Empty, classes = "govuk-!-display-none"),
-        actions = Some(
-          Actions(items =
-            Seq(
-              ActionItem(
-                href = createRoute.DiscrepancySealsController.onPageLoad(index, mode).url,
-                content = Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("addAnotherSeal.change.hidden", index))
-              ),
-              ActionItem(
-                href = createRoute.RemoveSealController.onPageLoad(index, currentPage, mode).url,
-                content = Text(messages("site.remove")),
-                visuallyHiddenText = Some(messages("addAnotherSeal.remove.hidden", index))
+  def rows(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode, currentPage: Int)(implicit messages: Messages): Seq[SummaryListRow] =
+    DiscrepancySeals(transportEquipmentIndex).getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map {
+      case (sealIdentifier, i) =>
+        val index = i + 1
+        SummaryListRow(
+          key = Key(content = Text(sealIdentifier), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
+          value = Value(content = Empty, classes = "govuk-!-display-none"),
+          actions = Some(
+            Actions(items =
+              Seq(
+                ActionItem(
+                  href = createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, index, mode).url,
+                  content = Text(messages("site.change")),
+                  visuallyHiddenText = Some(messages("addAnotherSeal.change.hidden", index))
+                ),
+                ActionItem(
+                  href = createRoute.RemoveSealController.onPageLoad(transportEquipmentIndex, index, currentPage, mode).url,
+                  content = Text(messages("site.remove")),
+                  visuallyHiddenText = Some(messages("addAnotherSeal.remove.hidden", index))
+                )
               )
             )
           )
         )
-      )
     }
 }

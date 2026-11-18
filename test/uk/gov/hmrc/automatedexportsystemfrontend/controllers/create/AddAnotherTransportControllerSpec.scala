@@ -454,7 +454,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to DiscrepancySealsPage when No is selected" in {
+      "must redirect to DiscrepancyTransportMeansPage when No is selected" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -468,11 +468,11 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
         }
       }
 
-      "must redirect to next DiscrepancySealsPage and preserve the mode in CheckMode when answer is No" in {
+      "must redirect to next DiscrepancyTransportMeansPage and preserve the mode in CheckMode when answer is No" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -486,7 +486,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, CheckMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
         }
       }
 
@@ -520,7 +520,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to DiscrepancySealsPage when maximum items reached" in {
+      "must redirect to DiscrepancyTransportMeansPage when maximum items reached" in {
 
         val userAnswers = emptyUserAnswers
           .set(DiscrepancyTransportEquipment, transportEquipmentList)
@@ -537,7 +537,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
         }
       }
 

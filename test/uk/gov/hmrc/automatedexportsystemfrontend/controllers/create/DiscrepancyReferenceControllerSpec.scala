@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{never, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
@@ -31,7 +31,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyReferen
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyReferencePage, VisitedDiscrepancyReferencePage}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyReference
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
@@ -44,9 +44,11 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DiscrepancyReferenceFormProvider()
   val form: Form[Option[String]] = formProvider()
 
-  lazy val discrepancyReferenceRoute: String = createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+  val transportEquipmentIndex: Int = 1
 
-  val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReferencePage(1), "answer").success.value
+  lazy val discrepancyReferenceRoute: String = createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
+
+  val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReferencePage(transportEquipmentIndex, 1), "answer").success.value
 
   "DiscrepancyReference Controller" - {
 
@@ -118,10 +120,17 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe onwardRoute.url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        captor.getValue.get(VisitedDiscrepancyReferencePage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -138,11 +147,13 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         val body = contentAsString(result)
         body should include("There is a problem")
+
+        verify(mockSessionRepository, never()).set(any[UserAnswers])
       }
     }
 
     "must remove answer and redirect to the add another page when no data is entered and other references remain" in {
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference, List("reference1", "reference2")).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference(transportEquipmentIndex), List("reference1", "reference2")).success.value
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -159,22 +170,25 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(1, NormalMode).url)
+          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(transportEquipmentIndex, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController
+          .onPageLoad(transportEquipmentIndex, None, NormalMode)
+          .url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancyReference.getAll(captor.getValue) shouldBe List("reference2")
+        DiscrepancyReference(transportEquipmentIndex).getAll(captor.getValue) shouldBe List("reference2")
+        captor.getValue.get(VisitedDiscrepancyReferencePage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
 
     "must redirect to the DiscrepancyTransportMeans when no data is entered and no references remain in NormalMode" in {
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference, List("reference1")).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference(transportEquipmentIndex), List("reference1")).success.value
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -191,7 +205,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(1, NormalMode).url)
+          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(transportEquipmentIndex, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
@@ -201,7 +215,8 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancyReference.getAll(captor.getValue) shouldBe List.empty
+        DiscrepancyReference(transportEquipmentIndex).getAll(captor.getValue) shouldBe List.empty
+        captor.getValue.get(VisitedDiscrepancyReferencePage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
 
@@ -221,7 +236,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(1, CheckMode).url)
+          FakeRequest(POST, createRoute.DiscrepancyReferenceController.onSubmit(transportEquipmentIndex, 1, CheckMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
@@ -231,7 +246,8 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancyReference.getAll(captor.getValue) shouldBe List.empty
+        DiscrepancyReference(transportEquipmentIndex).getAll(captor.getValue) shouldBe List.empty
+        captor.getValue.get(VisitedDiscrepancyReferencePage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
 
@@ -241,7 +257,7 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.DiscrepancyReferenceController.onPageLoad(5, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 5, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -251,17 +267,23 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to Journey Recovery for a POST where the index doesn't exist and is not the next index" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.DiscrepancyReferenceController.onPageLoad(5, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 5, NormalMode).url)
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+
+        verify(mockSessionRepository, never()).set(any[UserAnswers])
       }
     }
 
@@ -282,6 +304,9 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -296,6 +321,8 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+
+        verify(mockSessionRepository, never()).set(any[UserAnswers])
       }
     }
   }

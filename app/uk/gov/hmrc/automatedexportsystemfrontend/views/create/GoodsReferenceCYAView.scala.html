@@ -22,7 +22,7 @@
         govukSummaryList: GovukSummaryList
 )
 
-@(goodsReferenceIndex: Int, goodsReferenceList: SummaryList, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(transportEquipmentIndex: Int, goodsReferenceIndex: Int, goodsReferenceList: SummaryList, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("checkYourAnswers.title"))) {
 
@@ -36,7 +36,7 @@
 
     <div>
         @govukButton(
-            ButtonViewModel(messages("site.continue")).asLink(createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, mode).url)
+            ButtonViewModel(messages("site.continue")).asLink(createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, mode).url)
         )
     </div>
 }

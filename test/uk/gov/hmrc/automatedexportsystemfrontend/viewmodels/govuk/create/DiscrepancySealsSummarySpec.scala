@@ -33,17 +33,17 @@ class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answered, return the summary row in NormalMode" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancySealsPage(1), "sealIdentifier")
+        .set(DiscrepancySealsPage(1, 1), "sealIdentifier")
         .get
 
-      DiscrepancySealsSummary.row(1, userAnswers, mode) shouldBe Some(
+      DiscrepancySealsSummary.row(1, 1, userAnswers, mode) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancySeals.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("sealIdentifier")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController.onPageLoad(1, 1, NormalMode).url
             )
               .withVisuallyHiddenText("discrepancySeals.change.hidden")
           )
@@ -53,17 +53,17 @@ class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answered, return the summary row in CheckMode" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancySealsPage(1), "sealIdentifier")
+        .set(DiscrepancySealsPage(1, 1), "sealIdentifier")
         .get
 
-      DiscrepancySealsSummary.row(1, userAnswers, CheckMode) shouldBe Some(
+      DiscrepancySealsSummary.row(1, 1, userAnswers, CheckMode) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancySeals.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent("sealIdentifier")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController.onPageLoad(1, CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController.onPageLoad(1, 1, CheckMode).url
             )
               .withVisuallyHiddenText("discrepancySeals.change.hidden")
           )
@@ -73,7 +73,7 @@ class DiscrepancySealsSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancySealsSummary.row(1, userAnswers, mode) shouldBe None
+      DiscrepancySealsSummary.row(1, 1, userAnswers, mode) shouldBe None
     }
   }
 }
