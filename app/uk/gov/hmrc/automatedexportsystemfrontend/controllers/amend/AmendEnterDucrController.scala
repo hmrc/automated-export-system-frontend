@@ -47,15 +47,15 @@ class AmendEnterDucrController @Inject() (
 
   val form = formProvider()
 
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
+    implicit request =>
 
-    val preparedForm: Form[String] = request.userAnswers.get(AmendEnterDucrPage(submissionId)).fold(form)(form.fill)
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
-    Future.successful(Ok(preparedView))
+      val preparedForm: Form[String] = request.userAnswers.get(AmendEnterDucrPage(submissionId)).fold(form)(form.fill)
+      val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
+      Future.successful(Ok(preparedView))
   }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-
     form
       .bindFromRequest()
       .fold(

@@ -57,7 +57,6 @@ class AnyDiscrepanciesController @Inject() (
   }
 
   def onSubmit(mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-
     form
       .bindFromRequest()
       .fold(

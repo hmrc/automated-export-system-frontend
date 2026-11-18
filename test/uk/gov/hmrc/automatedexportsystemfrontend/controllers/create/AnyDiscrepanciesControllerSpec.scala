@@ -142,38 +142,38 @@ class AnyDiscrepanciesControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
-        "must redirect to Journey Recovery for a GET if no existing data is found" in {
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-          val application = applicationBuilder(userAnswers = None)
-            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-            .build()
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
-          running(application) {
-            val request = FakeRequest(GET, anyDiscrepanciesRoute)
+      running(application) {
+        val request = FakeRequest(GET, anyDiscrepanciesRoute)
 
-            val result = route(application, request).value
+        val result = route(application, request).value
 
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
-          }
-        }
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
 
-        "must redirect to Journey Recovery for a POST if no existing data is found" in {
+    "must redirect to Journey Recovery for a POST if no existing data is found" in {
 
-          val application = applicationBuilder(userAnswers = None)
-            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-            .build()
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
-          running(application) {
-            val request =
-              FakeRequest(POST, anyDiscrepanciesRoute)
-                .withFormUrlEncodedBody(("value", "true"))
+      running(application) {
+        val request =
+          FakeRequest(POST, anyDiscrepanciesRoute)
+            .withFormUrlEncodedBody(("value", "true"))
 
-            val result = route(application, request).value
+        val result = route(application, request).value
 
-            status(result) shouldBe SEE_OTHER
-            redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
-          }
-        }
+        status(result) shouldBe SEE_OTHER
+        redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+      }
+    }
   }
 }

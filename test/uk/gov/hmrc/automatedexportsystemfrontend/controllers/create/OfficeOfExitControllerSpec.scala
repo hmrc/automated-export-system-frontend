@@ -138,13 +138,13 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
         body should include("There is a problem")
       }
     }
-    
-        "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-          val application = applicationBuilder(userAnswers = None)
-            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-            .build()
-          
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
+
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
+
       running(application) {
         val request = FakeRequest(GET, officeOfExitRoute)
 
@@ -161,7 +161,7 @@ class OfficeOfExitControllerSpec extends SpecBase with MockitoSugar {
       val application = applicationBuilder(userAnswers = None)
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
-      
+
       running(application) {
         val request =
           FakeRequest(POST, officeOfExitRoute)

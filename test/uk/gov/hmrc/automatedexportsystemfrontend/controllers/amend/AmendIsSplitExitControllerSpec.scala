@@ -143,20 +143,19 @@ class AmendIsSplitExitControllerSpec extends SpecBase with MockitoSugar {
       }
     }
 
+    "must redirect to Journey Recovery for a GET if no existing data is found" in {
 
-        "must redirect to Journey Recovery for a GET if no existing data is found" in {
+      val application = applicationBuilder(userAnswers = None)
+        .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
+        .build()
 
-          val application = applicationBuilder(userAnswers = None)
-            .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
-            .build()
+      running(application) {
+        val request =
+          FakeRequest(POST, isSplitExitRoute)
+            .withFormUrlEncodedBody(("value", ""))
+            .withSession(SessionKeys.sessionId -> "some-session-id")
 
-          running(application) {
-            val request =
-              FakeRequest(POST, isSplitExitRoute)
-                .withFormUrlEncodedBody(("value", ""))
-                .withSession(SessionKeys.sessionId -> "some-session-id")
-
-            val result = route(application, request).value
+        val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url

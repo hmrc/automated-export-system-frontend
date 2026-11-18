@@ -47,12 +47,13 @@ class AmendPartOfConsolidationController @Inject() (
 
   val form: Form[PartOfConsolidationAnswer] = formProvider()
 
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    
-    val preparedForm = request.userAnswers.get(AmendPartOfConsolidationPage(submissionId)).fold(form)(form.fill)
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
+    implicit request =>
 
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
-    Future.successful(Ok(preparedView))
+      val preparedForm = request.userAnswers.get(AmendPartOfConsolidationPage(submissionId)).fold(form)(form.fill)
+
+      val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
+      Future.successful(Ok(preparedView))
   }
 
   def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
