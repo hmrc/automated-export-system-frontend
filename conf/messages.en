@@ -101,7 +101,6 @@ enterMrn.error.required = Enter `enterMrn`
 enterMrn.error.length = EnterMrn must be 18 characters
 enterMrn.error.invalid = EnterMrn must be in the correct format, for example 26IE0A123456789012
 enterMrn.change.hidden = MRN
-enterMrn.caption = Export operation
 
 enterDucr.title = What is the Declaration Unique Consignment Reference (DUCR)?
 enterDucr.heading = What is the Declaration Unique Consignment Reference (DUCR)?
