@@ -64,7 +64,7 @@ class AmendEnterMrnControllerSpec extends SpecBase with MockitoSugar {
         status(result) mustEqual OK
         val body = contentAsString(result)
         body should include("automated-export-system-frontend")
-        body should include("What is the Movement Reference Number (MRN)?")
+        body should include("What is the EU Movement Reference Number (MRN)?")
       }
     }
 

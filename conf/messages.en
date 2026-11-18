@@ -93,15 +93,14 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-enterMrn.title = What is the Movement Reference Number (MRN)?
-enterMrn.heading = What is the Movement Reference Number (MRN)?
-enterMrn.hint = This is the 18-character reference from the EU export declaration. For example, 24AB123456789012A1.
+enterMrn.title = What is the EU Movement Reference Number (MRN)?
+enterMrn.heading = What is the EU Movement Reference Number (MRN)?
+enterMrn.hint = For example, 26IE0A123456789012
 enterMrn.checkYourAnswersLabel = MRN
 enterMrn.error.required = Enter `enterMrn`
 enterMrn.error.length = EnterMrn must be 18 characters
-enterMrn.error.invalid = EnterMrn must be in the correct format, for example 24AB123456789012A1
+enterMrn.error.invalid = EnterMrn must be in the correct format, for example 26IE0A123456789012
 enterMrn.change.hidden = MRN
-enterMrn.caption = Export operation
 
 enterDucr.title = What is the Declaration Unique Consignment Reference (DUCR)?
 enterDucr.heading = What is the Declaration Unique Consignment Reference (DUCR)?
