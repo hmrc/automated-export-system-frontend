@@ -32,6 +32,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
 
   lazy val transportDocListRoute: String = createRoute.AddAnotherTransportDocController.onPageLoad(None, NormalMode).url
   val maxTransportDoc: Int = DiscrepancyTransportDoc.maxTransportDocuments
+  val goodsItemIndex = 1
 
   val userAnswers: UserAnswers = emptyUserAnswers
     .set(DiscrepancyTransportDocPage(1), DocumentDetails(Some("1"), Some(1)))
@@ -443,7 +444,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(goodsItemIndex, NormalMode).url
         }
       }
 
@@ -513,7 +514,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(goodsItemIndex, NormalMode).url
         }
       }
 

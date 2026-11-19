@@ -26,10 +26,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 
 class AddAnotherSealViewModelSpec extends SpecBase {
+
   private implicit val messages: Messages = Helpers.stubMessages()
+
   val userAnswers = emptyUserAnswers
     .set(DiscrepancySealsPage(1), "sealIdentifier")
     .get
+
   val maxSeals: Int = DiscrepancySeals.maxNumberOfSealsInList
 
   private def sealsList(n: Int): List[String] = (1 to n).map(i => s"seal$i").toList

@@ -21,7 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers, WhatHasChangedDetails}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers, WhatHasChangedDetails}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyGoodsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create.DiscrepancyGoodsSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
@@ -32,13 +32,13 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "rows" - {
-    "when answered, return all summary rows" in {
+    "when answered, return all summary rows in NormalMode" in {
       val whatHasChangedDetails = WhatHasChangedDetails(Some(1), Some("2GB647298735290-S569"), "20", "10")
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyGoodsPage, whatHasChangedDetails)
+        .set(DiscrepancyGoodsPage(1), whatHasChangedDetails)
         .get
 
-      DiscrepancyGoodsSummary.rows(userAnswers) shouldBe Some(
+      DiscrepancyGoodsSummary.rows(1, userAnswers, NormalMode) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
@@ -46,7 +46,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(1, NormalMode).url
               )
                 .withVisuallyHiddenText("discrepancyGoods.goodsItemNumber.change.hidden")
             )
@@ -57,7 +57,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(1, NormalMode).url
               )
                 .withVisuallyHiddenText("discrepancyGoods.ducr.change.hidden")
             )
@@ -68,7 +68,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(1, NormalMode).url
               )
                 .withVisuallyHiddenText("discrepancyGoods.newGrossMass.change.hidden")
             )
@@ -79,7 +79,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(1, NormalMode).url
               )
                 .withVisuallyHiddenText("discrepancyGoods.newNetMass.change.hidden")
             )
@@ -91,10 +91,10 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
     "when answered, return summary rows excluding optional values" in {
       val whatHasChangedDetails = WhatHasChangedDetails(None, None, "20", "10")
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyGoodsPage, whatHasChangedDetails)
+        .set(DiscrepancyGoodsPage(1), whatHasChangedDetails)
         .get
 
-      DiscrepancyGoodsSummary.rows(userAnswers) shouldBe Some(
+      DiscrepancyGoodsSummary.rows(1, userAnswers, CheckMode) shouldBe Some(
         Seq(
           SummaryListRowViewModel(
             key = "discrepancyGoods.newGrossMass.checkYourAnswersLabel",
@@ -102,7 +102,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyGoods.newGrossMass.change.hidden")
             )
@@ -113,7 +113,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
             actions = Seq(
               ActionItemViewModel(
                 "site.change",
-                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(CheckMode).url
+                uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyGoodsController.onPageLoad(1, CheckMode).url
               )
                 .withVisuallyHiddenText("discrepancyGoods.newNetMass.change.hidden")
             )
@@ -124,7 +124,7 @@ class DiscrepancyGoodsSummarySpec extends AnyFreeSpec with Matchers with Generat
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyGoodsSummary.rows(userAnswers) shouldBe None
+      DiscrepancyGoodsSummary.rows(1, userAnswers, NormalMode) shouldBe None
     }
   }
 }
