@@ -70,7 +70,7 @@ class AddAnotherGoodsItemController @Inject() (
           formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
           {
             case true  => Redirect(createRoute.DiscrepancyGoodsController.onPageLoad(viewModel.numberOfGoodsItem + 1, mode))
-            case false => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
+            case false => Redirect(createRoute.CYASubmissionController.onPageLoad())
           }
         )
     }

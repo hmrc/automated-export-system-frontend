@@ -20,12 +20,11 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.{Amend, Standard}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
-import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationQualifier
 
 class AmendSubmissionDataService @Inject() extends Logging {
 
@@ -37,6 +36,42 @@ class AmendSubmissionDataService @Inject() extends Logging {
       case None =>
         logger.warn(s"Could not gather required user answers to create amend IE507a submission for $submissionId")
         None
+    }
+
+  private def collectAmendUserAnswers(userAnswers: UserAnswers, submissionId: String): Option[Submission] =
+    for {
+      mrn <- userAnswers.get(AmendEnterMrnPage(submissionId))
+      discrepanciesExist <- userAnswers.get(AmendAnyDiscrepanciesPage(submissionId))
+      splitIndicator <- userAnswers.get(AmendIsSplitExitPage(submissionId))
+      referenceNumber <- userAnswers.get(AmendOfficeOfExitPage(submissionId))
+    } yield Submission(
+      Some(submissionId),
+      ExportOperation(Amend, mrn, discrepanciesExist, splitIndicator),
+      CustomsOfficeOfExitActual(referenceNumber.toString),
+      collectAmendGoodsShipment(userAnswers, submissionId)
+    )
+
+  private def collectAmendGoodsShipment(userAnswers: UserAnswers, submissionId: String): Option[GoodsShipment] =
+    for {
+      ducr <- userAnswers.get(AmendEnterDucrPage(submissionId))
+      location <- collectAmendGoodsLocation(userAnswers, submissionId)
+    } yield {
+      val transportMode =
+        userAnswers.get(AmendDiscrepancyConsignmentPage(submissionId)).map(TransportMode.apply)
+
+      val mucr =
+        userAnswers.get(AmendPartOfConsolidationPage(submissionId)).flatMap(_.mucr)
+
+      val seals = collectAmendSeals(userAnswers, submissionId)
+      val goodsReference = collectAmendGoodsReference(userAnswers, submissionId)
+      val transportEquipment =
+        collectAmendTransportEquipment(userAnswers, seals, goodsReference, submissionId)
+
+      val transport = collectAmendActiveBorderTransportMeans(userAnswers, submissionId)
+      val transportDocument = collectAmendTransportDocument(userAnswers, submissionId)
+      val goodsItem = collectAmendGoodsItem(userAnswers, submissionId).toList
+
+      GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
     }
 
   private def collectAmendTransportEquipment(
@@ -89,56 +124,20 @@ class AmendSubmissionDataService @Inject() extends Logging {
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 
-  private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
-    DiscrepancyPacking.getAll(userAnswers).zipWithIndex.map { (packing, index) =>
-      Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
-    }
-
   private def collectAmendGoodsItem(userAnswers: UserAnswers, submissionId: String): Option[GoodsItem] =
     userAnswers.get(AmendDiscrepancyGoodsPage(submissionId)).map { goods =>
       GoodsItem(
         goods.declarationGoodsItemNumber,
         goods.declarationUniqueConsignmentReference,
         Commodity(goods.newGrossMass, goods.newNetMass),
-        collectPackaging(userAnswers)
+        collectAmendPackaging(userAnswers, submissionId)
       )
     }
 
-  private def collectAmendGoodsShipment(userAnswers: UserAnswers, submissionId: String): Option[GoodsShipment] =
-    for {
-      ducr <- userAnswers.get(AmendEnterDucrPage(submissionId))
-      location <- collectAmendGoodsLocation(userAnswers, submissionId)
-    } yield {
-      val transportMode =
-        userAnswers.get(AmendDiscrepancyConsignmentPage(submissionId)).map(TransportMode.apply)
-
-      val mucr =
-        userAnswers.get(AmendPartOfConsolidationPage(submissionId)).flatMap(_.mucr)
-
-      val seals = collectAmendSeals(userAnswers, submissionId)
-      val goodsReference = collectAmendGoodsReference(userAnswers, submissionId)
-      val transportEquipment =
-        collectAmendTransportEquipment(userAnswers, seals, goodsReference, submissionId)
-
-      val transport = collectAmendActiveBorderTransportMeans(userAnswers, submissionId)
-      val transportDocument = collectAmendTransportDocument(userAnswers, submissionId)
-      val goodsItem = collectAmendGoodsItem(userAnswers, submissionId).toList
-
-      GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
+  private def collectAmendPackaging(userAnswers: UserAnswers, submissionId: String): List[Packaging] =
+    userAnswers.get(AmendDiscrepancyPackingPage(submissionId)).toList.map { packing =>
+      Packaging(1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
-
-  private def collectAmendUserAnswers(userAnswers: UserAnswers, submissionId: String): Option[Submission] =
-    for {
-      mrn <- userAnswers.get(AmendEnterMrnPage(submissionId))
-      discrepanciesExist <- userAnswers.get(AmendAnyDiscrepanciesPage(submissionId))
-      splitIndicator <- userAnswers.get(AmendIsSplitExitPage(submissionId))
-      referenceNumber <- userAnswers.get(AmendOfficeOfExitPage(submissionId))
-    } yield Submission(
-      Some(submissionId),
-      ExportOperation(Amend, mrn, discrepanciesExist, splitIndicator),
-      CustomsOfficeOfExitActual(referenceNumber.toString),
-      collectAmendGoodsShipment(userAnswers, submissionId)
-    )
 
   private def buildXmlWithDeclaration(submission: Submission): String =
     s"""<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${submission.toXml}"""

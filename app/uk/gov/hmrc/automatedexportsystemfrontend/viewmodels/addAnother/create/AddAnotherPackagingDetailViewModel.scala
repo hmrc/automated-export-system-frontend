@@ -43,11 +43,13 @@ case class AddAnotherPackagingDetailViewModel(
 
 object AddAnotherPackagingDetailViewModel {
 
-  def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherPackagingDetailViewModel = {
+  def apply(userAnswers: UserAnswers, page: Option[Int], goodsItemIndex: Int, mode: Mode)(
+    implicit messages: Messages
+  ): AddAnotherPackagingDetailViewModel = {
 
-    val numberOfPackagingDetails: Int = DiscrepancyPacking.count(userAnswers)
+    val numberOfPackagingDetails: Int = DiscrepancyPacking(goodsItemIndex).count(userAnswers)
 
-    val remainingPackagingDetails: Int = DiscrepancyPacking.remaining(userAnswers)
+    val remainingPackagingDetails: Int = DiscrepancyPacking(goodsItemIndex).remaining(userAnswers)
 
     val currentPage: Int = page.getOrElse(1)
 
@@ -63,17 +65,17 @@ object AddAnotherPackagingDetailViewModel {
       totalPages = totalPages,
       firstPackagingDetail = PaginationBuilder.firstItem(currentPage),
       lastPackagingDetail = PaginationBuilder.lastItem(currentPage, numberOfPackagingDetails),
-      rows = rows(userAnswers, currentPage, mode),
+      rows = rows(userAnswers, currentPage, goodsItemIndex, mode),
       pagination = PaginationBuilder.pagination(
         currentPage,
         totalPages,
-        index => createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(index), mode).url
+        index => createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(index), mode).url
       )
     )
   }
 
-  def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    PaginationBuilder.slice(DiscrepancyPacking.getAll(userAnswers).zipWithIndex, currentPage).map { case (_, i) =>
+  def rows(userAnswers: UserAnswers, currentPage: Int, goodsItemIndex: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+    PaginationBuilder.slice(DiscrepancyPacking(goodsItemIndex).getAll(userAnswers).zipWithIndex, currentPage).map { case (_, i) =>
       val packagingDetailNumber = i + 1
       SummaryListRow(
         key = Key(
@@ -85,12 +87,12 @@ object AddAnotherPackagingDetailViewModel {
           Actions(items =
             Seq(
               ActionItem(
-                href = createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailNumber, mode).url,
+                href = createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, packagingDetailNumber, mode).url,
                 content = Text(messages("site.change")),
                 visuallyHiddenText = Some(messages("addAnotherPackagingDetail.change.hidden", packagingDetailNumber))
               ),
               ActionItem(
-                href = createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailNumber, currentPage, mode).url,
+                href = createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailNumber, currentPage, mode).url,
                 content = Text(messages("site.remove")),
                 visuallyHiddenText = Some(messages("addAnotherPackagingDetail.remove.hidden", packagingDetailNumber))
               )

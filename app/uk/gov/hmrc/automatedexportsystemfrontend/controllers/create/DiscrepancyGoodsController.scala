@@ -85,7 +85,7 @@ class DiscrepancyGoodsController @Inject() (
               for {
                 updatedAnswers <- Future.fromTry(request.userAnswers.remove(DiscrepancyGoodsPage(goodsItemIndex)))
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(nextPageAfterBlank(updatedAnswers, mode))
+              } yield Redirect(nextPageAfterBlank(updatedAnswers, goodsItemIndex, mode))
           }
         )
     } else {
@@ -93,12 +93,12 @@ class DiscrepancyGoodsController @Inject() (
     }
   }
 
-  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
+  private def nextPageAfterBlank(answers: UserAnswers, goodsItemIndex: Int, mode: Mode): Call =
     if (DiscrepancyGoods.count(answers) > 0)
       createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancyPackingController.onPageLoad(1, mode)
+        case NormalMode => createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, mode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 }

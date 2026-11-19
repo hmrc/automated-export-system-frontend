@@ -28,8 +28,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyPackingSummary {
 
-  def rows(packagingDetailIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-    answers.get(DiscrepancyPackingPage(packagingDetailIndex)).map { answer =>
+  def rows(goodsItemIndex: Int, packagingDetailIndex: Int, answers: UserAnswers, mode: Mode)(
+    implicit messages: Messages
+  ): Option[Seq[SummaryListRow]] =
+    answers.get(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex)).map { answer =>
 
       val packagingCode = HtmlFormat.escape(answer.packagingCode)
       val numberOfPackages = HtmlFormat.escape(answer.numberOfPackages.toString)
@@ -40,7 +42,7 @@ object DiscrepancyPackingSummary {
           key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(packagingCode)),
           actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, mode).url)
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, packagingDetailIndex, mode).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.packagingCode.change.hidden"))
           )
         ),
@@ -48,7 +50,7 @@ object DiscrepancyPackingSummary {
           key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(numberOfPackages)),
           actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, mode).url)
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, packagingDetailIndex, mode).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.numberOfPackages.change.hidden"))
           )
         ),
@@ -56,7 +58,7 @@ object DiscrepancyPackingSummary {
           key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
           value = ValueViewModel(HtmlContent(shippingMarks)),
           actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, mode).url)
+            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, packagingDetailIndex, mode).url)
               .withVisuallyHiddenText(messages("discrepancyPacking.shippingMarks.change.hidden"))
           )
         )

@@ -22,8 +22,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPacking
 
 import scala.util.Try
 
-case object DiscrepancyPacking extends Gettable[List[PackingDetails]] with Settable[List[PackingDetails]] {
-  override def path: JsPath = JsPath \ "standard" \ "discrepancyPacking"
+case class DiscrepancyPacking(goodsItemIndex: Int) extends Gettable[List[PackingDetails]] with Settable[List[PackingDetails]] {
+  override def path: JsPath = JsPath \ "standard" \ "discrepancyGoods" \ (goodsItemIndex - 1) \ "discrepancyPacking"
 
   val maxPackagingDetails: Int = 99
 
@@ -33,10 +33,11 @@ case object DiscrepancyPacking extends Gettable[List[PackingDetails]] with Setta
 
   def remaining(userAnswers: UserAnswers): Int = math.max(0, maxPackagingDetails - count(userAnswers))
 
-  def exists(userAnswers: UserAnswers, packagingDetailIndex: Int): Boolean = userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)).isDefined
+  def exists(userAnswers: UserAnswers, packagingDetailIndex: Int): Boolean =
+    userAnswers.get(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex)).isDefined
 
   def nextIndex(userAnswers: UserAnswers): Int = count(userAnswers) + 1
 
   def removeOne(userAnswers: UserAnswers, packagingDetailIndex: Int): Try[UserAnswers] =
-    userAnswers.remove(DiscrepancyPackingPage(packagingDetailIndex))
+    userAnswers.remove(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex))
 }

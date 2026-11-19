@@ -130,8 +130,8 @@ class CreateSubmissionDataService @Inject() extends Logging {
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 
-  private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
-    DiscrepancyPacking.getAll(userAnswers).zipWithIndex.map { (packing, index) =>
+  private def collectPackaging(userAnswers: UserAnswers, goodsItemIndex: Int): List[Packaging] =
+    DiscrepancyPacking(goodsItemIndex).getAll(userAnswers).zipWithIndex.map { (packing, index) =>
       Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
 
@@ -141,7 +141,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
         goods.declarationGoodsItemNumber,
         goods.declarationUniqueConsignmentReference,
         Commodity(goods.newGrossMass, goods.newNetMass),
-        collectPackaging(userAnswers)
+        collectPackaging(userAnswers, index + 1)
       )
     }
 

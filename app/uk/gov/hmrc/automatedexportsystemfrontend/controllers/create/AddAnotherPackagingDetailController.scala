@@ -45,44 +45,46 @@ class AddAnotherPackagingDetailController @Inject() (
 
   def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
-  def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, mode)
+  def onPageLoad(goodsItemIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
+    implicit request =>
+      val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, goodsItemIndex, mode)
 
-    if (viewModel.numberOfPackagingDetails == 0) {
-      Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
-    } else if (!isValidPage(viewModel)) {
-      logger.warn(
-        s"[AddAnotherPackagingDetailController] Invalid page on page load. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
-      )
-      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-    } else if (page != viewModel.pageParam) {
-      Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(viewModel.pageParam, mode))
-    } else {
-      Ok(view(form(viewModel.allowMore), viewModel, mode))
-    }
+      if (viewModel.numberOfPackagingDetails == 0) {
+        Redirect(createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, mode))
+      } else if (!isValidPage(viewModel)) {
+        logger.warn(
+          s"[AddAnotherPackagingDetailController] Invalid page on page load. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
+        )
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      } else if (page != viewModel.pageParam) {
+        Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, viewModel.pageParam, mode))
+      } else {
+        Ok(view(form(viewModel.allowMore), goodsItemIndex, viewModel, mode))
+      }
   }
 
-  def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, mode)
+  def onSubmit(goodsItemIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
+    implicit request =>
+      val viewModel = AddAnotherPackagingDetailViewModel(request.userAnswers, page, goodsItemIndex, mode)
 
-    if (viewModel.numberOfPackagingDetails == 0) {
-      Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
-    } else if (!isValidPage(viewModel)) {
-      logger.warn(
-        s"[AddAnotherPackagingDetailController] Invalid page on submit. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
-      )
-      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-    } else {
-      formProvider(viewModel.allowMore)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
-          {
-            case true  => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(viewModel.numberOfPackagingDetails + 1, mode))
-            case false => Redirect(createRoute.CYASubmissionController.onPageLoad())
-          }
+      if (viewModel.numberOfPackagingDetails == 0) {
+        Redirect(createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, mode))
+      } else if (!isValidPage(viewModel)) {
+        logger.warn(
+          s"[AddAnotherPackagingDetailController] Invalid page on submit. page=$page, currentPage=${viewModel.currentPage}, totalPages=${viewModel.totalPages}"
         )
-    }
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      } else {
+        formProvider(viewModel.allowMore)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(view(formWithErrors, goodsItemIndex, viewModel, mode)),
+            {
+              case true => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, viewModel.numberOfPackagingDetails + 1, mode))
+              case false => Redirect(createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)) // TODO: is none okay here
+            }
+          )
+      }
   }
 
   private def isValidPage(viewModel: AddAnotherPackagingDetailViewModel): Boolean =
