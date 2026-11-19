@@ -23,12 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, Normal
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{
-  DiscrepancyReference,
-  DiscrepancySeals,
-  DiscrepancyTransportDoc,
-  DiscrepancyTransportEquipment
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyReference, DiscrepancySeals, DiscrepancyTransportDoc}
 
 class CreateNavigator extends Navigator {
 
@@ -127,7 +122,7 @@ class CreateNavigator extends Navigator {
     }
 
   private def discrepancyConsignmentCheckRoute(answers: UserAnswers): Call =
-    if (DiscrepancyTransportEquipment.count(answers) == 0) {
+    if (!answers.get(VisitedDiscrepancySealsPage(1)).contains(true)) {
       createRoute.DiscrepancyTransportController.onPageLoad(1, CheckMode)
     } else {
       createRoute.CYASubmissionController.onPageLoad()

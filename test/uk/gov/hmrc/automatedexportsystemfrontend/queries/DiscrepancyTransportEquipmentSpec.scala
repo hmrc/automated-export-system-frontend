@@ -18,16 +18,26 @@ package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import org.scalatest.matchers.must.Matchers.{mustBe, mustNot}
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, TransportEquipmentData, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 
 class DiscrepancyTransportEquipmentSpec extends SpecBase {
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId1"), Some(1)))
-    .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(Some("containerId2"), Some(2))))
-    .flatMap(_.set(DiscrepancyTransportPage(3), ContainerDetails(Some("containerId3"), Some(3))))
+    .set(DiscrepancyTransportPage(1), ContainerDetails(Some("CONT1"), Some(1)))
+    .flatMap(_.set(DiscrepancySealsPage(1, 1), "sealId1"))
+    .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(Some("CONT2"), Some(2))))
+    .flatMap(_.set(DiscrepancyReferencePage(2, 1), "12345"))
+    .flatMap(_.set(DiscrepancyTransportPage(3), ContainerDetails(Some("CONT3"), Some(3))))
+    .flatMap(_.set(DiscrepancySealsPage(3, 1), "sealId2"))
+    .flatMap(_.set(DiscrepancyReferencePage(3, 1), "23456"))
+    .flatMap(_.set(DiscrepancyTransportPage(4), ContainerDetails(Some("CONT4"), Some(4))))
+    .flatMap(_.set(DiscrepancyTransportPage(5), ContainerDetails(None, None)))
+    .flatMap(_.set(DiscrepancySealsPage(5, 1), "sealId3"))
+    .flatMap(_.set(DiscrepancySealsPage(5, 2), "sealId4"))
+    .flatMap(_.set(DiscrepancyReferencePage(5, 1), "34567"))
+    .flatMap(_.set(DiscrepancyReferencePage(5, 2), "45678"))
     .success
     .value
 
@@ -35,9 +45,11 @@ class DiscrepancyTransportEquipmentSpec extends SpecBase {
     ".getAll" - {
       "must get all of the DiscrepancyTransportEquipment data" in {
         val expected = List(
-          ContainerDetails(Some("containerId1"), Some(1)),
-          ContainerDetails(Some("containerId2"), Some(2)),
-          ContainerDetails(Some("containerId3"), Some(3))
+          TransportEquipmentData(Some(ContainerDetails(Some("CONT1"), Some(1))), List("sealId1"), List.empty),
+          TransportEquipmentData(Some(ContainerDetails(Some("CONT2"), Some(2))), List.empty, List("12345")),
+          TransportEquipmentData(Some(ContainerDetails(Some("CONT3"), Some(3))), List("sealId2"), List("23456")),
+          TransportEquipmentData(Some(ContainerDetails(Some("CONT4"), Some(4))), List.empty, List.empty),
+          TransportEquipmentData(Some(ContainerDetails(None, None)), List("sealId3", "sealId4"), List("34567", "45678"))
         )
 
         DiscrepancyTransportEquipment.getAll(userAnswers) mustBe expected
@@ -46,13 +58,13 @@ class DiscrepancyTransportEquipmentSpec extends SpecBase {
 
     ".count" - {
       "must return how many DiscrepancyTransportEquipment data items have been added" in {
-        DiscrepancyTransportEquipment.count(userAnswers) mustBe 3
+        DiscrepancyTransportEquipment.count(userAnswers) mustBe 5
       }
     }
 
     ".remaining" - {
       "must return how many remaining DiscrepancyTransportEquipment data items can be added" in {
-        DiscrepancyTransportEquipment.remaining(userAnswers) mustBe 9996
+        DiscrepancyTransportEquipment.remaining(userAnswers) mustBe 9994
       }
     }
 
@@ -64,17 +76,17 @@ class DiscrepancyTransportEquipmentSpec extends SpecBase {
 
     ".exists" - {
       "must return true if the index is defined" in {
-        DiscrepancyTransportEquipment.exists(userAnswers, 3) mustBe true
+        DiscrepancyTransportEquipment.exists(userAnswers, 5) mustBe true
       }
 
       "must return false if the index is not defined" in {
-        DiscrepancyTransportEquipment.exists(userAnswers, 4) mustBe false
+        DiscrepancyTransportEquipment.exists(userAnswers, 6) mustBe false
       }
     }
 
     ".nextIndex" - {
       "must return the next empty index positon" in {
-        DiscrepancyTransportEquipment.nextIndex(userAnswers) mustBe 4
+        DiscrepancyTransportEquipment.nextIndex(userAnswers) mustBe 6
       }
     }
 
@@ -82,7 +94,12 @@ class DiscrepancyTransportEquipmentSpec extends SpecBase {
       "must remove one DiscrepancyTransportEquipment item at the correct index" in {
         val updatedUserAnswers = DiscrepancyTransportEquipment.removeOne(userAnswers, 2).success.value
 
-        val expected = List(ContainerDetails(Some("containerId1"), Some(1)), ContainerDetails(Some("containerId3"), Some(3)))
+        val expected = List(
+          TransportEquipmentData(Some(ContainerDetails(Some("CONT1"), Some(1))), List("sealId1"), List.empty),
+          TransportEquipmentData(Some(ContainerDetails(Some("CONT3"), Some(3))), List("sealId2"), List("23456")),
+          TransportEquipmentData(Some(ContainerDetails(Some("CONT4"), Some(4))), List.empty, List.empty),
+          TransportEquipmentData(Some(ContainerDetails(None, None)), List("sealId3", "sealId4"), List("34567", "45678"))
+        )
 
         DiscrepancyTransportEquipment.getAll(updatedUserAnswers) mustBe expected
       }

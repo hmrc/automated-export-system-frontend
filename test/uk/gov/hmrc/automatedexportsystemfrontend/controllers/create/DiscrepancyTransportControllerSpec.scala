@@ -215,7 +215,8 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
     "must remove answer and redirect to the add another page when no data is entered and other transport equipment entries remain" in {
       val userAnswers = UserAnswers(userAnswersId)
-        .set(DiscrepancyTransportEquipment, List(ContainerDetails(Some("containerId1"), Some(1)), ContainerDetails(Some("containerId2"), Some(2))))
+        .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId1"), Some(1)))
+        .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(Some("containerId2"), Some(2))))
         .success
         .value
 
@@ -244,7 +245,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancyTransportEquipment.getAll(captor.getValue) shouldBe List(ContainerDetails(Some("containerId2"), Some(2)))
+        DiscrepancyTransportEquipment.getContainerDetails(captor.getValue) shouldBe List(ContainerDetails(Some("containerId2"), Some(2)))
       }
     }
 

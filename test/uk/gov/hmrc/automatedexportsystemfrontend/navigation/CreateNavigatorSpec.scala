@@ -322,13 +322,13 @@ class CreateNavigatorSpec extends SpecBase {
       }
 
       "navigate from DiscrepancyConsignmentPage" - {
-        "to DiscrepancyTransportPage when DiscrepancyTransportPage is unanswered" in {
+        "to DiscrepancyTransportPage when VisitedDiscrepancySealsPage does not contain true" in {
           navigator.nextPage(DiscrepancyConsignmentPage, CheckMode, emptyUserAnswers) shouldBe
             createRoute.DiscrepancyTransportController.onPageLoad(1, CheckMode)
         }
 
-        "to CYASubmissionPage when DiscrepancyTransportPage is answered" in {
-          val userAnswers = emptyUserAnswers.set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId"), Some(99))).success.value
+        "to CYASubmissionPage when VisitedDiscrepancySealsPage contains true" in {
+          val userAnswers = emptyUserAnswers.set(VisitedDiscrepancySealsPage(parentIndex), true).success.value
           navigator.nextPage(DiscrepancyConsignmentPage, CheckMode, userAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }

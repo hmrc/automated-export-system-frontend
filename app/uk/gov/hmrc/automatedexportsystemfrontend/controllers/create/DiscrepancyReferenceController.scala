@@ -121,7 +121,7 @@ class DiscrepancyReferenceController @Inject() (
       createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancyTransportMeansController.onPageLoad(mode)
+        case NormalMode => createRoute.AddAnotherTransportController.onPageLoad(None, NormalMode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 }

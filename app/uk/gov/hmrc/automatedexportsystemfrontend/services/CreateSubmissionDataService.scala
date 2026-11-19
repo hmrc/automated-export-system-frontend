@@ -20,7 +20,7 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.*
@@ -48,9 +48,15 @@ class CreateSubmissionDataService @Inject() extends Logging {
 
     discrepancyTransport.zipWithIndex.map { case (transport, index) =>
       val transportIndex = index + 1
-      val seals = collectSeals(userAnswers, transportIndex)
-      val goodsReferences = collectGoodsReference(userAnswers, transportIndex)
-      TransportEquipment(transportIndex, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
+      val seals = collectSeals(transport.discrepancySeals)
+      val goodsReferences = collectGoodsReference(transport.discrepancyReference)
+      TransportEquipment(
+        transportIndex,
+        transport.containerDetails.flatMap(_.containerId),
+        transport.containerDetails.flatMap(_.numberOfSeals),
+        seals,
+        goodsReferences
+      )
     }
   }
 
@@ -66,13 +72,13 @@ class CreateSubmissionDataService @Inject() extends Logging {
     }
   }
 
-  private def collectSeals(userAnswers: UserAnswers, transportEquipmentIndex: Int): List[Seal] =
-    DiscrepancySeals(transportEquipmentIndex).getAll(userAnswers).zipWithIndex.map { (sealIdentifier, index) =>
+  private def collectSeals(discrepancySeals: List[String]): List[Seal] =
+    discrepancySeals.zipWithIndex.map { (sealIdentifier, index) =>
       Seal(index + 1, sealIdentifier)
     }
 
-  private def collectGoodsReference(userAnswers: UserAnswers, transportEquipmentIndex: Int): List[GoodsReference] =
-    DiscrepancyReference(transportEquipmentIndex).getAll(userAnswers).zipWithIndex.map { case (reference, index) =>
+  private def collectGoodsReference(discrepancyReference: List[String]): List[GoodsReference] =
+    discrepancyReference.zipWithIndex.map { case (reference, index) =>
       GoodsReference(index + 1, reference.toInt)
     }
 
