@@ -52,11 +52,13 @@ case class AddAnotherGoodsReferenceViewModel(
 }
 
 object AddAnotherGoodsReferenceViewModel {
-  def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherGoodsReferenceViewModel = {
+  def apply(userAnswers: UserAnswers, transportEquipmentIndex: Int, page: Option[Int], mode: Mode)(
+    implicit messages: Messages
+  ): AddAnotherGoodsReferenceViewModel = {
 
-    val numberOfGoodsReferences: Int = DiscrepancyReference.count(userAnswers)
+    val numberOfGoodsReferences: Int = DiscrepancyReference(transportEquipmentIndex).count(userAnswers)
 
-    val remainingGoodsReferences: Int = DiscrepancyReference.remaining(userAnswers)
+    val remainingGoodsReferences: Int = DiscrepancyReference(transportEquipmentIndex).remaining(userAnswers)
 
     val currentPage: Int = page.getOrElse(1)
 
@@ -72,17 +74,17 @@ object AddAnotherGoodsReferenceViewModel {
       allowMore = remainingGoodsReferences > 0,
       addedSingularOrPlural = if (numberOfGoodsReferences == 1) "singular" else "plural",
       remainingSingularOrPlural = if (remainingGoodsReferences == 1) "singular" else "plural",
-      rows = rows(userAnswers, currentPage, mode),
+      rows = rows(userAnswers, transportEquipmentIndex, currentPage, mode),
       currentPage = currentPage,
       totalPages = totalPages,
       firstGoodsReference = firstGoodsReference,
       lastGoodsReference = lastGoodsReference,
-      pagination = buildPagination(currentPage, totalPages, mode)
+      pagination = buildPagination(currentPage, transportEquipmentIndex, totalPages, mode)
     )
   }
 
-  def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    DiscrepancyReference.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map {
+  def rows(userAnswers: UserAnswers, transportEquipmentIndex: Int, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+    DiscrepancyReference(transportEquipmentIndex).getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map {
       case (goodsReference, i) =>
         val index = i + 1
 
@@ -96,12 +98,12 @@ object AddAnotherGoodsReferenceViewModel {
             Actions(items =
               Seq(
                 ActionItem(
-                  href = createRoute.DiscrepancyReferenceController.onPageLoad(index, mode).url,
+                  href = createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, index, mode).url,
                   content = Text(messages("site.change")),
                   visuallyHiddenText = Some(messages("addAnotherGoodsReference.change.hidden", goodsReference))
                 ),
                 ActionItem(
-                  href = createRoute.RemoveGoodsReferenceController.onPageLoad(index, currentPage, mode).url,
+                  href = createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, index, currentPage, mode).url,
                   content = Text(messages("site.remove")),
                   visuallyHiddenText = Some(messages("addAnotherGoodsReference.remove.hidden", goodsReference))
                 )
@@ -111,12 +113,12 @@ object AddAnotherGoodsReferenceViewModel {
         )
     }
 
-  private def buildPagination(currentPage: Int, totalPages: Int, mode: Mode): Option[Pagination] =
+  private def buildPagination(currentPage: Int, transportEquipmentIndex: Int, totalPages: Int, mode: Mode): Option[Pagination] =
     if (totalPages <= 1) {
       None
     } else {
 
-      def href(number: Int) = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(number), mode).url
+      def href(number: Int) = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(number), mode).url
 
       val neighbouringPages = math.max(1, currentPage - 1) to math.min(totalPages, currentPage + 1)
 

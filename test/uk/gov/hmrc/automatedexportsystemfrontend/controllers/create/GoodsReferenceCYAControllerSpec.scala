@@ -29,10 +29,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferen
 
 class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
 
+  val transportEquipmentIndex: Int = 1
+
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyReferencePage(1), "12345")
-    .flatMap(_.set(DiscrepancyReferencePage(2), "23456"))
-    .flatMap(_.set(DiscrepancyReferencePage(3), "34567"))
+    .set(DiscrepancyReferencePage(transportEquipmentIndex, 1), "12345")
+    .flatMap(_.set(DiscrepancyReferencePage(transportEquipmentIndex, 2), "23456"))
+    .flatMap(_.set(DiscrepancyReferencePage(transportEquipmentIndex, 3), "34567"))
     .success
     .value
 
@@ -45,7 +47,7 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(2, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(transportEquipmentIndex, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -56,7 +58,7 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Declaration Goods Reference")
         body should include("23456")
         body should include("""Change<span class="govuk-visually-hidden"> Declaration Goods Reference 23456</span>""")
-        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, NormalMode).url}"""")
       }
     }
 
@@ -67,7 +69,7 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(2, CheckMode).url)
+        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(transportEquipmentIndex, 2, CheckMode).url)
 
         val result = route(application, request).value
 
@@ -78,14 +80,14 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Declaration Goods Reference")
         body should include("23456")
         body should include("""Change<span class="govuk-visually-hidden"> Declaration Goods Reference 23456</span>""")
-        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, CheckMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, CheckMode).url}"""")
       }
     }
 
     "must redirect to Journey Recovery for a GET if it is an empty index" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyReferencePage(1), "12345")
+        .set(DiscrepancyReferencePage(transportEquipmentIndex, 1), "12345")
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -93,7 +95,7 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(2, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(transportEquipmentIndex, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -109,7 +111,7 @@ class GoodsReferenceCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(1, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.GoodsReferenceCYAController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url)
 
         val result = route(application, request).value
 

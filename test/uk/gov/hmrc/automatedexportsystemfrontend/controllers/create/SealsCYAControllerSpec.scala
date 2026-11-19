@@ -30,10 +30,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPa
 class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
   val mode = NormalMode
 
+  val transportEquipmentIndex: Int = 1
+
   val userAnswers = emptyUserAnswers
-    .set(DiscrepancySealsPage(1), "Seal1")
-    .flatMap(_.set(DiscrepancySealsPage(2), "Seal2"))
-    .flatMap(_.set(DiscrepancySealsPage(3), "Seal3"))
+    .set(DiscrepancySealsPage(transportEquipmentIndex, 1), "Seal1")
+    .flatMap(_.set(DiscrepancySealsPage(transportEquipmentIndex, 2), "Seal2"))
+    .flatMap(_.set(DiscrepancySealsPage(transportEquipmentIndex, 3), "Seal3"))
     .success
     .value
 
@@ -46,7 +48,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2, mode).url)
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(transportEquipmentIndex, 2, mode).url)
 
         val result = route(application, request).value
 
@@ -57,7 +59,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Seal identifier")
         body should include("Seal2")
 
-        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(None, mode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, mode).url}"""")
       }
     }
 
@@ -68,7 +70,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2, CheckMode).url)
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(transportEquipmentIndex, 2, CheckMode).url)
 
         val result = route(application, request).value
 
@@ -79,14 +81,14 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("Seal identifier")
         body should include("Seal2")
 
-        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(None, CheckMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, CheckMode).url}"""")
       }
     }
 
     "must redirect to Journey Recovery for a GET if it is an empty index" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancySealsPage(1), "Seal1")
+        .set(DiscrepancySealsPage(transportEquipmentIndex, 1), "Seal1")
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -94,7 +96,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(2, mode).url)
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(transportEquipmentIndex, 2, mode).url)
 
         val result = route(application, request).value
 
@@ -110,7 +112,7 @@ class SealsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(1, mode).url)
+        val request = FakeRequest(GET, createRoute.SealsCYAController.onPageLoad(transportEquipmentIndex, 1, mode).url)
 
         val result = route(application, request).value
 

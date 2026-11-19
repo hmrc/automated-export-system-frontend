@@ -41,15 +41,16 @@ class SealsCYAController @Inject() (
 
   private val logger = Logger(classOf[SealsCYAController])
 
-  def onPageLoad(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(transportEquipmentIndex: Int, sealsIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-    val sealIdentifierRow: Option[SummaryListRow] = DiscrepancySealsSummary.row(sealsIndex, request.userAnswers, mode)
+      val sealIdentifierRow: Option[SummaryListRow] = DiscrepancySealsSummary.row(transportEquipmentIndex: Int, sealsIndex, request.userAnswers, mode)
 
-    sealIdentifierRow match {
-      case None =>
-        logger.warn(s"[SealsCYAController] Unable to build seal summary. sealsIndex=$sealsIndex")
-        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-      case Some(row) => Ok(view(sealsIndex, SummaryListViewModel(Seq(row)), mode))
+      sealIdentifierRow match {
+        case None =>
+          logger.warn(s"[SealsCYAController] Unable to build seal summary. sealsIndex=$sealsIndex")
+          Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+        case Some(row) => Ok(view(transportEquipmentIndex, sealsIndex, SummaryListViewModel(Seq(row)), mode))
+      }
     }
-  }
 }

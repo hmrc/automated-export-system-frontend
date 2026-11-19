@@ -19,9 +19,10 @@ package uk.gov.hmrc.automatedexportsystemfrontend.pages.create
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
-case class DiscrepancyReferencePage(discrepancyReferenceIndex: Int) extends QuestionPage[String] {
+case class DiscrepancyReferencePage(transportEquipmentIndex: Int, discrepancyReferenceIndex: Int) extends QuestionPage[String] {
 
-  override def path: JsPath = JsPath \ "standard" \ toString \ (discrepancyReferenceIndex - 1)
+  override def path: JsPath =
+    JsPath \ "standard" \ "discrepancyTransportEquipment" \ (transportEquipmentIndex - 1) \ toString \ (discrepancyReferenceIndex - 1)
 
   override def toString: String = "discrepancyReference"
 }

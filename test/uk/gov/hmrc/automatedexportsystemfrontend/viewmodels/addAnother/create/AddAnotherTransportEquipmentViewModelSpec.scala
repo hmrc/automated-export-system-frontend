@@ -21,8 +21,8 @@ import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, TransportEquipmentData, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyReferencePage, DiscrepancySealsPage, DiscrepancyTransportPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.govukfrontend.views.viewmodels.pagination.PaginationItem
@@ -31,12 +31,21 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  val userAnswers: UserAnswers = emptyUserAnswers.set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId1"), Some(1))).get
+  val userAnswers: UserAnswers = emptyUserAnswers
+    .set(DiscrepancyTransportPage(1), ContainerDetails(Some("CONT1"), Some(1)))
+    .flatMap(_.set(DiscrepancySealsPage(1, 1), "sealId1"))
+    .flatMap(_.set(DiscrepancyReferencePage(1, 1), "12345"))
+    .success
+    .value
 
   val maxTransportEquipment: Int = DiscrepancyTransportEquipment.maxTransportEquipment
 
-  val transportEquipmentListMax: List[ContainerDetails] = (1 to maxTransportEquipment).map { number =>
-    ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+  val transportEquipmentListMax: List[TransportEquipmentData] = (1 to maxTransportEquipment).map { number =>
+    TransportEquipmentData(
+      Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+      List(s"sealId${number.toString}"),
+      List(s"${number.toString}")
+    )
   }.toList
 
   "AddAnotherTransportEquipmentViewModel" - {
@@ -119,8 +128,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
     ".pagination" - {
       "must return None when there is 25 items or less" in {
-        val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 25).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -134,8 +147,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       }
 
       "must return None when there is 25 items or less in CheckMode" in {
-        val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 25).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -149,8 +166,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       }
 
       "must return Pagination for page 1 when there is 26 items" in {
-        val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 26).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -175,8 +196,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       }
 
       "must return Pagination for page 1 when there is 26 items in CheckMode" in {
-        val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 26).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -201,8 +226,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       }
 
       "must return Pagination for page 2 when there is 26 items" in {
-        val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 26).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -416,8 +445,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       }
 
       "must provide the correct model when 1 more item can be added" in {
-        val transportEquipmentList: List[ContainerDetails] = (1 until maxTransportEquipment).map { number =>
-          ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 until maxTransportEquipment).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -463,8 +496,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
     }
 
     "must provide the correct model before pagination starts" in {
-      val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-        ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+      val transportEquipmentList: List[TransportEquipmentData] = (1 to 25).map { number =>
+        TransportEquipmentData(
+          Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+          List(s"sealId${number.toString}"),
+          List(s"${number.toString}")
+        )
       }.toList
 
       val userAnswers = emptyUserAnswers
@@ -492,8 +529,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
     }
 
     "must provide the correct model before pagination starts in CheckMode" in {
-      val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-        ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+      val transportEquipmentList: List[TransportEquipmentData] = (1 to 25).map { number =>
+        TransportEquipmentData(
+          Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+          List(s"sealId${number.toString}"),
+          List(s"${number.toString}")
+        )
       }.toList
 
       val userAnswers = emptyUserAnswers
@@ -521,8 +562,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
     }
 
     "must provide the correct model for when pagination starts at 26 items added" in {
-      val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-        ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+      val transportEquipmentList: List[TransportEquipmentData] = (1 to 26).map { number =>
+        TransportEquipmentData(
+          Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+          List(s"sealId${number.toString}"),
+          List(s"${number.toString}")
+        )
       }.toList
 
       val userAnswers = emptyUserAnswers
@@ -551,8 +596,12 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
     }
 
     "must provide the correct model for a final but partially completed page" in {
-      val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-        ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+      val transportEquipmentList: List[TransportEquipmentData] = (1 to 26).map { number =>
+        TransportEquipmentData(
+          Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+          List(s"sealId${number.toString}"),
+          List(s"${number.toString}")
+        )
       }.toList
 
       val userAnswers = emptyUserAnswers

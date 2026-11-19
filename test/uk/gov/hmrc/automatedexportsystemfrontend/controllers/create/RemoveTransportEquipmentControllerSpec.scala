@@ -26,7 +26,7 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, TransportEquipmentData, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{FakeNavigator, Navigator}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
@@ -40,8 +40,12 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with MockitoSugar 
 
   val transportEquipmentIndex = 30
 
-  val transportEquipmentList50: List[ContainerDetails] = (1 to 50).map { number =>
-    ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
+  val transportEquipmentList50: List[TransportEquipmentData] = (1 to 50).map { number =>
+    TransportEquipmentData(
+      Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+      List(s"sealId${number.toString}"),
+      List(s"${number.toString}")
+    )
   }.toList
 
   val userAnswers: UserAnswers = emptyUserAnswers
@@ -185,8 +189,12 @@ class RemoveTransportEquipmentControllerSpec extends SpecBase with MockitoSugar 
 
     "must redirect to AddAnotherTransportEquipment at next valid page when true and last item is removed from the expected return page" in {
 
-      val transportEquipmentList: List[ContainerDetails] = (1 to 51).map { number =>
-        ContainerDetails(Some(s"containerId${number.toString}"), Some(number))
+      val transportEquipmentList: List[TransportEquipmentData] = (1 to 51).map { number =>
+        TransportEquipmentData(
+          Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+          List(s"sealId${number.toString}"),
+          List(s"${number.toString}")
+        )
       }.toList
 
       val userAnswers: UserAnswers = emptyUserAnswers
