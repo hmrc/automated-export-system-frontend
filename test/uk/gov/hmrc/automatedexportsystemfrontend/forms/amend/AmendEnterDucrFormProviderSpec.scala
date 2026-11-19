@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.ducrRegex
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendEnterDucrFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 
 class AmendEnterDucrFormProviderSpec extends StringFieldBehaviours {

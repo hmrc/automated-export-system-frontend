@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.queries
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 
-import scala.util.{Success, Try}
+import scala.util.Try
 
 sealed trait Query {
 

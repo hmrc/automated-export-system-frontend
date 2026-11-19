@@ -18,9 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import play.api.data.FormError
 import play.api.libs.json.Json
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyConsignmentFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
 import uk.gov.hmrc.automatedexportsystemfrontend.models.codelists.CodeListEntry
 
 class AmendDiscrepancyConsignmentFormProviderSpec extends OptionFieldBehaviours {

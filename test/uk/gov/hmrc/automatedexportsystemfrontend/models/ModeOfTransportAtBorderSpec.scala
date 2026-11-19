@@ -23,7 +23,6 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.{JsError, JsString, Json}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
 
 class ModeOfTransportAtBorderSpec extends AnyFreeSpec with Matchers with ScalaCheckPropertyChecks with OptionValues {
 

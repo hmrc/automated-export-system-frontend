@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.models
 
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TypeOfLocation
 import uk.gov.hmrc.automatedexportsystemfrontend.views.submission.lookups.SubmissionLookups
 
 import java.time.format.DateTimeFormatter

@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.auth
 
-import org.mockito.ArgumentMatchers.{any, eq as eqTo}
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.{times, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind

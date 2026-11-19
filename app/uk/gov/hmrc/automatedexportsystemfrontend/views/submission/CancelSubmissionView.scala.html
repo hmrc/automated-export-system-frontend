@@ -18,9 +18,9 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
 @import uk.gov.hmrc.govukfrontend.views.html.components.GovukWarningText
 @this(
- layout: Layout,
- govukButton: GovukButton,
- govukWarningText: GovukWarningText
+layout: Layout,
+govukButton: GovukButton,
+govukWarningText: GovukWarningText
 )
 
 @(submission: SingleSubmissionViewModel)(implicit request: Request[_], messages: Messages)
@@ -34,51 +34,51 @@ pageTitle = titleNoForm(messages("cancelSubmission.heading"))
 </span>
 
 <h1 class="govuk-heading-l">
- @messages("cancelSubmission.heading")
+    @messages("cancelSubmission.heading")
 </h1>
 
 @govukWarningText(
- WarningText(
-  iconFallbackText = Some(messages("site.warning")),
-  content = Text(messages("cancelSubmission.warningText"))
- )
+WarningText(
+iconFallbackText = Some(messages("site.warning")),
+content = Text(messages("cancelSubmission.warningText"))
+)
 )
 
 <table class="govuk-table">
- <tbody>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("cancelSubmission.mrn")
-  </th>
-  <td class="govuk-table__cell">
-   @submission.mrn
-  </td>
- </tr>
- </tbody>
+    <tbody>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("cancelSubmission.mrn")
+        </th>
+        <td class="govuk-table__cell">
+            @submission.mrn
+        </td>
+    </tr>
+    </tbody>
 </table>
 
 <div class="govuk-button-group">
 
- @helper.form(
- action = routes.CancelSubmissionController.onSubmit(submission.submissionId)
- ) {
-  @helper.CSRF.formField
+    @helper.form(
+    action = routes.CancelSubmissionController.onSubmit(submission.submissionId)
+    ) {
+    @helper.CSRF.formField
 
-  @govukButton(
-   Button(
-     content = Text(messages("cancelSubmission.confirmButton")),
-     inputType = Some("submit"),
-     classes = "govuk-button--warning"
-   )
-  )
+    @govukButton(
+    Button(
+    content = Text(messages("cancelSubmission.confirmButton")),
+    inputType = Some("submit"),
+    classes = "govuk-button--warning"
+    )
+    )
 
-  <p class="govuk-body">
-   <a
-           href="@routes.ViewSubmissionController.onPageLoad(submission.submissionId)"
-           class="govuk-link govuk-link--no-visited-state">
-    @messages("cancelSubmission.backLink")
-   </a>
-  </p>
+    <p class="govuk-body">
+        <a
+                href="@routes.ViewSubmissionController.onPageLoad(submission.submissionId)"
+                class="govuk-link govuk-link--no-visited-state">
+            @messages("cancelSubmission.backLink")
+        </a>
+    </p>
 
 </div>
 }

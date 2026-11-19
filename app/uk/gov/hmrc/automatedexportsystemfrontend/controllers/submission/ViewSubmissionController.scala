@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.Logging
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesAuthRequestActionBuilder
 import uk.gov.hmrc.automatedexportsystemfrontend.models.ViewSubmissionViewModelMapper

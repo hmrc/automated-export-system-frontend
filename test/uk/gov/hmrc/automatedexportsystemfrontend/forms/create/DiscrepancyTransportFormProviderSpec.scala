@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{containerIdMaxLength, containerIdRegex, numberOfSealsMaxValue}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.ContainerDetails
 
 class DiscrepancyTransportFormProviderSpec extends StringFieldBehaviours {

@@ -20,7 +20,6 @@ import org.scalatest.OptionValues.convertOptionToValuable
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.must.Matchers
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.PartOfConsolidationFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
 
 class PartOfConsolidationFormProviderSpec extends AnyFreeSpec with Matchers {

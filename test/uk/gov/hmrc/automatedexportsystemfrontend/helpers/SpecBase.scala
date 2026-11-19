@@ -22,7 +22,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalatest.concurrent.{IntegrationPatience, ScalaFutures}
 import org.scalatest.freespec.AnyFreeSpecLike
-import org.scalatest.matchers.should.Matchers
 import org.scalatest.matchers.should.Matchers as ShouldMatch
 import org.scalatest.{BeforeAndAfterEach, Inside, OptionValues, TryValues}
 import play.api.Application

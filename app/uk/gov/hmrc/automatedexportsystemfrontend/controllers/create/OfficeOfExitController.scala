@@ -19,10 +19,9 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
-import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.OfficeOfExitFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, OfficeOfExit, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, OfficeOfExit}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.OfficeOfExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository

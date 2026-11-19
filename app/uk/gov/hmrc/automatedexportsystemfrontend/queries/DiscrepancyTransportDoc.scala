@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
 import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, PackingDetails, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportDocPage
 
 import scala.util.Try

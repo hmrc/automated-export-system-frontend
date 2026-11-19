@@ -19,86 +19,86 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.LabelSize
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    govukErrorSummary: GovukErrorSummary,
-    govukInput: GovukInput,
-    govukButton: GovukButton
+layout: Layout,
+formHelper: FormWithCSRF,
+govukErrorSummary: GovukErrorSummary,
+govukInput: GovukInput,
+govukButton: GovukButton
 )
 
 @(form: Form[_], mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @declarationUniqueConsignmentReferenceHint = {
-    <div id="declarationUniqueConsignmentReferenceHint" class="govuk-hint">
-        @messages("discrepancyGoods.declarationUniqueConsignmentReference.hint")
-    </div>
+<div id="declarationUniqueConsignmentReferenceHint" class="govuk-hint">
+    @messages("discrepancyGoods.declarationUniqueConsignmentReference.hint")
+</div>
 }
 
 @newGrossMassHint = {
-    <div id="newGrossMassHint" class="govuk-hint">
-        @messages("discrepancyGoods.newGrossMass.hint")
-    </div>
+<div id="newGrossMassHint" class="govuk-hint">
+    @messages("discrepancyGoods.newGrossMass.hint")
+</div>
 }
 
 @newNetMassHint = {
-    <div id="newNetMassHint" class="govuk-hint">
-        @messages("discrepancyGoods.newNetMass.hint")
-    </div>
+<div id="newNetMassHint" class="govuk-hint">
+    @messages("discrepancyGoods.newNetMass.hint")
+</div>
 }
 
 @layout(pageTitle = title(form, messages("discrepancyGoods.title"))) {
 
-    @formHelper(action = createRoute.DiscrepancyGoodsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
+@formHelper(action = createRoute.DiscrepancyGoodsController.onSubmit(mode), Symbol("autoComplete") -> "off") {
 
-        @if(form.errors.nonEmpty) {
-            @govukErrorSummary(ErrorSummaryViewModel(form))
-        }
+@if(form.errors.nonEmpty) {
+@govukErrorSummary(ErrorSummaryViewModel(form))
+}
 
-        <h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("discrepancyGoods.heading")</h1>
+<h1 class="govuk-heading-l govuk-!-margin-bottom-3">@messages("discrepancyGoods.heading")</h1>
 
-        <div id="discrepancyGoodsHint" class="govuk-hint">
-            @messages("discrepancyGoods.hint")
-        </div>
+<div id="discrepancyGoodsHint" class="govuk-hint">
+    @messages("discrepancyGoods.hint")
+</div>
 
-        @govukInput(
-            InputViewModel(
-                field = form("declarationGoodsItemNumber"),
-                label = LabelViewModel(messages("discrepancyGoods.goodsItemNumber"))
-            )
-            .withWidth(Fixed5)
-        )
+@govukInput(
+InputViewModel(
+field = form("declarationGoodsItemNumber"),
+label = LabelViewModel(messages("discrepancyGoods.goodsItemNumber"))
+)
+.withWidth(Fixed5)
+)
 
-        @govukInput(
-            InputViewModel(
-                field = form("declarationUniqueConsignmentReference"),
-                label = LabelViewModel(messages("discrepancyGoods.declarationUniqueConsignmentReference"))
-            )
-            .withHint(HintViewModel(HtmlContent(declarationUniqueConsignmentReferenceHint)))
-            .withWidth(Fixed20)
-        )
+@govukInput(
+InputViewModel(
+field = form("declarationUniqueConsignmentReference"),
+label = LabelViewModel(messages("discrepancyGoods.declarationUniqueConsignmentReference"))
+)
+.withHint(HintViewModel(HtmlContent(declarationUniqueConsignmentReferenceHint)))
+.withWidth(Fixed20)
+)
 
-        @govukInput(
-            InputViewModel(
-                field = form("newGrossMass"),
-                label = LabelViewModel(messages("discrepancyGoods.newGrossMass"))
-            )
-            .withHint(HintViewModel(HtmlContent(newGrossMassHint)))
-            .withWidth(Fixed5)
-            .withSuffix(PrefixOrSuffix(content = Text(messages("site.kg.suffix"))))
-        )
+@govukInput(
+InputViewModel(
+field = form("newGrossMass"),
+label = LabelViewModel(messages("discrepancyGoods.newGrossMass"))
+)
+.withHint(HintViewModel(HtmlContent(newGrossMassHint)))
+.withWidth(Fixed5)
+.withSuffix(PrefixOrSuffix(content = Text(messages("site.kg.suffix"))))
+)
 
-        @govukInput(
-            InputViewModel(
-                field = form("newNetMass"),
-                label = LabelViewModel(messages("discrepancyGoods.newNetMass"))
-            )
-            .withHint(HintViewModel(HtmlContent(newNetMassHint)))
-            .withWidth(Fixed5)
-            .withSuffix(PrefixOrSuffix(content = Text(messages("site.kg.suffix"))))
-        )
+@govukInput(
+InputViewModel(
+field = form("newNetMass"),
+label = LabelViewModel(messages("discrepancyGoods.newNetMass"))
+)
+.withHint(HintViewModel(HtmlContent(newNetMassHint)))
+.withWidth(Fixed5)
+.withSuffix(PrefixOrSuffix(content = Text(messages("site.kg.suffix"))))
+)
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+@govukButton(
+ButtonViewModel(messages("site.continue"))
+)
+}
 }

@@ -16,13 +16,10 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, OfficeOfExit, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendOfficeOfExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendOfficeOfExitSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,
@@ -32,7 +29,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   SummaryListRowViewModel,
   ValueViewModel
 }
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 
 class AmendOfficeOfExitSummarySpec extends SpecBase {
 

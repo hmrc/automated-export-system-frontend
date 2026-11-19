@@ -23,7 +23,6 @@ import play.api.test.FakeRequest
 import play.api.test.Helpers.*
 import uk.gov.hmrc.auth.core.Enrolments
 import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.submission.StandardSubmissionConfirmationView

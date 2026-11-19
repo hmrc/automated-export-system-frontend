@@ -16,7 +16,6 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
 
-import controllers.routes
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as happyRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}

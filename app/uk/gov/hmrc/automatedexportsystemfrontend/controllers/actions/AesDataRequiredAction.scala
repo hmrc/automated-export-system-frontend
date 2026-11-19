@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions
 import play.api.Logger
 import play.api.mvc.Results.Redirect
 import play.api.mvc.{ActionRefiner, Result}
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesDataRequiredAction
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.models.requests.{DataRequest, OptionalDataRequest}
 

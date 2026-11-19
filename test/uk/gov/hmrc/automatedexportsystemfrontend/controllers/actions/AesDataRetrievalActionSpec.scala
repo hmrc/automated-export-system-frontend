@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions
 import org.mockito.Mockito.*
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.test.FakeRequest
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.AesDataRetrievalActionImpl
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers

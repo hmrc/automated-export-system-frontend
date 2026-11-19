@@ -19,8 +19,8 @@ package uk.gov.hmrc.automatedexportsystemfrontend.services
 import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.{Amend, Standard}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Amend
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking

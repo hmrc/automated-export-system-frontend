@@ -20,7 +20,6 @@ import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.when
 import org.scalactic.Prettifier.default
 import org.scalatest.matchers.must.Matchers.mustEqual
-import org.scalatestplus.mockito.MockitoSugar
 import play.api.inject.bind
 import play.api.mvc.Call
 import play.api.test.FakeRequest

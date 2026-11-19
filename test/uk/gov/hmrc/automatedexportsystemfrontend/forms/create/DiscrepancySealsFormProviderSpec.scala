@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.sealIdentifierRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancySealsFormProvider
 
 class DiscrepancySealsFormProviderSpec extends StringFieldBehaviours {
 

@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.shippingMarksRegex
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyPackingFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{IntFieldBehaviours, StringFieldBehaviours}
 
 class AmendDiscrepancyPackingFormProviderSpec extends StringFieldBehaviours with IntFieldBehaviours {

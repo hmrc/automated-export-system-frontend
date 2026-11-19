@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.FormError
 import play.api.libs.json.Json
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyConsignmentFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.codelists.CodeListEntry
 
 class DiscrepancyConsignmentFormProviderSpec extends OptionFieldBehaviours {

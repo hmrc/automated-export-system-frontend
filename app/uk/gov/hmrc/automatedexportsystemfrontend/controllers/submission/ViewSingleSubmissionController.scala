@@ -23,7 +23,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSyste
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   NormalMode,
   SingleSubmissionActiveBorderTransportMeans,

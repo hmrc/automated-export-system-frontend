@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 
 import play.api.i18n.Messages
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*

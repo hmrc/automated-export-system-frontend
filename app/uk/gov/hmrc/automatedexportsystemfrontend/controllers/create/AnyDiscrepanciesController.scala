@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AnyDiscrepanciesFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.Mode
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.AnyDiscrepanciesPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository

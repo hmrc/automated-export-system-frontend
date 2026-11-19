@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package uk.gov.hmrc.automatedexportsystemfrontend.repositories
+package repositories
 
 import org.mockito.Mockito.when
 import org.mongodb.scala.model.Filters
@@ -35,7 +35,7 @@ import uk.gov.hmrc.mongo.test.DefaultPlayMongoRepositorySupport
 
 import java.time.temporal.ChronoUnit
 import java.time.{Clock, Instant, ZoneId}
-import scala.concurrent.{ExecutionContext, ExecutionContextExecutorService, Future}
+import scala.concurrent.{ExecutionContext, Future}
 
 class SessionRepositorySpec
     extends AnyFreeSpec with Matchers with DefaultPlayMongoRepositorySupport[UserAnswers] with ScalaFutures with IntegrationPatience with OptionValues

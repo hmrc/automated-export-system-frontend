@@ -19,92 +19,92 @@
 @import java.time.LocalDate
 
 @this(
-        layout: Layout,
-        govukButton: GovukButton,
-        govukSummaryList: GovukSummaryList
+layout: Layout,
+govukButton: GovukButton,
+govukSummaryList: GovukSummaryList
 )
 
 @(
-    submissionId: String,
-    submissionStatus: SubmissionStatus,
-    updatedAt: LocalDate,
-    exportOperationList: SummaryList,
-    customOfficeOfExitList: SummaryList,
-    consignment: Option[SummaryList],
-    transportEquipmentList: Option[SummaryList],
-    locationOfGoodsList: Option[SummaryList],
-    activeBorderTransportMeans: Option[SummaryList],
-    transportDocument: Option[SummaryList],
-    goodsItem: Option[SummaryList]
+submissionId: String,
+submissionStatus: SubmissionStatus,
+updatedAt: LocalDate,
+exportOperationList: SummaryList,
+customOfficeOfExitList: SummaryList,
+consignment: Option[SummaryList],
+transportEquipmentList: Option[SummaryList],
+locationOfGoodsList: Option[SummaryList],
+activeBorderTransportMeans: Option[SummaryList],
+transportDocument: Option[SummaryList],
+goodsItem: Option[SummaryList]
 )(implicit request: Request[_], messages: Messages)
 
 @layout(pageTitle = titleNoForm(messages("viewSingleSubmission.title"))) {
 
-    <span class="govuk-caption-l">@messages("viewSingleSubmission.caption") @submissionId</span>
-    <h1 class="govuk-heading-l">@messages("viewSingleSubmission.heading")</h1>
+<span class="govuk-caption-l">@messages("viewSingleSubmission.caption") @submissionId</span>
+<h1 class="govuk-heading-l">@messages("viewSingleSubmission.heading")</h1>
 
-    <p class="govuk-body">@messages("site.status"):
-        <strong class="govuk-tag @submissionStatus.cssClass">@messages(submissionStatus.key)</strong></td>
-    </p>
+<p class="govuk-body">@messages("site.status"):
+    <strong class="govuk-tag @submissionStatus.cssClass">@messages(submissionStatus.key)</strong></td>
+</p>
 
-    <p class="govuk-body">@messages("site.submitted") @updatedAt</p>
+<p class="govuk-body">@messages("site.submitted") @updatedAt</p>
 
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
-    @govukSummaryList(exportOperationList)
+<h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.exportOperation")</h2>
+@govukSummaryList(exportOperationList)
 
-    @if(consignment.isDefined) {
-        <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
-        @govukSummaryList(consignment.get)
-    }
+@if(consignment.isDefined) {
+<h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.consignment")</h2>
+@govukSummaryList(consignment.get)
+}
 
 
-    <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
-    @govukSummaryList(customOfficeOfExitList)
+<h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.customsOfficeExit")</h2>
+@govukSummaryList(customOfficeOfExitList)
 
-    <h2 class="govuk-heading-m">@messages("viewSingleSubmission.carrier.subheading")</h2>
+<h2 class="govuk-heading-m">@messages("viewSingleSubmission.carrier.subheading")</h2>
 
-    @if(transportEquipmentList.isDefined) {
-        <h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.transportEquipment")</h2>
-        @govukSummaryList(transportEquipmentList.get)
-    }
+@if(transportEquipmentList.isDefined) {
+<h2 class="govuk-heading-m">@messages("cYASubmission.subHeading.transportEquipment")</h2>
+@govukSummaryList(transportEquipmentList.get)
+}
 
-    @if(locationOfGoodsList.isDefined) {
-        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
-        @govukSummaryList(locationOfGoodsList.get)
-    }
+@if(locationOfGoodsList.isDefined) {
+<h2 class="govuk-heading-m">@messages("viewSingleSubmission.loc.subheading")</h2>
+@govukSummaryList(locationOfGoodsList.get)
+}
 
-    @if(activeBorderTransportMeans.isDefined) {
-        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.activeBorderTransportMeans.subheading")</h2>
-        @govukSummaryList(activeBorderTransportMeans.get)
-    }
+@if(activeBorderTransportMeans.isDefined) {
+<h2 class="govuk-heading-m">@messages("viewSingleSubmission.activeBorderTransportMeans.subheading")</h2>
+@govukSummaryList(activeBorderTransportMeans.get)
+}
 
-    @if(transportDocument.isDefined) {
-        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.transportDoc.subheading")</h2>
-        @govukSummaryList(transportDocument.get)
-    }
+@if(transportDocument.isDefined) {
+<h2 class="govuk-heading-m">@messages("viewSingleSubmission.transportDoc.subheading")</h2>
+@govukSummaryList(transportDocument.get)
+}
 
-    @if(goodsItem.isDefined) {
-        <h2 class="govuk-heading-m">@messages("viewSingleSubmission.goodsItem.subheading")</h2>
-        @govukSummaryList(goodsItem.get)
-    }
+@if(goodsItem.isDefined) {
+<h2 class="govuk-heading-m">@messages("viewSingleSubmission.goodsItem.subheading")</h2>
+@govukSummaryList(goodsItem.get)
+}
 
-    <div class="govuk-button-group govuk-!-margin-top-6">
+<div class="govuk-button-group govuk-!-margin-top-6">
 
-        <div>
-            @govukButton(
-            ButtonViewModel(messages("site.amendSubmission"))
-            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSingleSubmissionController.startAmend(submissionId).url)
-            )
-        </div>
-
-        <div>
-            @govukButton(
-            ButtonViewModel(messages("site.cancelSubmission")).asWarningButton()
-            .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.CancelSubmissionController.onPageLoad(submissionId).url)
-            )
-        </div>
-
+    <div>
+        @govukButton(
+        ButtonViewModel(messages("site.amendSubmission"))
+        .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSingleSubmissionController.startAmend(submissionId).url)
+        )
     </div>
+
+    <div>
+        @govukButton(
+        ButtonViewModel(messages("site.cancelSubmission")).asWarningButton()
+        .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.CancelSubmissionController.onPageLoad(submissionId).url)
+        )
+    </div>
+
+</div>
 
 
 }
