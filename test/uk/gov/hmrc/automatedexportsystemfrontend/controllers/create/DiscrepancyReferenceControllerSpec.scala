@@ -206,14 +206,12 @@ class DiscrepancyReferenceControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to the CYASubmissionController when no data is entered and no references remain in CheckMode" in {
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancyReference, List("reference1")).success.value
-
       val mockSessionRepository = mock[SessionRepository]
 
       when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application =
-        applicationBuilder(userAnswers = Some(userAnswers))
+        applicationBuilder(userAnswers = Some(emptyUserAnswers))
           .overrides(
             bind[CreateNavigator].toInstance(new FakeCreateNavigator(onwardRoute)),
             bind[SessionRepository].toInstance(mockSessionRepository),

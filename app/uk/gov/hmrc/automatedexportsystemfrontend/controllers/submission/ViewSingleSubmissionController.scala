@@ -24,6 +24,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as ame
 import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.SingleSubmissionHelper
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CodeListService
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{
   NormalMode,
   SingleSubmissionActiveBorderTransportMeans,
@@ -57,6 +58,7 @@ class ViewSingleSubmissionController @Inject() (
   automatedExportSystemConnector: AutomatedExportSystemConnector,
   singleSubmissionHelper: SingleSubmissionHelper,
   amendmentAnswersMapper: AmendmentAnswersMapper,
+  codeListService: CodeListService,
   sessionRepository: SessionRepository
 )(implicit ec: ExecutionContext)
     extends FrontendBaseController with I18nSupport {
@@ -84,7 +86,9 @@ class ViewSingleSubmissionController @Inject() (
 
       val goodsItem = submission.goodsShipment.flatMap(_.goodsItems)
 
-      Future.successful(
+      val transportCode = consignment.flatMap(_.modeOfTransportAtTheBorder).map(_.toString)
+
+      codeListService.getTransportModeDescription(transportCode).map { transportDescription =>
         Ok(
           view(
             submissionId,
@@ -92,7 +96,7 @@ class ViewSingleSubmissionController @Inject() (
             updatedAt,
             SummaryListViewModel(exportOperationRowsGenerator(submission.exportOperation, submissionId).flatten),
             SummaryListViewModel(customsOfficeOfExitRowsGenerator(submission.customsOfficeOfExitActual, submissionId).flatten),
-            Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submissionId).flatten)),
+            Some(SummaryListViewModel(consignmentRowsGenerator(consignment, submissionId, transportDescription).flatten)),
             Some(SummaryListViewModel(transportEquipmentRowsGenerator(transportEquipment, submissionId).flatMap(_.flatten))),
             Some(SummaryListViewModel(locationOfGoodsRowsGenerator(locationOfGoods, submissionId).flatten)),
             Some(SummaryListViewModel(activeBorderTransportMeansRowsGenerator(activeBorderTransportMeans, submissionId).flatten)),
@@ -100,7 +104,7 @@ class ViewSingleSubmissionController @Inject() (
             Some(SummaryListViewModel(goodsItemRowsGenerator(goodsItem, submissionId).flatMap(_.flatten)))
           )
         )
-      )
+      }
     }
   }
 
@@ -113,11 +117,16 @@ class ViewSingleSubmissionController @Inject() (
       AmendIsSplitExitSummary.row(answers.splitIndicator == 1, submissionId, false)
     )
 
-  private def consignmentRowsGenerator(answers: Option[SingleSubmissionConsignment], submissionId: String)(
+  private def consignmentRowsGenerator(answers: Option[SingleSubmissionConsignment], submissionId: String, transportDescription: Option[String])(
     implicit messages: Messages
   ): Seq[Option[SummaryListRow]] =
     Seq(
-      singleSubmissionHelper.modeOfTransportAtBorderHandler(answers.flatMap(_.modeOfTransportAtTheBorder), submissionId, false),
+      singleSubmissionHelper.modeOfTransportAtBorderHandler(
+        answers.flatMap(_.modeOfTransportAtTheBorder),
+        submissionId,
+        withChangeLink = false,
+        description = transportDescription
+      ),
       answers.flatMap(l => AmendEnterDucrSummary.row(l.referenceNumberUCR, submissionId, false)),
       singleSubmissionHelper.parentUCRIDHandler(answers.flatMap(_.parentUCRID), submissionId, false)
     )

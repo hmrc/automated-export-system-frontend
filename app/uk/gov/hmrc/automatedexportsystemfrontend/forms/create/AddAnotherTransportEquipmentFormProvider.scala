@@ -24,9 +24,5 @@ import javax.inject.Inject
 class AddAnotherTransportEquipmentFormProvider @Inject() extends Mappings {
 
   def apply(allowMore: Boolean): Form[Boolean] =
-    Form("value" -> boolean(if (allowMore) {
-      "addAnotherTransportEquipment.error.required"
-    } else {
-      "addAnotherTransportEquipment.error.max"
-    }))
+    Form("value" -> mandatoryIfBoolean("addAnotherTransportEquipment.error.required", allowMore, defaultValue = false))
 }

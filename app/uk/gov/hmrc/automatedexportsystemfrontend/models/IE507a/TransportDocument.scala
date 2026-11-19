@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 import play.api.libs.json.{Format, Json}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlWrites
 
-case class TransportDocument(sequenceNumber: Int, typeOfDocument: Option[Int], referenceNumber: Option[Int])
+case class TransportDocument(sequenceNumber: Int, typeOfDocument: Option[String], referenceNumber: Option[Int])
 
 object TransportDocument {
   given format: Format[TransportDocument] = Json.format[TransportDocument]

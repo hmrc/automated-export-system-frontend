@@ -16,45 +16,43 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 
-import org.scalatest.freespec.AnyFreeSpec
-import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ModeOfTransportAtBorder, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyConsignmentPage
+import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendDiscrepancyConsignmentSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
-import uk.gov.hmrc.govukfrontend.views.viewmodels.content.{HtmlContent, Text}
+import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
 
 class AmendDiscrepancyConsignmentSummarySpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
   "row" - {
-    "when answered, return the summary row with change link" in {
-      AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", true) shouldBe Some(
+
+    "when answered, return the summary row with a change link" in {
+      AmendDiscrepancyConsignmentSummary.row(Some("4"), "submissionId", withChangeLink = true, description = Some("Air transport")) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyConsignment.checkYourAnswersLabel",
-          value = ValueViewModel(Text("discrepancyConsignment.air")),
+          value = ValueViewModel(HtmlContent("Air transport")),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes.AmendDiscrepancyConsignmentController
+              amendRoute.AmendDiscrepancyConsignmentController
                 .onPageLoad(CheckMode, "submissionId")
                 .url
-            )
-              .withVisuallyHiddenText("AmendDiscrepancyConsignment.change.hidden")
+            ).withVisuallyHiddenText("AmendDiscrepancyConsignment.change.hidden")
           )
         )
       )
     }
 
-    "when answered, return the summary row without change link" in {
-      AmendDiscrepancyConsignmentSummary.row(ModeOfTransportAtBorder.Air, "submissionId", false) shouldBe Some(
+    "when answered, return the summary row without a change link" in {
+      AmendDiscrepancyConsignmentSummary.row(Some("4"), "submissionId", withChangeLink = false, description = Some("Air transport")) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyConsignment.checkYourAnswersLabel",
-          value = ValueViewModel(Text("discrepancyConsignment.air")),
+          value = ValueViewModel(HtmlContent("Air transport")),
           actions = Seq.empty
         )
       )

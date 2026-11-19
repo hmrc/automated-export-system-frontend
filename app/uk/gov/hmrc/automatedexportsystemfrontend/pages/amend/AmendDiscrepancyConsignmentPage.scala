@@ -20,7 +20,7 @@ import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
-case class AmendDiscrepancyConsignmentPage(submissionId: String) extends QuestionPage[ModeOfTransportAtBorder] {
+case class AmendDiscrepancyConsignmentPage(submissionId: String) extends QuestionPage[String] {
 
   override def path: JsPath = JsPath \ "amend" \ submissionId \ toString
 

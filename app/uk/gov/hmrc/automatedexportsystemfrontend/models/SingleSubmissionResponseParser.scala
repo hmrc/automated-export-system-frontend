@@ -142,7 +142,7 @@ object SingleSubmissionResponseParser {
   private def parseTransportDocument(xml: NodeSeq): SingleSubmissionTransportDocument =
     SingleSubmissionTransportDocument(
       sequenceNumber = (xml \ "sequenceNumber").headOption.map(_.text.trim.toInt),
-      `type` = (xml \ "type").headOption.map(_.text.trim.toInt),
+      `type` = (xml \ "type").headOption.map(_.text.trim),
       referenceNumber = (xml \ "referenceNumber").headOption
         .map(_.text.trim)
         .filter(_.nonEmpty)

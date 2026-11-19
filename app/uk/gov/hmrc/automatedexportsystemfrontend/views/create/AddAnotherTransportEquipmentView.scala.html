@@ -29,18 +29,29 @@
 
 @(form: Form[_], viewModel: AddAnotherTransportEquipmentViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
-@layout(pageTitle = title(form, messages(s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportEquipment))) {
+@baseTitle = @{
+  messages(s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportEquipment)
+}
+
+@pageTitle = @{
+  if (viewModel.totalPages > 1)
+    s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
+  else
+    baseTitle
+}
+
+@layout(pageTitle = title(form, pageTitle)) {
 
     @if(form.errors.nonEmpty) {
         @govukErrorSummary(ErrorSummaryViewModel(form))
     }
 
-    <h1 class="govuk-heading-l">@messages( s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfTransportEquipment )</h1>
+    <h1 class="govuk-heading-l">@messages(s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfTransportEquipment)</h1>
 
     @govukSummaryList(SummaryList(rows = viewModel.rows))
 
-    @viewModel.pagination(mode).map { pagination =>
-        <p class="govuk-body">@messages( "site.pagination.itemsShowing", viewModel.firstTransportEquipment, viewModel.lastTransportEquipment, viewModel.numberOfTransportEquipment )</p>
+    @viewModel.pagination.map { pagination =>
+        <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstTransportEquipment, viewModel.lastTransportEquipment, viewModel.numberOfTransportEquipment)</p>
         @govukPagination(pagination)
     }
 
@@ -48,7 +59,7 @@
 
         @if(viewModel.allowMore) {
             <p class="govuk-body">
-                @Html(messages(s"addAnotherTransportEquipment.${viewModel.remainingSingularOrPlural}.remaining", <strong>{viewModel.remainingTransportEquipment}</strong>))
+                @Html(messages(s"addAnotherTransportEquipment.${viewModel.remainingSingularOrPlural}.remaining", <strong>{f"${viewModel.remainingTransportEquipment}%,d"}</strong>))
             </p>
 
         @govukRadios(

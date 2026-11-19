@@ -174,7 +174,7 @@ class SingleSubmissionResponseParserSpec extends AnyWordSpec with Matchers {
         goodsShipment.consignment.transportDocument.get.head
 
       document.sequenceNumber shouldBe Some(1)
-      document.`type` shouldBe Some(1)
+      document.`type` shouldBe Some("1")
       document.referenceNumber shouldBe Some("DOC123")
 
       val goodsItem = goodsShipment.goodsItems.get.head

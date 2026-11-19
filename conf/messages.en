@@ -49,6 +49,9 @@ error.title.prefix = Error:
 error.prefix = Error
 error.summary.title = There is a problem
 
+error.nonNumeric = Enter a valid number
+error.wholeNumber = Enter a whole number
+
 index.title = automated-export-system-frontend
 index.heading = automated-export-system-frontend
 index.guidance = Welcome to your new frontend. Please see the README file for a guide to getting started.
@@ -230,6 +233,9 @@ discrepancyConsignment.air = Air
 discrepancyConsignment.checkYourAnswersLabel = How will the goods cross the border?
 discrepancyConsignment.error.required = Select how the goods will cross the border
 discrepancyConsignment.change.hidden = how the goods will cross the border
+discrepancyConsignment.error.invalid = Select a valid mode of transport
+discrepancyConsignment.placeholder = Select a mode of transport
+discrepancyConsignment.descriptionUnavailable = Transport mode description unavailable
 
 discrepancyTransport.title = Container details
 discrepancyTransport.heading = Container details
@@ -356,12 +362,30 @@ discrepancyTransportDoc.referenceNumber.hint = This is shown in the transport do
 discrepancyTransportDoc.documentType.checkYourAnswersLabel = Transport document type
 discrepancyTransportDoc.referenceNumber.checkYourAnswersLabel = Transport document reference
 discrepancyTransportDoc.error.documentType.required = Enter the document type
-discrepancyTransportDoc.error.documentType.invalid = Enter a document type between 1 and 9999
+discrepancyTransportDoc.error.documentType.invalid = TODO Document type invalid error message
 discrepancyTransportDoc.error.referenceNumber.required = Enter the reference number
 discrepancyTransportDoc.error.referenceNumber.invalid = Enter a reference number between 1 and 9999
 discrepancyTransportDoc.documentType.change.hidden = transport document type
 discrepancyTransportDoc.referenceNumber.change.hidden = transport document reference
+
 transportDocCYA.caption = Transport document {0}
+
+addAnotherTransportDoc.singular.title = You have added 1 transport document
+addAnotherTransportDoc.plural.title = You have added {0} transport documents
+addAnotherTransportDoc.singular.heading = You have added 1 transport document
+addAnotherTransportDoc.plural.heading = You have added {0} transport documents
+addAnotherTransportDoc.key = Transport document {0}
+addAnotherTransportDoc.change.hidden = transport document {0}
+addAnotherTransportDoc.remove.hidden = transport document {0}
+addAnotherTransportDoc.singular.remaining = You can add up to 1 more transport document.
+addAnotherTransportDoc.plural.remaining = You can add up to {0} more transport documents.
+addAnotherTransportDoc.addAnother = Do you need to add another transport document?
+addAnotherTransportDoc.maxLimit = You cannot add any more transport documents. To add another, you need to remove one first.
+addAnotherTransportDoc.error.required = Select yes if you want to add another transport document
+
+removeTransportDoc.title = Are you sure you want to remove transport document {0}?
+removeTransportDoc.heading = Are you sure you want to remove transport document {0}?
+removeTransportDoc.error.required = Select yes if you want to remove transport document {0}
 
 discrepancyGoods.title = Tell us what’s changed
 discrepancyGoods.heading = Tell us what’s changed
@@ -575,7 +599,15 @@ addAnotherTransportEquipment.plural.title=You have added {0} transport equipment
 addAnotherTransportEquipment.singular.heading=You have added 1 transport equipment
 addAnotherTransportEquipment.plural.heading=You have added {0} transport equipment entries
 addAnotherTransportEquipment.key=Transport equipment {0}
-addAnotherTransportEquipment.singular.remaining=You can add <strong>{0}</strong> more transport equipment entry.
-addAnotherTransportEquipment.plural.remaining=You can add <strong>{0}</strong> more transport equipment entries.
+addAnotherTransportEquipment.singular.remaining=You can add up to 1 more transport equipment entry.
+addAnotherTransportEquipment.plural.remaining=You can add up to {0} more transport equipment entries.
 addAnotherTransportEquipment.addAnother=Do you want to add another transport equipment entry?
 addAnotherTransportEquipment.change.hidden=transport equipment {0}
+addAnotherTransportEquipment.remove.hidden = transport equipment {0}
+addAnotherTransportEquipment.maxLimit = You cannot add any more transport equipment entries. To add another, you need to remove one first.
+addAnotherTransportEquipment.error.required = Select yes if you want to add another transport equipment
+
+removeTransportEquipment.title = Are you sure you want to remove transport equipment {0}?
+removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
+removeTransportEquipment.hint = This will also remove associated seals and goods references.
+removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}

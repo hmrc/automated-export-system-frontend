@@ -19,8 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.amend.routes as amendRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.TransportMode
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ModeOfTransportAtBorder, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyConsignmentPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.ValueViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
@@ -30,18 +29,20 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object AmendDiscrepancyConsignmentSummary {
 
-  def row(answers: UserAnswers)(submissionId: String)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(AmendDiscrepancyConsignmentPage(submissionId)).map { answer =>
-      build(answer, submissionId, withChangeLink = true)
+  def row(answers: UserAnswers)(submissionId: String, description: Option[String])(implicit messages: Messages): Option[SummaryListRow] =
+    row(answers.get(AmendDiscrepancyConsignmentPage(submissionId)), submissionId, withChangeLink = true, description = description)
+
+  def row(code: Option[String], submissionId: String, withChangeLink: Boolean, description: Option[String])(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    code.map { _ =>
+      build(description.getOrElse(messages("discrepancyConsignment.descriptionUnavailable")), submissionId, withChangeLink)
     }
 
-  def row(value: ModeOfTransportAtBorder, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
-    Some(build(value, submissionId, withChangeLink))
-
-  private def build(value: ModeOfTransportAtBorder, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
+  private def build(description: String, submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): SummaryListRow =
     SummaryListRowViewModel(
       key = "discrepancyConsignment.checkYourAnswersLabel",
-      value = ValueViewModel(HtmlFormat.escape(messages(s"discrepancyConsignment.${value.toString}")).toString),
+      value = ValueViewModel(HtmlContent(HtmlFormat.escape(description))),
       actions =
         if (withChangeLink)
           Seq(

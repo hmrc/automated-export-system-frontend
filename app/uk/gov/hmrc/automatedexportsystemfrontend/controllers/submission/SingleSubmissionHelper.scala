@@ -17,7 +17,7 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
 import play.api.i18n.Messages
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ModeOfTransportAtBorder, SingleSubmissionGoodsReference}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionGoodsReference
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.{
   AmendDiscrepancyConsignmentSummary,
   AmendDiscrepancyGoodsSummary,
@@ -35,12 +35,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 class SingleSubmissionHelper {
 
-  def modeOfTransportAtBorderHandler(modeOfTransport: Option[Int], submissionId: String, withChangeLink: Boolean)(
+  def modeOfTransportAtBorderHandler(modeOfTransport: Option[Int], submissionId: String, withChangeLink: Boolean, description: Option[String])(
     implicit messages: Messages
   ): Option[SummaryListRow] =
-    modeOfTransport
-      .flatMap(ModeOfTransportAtBorder.fromCode)
-      .flatMap(AmendDiscrepancyConsignmentSummary.row(_, submissionId, withChangeLink))
+    AmendDiscrepancyConsignmentSummary.row(modeOfTransport.map(_.toString), submissionId, withChangeLink, description)
 
   def parentUCRIDHandler(referenceNumber: Option[String], submissionId: String, withChangeLink: Boolean)(
     implicit messages: Messages
@@ -135,7 +133,7 @@ class SingleSubmissionHelper {
       case _           => None
     }
 
-  def docTypeHandler(docType: Option[Int], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  def docTypeHandler(docType: Option[String], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     docType match {
       case Some(value) => AmendDiscrepancyTransportDocSummary.transportTypeRow(value, submissionId, withChangeLink)
       case _           => None
