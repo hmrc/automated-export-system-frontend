@@ -17,9 +17,9 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
+import play.api.data.Forms.optional
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{sealIdentifierMaxLength, sealIdentifierRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
-import play.api.data.Forms.optional
 
 import javax.inject.Inject
 

@@ -35,192 +35,192 @@ pageTitle = titleNoForm(messages("viewSubmission.title"))
 </span>
 
 <h1 class="govuk-heading-l">
- @messages("viewSubmission.heading")
+    @messages("viewSubmission.heading")
 </h1>
 
 <p class="govuk-body">
- @messages("viewSubmission.status.label")
- <strong class="govuk-tag @submission.status.cssClass">
-  @messages(submission.status.key)
- </strong>
+    @messages("viewSubmission.status.label")
+    <strong class="govuk-tag @submission.status.cssClass">
+        @messages(submission.status.key)
+    </strong>
 </p>
 
 <p class="govuk-body">
- @messages("viewSubmission.submitted", submission.submittedDate)
+    @messages("viewSubmission.submitted", submission.submittedDate)
 </p>
 
 @if(submission.errors.nonEmpty) {
 <div class="govuk-error-summary"
      data-module="govuk-error-summary">
- <div role="alert">
-  <h2 class="govuk-error-summary__title">
-   @messages("viewSubmission.errorSummary.heading")
-  </h2>
-  <div class="govuk-error-summary__body">
-   <ul class="govuk-list govuk-error-summary__list">
-    @for(error <- submission.errors) {
-    <li>@messages(error.key, error.args:_*)</li>
-    }
-   </ul>
-  </div>
- </div>
+    <div role="alert">
+        <h2 class="govuk-error-summary__title">
+            @messages("viewSubmission.errorSummary.heading")
+        </h2>
+        <div class="govuk-error-summary__body">
+            <ul class="govuk-list govuk-error-summary__list">
+                @for(error <- submission.errors) {
+                <li>@messages(error.key, error.args:_*)</li>
+                }
+            </ul>
+        </div>
+    </div>
 </div>
 }
 
 <br>
 
 <table class="govuk-table">
- <caption class="govuk-table__caption govuk-table__caption--m">
-  @messages("viewSubmission.exportOperation.heading")
- </caption>
- <tbody class="govuk-table__body">
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.exportOperation.mrn")
-  </th>
-  <td class="govuk-table__cell">@submission.mrn</td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header">
-   @messages("viewSubmission.exportOperation.discrepancies")
-  </th>
-  <td class="govuk-table__cell">@submission.anyDiscrepancies</td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header">
-   @messages("viewSubmission.exportOperation.splitExit")
-  </th>
-  <td class="govuk-table__cell">@submission.isSplitExit</td>
- </tr>
- </tbody>
+    <caption class="govuk-table__caption govuk-table__caption--m">
+        @messages("viewSubmission.exportOperation.heading")
+    </caption>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.exportOperation.mrn")
+        </th>
+        <td class="govuk-table__cell">@submission.mrn</td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">
+            @messages("viewSubmission.exportOperation.discrepancies")
+        </th>
+        <td class="govuk-table__cell">@submission.anyDiscrepancies</td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">
+            @messages("viewSubmission.exportOperation.splitExit")
+        </th>
+        <td class="govuk-table__cell">@submission.isSplitExit</td>
+    </tr>
+    </tbody>
 </table>
 
 <table class="govuk-table">
- <caption class="govuk-table__caption govuk-table__caption--m">
-  @messages("viewSubmission.consignment.heading")
- </caption>
- <tbody class="govuk-table__body">
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.consignment.ducr")
-  </th>
-  <td class="govuk-table__cell">
-   @submission.ducr
-  </td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header">
-   @messages("viewSubmission.consignment.mucr")
-  </th>
-  <td class="govuk-table__cell">@submission.mucr</td>
- </tr>
- </tbody>
+    <caption class="govuk-table__caption govuk-table__caption--m">
+        @messages("viewSubmission.consignment.heading")
+    </caption>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.consignment.ducr")
+        </th>
+        <td class="govuk-table__cell">
+            @submission.ducr
+        </td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header">
+            @messages("viewSubmission.consignment.mucr")
+        </th>
+        <td class="govuk-table__cell">@submission.mucr</td>
+    </tr>
+    </tbody>
 </table>
 
 <table class="govuk-table">
- <caption class="govuk-table__caption govuk-table__caption--m">
-  @messages("viewSubmission.customsOfficeOfExit.heading")
- </caption>
+    <caption class="govuk-table__caption govuk-table__caption--m">
+        @messages("viewSubmission.customsOfficeOfExit.heading")
+    </caption>
 
- <tbody class="govuk-table__body">
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.customsOfficeOfExit.office")
-  </th>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.customsOfficeOfExit.office")
+        </th>
 
-  <td class="govuk-table__cell">
-   @messages(s"officeOfExit.${submission.officeOfExit}")
-  </td>
- </tr>
- </tbody>
+        <td class="govuk-table__cell">
+            @messages(s"officeOfExit.${submission.officeOfExit}")
+        </td>
+    </tr>
+    </tbody>
 </table>
 
 <table class="govuk-table">
- <caption class="govuk-table__caption govuk-table__caption--m">
-  @messages("viewSubmission.exitCarrier.heading")
- </caption>
- <tbody class="govuk-table__body">
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.exitCarrier.eori")
-  </th>
-  <td class="govuk-table__cell"></td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.exitCarrier.name")
-  </th>
-  <td class="govuk-table__cell"></td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.exitCarrier.address")
-  </th>
-  <td class="govuk-table__cell"></td>
- </tr>
- </tbody>
+    <caption class="govuk-table__caption govuk-table__caption--m">
+        @messages("viewSubmission.exitCarrier.heading")
+    </caption>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.exitCarrier.eori")
+        </th>
+        <td class="govuk-table__cell"></td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.exitCarrier.name")
+        </th>
+        <td class="govuk-table__cell"></td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.exitCarrier.address")
+        </th>
+        <td class="govuk-table__cell"></td>
+    </tr>
+    </tbody>
 </table>
 
 <table class="govuk-table">
- <caption class="govuk-table__caption govuk-table__caption--m">
-  @messages("viewSubmission.location.heading")
- </caption>
- <tbody class="govuk-table__body">
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.location.type")
-  </th>
-  <td class="govuk-table__cell">@submission.locationType.fold("")(lt => messages(s"locationType.$lt"))</td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.location.identifiedBy")
-  </th>
-  <td class="govuk-table__cell">@submission.identifiedBy</td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.location.contact")
-  </th>
-  <td class="govuk-table__cell"></td>
- </tr>
- </tbody>
+    <caption class="govuk-table__caption govuk-table__caption--m">
+        @messages("viewSubmission.location.heading")
+    </caption>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.location.type")
+        </th>
+        <td class="govuk-table__cell">@submission.locationType.fold("")(lt => messages(s"locationType.$lt"))</td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.location.identifiedBy")
+        </th>
+        <td class="govuk-table__cell">@submission.identifiedBy</td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.location.contact")
+        </th>
+        <td class="govuk-table__cell"></td>
+    </tr>
+    </tbody>
 </table>
 
 <table class="govuk-table">
- <caption class="govuk-table__caption govuk-table__caption--m">
-  @messages("viewSubmission.authorisation.heading")
- </caption>
- <tbody class="govuk-table__body">
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.authorisation.type")
-  </th>
-  <td class="govuk-table__cell"></td>
- </tr>
- <tr class="govuk-table__row">
-  <th scope="row" class="govuk-table__header govuk-!-width-one-third">
-   @messages("viewSubmission.authorisation.referenceNumber")
-  </th>
-  <td class="govuk-table__cell">@submission.locationAuthorisationReferenceNumber</td>
- </tr>
- </tbody>
+    <caption class="govuk-table__caption govuk-table__caption--m">
+        @messages("viewSubmission.authorisation.heading")
+    </caption>
+    <tbody class="govuk-table__body">
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.authorisation.type")
+        </th>
+        <td class="govuk-table__cell"></td>
+    </tr>
+    <tr class="govuk-table__row">
+        <th scope="row" class="govuk-table__header govuk-!-width-one-third">
+            @messages("viewSubmission.authorisation.referenceNumber")
+        </th>
+        <td class="govuk-table__cell">@submission.locationAuthorisationReferenceNumber</td>
+    </tr>
+    </tbody>
 </table>
 
 <div class="govuk-button-group">
 
 
-@govukButton(
- ButtonViewModel(messages("viewSubmission.amendButton"))
- .asLink(routes.ViewSingleSubmissionController.startAmend(submission.submissionId).url))
+    @govukButton(
+    ButtonViewModel(messages("viewSubmission.amendButton"))
+    .asLink(routes.ViewSingleSubmissionController.startAmend(submission.submissionId).url))
 
- <a href="/automated-export-system/cancel-submission/@submission.submissionId"
-    role="button"
-    draggable="false"
-    class="govuk-button govuk-button--warning"
-    data-module="govuk-button">
-  @messages("viewSubmission.cancelButton")
- </a>
+    <a href="/automated-export-system/cancel-submission/@submission.submissionId"
+       role="button"
+       draggable="false"
+       class="govuk-button govuk-button--warning"
+       data-module="govuk-button">
+        @messages("viewSubmission.cancelButton")
+    </a>
 
 </div>
 

@@ -20,17 +20,8 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, PartOfConsolidationAnswer, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendPartOfConsolidationSummary
-import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
-  stringToKey,
-  stringToText,
-  ActionItemViewModel,
-  FluentActionItem,
-  SummaryListRowViewModel,
-  ValueViewModel
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{stringToKey, stringToText, SummaryListRowViewModel, ValueViewModel}
 
 class AmendPartOfConsolidationSummarySpec extends AnyFreeSpec with Matchers {
 

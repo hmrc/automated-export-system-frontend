@@ -16,9 +16,8 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 import play.api.data.FormError
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AnyDiscrepanciesFormProvider
+import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.BooleanFieldBehaviours
 
 class AnyDiscrepanciesFormProviderSpec extends BooleanFieldBehaviours {
 

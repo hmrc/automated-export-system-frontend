@@ -20,7 +20,6 @@ import org.scalatest.matchers.must.Matchers.{mustBe, mustNot}
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 
 class DiscrepancyTransportEquipmentSpec extends SpecBase {
 

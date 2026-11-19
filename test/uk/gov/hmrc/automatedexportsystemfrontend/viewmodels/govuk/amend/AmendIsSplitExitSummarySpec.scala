@@ -19,8 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.amend
 import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendIsSplitExitPage
+import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendIsSplitExitSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.{
   stringToKey,

@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.models
 
 import java.time.LocalDateTime
 import scala.xml.NodeSeq
-import scala.math.BigDecimal
 
 object SingleSubmissionResponseParser {
 

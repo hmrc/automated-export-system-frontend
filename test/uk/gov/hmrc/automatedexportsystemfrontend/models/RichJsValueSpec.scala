@@ -21,7 +21,6 @@ import org.scalacheck.{Gen, Shrink}
 import org.scalatestplus.scalacheck.ScalaCheckPropertyChecks
 import play.api.libs.json.*
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models
 
 class RichJsValueSpec extends SpecBase with ScalaCheckPropertyChecks with ModelGenerators {
 

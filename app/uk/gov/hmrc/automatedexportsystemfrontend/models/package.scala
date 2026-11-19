@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend
 
-import play.api.libs.json._
+import play.api.libs.json.*
 
 package object models {
 

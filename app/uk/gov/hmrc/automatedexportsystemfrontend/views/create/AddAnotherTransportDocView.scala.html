@@ -18,62 +18,64 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherTransportDocViewModel
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        govukButton: GovukButton,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukSummaryList: GovukSummaryList,
-        govukPagination: GovukPagination
+layout: Layout,
+formHelper: FormWithCSRF,
+govukButton: GovukButton,
+govukErrorSummary: GovukErrorSummary,
+govukRadios: GovukRadios,
+govukSummaryList: GovukSummaryList,
+govukPagination: GovukPagination
 )
 
 @(form: Form[_], viewModel: AddAnotherTransportDocViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @baseTitle = @{
-    messages(s"addAnotherTransportDoc.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportDocs)
+messages(s"addAnotherTransportDoc.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportDocs)
 }
 
 @pageTitle = @{
-    if (viewModel.totalPages > 1)
-        s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
-    else
-        baseTitle
+if (viewModel.totalPages > 1)
+s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
+else
+baseTitle
 }
 
 @layout(pageTitle = title(form, pageTitle)) {
 
-  @if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummaryViewModel(form))
-  }
+@if(form.errors.nonEmpty) {
+@govukErrorSummary(ErrorSummaryViewModel(form))
+}
 
-  <h1 class="govuk-heading-l">@messages(s"addAnotherTransportDoc.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfTransportDocs)</h1>
+<h1 class="govuk-heading-l">@messages(s"addAnotherTransportDoc.${viewModel.addedSingularOrPlural}.heading",
+    viewModel.numberOfTransportDocs)</h1>
 
-  @govukSummaryList(SummaryList(rows= viewModel.rows))
+@govukSummaryList(SummaryList(rows= viewModel.rows))
 
-    @viewModel.pagination(mode).map { pagination =>
-        <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstTransportDoc, viewModel.lastTransportDoc, viewModel.numberOfTransportDocs)</p>
-        @govukPagination(pagination)
-    }
+@viewModel.pagination(mode).map { pagination =>
+<p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstTransportDoc, viewModel.lastTransportDoc,
+    viewModel.numberOfTransportDocs)</p>
+@govukPagination(pagination)
+}
 
-  @formHelper(action = createRoute.AddAnotherTransportDocController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
+@formHelper(action = createRoute.AddAnotherTransportDocController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
 
-    @if(viewModel.allowMore) {
-      <p class="govuk-body">
-        @Html(messages(s"addAnotherTransportDoc.${viewModel.remainingSingularOrPlural}.remaining", <strong>{viewModel.remainingTransportDocs}</strong>))
-      </p>
+@if(viewModel.allowMore) {
+<p class="govuk-body">
+    @Html(messages(s"addAnotherTransportDoc.${viewModel.remainingSingularOrPlural}.remaining", <strong>{viewModel.remainingTransportDocs}</strong>))
+</p>
 
-      @govukRadios(
-        RadiosViewModel.yesNo(
-          field = form("value"),
-          legend = LegendViewModel(HtmlContent(s"<strong>${messages("addAnotherTransportDoc.addAnother")}</strong>"))
-        )
-      )
-    } else {
-      <p class="govuk-body">@messages("addAnotherTransportDoc.maxLimit")</p>
-    }
+@govukRadios(
+RadiosViewModel.yesNo(
+field = form("value"),
+legend = LegendViewModel(HtmlContent(s"<strong>${messages("addAnotherTransportDoc.addAnother")}</strong>"))
+)
+)
+} else {
+<p class="govuk-body">@messages("addAnotherTransportDoc.maxLimit")</p>
+}
 
-    @govukButton(
-      ButtonViewModel(messages("site.continue"))
-    )
-  }
+@govukButton(
+ButtonViewModel(messages("site.continue"))
+)
+}
 }

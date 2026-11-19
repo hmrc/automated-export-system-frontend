@@ -20,7 +20,7 @@ import play.api.i18n.Messages
 import play.api.test.Helpers
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, DocumentDetails, NormalMode}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{DocumentDetails, NormalMode}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportDocPage
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportDoc
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text

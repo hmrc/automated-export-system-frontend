@@ -16,15 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
-import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.AddAnotherTransportDocFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportDoc
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, NormalMode}
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherTransportDocViewModel
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.AddAnotherTransportDocView
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController

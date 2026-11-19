@@ -26,11 +26,10 @@ import uk.gov.hmrc.auth.core.retrieve.{~, Credentials}
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.TestFixture.{testAuthorityId, testGroupId}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{SingleSubmissionResponseParser, SubmissionSummaryResponse, SubmissionSummaryResponseList}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.SingleSubmissionResponseParser
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.http.{SessionKeys, UpstreamErrorResponse}
 
-import java.time.LocalDateTime
 import java.util.UUID
 import scala.concurrent.Future
 

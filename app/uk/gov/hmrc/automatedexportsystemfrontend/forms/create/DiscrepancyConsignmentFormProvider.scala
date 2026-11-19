@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.Form
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.mappings.Mappings
-import uk.gov.hmrc.automatedexportsystemfrontend.models.ModeOfTransportAtBorder
 import uk.gov.hmrc.automatedexportsystemfrontend.models.codelists.CodeListEntry
 
 import javax.inject.Inject

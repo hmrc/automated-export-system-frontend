@@ -16,9 +16,9 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.pages.amend
 
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PartOfConsolidationAnswer
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
 case class AmendPartOfConsolidationPage(submissionId: String) extends QuestionPage[PartOfConsolidationAnswer] {
 

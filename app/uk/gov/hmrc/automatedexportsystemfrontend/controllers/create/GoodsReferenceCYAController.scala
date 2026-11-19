@@ -16,6 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.Logger
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
@@ -26,7 +27,6 @@ import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.SummaryLis
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.GoodsReferenceCYAView
 import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
-import play.api.Logger
 
 import javax.inject.Inject
 

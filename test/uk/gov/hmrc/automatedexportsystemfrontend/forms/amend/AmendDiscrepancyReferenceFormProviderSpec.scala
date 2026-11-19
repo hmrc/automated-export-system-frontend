@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.amend
 
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.discrepancyReferenceNumberRegex
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendDiscrepancyReferenceFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
 
 class AmendDiscrepancyReferenceFormProviderSpec extends StringFieldBehaviours {

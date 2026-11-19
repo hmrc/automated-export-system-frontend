@@ -15,7 +15,6 @@
  */
 
 package uk.gov.hmrc.automatedexportsystemfrontend.models
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ErrorType, Field}
 
 case class Field(name: String, errorKeys: Map[ErrorType, String])
 

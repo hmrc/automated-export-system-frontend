@@ -18,62 +18,64 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherTransportEquipmentViewModel
 
 @this(
-    layout: Layout,
-    formHelper: FormWithCSRF,
-    govukButton: GovukButton,
-    govukErrorSummary: GovukErrorSummary,
-    govukRadios: GovukRadios,
-    govukSummaryList: GovukSummaryList,
-    govukPagination: GovukPagination
+layout: Layout,
+formHelper: FormWithCSRF,
+govukButton: GovukButton,
+govukErrorSummary: GovukErrorSummary,
+govukRadios: GovukRadios,
+govukSummaryList: GovukSummaryList,
+govukPagination: GovukPagination
 )
 
 @(form: Form[_], viewModel: AddAnotherTransportEquipmentViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @baseTitle = @{
-  messages(s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportEquipment)
+messages(s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfTransportEquipment)
 }
 
 @pageTitle = @{
-  if (viewModel.totalPages > 1)
-    s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
-  else
-    baseTitle
+if (viewModel.totalPages > 1)
+s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
+else
+baseTitle
 }
 
 @layout(pageTitle = title(form, pageTitle)) {
 
-    @if(form.errors.nonEmpty) {
-        @govukErrorSummary(ErrorSummaryViewModel(form))
-    }
+@if(form.errors.nonEmpty) {
+@govukErrorSummary(ErrorSummaryViewModel(form))
+}
 
-    <h1 class="govuk-heading-l">@messages(s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfTransportEquipment)</h1>
+<h1 class="govuk-heading-l">@messages(s"addAnotherTransportEquipment.${viewModel.addedSingularOrPlural}.heading",
+    viewModel.numberOfTransportEquipment)</h1>
 
-    @govukSummaryList(SummaryList(rows = viewModel.rows))
+@govukSummaryList(SummaryList(rows = viewModel.rows))
 
-    @viewModel.pagination.map { pagination =>
-        <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstTransportEquipment, viewModel.lastTransportEquipment, viewModel.numberOfTransportEquipment)</p>
-        @govukPagination(pagination)
-    }
+@viewModel.pagination.map { pagination =>
+<p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstTransportEquipment,
+    viewModel.lastTransportEquipment, viewModel.numberOfTransportEquipment)</p>
+@govukPagination(pagination)
+}
 
-    @formHelper(action = createRoute.AddAnotherTransportController.onSubmit(viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
+@formHelper(action = createRoute.AddAnotherTransportController.onSubmit(viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
 
-        @if(viewModel.allowMore) {
-            <p class="govuk-body">
-                @Html(messages(s"addAnotherTransportEquipment.${viewModel.remainingSingularOrPlural}.remaining", <strong>{f"${viewModel.remainingTransportEquipment}%,d"}</strong>))
-            </p>
+@if(viewModel.allowMore) {
+<p class="govuk-body">
+    @Html(messages(s"addAnotherTransportEquipment.${viewModel.remainingSingularOrPlural}.remaining", <strong>{f"${viewModel.remainingTransportEquipment}%,d"}</strong>))
+</p>
 
-        @govukRadios(
-            RadiosViewModel.yesNo(
-                field = form("value"),
-                legend = LegendViewModel(HtmlContent(s"<strong>${messages("addAnotherTransportEquipment.addAnother")}</strong>"))
-            )
-        )
-        } else {
-            <p class="govuk-body">@messages("addAnotherTransportEquipment.maxLimit")</p>
-        }
+@govukRadios(
+RadiosViewModel.yesNo(
+field = form("value"),
+legend = LegendViewModel(HtmlContent(s"<strong>${messages("addAnotherTransportEquipment.addAnother")}</strong>"))
+)
+)
+} else {
+<p class="govuk-body">@messages("addAnotherTransportEquipment.maxLimit")</p>
+}
 
-        @govukButton(
-            ButtonViewModel(messages("site.continue"))
-        )
-    }
+@govukButton(
+ButtonViewModel(messages("site.continue"))
+)
+}
 }

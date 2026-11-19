@@ -21,8 +21,7 @@ import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 import play.api.i18n.Messages
 import play.api.test.Helpers
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, DocumentDetails, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendDiscrepancyTransportDocPage
+import uk.gov.hmrc.automatedexportsystemfrontend.models.CheckMode
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Amend.AmendDiscrepancyTransportDocSummary
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.all.*
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
