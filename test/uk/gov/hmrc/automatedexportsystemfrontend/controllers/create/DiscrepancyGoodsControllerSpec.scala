@@ -44,6 +44,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DiscrepancyGoodsFormProvider()
   val form: Form[Option[WhatHasChangedDetails]] = formProvider()
+  val goodsItemIndex = 1
 
   lazy val discrepancyGoodsRoute: String = createRoute.DiscrepancyGoodsController.onPageLoad(1, NormalMode).url
 
@@ -326,7 +327,7 @@ class DiscrepancyGoodsControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, NormalMode).url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())

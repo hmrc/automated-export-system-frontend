@@ -42,20 +42,14 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
 
   val formProvider = new DiscrepancyPackingFormProvider()
   val form: Form[PackingDetails] = formProvider()
+  val goodsItemIndex = 1
 
-  lazy val discrepancyPackingRoute: String = createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+  lazy val discrepancyPackingRoute: String = createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, NormalMode).url
 
-  val userAnswers =
-    UserAnswers(
-      userAnswersId,
-      Json.obj(
-        "standard" -> Json
-          .obj(
-            DiscrepancyPackingPage(1).toString -> Json
-              .arr(Json.obj("packagingCode" -> "value 1", "numberOfPackages" -> 123, "shippingMarks" -> "value 3"))
-          )
-      )
-    )
+  val userAnswers = emptyUserAnswers
+    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("value 1", 123, "value 3"))
+    .success
+    .value
 
   "DiscrepancyPacking Controller" - {
 
@@ -171,7 +165,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.DiscrepancyPackingController.onPageLoad(5, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 5, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -187,7 +181,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.DiscrepancyPackingController.onPageLoad(5, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 5, NormalMode).url)
 
         val result = route(application, request).value
 

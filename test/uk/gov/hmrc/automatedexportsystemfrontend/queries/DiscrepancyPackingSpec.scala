@@ -23,10 +23,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 class DiscrepancyPackingSpec extends SpecBase {
 
+  val goodsItemIndex = 1
+
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("BX", 1, "MARKS1"))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 2), PackingDetails("CT", 2, "MARKS2")))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 3), PackingDetails("PK", 3, "MARKS3")))
     .success
     .value
 
@@ -35,58 +37,59 @@ class DiscrepancyPackingSpec extends SpecBase {
       "must get all of the DiscrepancyPacking data" in {
         val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("CT", 2, "MARKS2"), PackingDetails("PK", 3, "MARKS3"))
 
-        DiscrepancyPacking.getAll(userAnswers) mustBe expected
+        DiscrepancyPacking(goodsItemIndex).getAll(userAnswers) mustBe expected
       }
     }
 
     ".count" - {
       "must return how many DiscrepancyPacking data items have been added" in {
-        DiscrepancyPacking.count(userAnswers) mustBe 3
+        DiscrepancyPacking(goodsItemIndex).count(userAnswers) mustBe 3
       }
     }
 
     ".remaining" - {
       "must return how many remaining DiscrepancyPacking data items can be added" in {
-        DiscrepancyPacking.remaining(userAnswers) mustBe 96
+        DiscrepancyPacking(goodsItemIndex).remaining(userAnswers) mustBe 96
       }
     }
 
     ".maxPackagingDetails" - {
       "must have a maximum of 99" in {
-        DiscrepancyPacking.maxPackagingDetails mustBe 99
+        DiscrepancyPacking(goodsItemIndex).maxPackagingDetails mustBe 99
       }
     }
 
     ".exists" - {
       "must return true if the index is defined" in {
-        DiscrepancyPacking.exists(userAnswers, 3) mustBe true
+        DiscrepancyPacking(goodsItemIndex).exists(userAnswers, 3) mustBe true
       }
 
       "must return false if the index is not defined" in {
-        DiscrepancyPacking.exists(userAnswers, 4) mustBe false
+        goodsItemIndex
+        DiscrepancyPacking(goodsItemIndex).exists(userAnswers, 4) mustBe false
       }
     }
 
     ".nextIndex" - {
       "must return the next empty index positon" in {
-        DiscrepancyPacking.nextIndex(userAnswers) mustBe 4
+        DiscrepancyPacking(goodsItemIndex).nextIndex(userAnswers) mustBe 4
       }
     }
 
     ".removeOne" - {
-      "must remove one DiscrepancyPacking item at the correct index" in {
-        val updatedUserAnswers = DiscrepancyPacking.removeOne(userAnswers, 2).success.value
+      "must remove one DiscrepancyPacking(goodsItemIndex) item at the correct index" in {
+        val updatedUserAnswers = DiscrepancyPacking(goodsItemIndex).removeOne(userAnswers, 2).success.value
 
         val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("PK", 3, "MARKS3"))
 
-        DiscrepancyPacking.getAll(updatedUserAnswers) mustBe expected
+        DiscrepancyPacking(goodsItemIndex).getAll(updatedUserAnswers) mustBe expected
       }
     }
 
     "must be able to remove all DiscrepancyPacking data from user answers" in {
-      val updatedUserAnswers = userAnswers.remove(DiscrepancyPacking).success.value
+      val updatedUserAnswers = userAnswers.remove(DiscrepancyPacking(goodsItemIndex)).success.value
 
-      updatedUserAnswers.get(DiscrepancyPacking) mustNot be(defined)
+      updatedUserAnswers.get(DiscrepancyPacking(goodsItemIndex)) mustNot be(defined)
     }
 
   }

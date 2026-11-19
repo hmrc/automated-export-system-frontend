@@ -31,9 +31,12 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  val maxPackagingDetails: Int = DiscrepancyPacking.maxPackagingDetails
+  val goodsItemIndex = 1
 
-  val userAnswers: UserAnswers = emptyUserAnswers.set(DiscrepancyPackingPage(1), PackingDetails("packagingCode1", 1, "shippingMarks1")).success.value
+  val maxPackagingDetails: Int = DiscrepancyPacking(goodsItemIndex).maxPackagingDetails
+
+  val userAnswers: UserAnswers =
+    emptyUserAnswers.set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("packagingCode1", 1, "shippingMarks1")).success.value
 
   val packingDetailsListMax: List[PackingDetails] = (1 to maxPackagingDetails).map { number =>
     PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
@@ -43,7 +46,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
     ".rows" - {
       "must build a valid row with packaging details, hidden value, change and remove actions" in {
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, NormalMode)
         val rows = result.rows
         rows.size mustBe 1
         val row = rows.head
@@ -54,12 +57,12 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         actions.items.size mustBe 2
 
         val change = actions.items.head
-        change.href mustBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+        change.href mustBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, NormalMode).url
         change.content mustBe Text(messages("site.change"))
         change.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.change.hidden", "1"))
 
         val remove = actions.items(1)
-        remove.href mustBe createRoute.RemovePackagingDetailController.onPageLoad(1, 1, NormalMode).url
+        remove.href mustBe createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, 1, 1, NormalMode).url
         remove.content mustBe Text(messages("site.remove"))
         remove.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.remove.hidden", "1"))
 
@@ -76,7 +79,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
       }
 
       "must build a valid row with packaging details, hidden value, change and remove actions in CheckMode" in {
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, CheckMode)
         val rows = result.rows
         rows.size mustBe 1
         val row = rows.head
@@ -87,12 +90,12 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         actions.items.size mustBe 2
 
         val change = actions.items.head
-        change.href mustBe createRoute.DiscrepancyPackingController.onPageLoad(1, CheckMode).url
+        change.href mustBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, CheckMode).url
         change.content mustBe Text(messages("site.change"))
         change.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.change.hidden", "1"))
 
         val remove = actions.items(1)
-        remove.href mustBe createRoute.RemovePackagingDetailController.onPageLoad(1, 1, CheckMode).url
+        remove.href mustBe createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, 1, 1, CheckMode).url
         remove.content mustBe Text(messages("site.remove"))
         remove.visuallyHiddenText mustBe Some(messages("addAnotherPackagingDetail.remove.hidden", "1"))
 
@@ -116,11 +119,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packagingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packagingDetailsList)
           .success
           .value
 
-        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode).pagination
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, NormalMode).pagination
 
         pagination mustBe None
       }
@@ -131,11 +134,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packagingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packagingDetailsList)
           .success
           .value
 
-        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode).pagination
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, CheckMode).pagination
 
         pagination mustBe None
       }
@@ -147,29 +150,29 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), NormalMode).pagination.value
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), goodsItemIndex, NormalMode).pagination.value
 
         pagination.items mustBe Some(
           Seq(
             PaginationItem(
-              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url,
               number = Some("1"),
               visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
             PaginationItem(
-              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url,
               visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               number = Some("2")
             )
           )
         )
         pagination.previous mustBe None
-        pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+        pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url
       }
 
       "must return Pagination for page 1 when there is 26 items in CheckMode" in {
@@ -179,29 +182,29 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), CheckMode).pagination.value
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), goodsItemIndex, CheckMode).pagination.value
 
         pagination.items mustBe Some(
           Seq(
             PaginationItem(
-              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), CheckMode).url,
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), CheckMode).url,
               number = Some("1"),
               visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
             PaginationItem(
-              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), CheckMode).url,
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), CheckMode).url,
               visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               number = Some("2")
             )
           )
         )
         pagination.previous mustBe None
-        pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), CheckMode).url
+        pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), CheckMode).url
       }
 
       "must return Pagination for page 2 when there is 26 items" in {
@@ -211,28 +214,28 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode).pagination.value
+        val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), goodsItemIndex, NormalMode).pagination.value
 
         pagination.items mustBe Some(
           Seq(
             PaginationItem(
-              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url,
               visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               number = Some("1")
             ),
             PaginationItem(
-              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+              href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url,
               visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               number = Some("2"),
               current = Some(true)
             )
           )
         )
-        pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url
+        pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url
         pagination.next mustBe None
       }
 
@@ -242,139 +245,139 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
         "for page 1" in {
 
-          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), NormalMode).pagination.value
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(1), goodsItemIndex, NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url,
                 number = Some("1"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 2)),
                 number = Some("2")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 3)),
                 number = Some("3")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 number = Some("4")
               )
             )
           )
           pagination.previous mustBe None
-          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url
         }
 
         "for page 2" in {
 
-          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode).pagination.value
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), goodsItemIndex, NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url,
                 number = Some("2"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 2)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 3)),
                 number = Some("3")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 number = Some("4")
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url
-          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url
+          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url
         }
 
         "for page 3" in {
 
-          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(3), NormalMode).pagination.value
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(3), goodsItemIndex, NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 2)),
                 number = Some("2")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url,
                 number = Some("3"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 3)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 number = Some("4")
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
-          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url
+          pagination.next.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url
         }
 
         "for page 4" in {
 
-          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(4), NormalMode).pagination.value
+          val pagination = AddAnotherPackagingDetailViewModel(userAnswers, Some(4), goodsItemIndex, NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 2)),
                 number = Some("2")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 3)),
                 number = Some("3")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url,
+                href = createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 number = Some("4"),
                 current = Some(true)
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url
           pagination.next mustBe None
         }
       }
@@ -382,7 +385,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
     "when determining if add another should be enabled" - {
       "must provide the correct model when 1 item has been added" in {
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 1
         result.remainingPackagingDetails mustBe 98
@@ -398,7 +401,7 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
       }
 
       "must provide the correct model when 1 item has been added in CheckMode" in {
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, CheckMode)
 
         result.numberOfPackagingDetails mustBe 1
         result.remainingPackagingDetails mustBe 98
@@ -419,11 +422,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 98
         result.remainingPackagingDetails mustBe 1
@@ -440,11 +443,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model when the maximum number of items has been reached" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsListMax)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsListMax)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 99
         result.remainingPackagingDetails mustBe 0
@@ -467,11 +470,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 25
         result.remainingPackagingDetails mustBe 74
@@ -494,11 +497,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, CheckMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, CheckMode)
 
         result.numberOfPackagingDetails mustBe 25
         result.remainingPackagingDetails mustBe 74
@@ -521,11 +524,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, None, goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 26
         result.remainingPackagingDetails mustBe 73
@@ -547,11 +550,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 26
         result.remainingPackagingDetails mustBe 73
@@ -569,11 +572,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for page 2 at max" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsListMax)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsListMax)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(2), goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 99
         result.remainingPackagingDetails mustBe 0
@@ -590,11 +593,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for page 3 at max" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsListMax)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsListMax)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(3), NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(3), goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 99
         result.remainingPackagingDetails mustBe 0
@@ -611,11 +614,11 @@ class AddAnotherPackagingDetailViewModelSpec extends SpecBase {
 
       "must provide the correct model for page 4 at max" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsListMax)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsListMax)
           .success
           .value
 
-        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(4), NormalMode)
+        val result = AddAnotherPackagingDetailViewModel(userAnswers, Some(4), goodsItemIndex, NormalMode)
 
         result.numberOfPackagingDetails mustBe 99
         result.remainingPackagingDetails mustBe 0

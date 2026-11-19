@@ -29,10 +29,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyPacking
 
 class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
 
+  val goodsItemIndex = 1
+
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS1"))
-    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails("CT", 2, "MARKS2")))
-    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails("PK", 3, "MARKS3")))
+    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("BX", 1, "MARKS1"))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 2), PackingDetails("CT", 2, "MARKS2")))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 3), PackingDetails("PK", 3, "MARKS3")))
     .success
     .value
 
@@ -45,7 +47,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(2, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(goodsItemIndex, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -62,7 +64,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("""Change<span class="govuk-visually-hidden"> package type</span>""")
         body should include("""Change<span class="govuk-visually-hidden"> number of packages</span>""")
         body should include("""Change<span class="govuk-visually-hidden"> shipping marks</span>""")
-        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url}"""")
       }
     }
 
@@ -73,7 +75,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(2, CheckMode).url)
+        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(goodsItemIndex, 2, CheckMode).url)
 
         val result = route(application, request).value
 
@@ -90,14 +92,14 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         body should include("""Change<span class="govuk-visually-hidden"> package type</span>""")
         body should include("""Change<span class="govuk-visually-hidden"> number of packages</span>""")
         body should include("""Change<span class="govuk-visually-hidden"> shipping marks</span>""")
-        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(None, CheckMode).url}"""")
+        body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, CheckMode).url}"""")
       }
     }
 
     "must redirect to Journey Recovery for a GET if it is an empty index" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(1), PackingDetails("BX", 1, "MARKS123"))
+        .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("BX", 1, "MARKS123"))
         .get
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
@@ -105,7 +107,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(2, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(goodsItemIndex, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -121,7 +123,7 @@ class PackagingDetailsCYAControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(1, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.PackagingDetailsCYAController.onPageLoad(goodsItemIndex, 1, NormalMode).url)
 
         val result = route(application, request).value
 
