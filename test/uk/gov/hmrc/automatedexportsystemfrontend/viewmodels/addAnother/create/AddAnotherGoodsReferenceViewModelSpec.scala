@@ -165,9 +165,14 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
             PaginationItem(
               href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
               number = Some("1"),
+              visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
-            PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url, number = Some("2"))
+            PaginationItem(
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
+              visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+              number = Some("2")
+            )
           )
         )
         pagination.previous mustBe None
@@ -191,9 +196,14 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
             PaginationItem(
               href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), CheckMode).url,
               number = Some("1"),
+              visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
-            PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), CheckMode).url, number = Some("2"))
+            PaginationItem(
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), CheckMode).url,
+              visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+              number = Some("2")
+            )
           )
         )
         pagination.previous mustBe None
@@ -214,10 +224,15 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
         pagination.items mustBe Some(
           Seq(
-            PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+            PaginationItem(
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+              visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+              number = Some("1")
+            ),
             PaginationItem(
               href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
               number = Some("2"),
+              visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               current = Some(true)
             )
           )
@@ -240,11 +255,20 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
                 number = Some("1"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+                number = Some("2")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url, number = Some("40"))
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 40)),
+                number = Some("40")
+              )
             )
           )
           pagination.previous mustBe None
@@ -256,17 +280,38 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(3), NormalMode).url, number = Some("3")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+                number = Some("2")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(3), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 3)),
+                number = Some("3")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(4), NormalMode).url,
                 number = Some("4"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(5), NormalMode).url, number = Some("5")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(5), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 5)),
+                number = Some("5")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url, number = Some("40"))
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 40)),
+                number = Some("40")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(3), NormalMode).url
@@ -278,17 +323,34 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(4), NormalMode).url, number = Some("4")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(4), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 4)),
+                number = Some("4")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(5), NormalMode).url,
                 number = Some("5"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 5)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(6), NormalMode).url, number = Some("6")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(6), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 6)),
+                number = Some("6")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url, number = Some("40"))
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 40)),
+                number = Some("40")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(4), NormalMode).url
@@ -300,17 +362,34 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(19), NormalMode).url, number = Some("19")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(19), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 19)),
+                number = Some("19")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(20), NormalMode).url,
                 number = Some("20"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 20)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(21), NormalMode).url, number = Some("21")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(21), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 21)),
+                number = Some("21")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url, number = Some("40"))
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 40)),
+                number = Some("40")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(19), NormalMode).url
@@ -322,17 +401,34 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(35), NormalMode).url, number = Some("35")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(35), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 35)),
+                number = Some("35")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(36), NormalMode).url,
                 number = Some("36"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 36)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(37), NormalMode).url, number = Some("37")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(37), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 37)),
+                number = Some("37")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url, number = Some("40"))
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 40)),
+                number = Some("40")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(35), NormalMode).url
@@ -344,17 +440,38 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(36), NormalMode).url, number = Some("36")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(36), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 36)),
+                number = Some("36")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(37), NormalMode).url,
                 number = Some("37"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 37)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(38), NormalMode).url, number = Some("38")),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url, number = Some("39")),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url, number = Some("40"))
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(38), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 38)),
+                number = Some("38")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 39)),
+                number = Some("39")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 40)),
+                number = Some("40")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(36), NormalMode).url
@@ -366,11 +483,20 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url, number = Some("39")),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 39)),
+                number = Some("39")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40"),
                 current = Some(true)
               )
@@ -485,9 +611,6 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       result.lastGoodsReference mustBe 25
       result.rows.size mustBe 25
       result.pagination mustBe None
-
-      result.hasPreviousPage mustBe false
-      result.hasNextPage mustBe false
       result.pageParam mustBe None
     }
 
@@ -514,9 +637,6 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       result.lastGoodsReference mustBe 25
       result.rows.size mustBe 25
       result.pagination mustBe None
-
-      result.hasPreviousPage mustBe false
-      result.hasNextPage mustBe false
       result.pageParam mustBe None
     }
 
@@ -543,10 +663,6 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       result.lastGoodsReference mustBe 25
       result.rows.size mustBe 25
       result.pagination.isDefined mustBe true
-
-      result.hasPreviousPage mustBe false
-      result.hasNextPage mustBe true
-      result.nextPage mustBe 2
       result.pageParam mustBe Some(1)
     }
 
@@ -573,10 +689,6 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       result.lastGoodsReference mustBe 26
       result.rows.size mustBe 1
       result.pagination.isDefined mustBe true
-
-      result.hasPreviousPage mustBe true
-      result.hasNextPage mustBe false
-      result.previousPage mustBe 1
       result.pageParam mustBe Some(2)
     }
   }

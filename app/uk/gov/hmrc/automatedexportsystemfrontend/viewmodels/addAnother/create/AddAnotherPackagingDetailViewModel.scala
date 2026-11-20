@@ -35,19 +35,9 @@ case class AddAnotherPackagingDetailViewModel(
   totalPages: Int,
   firstPackagingDetail: Int,
   lastPackagingDetail: Int,
-  pageNumbers: Seq[Int],
   rows: Seq[SummaryListRow],
   pagination: Option[Pagination]
 ) {
-
-  def hasPreviousPage: Boolean = currentPage > 1
-
-  def hasNextPage: Boolean = currentPage < totalPages
-
-  def previousPage: Int = currentPage - 1
-
-  def nextPage: Int = currentPage + 1
-
   def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
 }
 
@@ -61,13 +51,7 @@ object AddAnotherPackagingDetailViewModel {
 
     val currentPage: Int = page.getOrElse(1)
 
-    val totalPages: Int = ((numberOfPackagingDetails - 1) / pageSize) + 1
-
-    val firstPackagingDetail: Int = ((currentPage - 1) * pageSize) + 1
-
-    val lastPackagingDetail: Int = math.min(currentPage * pageSize, numberOfPackagingDetails)
-
-    val pageNumbers: Seq[Int] = 1 to totalPages
+    val totalPages: Int = PaginationBuilder.totalPages(numberOfPackagingDetails)
 
     AddAnotherPackagingDetailViewModel(
       numberOfPackagingDetails = numberOfPackagingDetails,
@@ -77,16 +61,20 @@ object AddAnotherPackagingDetailViewModel {
       remainingSingularOrPlural = if (remainingPackagingDetails == 1) "singular" else "plural",
       currentPage = currentPage,
       totalPages = totalPages,
-      firstPackagingDetail = firstPackagingDetail,
-      lastPackagingDetail = lastPackagingDetail,
-      pageNumbers = pageNumbers,
-      rows = rows(firstPackagingDetail to lastPackagingDetail, currentPage, mode),
-      pagination = pagination(currentPage, totalPages, pageNumbers, mode)
+      firstPackagingDetail = PaginationBuilder.firstItem(currentPage),
+      lastPackagingDetail = PaginationBuilder.lastItem(currentPage, numberOfPackagingDetails),
+      rows = rows(userAnswers, currentPage, mode),
+      pagination = PaginationBuilder.pagination(
+        currentPage,
+        totalPages,
+        index => createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(index), mode).url
+      )
     )
   }
 
-  def rows(packagingDetailNumbers: Seq[Int], currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    packagingDetailNumbers.map { packagingDetailNumber =>
+  def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+    PaginationBuilder.slice(DiscrepancyPacking.getAll(userAnswers).zipWithIndex, currentPage).map { case (_, i) =>
+      val packagingDetailNumber = i + 1
       SummaryListRow(
         key = Key(
           content = Text(messages("addAnotherPackagingDetail.key", packagingDetailNumber)),
@@ -108,32 +96,6 @@ object AddAnotherPackagingDetailViewModel {
               )
             )
           )
-        )
-      )
-    }
-
-  def pagination(currentPage: Int, totalPages: Int, pageNumbers: Seq[Int], mode: Mode): Option[Pagination] =
-    if (totalPages <= 1) None
-    else {
-
-      def href(number: Int): String =
-        createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(number), mode).url
-
-      Some(
-        Pagination(
-          items = Some(pageNumbers.map { number =>
-            PaginationItem(href = href(number), number = Some(number.toString), current = if (number == currentPage) Some(true) else None)
-          }),
-          previous = if (currentPage > 1) {
-            Some(PaginationLink(href = href(currentPage - 1)))
-          } else {
-            None
-          },
-          next = if (currentPage < totalPages) {
-            Some(PaginationLink(href = href(currentPage + 1)))
-          } else {
-            None
-          }
         )
       )
     }

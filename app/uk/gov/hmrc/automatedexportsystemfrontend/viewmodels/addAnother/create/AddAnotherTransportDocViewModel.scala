@@ -37,34 +37,9 @@ case class AddAnotherTransportDocViewModel(
   totalPages: Int,
   firstTransportDoc: Int,
   lastTransportDoc: Int,
-  pageNumbers: Seq[Int]
+  pagination: Option[Pagination]
 ) {
-  def hasPreviousPage: Boolean = currentPage > 1
-
-  def hasNextPage: Boolean = currentPage < totalPages
-
-  def previousPage: Int = currentPage - 1
-
-  def nextPage: Int = currentPage + 1
-
   def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
-
-  def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
-    if (totalPages <= 1) None
-    else {
-      def href(page: Int): String =
-        createRoute.AddAnotherTransportDocController.onPageLoad(Some(page), mode).url
-
-      Some(
-        Pagination(
-          items = Some(pageNumbers.map { number =>
-            PaginationItem(href = href(number), number = Some(number.toString), current = Some(number == currentPage))
-          }),
-          previous = Option.when(hasPreviousPage)(PaginationLink(href = href(previousPage), text = Some(messages("site.pagination.previous")))),
-          next = Option.when(hasNextPage)(PaginationLink(href = href(nextPage), text = Some(messages("site.pagination.next"))))
-        )
-      )
-    }
 
 }
 
@@ -77,17 +52,7 @@ object AddAnotherTransportDocViewModel {
 
     val currentPage: Int = page.getOrElse(1)
 
-    val totalPages: Int = ((numberOfTransportDocs - 1) / pageSize) + 1
-
-    val firstTransportDoc: Int = ((currentPage - 1) * pageSize) + 1
-
-    val lastTransportDoc: Int = math.min(currentPage * pageSize, numberOfTransportDocs)
-
-    val firstPageNumber: Int = math.max(1, currentPage - 1)
-
-    val lastPageNumber: Int = math.min(totalPages, currentPage + 1)
-
-    val pageNumbers = firstPageNumber to lastPageNumber
+    val totalPages: Int = PaginationBuilder.totalPages(numberOfTransportDocs)
 
     AddAnotherTransportDocViewModel(
       numberOfTransportDocs = numberOfTransportDocs,
@@ -98,36 +63,36 @@ object AddAnotherTransportDocViewModel {
       rows = rows(userAnswers, mode, currentPage),
       currentPage = currentPage,
       totalPages = totalPages,
-      firstTransportDoc = firstTransportDoc,
-      lastTransportDoc = lastTransportDoc,
-      pageNumbers = pageNumbers
+      firstTransportDoc = PaginationBuilder.firstItem(currentPage),
+      lastTransportDoc = PaginationBuilder.lastItem(currentPage, numberOfTransportDocs),
+      pagination =
+        PaginationBuilder.pagination(currentPage, totalPages, index => createRoute.AddAnotherTransportDocController.onPageLoad(Some(index), mode).url)
     )
 
   }
 
   def rows(userAnswers: UserAnswers, mode: Mode, currentPage: Int)(implicit messages: Messages): Seq[SummaryListRow] =
-    DiscrepancyTransportDoc.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map {
-      case (documentDetails, i) =>
-        val index = i + 1
-        SummaryListRow(
-          key = Key(content = Text(messages("transportDocCYA.caption", index)), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
-          value = Value(content = Empty, classes = "govuk-!-display-none"),
-          actions = Some(
-            Actions(items =
-              Seq(
-                ActionItem(
-                  href = createRoute.DiscrepancyTransportDocController.onPageLoad(index, mode).url,
-                  content = Text(messages("site.change")),
-                  visuallyHiddenText = Some(messages("addAnotherTransportDoc.change.hidden", index))
-                ),
-                ActionItem(
-                  href = createRoute.RemoveTransportDocController.onPageLoad(index, currentPage, mode).url,
-                  content = Text(messages("site.remove")),
-                  visuallyHiddenText = Some(messages("addAnotherTransportDoc.remove.hidden", index))
-                )
+    PaginationBuilder.slice(DiscrepancyTransportDoc.getAll(userAnswers).zipWithIndex, currentPage).map { case (documentDetails, i) =>
+      val index = i + 1
+      SummaryListRow(
+        key = Key(content = Text(messages("transportDocCYA.caption", index)), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
+        value = Value(content = Empty, classes = "govuk-!-display-none"),
+        actions = Some(
+          Actions(items =
+            Seq(
+              ActionItem(
+                href = createRoute.DiscrepancyTransportDocController.onPageLoad(index, mode).url,
+                content = Text(messages("site.change")),
+                visuallyHiddenText = Some(messages("addAnotherTransportDoc.change.hidden", index))
+              ),
+              ActionItem(
+                href = createRoute.RemoveTransportDocController.onPageLoad(index, currentPage, mode).url,
+                content = Text(messages("site.remove")),
+                visuallyHiddenText = Some(messages("addAnotherTransportDoc.remove.hidden", index))
               )
             )
           )
         )
+      )
     }
 }

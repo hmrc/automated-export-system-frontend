@@ -165,9 +165,14 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
             PaginationItem(
               href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
               number = Some("1"),
+              visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
-            PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), NormalMode).url, number = Some("2"))
+            PaginationItem(
+              href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), NormalMode).url,
+              visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+              number = Some("2")
+            )
           )
         )
         pagination.previous mustBe None
@@ -191,9 +196,14 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
             PaginationItem(
               href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), CheckMode).url,
               number = Some("1"),
+              visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
-            PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), CheckMode).url, number = Some("2"))
+            PaginationItem(
+              href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), CheckMode).url,
+              visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+              number = Some("2")
+            )
           )
         )
         pagination.previous mustBe None
@@ -214,10 +224,15 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
         pagination.items mustBe Some(
           Seq(
-            PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+            PaginationItem(
+              href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
+              visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+              number = Some("1")
+            ),
             PaginationItem(
               href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), NormalMode).url,
               number = Some("2"),
+              visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               current = Some(true)
             )
           )
@@ -240,11 +255,20 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
               PaginationItem(
                 href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
                 number = Some("1"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+                number = Some("2")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url, number = Some("400"))
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 400)),
+                number = Some("400")
+              )
             )
           )
           pagination.previous mustBe None
@@ -256,17 +280,38 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), NormalMode).url, number = Some("2")),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(3), NormalMode).url, number = Some("3")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
+                number = Some("1"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 1))
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(2), NormalMode).url,
+                number = Some("2"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 2))
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(3), NormalMode).url,
+                number = Some("3"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 3))
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherTransportController.onPageLoad(Some(4), NormalMode).url,
                 number = Some("4"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(5), NormalMode).url, number = Some("5")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(5), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 5)),
+                number = Some("5")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url, number = Some("400"))
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 400)),
+                number = Some("400")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherTransportController.onPageLoad(Some(3), NormalMode).url
@@ -278,17 +323,34 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(4), NormalMode).url, number = Some("4")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(4), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 2)),
+                number = Some("4")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherTransportController.onPageLoad(Some(5), NormalMode).url,
                 number = Some("5"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 5)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(6), NormalMode).url, number = Some("6")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(6), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 6)),
+                number = Some("6")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url, number = Some("400"))
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 400)),
+                number = Some("400")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherTransportController.onPageLoad(Some(4), NormalMode).url
@@ -300,17 +362,34 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(199), NormalMode).url, number = Some("199")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(199), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 199)),
+                number = Some("199")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherTransportController.onPageLoad(Some(200), NormalMode).url,
                 number = Some("200"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 200)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(201), NormalMode).url, number = Some("201")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(201), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 201)),
+                number = Some("201")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url, number = Some("400"))
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 400)),
+                number = Some("400")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherTransportController.onPageLoad(Some(199), NormalMode).url
@@ -322,17 +401,34 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(395), NormalMode).url, number = Some("395")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(395), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 395)),
+                number = Some("395")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherTransportController.onPageLoad(Some(396), NormalMode).url,
                 number = Some("396"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 396)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(397), NormalMode).url, number = Some("397")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(397), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 397)),
+                number = Some("397")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url, number = Some("400"))
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 400)),
+                number = Some("400")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherTransportController.onPageLoad(Some(395), NormalMode).url
@@ -344,17 +440,38 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(396), NormalMode).url, number = Some("396")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(396), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 396)),
+                number = Some("396")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherTransportController.onPageLoad(Some(397), NormalMode).url,
                 number = Some("397"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 397)),
                 current = Some(true)
               ),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(398), NormalMode).url, number = Some("398")),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(399), NormalMode).url, number = Some("399")),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url, number = Some("400"))
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(398), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 398)),
+                number = Some("398")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(399), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 399)),
+                number = Some("399")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 400)),
+                number = Some("400")
+              )
             )
           )
           pagination.previous.value.href mustBe createRoute.AddAnotherTransportController.onPageLoad(Some(396), NormalMode).url
@@ -366,12 +483,21 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
 
           pagination.items mustBe Some(
             Seq(
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url, number = Some("1")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(1), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 1)),
+                number = Some("1")
+              ),
               PaginationItem(ellipsis = Some(true)),
-              PaginationItem(href = createRoute.AddAnotherTransportController.onPageLoad(Some(399), NormalMode).url, number = Some("399")),
+              PaginationItem(
+                href = createRoute.AddAnotherTransportController.onPageLoad(Some(399), NormalMode).url,
+                visuallyHiddenText = Some(messages("site.pagination.page", 399)),
+                number = Some("399")
+              ),
               PaginationItem(
                 href = createRoute.AddAnotherTransportController.onPageLoad(Some(400), NormalMode).url,
                 number = Some("400"),
+                visuallyHiddenText = Some(messages("site.pagination.page", 400)),
                 current = Some(true)
               )
             )
@@ -485,9 +611,6 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       result.lastTransportEquipment mustBe 25
       result.rows.size mustBe 25
       result.pagination mustBe None
-
-      result.hasPreviousPage mustBe false
-      result.hasNextPage mustBe false
       result.pageParam mustBe None
     }
 
@@ -515,8 +638,6 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       result.rows.size mustBe 25
       result.pagination mustBe None
 
-      result.hasPreviousPage mustBe false
-      result.hasNextPage mustBe false
       result.pageParam mustBe None
     }
 
@@ -544,9 +665,6 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       result.rows.size mustBe 25
       result.pagination.isDefined mustBe true
 
-      result.hasPreviousPage mustBe false
-      result.hasNextPage mustBe true
-      result.nextPage mustBe 2
       result.pageParam mustBe Some(1)
     }
 
@@ -573,11 +691,6 @@ class AddAnotherTransportEquipmentViewModelSpec extends SpecBase {
       result.lastTransportEquipment mustBe 26
       result.rows.size mustBe 1
       result.pagination.isDefined mustBe true
-
-      result.hasPreviousPage mustBe true
-      result.hasNextPage mustBe false
-      result.previousPage mustBe 1
-      result.pageParam mustBe Some(2)
     }
   }
 }

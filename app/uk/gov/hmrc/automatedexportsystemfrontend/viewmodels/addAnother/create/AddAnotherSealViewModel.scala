@@ -37,35 +37,9 @@ case class AddAnotherSealViewModel(
   totalPages: Int,
   firstSeal: Int,
   lastSeal: Int,
-  pageNumbers: Seq[Int]
+  pagination: Option[Pagination]
 ) {
-  def hasPreviousPage: Boolean = currentPage > 1
-
-  def hasNextPage: Boolean = currentPage < totalPages
-
-  def previousPage: Int = currentPage - 1
-
-  def nextPage: Int = currentPage + 1
-
   def pageParam: Option[Int] = if (totalPages > 1) Some(currentPage) else None
-
-  def pagination(mode: Mode)(implicit messages: Messages): Option[Pagination] =
-    if (totalPages <= 1) None
-    else {
-      def href(page: Int): String =
-        createRoute.AddAnotherSealController.onPageLoad(Some(page), mode).url
-
-      Some(
-        Pagination(
-          items = Some(pageNumbers.map { number =>
-            PaginationItem(href = href(number), number = Some(number.toString), current = Some(number == currentPage))
-          }),
-          previous = Option.when(hasPreviousPage)(PaginationLink(href = href(previousPage), text = Some(messages("site.pagination.previous")))),
-          next = Option.when(hasNextPage)(PaginationLink(href = href(nextPage), text = Some(messages("site.pagination.next"))))
-        )
-      )
-    }
-
 }
 
 object AddAnotherSealViewModel {
@@ -77,13 +51,7 @@ object AddAnotherSealViewModel {
 
     val currentPage: Int = page.getOrElse(1)
 
-    val totalPages: Int = ((numberOfSeals - 1) / pageSize) + 1
-
-    val firstSeal: Int = ((currentPage - 1) * pageSize) + 1
-
-    val lastSeal: Int = math.min(currentPage * pageSize, numberOfSeals)
-
-    val pageNumbers = 1 to totalPages
+    val totalPages: Int = PaginationBuilder.totalPages(numberOfSeals)
 
     AddAnotherSealViewModel(
       numberOfSeals = numberOfSeals,
@@ -94,15 +62,16 @@ object AddAnotherSealViewModel {
       rows = rows(userAnswers, mode, currentPage),
       currentPage = currentPage,
       totalPages = totalPages,
-      firstSeal = firstSeal,
-      lastSeal = lastSeal,
-      pageNumbers = pageNumbers
+      firstSeal = PaginationBuilder.firstItem(currentPage),
+      lastSeal = PaginationBuilder.lastItem(currentPage, numberOfSeals),
+      pagination =
+        PaginationBuilder.pagination(currentPage, totalPages, index => createRoute.AddAnotherSealController.onPageLoad(Some(index), mode).url)
     )
 
   }
 
   def rows(userAnswers: UserAnswers, mode: Mode, currentPage: Int)(implicit messages: Messages): Seq[SummaryListRow] =
-    DiscrepancySeals.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map { case (sealIdentifier, i) =>
+    PaginationBuilder.slice(DiscrepancySeals.getAll(userAnswers).zipWithIndex, currentPage).map { case (sealIdentifier, i) =>
       val index = i + 1
       SummaryListRow(
         key = Key(content = Text(sealIdentifier), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
