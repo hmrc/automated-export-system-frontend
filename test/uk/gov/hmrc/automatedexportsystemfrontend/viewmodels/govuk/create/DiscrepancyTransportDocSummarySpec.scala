@@ -33,7 +33,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
 
   "rows" - {
     "when answered, return the both optional summary rows" in {
-      val documentDetails = DocumentDetails(Some(1), Some(1234))
+      val documentDetails = DocumentDetails(Some("1"), Some(1234))
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportDocPage(1), documentDetails)
         .get
@@ -67,7 +67,7 @@ class DiscrepancyTransportDocSummarySpec extends AnyFreeSpec with Matchers with 
     }
 
     "when answered, return one optional summary row" in {
-      val documentDetails = DocumentDetails(Some(1), None)
+      val documentDetails = DocumentDetails(Some("1"), None)
       val userAnswers = UserAnswers("id")
         .set(DiscrepancyTransportDocPage(1), documentDetails)
         .get

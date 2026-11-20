@@ -21,7 +21,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{
   documentTypeMaxLength,
   documentTypeRegex,
   referenceNumberMaxLength,
-  referenceNumberRegex
+  referenceNumberRegex,
+  transportDocumentTypeRegex
 }
 import org.scalatest.matchers.should.Matchers.shouldBe
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
@@ -34,6 +35,8 @@ class DiscrepancyTransportDocFormProviderSpec extends StringFieldBehaviours {
   ".documentType" - {
 
     val fieldName = "documentType"
+    val invalidKey = "discrepancyTransportDoc.error.documentType.invalid"
+
     "must bind valid values" in {
       form.bind(Map(fieldName -> "1")).errors shouldBe empty
       form.bind(Map(fieldName -> "1234")).errors shouldBe empty
@@ -44,9 +47,16 @@ class DiscrepancyTransportDocFormProviderSpec extends StringFieldBehaviours {
       form.bind(Map(fieldName -> "")).errors shouldBe empty
     }
 
-    "must reject invalid values" in {
-      form.bind(Map(fieldName -> "12345")).errors.head.message shouldBe
-        "discrepancyTransportDoc.error.documentType.invalid"
+    "must not bind invalid data" in {
+
+      val invalidValues: Seq[String] = Seq("abc123!", "abc?123")
+
+      val expectedError = FormError(fieldName, invalidKey, Seq(transportDocumentTypeRegex))
+
+      invalidValues.foreach { invalidValue =>
+        val result: Field = form.bind(Map(fieldName -> invalidValue)).apply(fieldName)
+        result.errors must contain(expectedError)
+      }
     }
   }
 

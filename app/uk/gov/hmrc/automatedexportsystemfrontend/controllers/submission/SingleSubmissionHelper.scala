@@ -133,7 +133,7 @@ class SingleSubmissionHelper {
       case _           => None
     }
 
-  def docTypeHandler(docType: Option[Int], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
+  def docTypeHandler(docType: Option[String], submissionId: String, withChangeLink: Boolean)(implicit messages: Messages): Option[SummaryListRow] =
     docType match {
       case Some(value) => AmendDiscrepancyTransportDocSummary.transportTypeRow(value, submissionId, withChangeLink)
       case _           => None

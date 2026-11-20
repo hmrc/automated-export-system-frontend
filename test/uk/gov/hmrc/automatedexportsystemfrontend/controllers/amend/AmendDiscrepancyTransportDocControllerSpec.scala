@@ -53,7 +53,7 @@ class AmendDiscrepancyTransportDocControllerSpec extends SpecBase with MockitoSu
         "amend" ->
           Json.obj(
             submissionId -> Json
-              .obj(AmendDiscrepancyTransportDocPage(submissionId).toString -> Json.obj("documentType" -> 1, "referenceNumber" -> 1234))
+              .obj(AmendDiscrepancyTransportDocPage(submissionId).toString -> Json.obj("documentType" -> "1", "referenceNumber" -> 1234))
           )
       )
     )
