@@ -81,7 +81,7 @@ class AddAnotherPackagingDetailController @Inject() (
             formWithErrors => BadRequest(view(formWithErrors, goodsItemIndex, viewModel, mode)),
             {
               case true => Redirect(createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, viewModel.numberOfPackagingDetails + 1, mode))
-              case false => Redirect(createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)) // TODO: is none okay here
+              case false => Redirect(createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode))
             }
           )
       }
