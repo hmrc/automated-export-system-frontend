@@ -61,3 +61,8 @@ lazy val it =
   (project in file("it"))
     .enablePlugins(PlayScala)
     .dependsOn(microservice % "test->test")
+
+addCommandAlias(
+  "runAllChecks",
+  ";clean;compile;it/compile;scalafmtAll;coverage;test;it/test;coverageReport"
+)
