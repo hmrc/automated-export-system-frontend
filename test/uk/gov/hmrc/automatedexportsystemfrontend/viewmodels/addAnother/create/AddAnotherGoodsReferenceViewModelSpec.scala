@@ -388,10 +388,6 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
                 number = Some("19")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(19), NormalMode).url,
-                number = Some("19")
-              ),
-              PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(20), NormalMode).url,
                 number = Some("20"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 20)),
@@ -432,10 +428,6 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
               PaginationItem(
                 href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(35), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 35)),
-                number = Some("35")
-              ),
-              PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(35), NormalMode).url,
                 number = Some("35")
               ),
               PaginationItem(
