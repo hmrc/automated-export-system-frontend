@@ -30,6 +30,6 @@ class CodeListConnector @Inject() (frontendAppConfig: FrontendAppConfig, httpCli
 
   def getTransportModes()(using HeaderCarrier): Future[Seq[CodeListEntry]] =
     httpClient
-      .get(url"${frontendAppConfig.automatedExportSystemApi}/codelists/transportMode")
+      .get(url"${frontendAppConfig.automatedExportSystemApi}/codelist/transport-mode")
       .execute[Seq[CodeListEntry]]
 }

@@ -28,7 +28,7 @@ import uk.gov.hmrc.http.UpstreamErrorResponse
 class CodeListConnectorSpec extends SpecBase with WireMockHelper {
 
   private val endpoint =
-    "/automated-export-system/codelists/transportMode"
+    "/automated-export-system/codelist/transport-mode"
 
   private def application: Application =
     new GuiceApplicationBuilder()
