@@ -89,24 +89,9 @@ class AmendSubmissionDataService @Inject() extends Logging {
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 
-  private def collectCommodity(userAnswers: UserAnswers): Option[Commodity] =
-    userAnswers.get(DiscrepancyGoodsPage).map { goods =>
-      Commodity(goods.newGrossMass, goods.newNetMass)
-    }
-
   private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
     DiscrepancyPacking.getAll(userAnswers).zipWithIndex.map { (packing, index) =>
       Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
-    }
-
-  private def collectGoodsItem(userAnswers: UserAnswers): Option[GoodsItem] =
-    userAnswers.get(DiscrepancyGoodsPage).map { goods =>
-      GoodsItem(
-        goods.declarationGoodsItemNumber,
-        goods.declarationUniqueConsignmentReference,
-        Commodity(goods.newGrossMass, goods.newNetMass),
-        collectPackaging(userAnswers)
-      )
     }
 
   private def collectAmendGoodsItem(userAnswers: UserAnswers, submissionId: String): Option[GoodsItem] =
@@ -137,7 +122,7 @@ class AmendSubmissionDataService @Inject() extends Logging {
 
       val transport = collectAmendActiveBorderTransportMeans(userAnswers, submissionId)
       val transportDocument = collectAmendTransportDocument(userAnswers, submissionId)
-      val goodsItem = collectAmendGoodsItem(userAnswers, submissionId)
+      val goodsItem = collectAmendGoodsItem(userAnswers, submissionId).toList
 
       GoodsShipment(Consignment(transportMode, ducr, mucr, transportEquipment, location, transport, transportDocument), goodsItem)
     }

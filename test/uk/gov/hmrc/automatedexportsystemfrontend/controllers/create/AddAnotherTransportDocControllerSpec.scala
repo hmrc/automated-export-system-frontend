@@ -443,7 +443,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(1, NormalMode).url
         }
       }
 
@@ -513,7 +513,7 @@ class AddAnotherTransportDocControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyGoodsController.onPageLoad(1, NormalMode).url
         }
       }
 

@@ -19,7 +19,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.checkAnswers.Create
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyGoodsPage
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.govuk.summarylist.*
 import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.implicits.*
@@ -28,8 +28,8 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyGoodsSummary {
 
-  def rows(answers: UserAnswers)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-    answers.get(DiscrepancyGoodsPage).map { answer =>
+  def rows(goodsItemIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
+    answers.get(DiscrepancyGoodsPage(goodsItemIndex)).map { answer =>
 
       val maybeDeclarationGoodsItemNumber =
         answer.declarationGoodsItemNumber.map(declarationGoodsItemNum => HtmlFormat.escape(declarationGoodsItemNum.toString))
@@ -43,7 +43,7 @@ object DiscrepancyGoodsSummary {
             key = "discrepancyGoods.goodsItemNumber.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent(declarationGoodsItemNumber)),
             actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(goodsItemIndex, mode).url)
                 .withVisuallyHiddenText(messages("discrepancyGoods.goodsItemNumber.change.hidden"))
             )
           )
@@ -53,7 +53,7 @@ object DiscrepancyGoodsSummary {
             key = "discrepancyGoods.ducr.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent(ducr)),
             actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(goodsItemIndex, mode).url)
                 .withVisuallyHiddenText(messages("discrepancyGoods.ducr.change.hidden"))
             )
           )
@@ -63,7 +63,7 @@ object DiscrepancyGoodsSummary {
             key = "discrepancyGoods.newGrossMass.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent(newGrossMass)),
             actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(goodsItemIndex, mode).url)
                 .withVisuallyHiddenText(messages("discrepancyGoods.newGrossMass.change.hidden"))
             )
           )
@@ -73,7 +73,7 @@ object DiscrepancyGoodsSummary {
             key = "discrepancyGoods.newNetMass.checkYourAnswersLabel",
             value = ValueViewModel(HtmlContent(newNetMass)),
             actions = Seq(
-              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(CheckMode).url)
+              ActionItemViewModel("site.change", createRoute.DiscrepancyGoodsController.onPageLoad(goodsItemIndex, mode).url)
                 .withVisuallyHiddenText(messages("discrepancyGoods.newNetMass.change.hidden"))
             )
           )

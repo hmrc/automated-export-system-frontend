@@ -130,18 +130,13 @@ class CreateSubmissionDataService @Inject() extends Logging {
       TransportDocument(index + 1, document.documentType, document.referenceNumber)
     }
 
-  private def collectCommodity(userAnswers: UserAnswers): Option[Commodity] =
-    userAnswers.get(DiscrepancyGoodsPage).map { goods =>
-      Commodity(goods.newGrossMass, goods.newNetMass)
-    }
-
   private def collectPackaging(userAnswers: UserAnswers): List[Packaging] =
     DiscrepancyPacking.getAll(userAnswers).zipWithIndex.map { (packing, index) =>
       Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
     }
 
-  private def collectGoodsItem(userAnswers: UserAnswers): Option[GoodsItem] =
-    userAnswers.get(DiscrepancyGoodsPage).map { goods =>
+  private def collectGoodsItem(userAnswers: UserAnswers): List[GoodsItem] =
+    DiscrepancyGoods.getAll(userAnswers).zipWithIndex.map { (goods, index) =>
       GoodsItem(
         goods.declarationGoodsItemNumber,
         goods.declarationUniqueConsignmentReference,
