@@ -17,17 +17,21 @@
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
 import play.api.mvc.Call
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.ViewSubmissionsController
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.{Page, WhatDoYouWantToDoPage}
 
 import javax.inject.{Inject, Singleton}
 
 @Singleton
 class Navigator @Inject() () {
 
-  val normalRoutes: Page => UserAnswers => Call =
-    _ => _ => problemRoute.JourneyRecoveryController.onPageLoad()
+  val normalRoutes: Page => UserAnswers => Call = {
+    case WhatDoYouWantToDoPage => whatDoYouWantToDoRoute
+    case _                     => _ => problemRoute.JourneyRecoveryController.onPageLoad()
+  }
 
   val checkRoutes: Page => UserAnswers => Call =
     _ => _ => problemRoute.JourneyRecoveryController.onPageLoad()
@@ -38,4 +42,12 @@ class Navigator @Inject() () {
     case CheckMode =>
       checkRoutes(page)(userAnswers)
   }
+
+  private def whatDoYouWantToDoRoute(answers: UserAnswers): Call =
+    answers.get(WhatDoYouWantToDoPage) match {
+      case Some(WhatDoYouWantToDo.SubmitNew) => createRoute.EnterMrnController.onPageLoad(NormalMode)
+      case Some(WhatDoYouWantToDo.ViewOrCancel) =>
+        uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSubmissionsController.onPageLoad()
+      case _ => problemRoute.JourneyRecoveryController.onPageLoad()
+    }
 }
