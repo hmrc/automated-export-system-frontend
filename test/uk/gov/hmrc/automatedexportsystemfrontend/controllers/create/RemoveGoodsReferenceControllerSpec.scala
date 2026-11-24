@@ -38,14 +38,16 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
   def onwardRoute = Call("GET", "/foo")
 
-  val goodsReferenceIndex = 30
+  val transportEquipmentIndex: Int = 1
+
+  val goodsReferenceIndex: Int = 30
 
   val goodsReferencesList50: List[String] = (1 to 50).map { number =>
     number.toString
   }.toList
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyReference, goodsReferencesList50)
+    .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList50)
     .success
     .value
 
@@ -58,7 +60,8 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(goodsReferenceIndex, 2, NormalMode).url)
+        val request =
+          FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, goodsReferenceIndex, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -87,13 +90,15 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(goodsReferenceIndex, 2, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, goodsReferenceIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController
+          .onPageLoad(transportEquipmentIndex, Some(2), NormalMode)
+          .url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -115,13 +120,15 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(goodsReferenceIndex, 2, CheckMode).url)
+          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, goodsReferenceIndex, 2, CheckMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), CheckMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController
+          .onPageLoad(transportEquipmentIndex, Some(2), CheckMode)
+          .url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -141,13 +148,15 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(goodsReferenceIndex, 2, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, goodsReferenceIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController
+          .onPageLoad(transportEquipmentIndex, Some(2), NormalMode)
+          .url
         verify(mockSessionRepository, never()).set(any())
       }
     }
@@ -159,7 +168,7 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
       }.toList
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyReference, goodsReferencesList)
+        .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
         .success
         .value
 
@@ -178,13 +187,15 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(51, 3, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, 51, 3, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController
+          .onPageLoad(transportEquipmentIndex, Some(2), NormalMode)
+          .url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -192,7 +203,7 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to DiscrepancyReference when true and last item removed" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyReferencePage(1), "12345")
+        .set(DiscrepancyReferencePage(transportEquipmentIndex, 1), "12345")
         .success
         .value
 
@@ -211,13 +222,13 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(1, 1, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, 1, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -230,7 +241,7 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(goodsReferenceIndex, 2, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, goodsReferenceIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
@@ -248,7 +259,7 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(51, 2, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, 51, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -264,7 +275,7 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(50, 3, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, 50, 3, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -280,7 +291,7 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(51, 2, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, 51, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -296,7 +307,8 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(goodsReferenceIndex, 1, NormalMode).url)
+        val request =
+          FakeRequest(GET, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, goodsReferenceIndex, 1, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -313,7 +325,7 @@ class RemoveGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(goodsReferenceIndex, 1, NormalMode).url)
+          FakeRequest(POST, createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, goodsReferenceIndex, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value

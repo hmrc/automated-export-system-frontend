@@ -30,13 +30,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 
 class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
-  lazy val sealListRoute: String = createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url
-  val maxSeals: Int = DiscrepancySeals.maxNumberOfSealsInList
+  val transportEquipmentIndex: Int = 1
+  lazy val sealListRoute: String = createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url
+  val maxSeals: Int = DiscrepancySeals(transportEquipmentIndex).maxNumberOfSealsInList
   val sealIdentifier = "testSealIdentifier"
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancySealsPage(1), "Seal1")
-    .flatMap(_.set(DiscrepancySealsPage(2), "Seal2"))
-    .flatMap(_.set(DiscrepancySealsPage(3), "Seal3"))
+    .set(DiscrepancySealsPage(transportEquipmentIndex, 1), "Seal1")
+    .flatMap(_.set(DiscrepancySealsPage(transportEquipmentIndex, 2), "Seal2"))
+    .flatMap(_.set(DiscrepancySealsPage(transportEquipmentIndex, 3), "Seal3"))
     .success
     .value
   val sealsList = (1 to maxSeals).map { number =>
@@ -84,7 +85,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList)
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList)
           .success
           .value
 
@@ -93,7 +94,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -107,8 +108,8 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           }
           body should not include "Showing 1-25 of 25 items"
           body should not include "Previous"
-          body should not include s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url}""""
-          body should not include s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url}""""
+          body should not include s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url}""""
+          body should not include s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url}""""
           body should not include "Next"
           body should include("You can add up to <strong>74</strong> more seals")
           body should include("<strong>Do you need to add another seal?</strong>")
@@ -124,7 +125,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList)
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList)
           .success
           .value
 
@@ -133,7 +134,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -150,8 +151,8 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           body should not include "Remove seal 26"
           body should include("Showing 1-25 of 26 items")
           body should not include "Previous"
-          body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url}"""")
-          body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url}"""")
+          body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url}"""")
+          body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url}"""")
           body should include("Next")
           body should include("You can add up to <strong>73</strong> more seals")
           body should include("<strong>Do you need to add another seal?</strong>")
@@ -166,7 +167,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           s"seal$number"
         }.toList
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList)
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList)
           .success
           .value
 
@@ -177,7 +178,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -194,8 +195,8 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             body should not include "Remove seal 26"
             body should include("Showing 1-25 of 99 items")
             body should not include "Previous"
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url}"""")
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another seal?</strong>"
@@ -213,7 +214,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -230,9 +231,9 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             body should not include "Remove seal 51"
             body should include("Showing 26-50 of 99 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(3), NormalMode).url}"""")
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another seal?</strong>"
@@ -250,7 +251,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(Some(3), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(3), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -267,9 +268,9 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             body should not include "Remove seal 76"
             body should include("Showing 51-75 of 99 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(3), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(4), NormalMode).url}"""")
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another seal?</strong>"
@@ -287,7 +288,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(Some(4), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(4), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -304,8 +305,8 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
             body should not include "Remove seal 100"
             body should include("Showing 76-99 of 99 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(3), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(4), NormalMode).url}"""")
             body should not include "Next"
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another seal?</strong>"
@@ -324,12 +325,12 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
         }
       }
 
@@ -339,7 +340,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList)
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList)
           .success
           .value
 
@@ -348,11 +349,11 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url)
 
           val result = route(application, request).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url
         }
       }
 
@@ -362,7 +363,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList)
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList)
           .success
           .value
 
@@ -371,11 +372,11 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url
         }
       }
 
@@ -386,7 +387,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(Some(0), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(0), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -403,7 +404,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -422,12 +423,13 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(None, NormalMode).url).withFormUrlEncodedBody("value" -> "true")
+          FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
+            .withFormUrlEncodedBody("value" -> "true")
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(4, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 4, NormalMode).url
       }
     }
 
@@ -439,12 +441,13 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(None, NormalMode).url).withFormUrlEncodedBody("value" -> "false")
+          FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
+            .withFormUrlEncodedBody("value" -> "false")
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
       }
     }
 
@@ -456,12 +459,13 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(None, NormalMode).url).withFormUrlEncodedBody("value" -> "true")
+          FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
+            .withFormUrlEncodedBody("value" -> "true")
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(4, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 4, NormalMode).url
       }
     }
 
@@ -471,7 +475,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
       }.toList
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancySeals, sealsList)
+        .set(DiscrepancySeals(transportEquipmentIndex), sealsList)
         .success
         .value
 
@@ -480,7 +484,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(Some(2), NormalMode).url)
+        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(transportEquipmentIndex, Some(2), NormalMode).url)
 
         val result = route(application, request).value
 
@@ -497,7 +501,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Discrepancy Reference when maximum items reached" in {
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancySeals, sealsList)
+        .set(DiscrepancySeals(transportEquipmentIndex), sealsList)
         .success
         .value
 
@@ -506,12 +510,12 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(None, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
       }
     }
 
@@ -522,12 +526,12 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
       }
     }
 
@@ -538,7 +542,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url)
+        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url)
 
         val result = route(application, request).value
 
@@ -554,7 +558,7 @@ class AddAnotherSealControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(None, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.AddAnotherSealController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
 
         val result = route(application, request).value
 

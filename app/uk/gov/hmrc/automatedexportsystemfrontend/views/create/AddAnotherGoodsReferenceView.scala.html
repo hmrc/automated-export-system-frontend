@@ -27,7 +27,7 @@
         govukPagination: GovukPagination
 )
 
-@(form: Form[_], viewModel: AddAnotherGoodsReferenceViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], viewModel: AddAnotherGoodsReferenceViewModel, transportEquipmentIndex: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @baseTitle = @{
     messages(s"addAnotherGoodsReference.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfGoodsReferences)
@@ -55,7 +55,7 @@
     @govukPagination(pagination)
   }
 
-  @formHelper(action = createRoute.AddAnotherGoodsReferenceController.onSubmit(viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
+  @formHelper(action = createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex: Int, viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

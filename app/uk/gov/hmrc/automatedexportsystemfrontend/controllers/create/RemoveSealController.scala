@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, Messages, MessagesApi}
 import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
-import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.RemoveSealFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, UserAnswers}
@@ -50,52 +50,70 @@ class RemoveSealController @Inject() (
 
   val form: Form[Boolean] = formProvider()
 
-  def onPageLoad(sealIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
-    implicit request =>
-      if (DiscrepancySeals.exists(request.userAnswers, sealIndex) && validReturnPage(request.userAnswers, returnPage, mode)) {
-        Ok(view(form, sealIndex, returnPage, mode))
+  def onPageLoad(transportEquipmentIndex: Int, sealIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
+      if (
+        DiscrepancySeals(transportEquipmentIndex)
+          .exists(request.userAnswers, sealIndex) && validReturnPage(request.userAnswers, transportEquipmentIndex, returnPage, mode)
+      ) {
+        Ok(view(form, transportEquipmentIndex, sealIndex, returnPage, mode))
       } else {
         logger.warn(s"[RemoveSealController] Invalid remove seal request on page load. sealIndex=$sealIndex, returnPage=$returnPage")
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
-  }
+    }
 
-  def onSubmit(sealIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
-    implicit request =>
-      if (DiscrepancySeals.exists(request.userAnswers, sealIndex) && validReturnPage(request.userAnswers, returnPage, mode)) {
+  def onSubmit(transportEquipmentIndex: Int, sealIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      if (
+        DiscrepancySeals(transportEquipmentIndex)
+          .exists(request.userAnswers, sealIndex) && validReturnPage(request.userAnswers, transportEquipmentIndex, returnPage, mode)
+      ) {
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, sealIndex, returnPage, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, sealIndex, returnPage, mode))),
             {
               case true =>
                 for {
-                  updatedAnswers <- Future.fromTry(DiscrepancySeals.removeOne(request.userAnswers, sealIndex))
+                  updatedAnswers <- Future.fromTry(DiscrepancySeals(transportEquipmentIndex).removeOne(request.userAnswers, sealIndex))
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield
-                  if (DiscrepancySeals.count(updatedAnswers) == 0) {
-                    Redirect(createRoute.DiscrepancySealsController.onPageLoad(1, mode))
+                  if (DiscrepancySeals(transportEquipmentIndex).count(updatedAnswers) == 0) {
+                    Redirect(createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, mode))
                   } else {
-                    Redirect(createRoute.AddAnotherSealController.onPageLoad(Some(returnPageAfterRemoval(updatedAnswers, returnPage, mode)), mode))
+                    Redirect(
+                      createRoute.AddAnotherSealController
+                        .onPageLoad(
+                          transportEquipmentIndex,
+                          Some(returnPageAfterRemoval(updatedAnswers, transportEquipmentIndex, returnPage, mode)),
+                          mode
+                        )
+                    )
                   }
-              case false => Future.successful(Redirect(createRoute.AddAnotherSealController.onPageLoad(Some(returnPage), mode)))
+              case false =>
+                Future.successful(Redirect(createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(returnPage), mode)))
             }
           )
       } else {
         logger.warn(s"[RemoveSealController] Invalid remove seal request on submit. sealIndex=$sealIndex, returnPage=$returnPage")
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
-  }
+    }
 
-  private def validReturnPage(userAnswers: UserAnswers, returnPage: Int, mode: Mode)(implicit messages: Messages): Boolean = {
-    val addAnotherSealViewModel = AddAnotherSealViewModel(userAnswers, Some(returnPage), mode)
+  private def validReturnPage(userAnswers: UserAnswers, transportEquipmentIndex: Int, returnPage: Int, mode: Mode)(
+    implicit messages: Messages
+  ): Boolean = {
+    val addAnotherSealViewModel = AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(returnPage), mode)
 
     returnPage >= 1 && returnPage <= addAnotherSealViewModel.totalPages
   }
 
-  private def returnPageAfterRemoval(updatedUserAnswers: UserAnswers, returnPage: Int, mode: Mode)(implicit messages: Messages): Int = {
+  private def returnPageAfterRemoval(updatedUserAnswers: UserAnswers, transportEquipmentIndex: Int, returnPage: Int, mode: Mode)(
+    implicit messages: Messages
+  ): Int = {
     val addAnotherSealViewModel =
-      AddAnotherSealViewModel(updatedUserAnswers, Some(returnPage), mode)
+      AddAnotherSealViewModel(updatedUserAnswers, transportEquipmentIndex, Some(returnPage), mode)
 
     math.min(returnPage, addAnotherSealViewModel.totalPages)
   }

@@ -91,10 +91,10 @@ object AddAnotherTransportEquipmentViewModel {
 
   private def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
     DiscrepancyTransportEquipment.getAll(userAnswers).zipWithIndex.slice((currentPage - 1) * pageSize, currentPage * pageSize).map {
-      case (containerDetails, i) =>
+      case (transport, i) =>
         val index = i + 1
 
-        val containerIdOrIndex = containerDetails.containerId.getOrElse(f"$index%,d")
+        val containerIdOrIndex = transport.containerDetails.flatMap(_.containerId).getOrElse(f"$index%,d")
 
         SummaryListRow(
           key = Key(

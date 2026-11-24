@@ -51,16 +51,17 @@ class RemoveGoodsReferenceController @Inject() (
 
   def form(goodsReference: String): Form[Boolean] = formProvider(goodsReference)
 
-  def onPageLoad(discrepancyReferenceIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+  def onPageLoad(transportEquipmentIndex: Int, discrepancyReferenceIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
       val addAnotherGoodsReferenceViewModel: AddAnotherGoodsReferenceViewModel =
-        AddAnotherGoodsReferenceViewModel(request.userAnswers, Some(returnPage), mode)
+        AddAnotherGoodsReferenceViewModel(request.userAnswers, transportEquipmentIndex, Some(returnPage), mode)
 
       if (
-        DiscrepancyReference.exists(request.userAnswers, discrepancyReferenceIndex) && validReturnPage(addAnotherGoodsReferenceViewModel, returnPage)
+        DiscrepancyReference(transportEquipmentIndex)
+          .exists(request.userAnswers, discrepancyReferenceIndex) && validReturnPage(addAnotherGoodsReferenceViewModel, returnPage)
       ) {
-        request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
-          case Some(reference) => Ok(view(form(reference), reference, discrepancyReferenceIndex, returnPage, mode))
+        request.userAnswers.get(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex)) match {
+          case Some(reference) => Ok(view(form(reference), reference, transportEquipmentIndex: Int, discrepancyReferenceIndex, returnPage, mode))
           case None =>
             logger.warn(
               s"[RemoveGoodsReferenceController] Missing goods reference when loading remove page. discrepancyReferenceIndex=$discrepancyReferenceIndex, returnPage=$returnPage"
@@ -75,40 +76,47 @@ class RemoveGoodsReferenceController @Inject() (
       }
     }
 
-  def onSubmit(discrepancyReferenceIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+  def onSubmit(transportEquipmentIndex: Int, discrepancyReferenceIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
       def addAnotherGoodsReferenceViewModel(userAnswers: UserAnswers, returnPage: Int, mode: Mode): AddAnotherGoodsReferenceViewModel =
-        AddAnotherGoodsReferenceViewModel(userAnswers, Some(returnPage), mode)
+        AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(returnPage), mode)
 
       if (
-        DiscrepancyReference.exists(request.userAnswers, discrepancyReferenceIndex) && validReturnPage(
+        DiscrepancyReference(transportEquipmentIndex).exists(request.userAnswers, discrepancyReferenceIndex) && validReturnPage(
           addAnotherGoodsReferenceViewModel(request.userAnswers, returnPage, mode),
           returnPage
         )
       ) {
-        request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
+        request.userAnswers.get(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex)) match {
           case Some(reference) =>
             form(reference)
               .bindFromRequest()
               .fold(
-                formWithErrors => Future.successful(BadRequest(view(formWithErrors, reference, discrepancyReferenceIndex, returnPage, mode))),
+                formWithErrors =>
+                  Future
+                    .successful(BadRequest(view(formWithErrors, reference, transportEquipmentIndex, discrepancyReferenceIndex, returnPage, mode))),
                 {
                   case true =>
                     for {
-                      updatedAnswers <- Future.fromTry(DiscrepancyReference.removeOne(request.userAnswers, discrepancyReferenceIndex))
+                      updatedAnswers <- Future
+                        .fromTry(DiscrepancyReference(transportEquipmentIndex).removeOne(request.userAnswers, discrepancyReferenceIndex))
                       _ <- sessionRepository.set(updatedAnswers)
                     } yield
-                      if (DiscrepancyReference.count(updatedAnswers) == 0) {
-                        Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
+                      if (DiscrepancyReference(transportEquipmentIndex).count(updatedAnswers) == 0) {
+                        Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, mode))
                       } else {
                         Redirect(
                           createRoute.AddAnotherGoodsReferenceController.onPageLoad(
+                            transportEquipmentIndex,
                             Some(returnPageAfterRemoval(addAnotherGoodsReferenceViewModel(updatedAnswers, returnPage, mode), returnPage)),
                             mode
                           )
                         )
                       }
-                  case false => Future.successful(Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(returnPage), mode)))
+                  case false =>
+                    Future.successful(
+                      Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(returnPage), mode))
+                    )
                 }
               )
           case None =>

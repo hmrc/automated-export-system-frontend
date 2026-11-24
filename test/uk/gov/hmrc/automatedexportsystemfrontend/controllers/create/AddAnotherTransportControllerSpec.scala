@@ -24,8 +24,8 @@ import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyReferencePage, DiscrepancyTransportPage}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, TransportEquipmentData, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyReferencePage, DiscrepancySealsPage, DiscrepancyTransportPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyReference, DiscrepancyTransportEquipment}
 
 class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
@@ -34,13 +34,23 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
 
   val userAnswers: UserAnswers = emptyUserAnswers
     .set(DiscrepancyTransportPage(1), ContainerDetails(Some("CONT1"), Some(1)))
+    .flatMap(_.set(DiscrepancySealsPage(1, 1), "sealId1"))
+    .flatMap(_.set(DiscrepancyReferencePage(1, 1), "12345"))
     .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(Some("CONT2"), Some(2))))
+    .flatMap(_.set(DiscrepancySealsPage(2, 1), "sealId2"))
+    .flatMap(_.set(DiscrepancyReferencePage(2, 1), "23456"))
     .flatMap(_.set(DiscrepancyTransportPage(3), ContainerDetails(Some("CONT3"), Some(3))))
+    .flatMap(_.set(DiscrepancySealsPage(3, 1), "sealId3"))
+    .flatMap(_.set(DiscrepancyReferencePage(3, 1), "34567"))
     .success
     .value
 
-  val transportEquipmentList: List[ContainerDetails] = (1 to maxTransportEquipment).map { number =>
-    ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
+  val transportEquipmentList: List[TransportEquipmentData] = (1 to maxTransportEquipment).map { number =>
+    TransportEquipmentData(
+      Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+      List(s"sealId${number.toString}"),
+      List(s"${number.toString}")
+    )
   }.toList
 
   "AddAnotherTransport Controller" - {
@@ -117,8 +127,12 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
 
       "must return OK and the correct view for a GET without pagination" in {
 
-        val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 25).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -158,8 +172,8 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
 
       "must return OK and the correct view for a GET with pagination" in {
 
-        val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 26).map { number =>
+          TransportEquipmentData(Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))), List("sealId1"), List("12345"))
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -353,8 +367,12 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect back to AddAnother without a page when pagination has not started but page 1 is provided for a GET" in {
 
-        val transportEquipmentList: List[ContainerDetails] = (1 to 25).map { number =>
-          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 25).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -378,8 +396,12 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
 
       "must redirect back to AddAnother with page 1 when pagination has started and no page is provided for a GET" in {
 
-        val transportEquipmentList: List[ContainerDetails] = (1 to 26).map { number =>
-          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 26).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -454,7 +476,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to DiscrepancySealsPage when No is selected" in {
+      "must redirect to DiscrepancyTransportMeansPage when No is selected" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -468,11 +490,11 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
         }
       }
 
-      "must redirect to next DiscrepancySealsPage and preserve the mode in CheckMode when answer is No" in {
+      "must redirect to next DiscrepancyTransportMeansPage and preserve the mode in CheckMode when answer is No" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -486,14 +508,18 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, CheckMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
         }
       }
 
       "must return a Bad Request when no option chosen and max limit not reached while preserving pagination page number" in {
 
-        val transportEquipmentList: List[ContainerDetails] = (1 to 51).map { number =>
-          ContainerDetails(Some(s"CONT${number.toString}"), Some(number))
+        val transportEquipmentList: List[TransportEquipmentData] = (1 to 51).map { number =>
+          TransportEquipmentData(
+            Some(ContainerDetails(Some(s"CONT${number.toString}"), Some(number))),
+            List(s"sealId${number.toString}"),
+            List(s"${number.toString}")
+          )
         }.toList
 
         val userAnswers = emptyUserAnswers
@@ -520,7 +546,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
         }
       }
 
-      "must redirect to DiscrepancySealsPage when maximum items reached" in {
+      "must redirect to DiscrepancyTransportMeansPage when maximum items reached" in {
 
         val userAnswers = emptyUserAnswers
           .set(DiscrepancyTransportEquipment, transportEquipmentList)
@@ -537,7 +563,7 @@ class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
         }
       }
 
