@@ -18,7 +18,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.OptionFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.LocationTypeFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.LocationType
 
 class LocationTypeFormProviderSpec extends OptionFieldBehaviours {

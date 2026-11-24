@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions
 
-import javax.inject.Inject
 import play.api.mvc.ActionTransformer
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.requests.AesAuthRequest
 import uk.gov.hmrc.automatedexportsystemfrontend.models.requests.OptionalDataRequest
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
+import javax.inject.Inject
 import scala.concurrent.{ExecutionContext, Future}
 
 class AesDataRetrievalActionImpl @Inject() (val sessionRepository: SessionRepository)(implicit val executionContext: ExecutionContext)

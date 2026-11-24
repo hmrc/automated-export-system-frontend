@@ -16,8 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a
 
-import play.api.libs.json.{Json, OFormat, Writes}
-import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType
+import play.api.libs.json.{Json, OFormat}
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.{XmlOps, XmlWrites}
 
 case class Submission(

@@ -22,7 +22,7 @@ import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.*
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.amend.AmendPartOfConsolidationFormProvider
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PartOfConsolidationAnswer, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{Mode, PartOfConsolidationAnswer}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.AmendNavigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.AmendPartOfConsolidationPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
@@ -47,21 +47,16 @@ class AmendPartOfConsolidationController @Inject() (
 
   val form: Form[PartOfConsolidationAnswer] = formProvider()
 
-//  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData) {
-  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
+  def onPageLoad(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
+    implicit request =>
 
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
+      val preparedForm = request.userAnswers.get(AmendPartOfConsolidationPage(submissionId)).fold(form)(form.fill)
 
-//      val preparedForm = request.userAnswers.get(AmendPartOfConsolidationPage(submissionId)) match {
-    val preparedForm = answers.get(AmendPartOfConsolidationPage(submissionId)).fold(form)(form.fill)
-
-    val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
-    Future.successful(Ok(preparedView))
+      val preparedView: HtmlFormat.Appendable = view(preparedForm, mode, submissionId)
+      Future.successful(Ok(preparedView))
   }
 
-//  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (identify andThen getData andThen requireData).async {
-  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData).async { implicit request =>
-    val answers = request.userAnswers.getOrElse(UserAnswers(request.sessionId)) // TO BE REMOVED
+  def onSubmit(mode: Mode, submissionId: String): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
     form
       .bindFromRequest()
       .fold(
@@ -77,7 +72,7 @@ class AmendPartOfConsolidationController @Inject() (
           } else {
             val cleanedValue = if (!value.boolean) value.copy(mucr = None) else value
             for {
-              updatedAnswers <- Future.fromTry(answers.set(AmendPartOfConsolidationPage(submissionId), cleanedValue))
+              updatedAnswers <- Future.fromTry(request.userAnswers.set(AmendPartOfConsolidationPage(submissionId), cleanedValue))
               _ <- sessionRepository.set(updatedAnswers)
             } yield Redirect(amendNavigator.nextPage(AmendPartOfConsolidationPage(submissionId), mode, updatedAnswers))
           }

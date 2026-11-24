@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.identificationNumberRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportMeansFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.TransportAcrossBorderDetails
 
 class DiscrepancyTransportMeansFormProviderSpec extends StringFieldBehaviours {

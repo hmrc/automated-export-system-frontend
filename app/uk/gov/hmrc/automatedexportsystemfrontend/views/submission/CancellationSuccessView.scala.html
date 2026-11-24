@@ -51,14 +51,16 @@ content = Text(messages("cancellationSuccess.reference", mrn))
 <div class="govuk-inset-text">@messages("cancellationSuccess.hint2")</div>
 
 <p class="govuk-body">
- <a href="@submissionRoutes.ViewSubmissionsController.onPageLoad().url" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToSubmissionsLink")</a><br>
+    <a href="@submissionRoutes.ViewSubmissionsController.onPageLoad().url"
+       class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToSubmissionsLink")</a><br>
 </p>
 
 <p class="govuk-body">
- <a href="@createRoutes.EnterMrnController.onPageLoad(NormalMode).url" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.newSubmissionLink")</a>
+    <a href="@createRoutes.EnterMrnController.onPageLoad(NormalMode).url"
+       class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.newSubmissionLink")</a>
 </p>
 
 <p class="govuk-body">
- <a href="@routes.IndexController.onPageLoad().url" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToStartLink")</a>
+    <a href="@routes.IndexController.onPageLoad().url" class="govuk-link govuk-link--no-visited-state">@messages("cancellationSuccess.returnToStartLink")</a>
 </p>
 }

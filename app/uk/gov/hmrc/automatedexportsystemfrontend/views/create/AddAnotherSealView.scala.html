@@ -18,62 +18,64 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.viewmodels.addAnother.create.AddAnotherSealViewModel
 
 @this(
-        layout: Layout,
-        formHelper: FormWithCSRF,
-        govukButton: GovukButton,
-        govukErrorSummary: GovukErrorSummary,
-        govukRadios: GovukRadios,
-        govukSummaryList: GovukSummaryList,
-        govukPagination: GovukPagination
+layout: Layout,
+formHelper: FormWithCSRF,
+govukButton: GovukButton,
+govukErrorSummary: GovukErrorSummary,
+govukRadios: GovukRadios,
+govukSummaryList: GovukSummaryList,
+govukPagination: GovukPagination
 )
 
 @(form: Form[_], viewModel: AddAnotherSealViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @baseTitle = @{
-    messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfSeals)
+messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfSeals)
 }
 
 @pageTitle = @{
-    if (viewModel.totalPages > 1)
-        s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
-    else
-        baseTitle
+if (viewModel.totalPages > 1)
+s"$baseTitle ${messages("site.pagination.pageOf", viewModel.currentPage, viewModel.totalPages)}"
+else
+baseTitle
 }
 
 @layout(pageTitle = title(form, pageTitle)) {
 
-  @if(form.errors.nonEmpty) {
-    @govukErrorSummary(ErrorSummaryViewModel(form))
-  }
+@if(form.errors.nonEmpty) {
+@govukErrorSummary(ErrorSummaryViewModel(form))
+}
 
-  <h1 class="govuk-heading-l">@messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.heading", viewModel.numberOfSeals)</h1>
+<h1 class="govuk-heading-l">@messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.heading",
+    viewModel.numberOfSeals)</h1>
 
-  @govukSummaryList(SummaryList(rows= viewModel.rows))
+@govukSummaryList(SummaryList(rows= viewModel.rows))
 
-  @viewModel.pagination(mode).map { pagination =>
-    <p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstSeal, viewModel.lastSeal, viewModel.numberOfSeals)</p>
-    @govukPagination(pagination)
-  }
+@viewModel.pagination(mode).map { pagination =>
+<p class="govuk-body">@messages("site.pagination.itemsShowing", viewModel.firstSeal, viewModel.lastSeal,
+    viewModel.numberOfSeals)</p>
+@govukPagination(pagination)
+}
 
-  @formHelper(action = createRoute.AddAnotherSealController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
+@formHelper(action = createRoute.AddAnotherSealController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
 
-    @if(viewModel.allowMore) {
-      <p class="govuk-body">
-        @Html(messages(s"addAnotherSeal.${viewModel.remainingSingularOrPlural}.remaining", <strong>{viewModel.remainingSeals}</strong>))
-      </p>
+@if(viewModel.allowMore) {
+<p class="govuk-body">
+    @Html(messages(s"addAnotherSeal.${viewModel.remainingSingularOrPlural}.remaining", <strong>{viewModel.remainingSeals}</strong>))
+</p>
 
-      @govukRadios(
-        RadiosViewModel.yesNo(
-          field = form("value"),
-          legend = LegendViewModel(HtmlContent(s"<strong>${messages("addAnotherSeal.addAnother")}</strong>"))
-        )
-      )
-    } else {
-      <p class="govuk-body">@messages("addAnotherSeal.maxLimit")</p>
-    }
+@govukRadios(
+RadiosViewModel.yesNo(
+field = form("value"),
+legend = LegendViewModel(HtmlContent(s"<strong>${messages("addAnotherSeal.addAnother")}</strong>"))
+)
+)
+} else {
+<p class="govuk-body">@messages("addAnotherSeal.maxLimit")</p>
+}
 
-    @govukButton(
-      ButtonViewModel(messages("site.continue"))
-    )
-  }
+@govukButton(
+ButtonViewModel(messages("site.continue"))
+)
+}
 }

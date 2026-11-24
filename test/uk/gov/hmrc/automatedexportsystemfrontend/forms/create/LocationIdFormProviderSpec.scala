@@ -19,7 +19,6 @@ package uk.gov.hmrc.automatedexportsystemfrontend.forms.create
 import play.api.data.FormError
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.{additionalIdentifierRegex, authorisationNumberRegex}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.{OptionFieldBehaviours, StringFieldBehaviours}
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.LocationIdFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationDetails, LocationQualifier}
 
 class LocationIdFormProviderSpec extends OptionFieldBehaviours, StringFieldBehaviours {

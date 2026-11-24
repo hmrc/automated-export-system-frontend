@@ -24,64 +24,66 @@ govukInsetText: GovukInsetText
 
 @layout(pageTitle = titleNoForm(messages("startSubmission.title")), showBackLink = false) {
 
-    <h1 class="govuk-heading-xl">@messages("startSubmission.heading")</h1>
+<h1 class="govuk-heading-xl">@messages("startSubmission.heading")</h1>
 
-    <p class="govuk-body">@messages("startSubmission.message1")</p>
+<p class="govuk-body">@messages("startSubmission.message1")</p>
 
-    <p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head1")</p>
+<p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head1")</p>
 
-    <ul class="govuk-list--bullet">
-        <li>
-            <a class="govuk-body govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode).url">@messages("startSubmission.bullet1")</a>
-        </li>
-        <li>
-            <a class="govuk-body govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSubmissionsController.onPageLoad()">@messages("startSubmission.bullet2")</a>
-        </li>
-    </ul>
+<ul class="govuk-list--bullet">
+    <li>
+        <a class="govuk-body govuk-link"
+           href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode).url">@messages("startSubmission.bullet1")</a>
+    </li>
+    <li>
+        <a class="govuk-body govuk-link"
+           href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSubmissionsController.onPageLoad()">@messages("startSubmission.bullet2")</a>
+    </li>
+</ul>
 
-    <p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head2")</p>
+<p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head2")</p>
 
-    <ul class="govuk-list--bullet">
-        <li class="govuk-body">
-            @messages("startSubmission.bullet3")
-        </li>
-        <li class="govuk-body">
-            @messages("startSubmission.bullet4")
-        </li>
-        <li class="govuk-body">
-            @messages("startSubmission.bullet5")
-        </li>
-    </ul>
+<ul class="govuk-list--bullet">
+    <li class="govuk-body">
+        @messages("startSubmission.bullet3")
+    </li>
+    <li class="govuk-body">
+        @messages("startSubmission.bullet4")
+    </li>
+    <li class="govuk-body">
+        @messages("startSubmission.bullet5")
+    </li>
+</ul>
 
-    <p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head3")</p>
+<p class="govuk-body govuk-!-font-weight-bold">@messages("startSubmission.bullet.head3")</p>
 
-    <ul class="govuk-list--bullet">
-        <li class="govuk-body">
-            @messages("startSubmission.bullet6")
-        </li>
-        <li class="govuk-body">
-            @messages("startSubmission.bullet7")
-        </li>
-        <li class="govuk-body">
-            @messages("startSubmission.bullet8")
-        </li>
-        <li class="govuk-body">
-            @messages("startSubmission.bullet9")
-        </li>
-        <li class="govuk-body">
-            @messages("startSubmission.bullet10")
-        </li>
-    </ul>
+<ul class="govuk-list--bullet">
+    <li class="govuk-body">
+        @messages("startSubmission.bullet6")
+    </li>
+    <li class="govuk-body">
+        @messages("startSubmission.bullet7")
+    </li>
+    <li class="govuk-body">
+        @messages("startSubmission.bullet8")
+    </li>
+    <li class="govuk-body">
+        @messages("startSubmission.bullet9")
+    </li>
+    <li class="govuk-body">
+        @messages("startSubmission.bullet10")
+    </li>
+</ul>
 
-    @govukInsetText(InsetText(
-    content = messages("startSubmission.inset")
-    ))
+@govukInsetText(InsetText(
+content = messages("startSubmission.inset")
+))
 
-    <div>
-        @govukButton(
-        ButtonViewModel(messages("site.start"))
-        .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode).url)
-        )
-    </div>
+<div>
+    @govukButton(
+    ButtonViewModel(messages("site.start"))
+    .asLink(uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.EnterMrnController.onPageLoad(uk.gov.hmrc.automatedexportsystemfrontend.models.NormalMode).url)
+    )
+</div>
 
 }

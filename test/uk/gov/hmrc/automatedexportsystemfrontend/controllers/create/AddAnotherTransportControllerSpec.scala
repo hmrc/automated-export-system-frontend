@@ -25,8 +25,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, NormalMode, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyReferencePage, DiscrepancyTransportPage}
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyReference, DiscrepancyTransportEquipment}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
 
 class AddAnotherTransportControllerSpec extends SpecBase with MockitoSugar {
 

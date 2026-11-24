@@ -18,69 +18,69 @@
 @import uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes as mainRoute
 
 @this(
-    layout: Layout,
-    govukPanel: GovukPanel,
-    govukInsetText: GovukInsetText
+layout: Layout,
+govukPanel: GovukPanel,
+govukInsetText: GovukInsetText
 )
 
 @(mrn: String)(implicit request: Request[_], messages: Messages)
 
 @referenceContent = {
-    @messages("amendSubmissionConfirmation.reference")
-    <br>
-    <strong>@mrn</strong>
+@messages("amendSubmissionConfirmation.reference")
+<br>
+<strong>@mrn</strong>
 }
 
 @insetContent = {
-    <p class="govuk-body">
+<p class="govuk-body">
         <span class="govuk-!-font-weight-bold">
             @messages("amendSubmissionConfirmation.inset.heading")
         </span>
-        @messages("amendSubmissionConfirmation.inset.message")
-    </p>
+    @messages("amendSubmissionConfirmation.inset.message")
+</p>
 }
 
 @layout(
-    pageTitle = titleNoForm(messages("amendSubmissionConfirmation.title")),
-    showBackLink = false
+pageTitle = titleNoForm(messages("amendSubmissionConfirmation.title")),
+showBackLink = false
 ) {
 
-    @govukPanel(
-        Panel(
-            title = Text(messages("amendSubmissionConfirmation.title")),
-            content = HtmlContent(referenceContent)
-        )
-    )
+@govukPanel(
+Panel(
+title = Text(messages("amendSubmissionConfirmation.title")),
+content = HtmlContent(referenceContent)
+)
+)
 
-    <h2 class="govuk-heading-m">
-        @messages("amendSubmissionConfirmation.subheading")
-    </h2>
+<h2 class="govuk-heading-m">
+    @messages("amendSubmissionConfirmation.subheading")
+</h2>
 
-    <p class="govuk-body">
-        @messages("amendSubmissionConfirmation.message1")
-    </p>
+<p class="govuk-body">
+    @messages("amendSubmissionConfirmation.message1")
+</p>
 
-    <p class="govuk-body">
-        @messages("amendSubmissionConfirmation.message2")
-    </p>
+<p class="govuk-body">
+    @messages("amendSubmissionConfirmation.message2")
+</p>
 
-    @govukInsetText(
-        InsetText(
-            content = HtmlContent(insetContent)
-        )
-    )
+@govukInsetText(
+InsetText(
+content = HtmlContent(insetContent)
+)
+)
 
-    <p class="govuk-body">
-        <a class="govuk-link"
-           href="@submissionRoute.ViewSubmissionsController.onPageLoad().url">
-            @messages("amendSubmissionConfirmation.returnToSubmissions")
-        </a>
-    </p>
+<p class="govuk-body">
+    <a class="govuk-link"
+       href="@submissionRoute.ViewSubmissionsController.onPageLoad().url">
+        @messages("amendSubmissionConfirmation.returnToSubmissions")
+    </a>
+</p>
 
-    <p class="govuk-body">
-        <a class="govuk-link"
-           href="@mainRoute.IndexController.onPageLoad().url">
-            @messages("amendSubmissionConfirmation.returnToStart")
-        </a>
-    </p>
+<p class="govuk-body">
+    <a class="govuk-link"
+       href="@mainRoute.IndexController.onPageLoad().url">
+        @messages("amendSubmissionConfirmation.returnToStart")
+    </a>
+</p>
 }

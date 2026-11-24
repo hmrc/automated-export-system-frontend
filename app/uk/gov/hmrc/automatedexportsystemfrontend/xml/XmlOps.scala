@@ -16,7 +16,7 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.xml
 
-import scala.xml._
+import scala.xml.*
 
 trait XmlWrites[T] {
   def writes(value: T): NodeSeq

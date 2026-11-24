@@ -16,12 +16,12 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.connectors
 
-import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import org.apache.pekko.Done
+import play.api.Application
 import play.api.inject.guice.GuiceApplicationBuilder
 import play.api.test.Helpers.*
-import play.api.Application
+import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
 class AutomatedExportSystemConnectorSpec extends SpecBase with WireMockHelper {

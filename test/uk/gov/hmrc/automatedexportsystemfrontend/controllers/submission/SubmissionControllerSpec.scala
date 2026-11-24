@@ -16,22 +16,20 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission
 
-import org.mockito.Mockito.reset
 import org.apache.pekko.Done
-import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{never, verify, when}
-import play.api.inject.bind
-import org.scalatestplus.mockito.MockitoSugar
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito.{never, reset, verify, when}
+import org.scalatestplus.mockito.MockitoSugar
+import play.api.inject.bind
 import play.api.test.FakeRequest
-import play.api.test.Helpers.GET
+import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.connectors.AutomatedExportSystemConnector
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
-import uk.gov.hmrc.automatedexportsystemfrontend.services.CreateSubmissionDataService
-import play.api.test.Helpers.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.UserAnswers
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.IsSplitExitPage
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
+import uk.gov.hmrc.automatedexportsystemfrontend.services.CreateSubmissionDataService
 import uk.gov.hmrc.http.UpstreamErrorResponse
 
 import scala.concurrent.Future

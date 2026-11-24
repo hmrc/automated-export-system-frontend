@@ -20,7 +20,6 @@ import org.scalacheck.Gen
 import play.api.data.{Field, FormError}
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.Constants.mrnRegex
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.behaviours.StringFieldBehaviours
-import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.EnterMrnFormProvider
 
 class EnterMrnFormProviderSpec extends StringFieldBehaviours {
 

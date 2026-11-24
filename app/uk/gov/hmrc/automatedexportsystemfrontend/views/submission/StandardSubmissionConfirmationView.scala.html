@@ -15,80 +15,82 @@
  *@
 
 @this(
-        layout: Layout,
-        govukPanel: GovukPanel,
-        govukInsetText: GovukInsetText
+layout: Layout,
+govukPanel: GovukPanel,
+govukInsetText: GovukInsetText
 )
 
 @()(implicit request: Request[_], messages: Messages)
 
 
 @insetContent = {
-    <p class="govuk-body">
+<p class="govuk-body">
         <span class="govuk-!-font-weight-bold">
             @messages("standardSubmissionConfirmation.inset.heading")
         </span>
-        @messages("standardSubmissionConfirmation.inset.message")
-    </p>
+    @messages("standardSubmissionConfirmation.inset.message")
+</p>
 }
 
 @layout(pageTitle = titleNoForm(messages("standardSubmissionConfirmation.title")), showBackLink = false) {
 
-     @govukPanel(Panel(
-      title = Text(messages("standardSubmissionConfirmation.title"))))
+@govukPanel(Panel(
+title = Text(messages("standardSubmissionConfirmation.title"))))
 
-    <h2 class="govuk-heading-m">@messages("standardSubmissionConfirmation.subHeading1")</h2>
+<h2 class="govuk-heading-m">@messages("standardSubmissionConfirmation.subHeading1")</h2>
 
-    <p class="govuk-body">@messages("standardSubmissionConfirmation.message1")</p>
+<p class="govuk-body">@messages("standardSubmissionConfirmation.message1")</p>
 
-    <p class="govuk-body">@messages("standardSubmissionConfirmation.message2")</p>
+<p class="govuk-body">@messages("standardSubmissionConfirmation.message2")</p>
 
-    <ul class="govuk-list--bullet">
-        <li>
-            <p class="govuk-body">
+<ul class="govuk-list--bullet">
+    <li>
+        <p class="govuk-body">
                 <span class="govuk-!-font-weight-bold">
                     @messages("standardSubmissionConfirmation.bullet1.heading")
                 </span>
-                @messages("standardSubmissionConfirmation.bullet1.message")
-            </p>
-        </li>
-        <li>
-            <p class="govuk-body">
+            @messages("standardSubmissionConfirmation.bullet1.message")
+        </p>
+    </li>
+    <li>
+        <p class="govuk-body">
                 <span class="govuk-!-font-weight-bold">
                     @messages("standardSubmissionConfirmation.bullet2.heading")
                 </span>
-                @messages("standardSubmissionConfirmation.bullet2.message")
-            </p>
-        </li>
-        <li>
-            <p class="govuk-body">
+            @messages("standardSubmissionConfirmation.bullet2.message")
+        </p>
+    </li>
+    <li>
+        <p class="govuk-body">
                 <span class="govuk-!-font-weight-bold">
                     @messages("standardSubmissionConfirmation.bullet3.heading")
                 </span>
-                @messages("standardSubmissionConfirmation.bullet3.message")
-            </p>
-        </li>
-    </ul>
+            @messages("standardSubmissionConfirmation.bullet3.message")
+        </p>
+    </li>
+</ul>
 
-    <p class="govuk-body">@messages("standardSubmissionConfirmation.message3")</p>
+<p class="govuk-body">@messages("standardSubmissionConfirmation.message3")</p>
 
-    @govukInsetText(InsetText(
-        content = HtmlContent(insetContent)
-    ))
+@govukInsetText(InsetText(
+content = HtmlContent(insetContent)
+))
 
-    <h2 class="govuk-heading-m">@messages("standardSubmissionConfirmation.subHeading2")</h2>
+<h2 class="govuk-heading-m">@messages("standardSubmissionConfirmation.subHeading2")</h2>
 
-    <p class="govuk-body">@messages("standardSubmissionConfirmation.message4")</p>
+<p class="govuk-body">@messages("standardSubmissionConfirmation.message4")</p>
 
-    <p class="govuk-body">
-        <a class="govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSubmissionsController.onPageLoad()">
-            @messages("standardSubmissionConfirmation.link1")
-        </a>
-    </p>
+<p class="govuk-body">
+    <a class="govuk-link"
+       href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSubmissionsController.onPageLoad()">
+        @messages("standardSubmissionConfirmation.link1")
+    </a>
+</p>
 
-    <p class="govuk-body">
-        <a class="govuk-link" href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes.IndexController.onPageLoad().url">
-            @messages("standardSubmissionConfirmation.link2")
-        </a>
-    </p>
+<p class="govuk-body">
+    <a class="govuk-link"
+       href="@uk.gov.hmrc.automatedexportsystemfrontend.controllers.routes.IndexController.onPageLoad().url">
+        @messages("standardSubmissionConfirmation.link2")
+    </a>
+</p>
 }
