@@ -73,7 +73,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("Transport Equipment 1")
+        body should include("Transport equipment 1")
         body should include("Container details")
         body should include("If the goods are being transported in a container, enter the details.")
         body should include("Container identification number")
@@ -94,7 +94,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         status(result) shouldBe OK
 
         val body = contentAsString(result)
-        body should include("Transport Equipment 1")
+        body should include("Transport equipment 1")
         body should include("Container details")
         body should include("If the goods are being transported in a container, enter the details.")
         body should include("Container identification number")
@@ -159,7 +159,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancySealsController.onPageLoad(1, 1, NormalMode).url
       }
     }
 
@@ -215,7 +215,8 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
     "must remove answer and redirect to the add another page when no data is entered and other transport equipment entries remain" in {
       val userAnswers = UserAnswers(userAnswersId)
-        .set(DiscrepancyTransportEquipment, List(ContainerDetails(Some("containerId1"), Some(1)), ContainerDetails(Some("containerId2"), Some(2))))
+        .set(DiscrepancyTransportPage(1), ContainerDetails(Some("containerId1"), Some(1)))
+        .flatMap(_.set(DiscrepancyTransportPage(2), ContainerDetails(Some("containerId2"), Some(2))))
         .success
         .value
 
@@ -244,7 +245,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancyTransportEquipment.getAll(captor.getValue) shouldBe List(ContainerDetails(Some("containerId2"), Some(2)))
+        DiscrepancyTransportEquipment.getContainerDetails(captor.getValue) shouldBe List(ContainerDetails(Some("containerId2"), Some(2)))
       }
     }
 
@@ -544,7 +545,7 @@ class DiscrepancyTransportControllerSpec extends SpecBase with MockitoSugar {
 
       redirectLocation(result).value shouldBe
         createRoute.DiscrepancySealsController
-          .onPageLoad(1, NormalMode)
+          .onPageLoad(1, 1, NormalMode)
           .url
     }
   }

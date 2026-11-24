@@ -30,12 +30,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyReference
 
 class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar {
 
-  val maxGoodsReferences: Int = DiscrepancyReference.maxDiscrepancyReferences
+  val transportEquipmentIndex: Int = 1
+
+  val maxGoodsReferences: Int = DiscrepancyReference(transportEquipmentIndex).maxDiscrepancyReferences
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyReferencePage(1), "12345")
-    .flatMap(_.set(DiscrepancyReferencePage(2), "23456"))
-    .flatMap(_.set(DiscrepancyReferencePage(3), "34567"))
+    .set(DiscrepancyReferencePage(transportEquipmentIndex, 1), "12345")
+    .flatMap(_.set(DiscrepancyReferencePage(transportEquipmentIndex, 2), "23456"))
+    .flatMap(_.set(DiscrepancyReferencePage(transportEquipmentIndex, 3), "34567"))
     .success
     .value
 
@@ -53,7 +55,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -84,7 +86,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
@@ -93,7 +95,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -107,8 +109,12 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           }
           body should not include "Showing 1-25 of 25 items"
           body should not include "Previous"
-          body should not include s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url}""""
-          body should not include s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url}""""
+          body should not include s"""href="${createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(1), NormalMode)
+            .url}""""
+          body should not include s"""href="${createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(2), NormalMode)
+            .url}""""
           body should not include "Next"
           body should include("You can add up to <strong>974</strong> more Declaration Goods References.")
           body should include("<strong>Do you need to add another Declaration Goods Reference?</strong>")
@@ -125,7 +131,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
@@ -134,7 +140,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -149,8 +155,12 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           body should not include "Declaration Goods Reference 26"
           body should include("Showing 1-25 of 26 items")
           body should not include "Previous"
-          body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url}"""")
-          body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url}"""")
+          body should include(
+            s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url}""""
+          )
+          body should include(
+            s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url}""""
+          )
           body should include("Next")
           body should include("You can add up to <strong>973</strong> more Declaration Goods References.")
           body should include("<strong>Do you need to add another Declaration Goods Reference?</strong>")
@@ -164,7 +174,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         "on page 1" in {
 
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyReference, goodsReferencesList)
+            .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
             .success
             .value
 
@@ -173,7 +183,8 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url)
+            val request =
+              FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -188,8 +199,12 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
             body should not include "Declaration Goods Reference 26"
             body should include("Showing 1-25 of 999 items")
             body should not include "Previous"
-            body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include(
+              s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url}""""
+            )
+            body should include(
+              s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url}""""
+            )
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another Declaration Goods Reference?</strong>"
@@ -203,7 +218,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         "on page 20" in {
 
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyReference, goodsReferencesList)
+            .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
             .success
             .value
 
@@ -212,7 +227,8 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(20), NormalMode).url)
+            val request =
+              FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(20), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -228,9 +244,15 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
             body should not include "Declaration Goods Reference 501"
             body should include("Showing 476-500 of 999 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(19), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(20), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(21), NormalMode).url}"""")
+            body should include(
+              s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(19), NormalMode).url}""""
+            )
+            body should include(
+              s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(20), NormalMode).url}""""
+            )
+            body should include(
+              s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(21), NormalMode).url}""""
+            )
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another Declaration Goods Reference?</strong>"
@@ -244,7 +266,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         "on page 40" in {
 
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyReference, goodsReferencesList)
+            .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
             .success
             .value
 
@@ -253,7 +275,8 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url)
+            val request =
+              FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -268,8 +291,12 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
             body should not include "Declaration Goods Reference 975"
             body should include("Showing 976-999 of 999 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url}"""")
+            body should include(
+              s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(39), NormalMode).url}""""
+            )
+            body should include(
+              s"""href="${createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url}""""
+            )
             body should not include "Next"
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another Declaration Goods Reference?</strong>"
@@ -288,12 +315,12 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
         }
       }
 
@@ -304,7 +331,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(0), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(0), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -320,7 +347,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
@@ -329,12 +356,14 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, None, NormalMode)
+            .url
         }
       }
 
@@ -345,7 +374,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
@@ -354,12 +383,14 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(1), NormalMode)
+            .url
         }
       }
 
@@ -370,7 +401,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -389,13 +420,13 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(None, NormalMode).url)
+            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
               .withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(4, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 4, NormalMode).url
         }
       }
 
@@ -407,16 +438,17 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(None, CheckMode).url).withFormUrlEncodedBody("value" -> "true")
+            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex, None, CheckMode).url)
+              .withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(4, CheckMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 4, CheckMode).url
         }
       }
 
-      "must redirect to DiscrepancyTransportMeansPage when No is selected" in {
+      "must redirect to AddAnotherTransport when No is selected" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -424,17 +456,17 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(None, NormalMode).url)
+            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
               .withFormUrlEncodedBody("value" -> "false")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherTransportController.onPageLoad(None, NormalMode).url
         }
       }
 
-      "must redirect to next DiscrepancyTransportMeansPage and preserve the mode in CheckMode when answer is No" in {
+      "must redirect to next AddAnotherTransport and preserve the mode in CheckMode when answer is No" in {
 
         val application = applicationBuilder(userAnswers = Some(userAnswers))
           .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -442,13 +474,13 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(None, CheckMode).url)
+            FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex, None, CheckMode).url)
               .withFormUrlEncodedBody("value" -> "false")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(CheckMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherTransportController.onPageLoad(None, CheckMode).url
         }
       }
 
@@ -459,7 +491,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
@@ -468,7 +500,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(Some(2), NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex, Some(2), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -482,10 +514,10 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
         }
       }
 
-      "must redirect to DiscrepancyTransportMeansPage when maximum items reached" in {
+      "must redirect to AddAnotherTransport when maximum items reached" in {
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
@@ -494,12 +526,12 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(None, NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyTransportMeansController.onPageLoad(NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherTransportController.onPageLoad(None, NormalMode).url
         }
       }
 
@@ -510,12 +542,12 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
         }
       }
 
@@ -526,7 +558,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -542,7 +574,7 @@ class AddAnotherGoodsReferenceControllerSpec extends SpecBase with MockitoSugar 
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(None, NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherGoodsReferenceController.onSubmit(transportEquipmentIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 

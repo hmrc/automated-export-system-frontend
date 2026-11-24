@@ -16,17 +16,17 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyReferenceFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferencePage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancyReferencePage, VisitedDiscrepancyReferencePage}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyReference
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancyReferenceView
@@ -52,53 +52,60 @@ class DiscrepancyReferenceController @Inject() (
 
   val form: Form[Option[String]] = formProvider()
 
-  def onPageLoad(discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(transportEquipmentIndex: Int, discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
       val userAnswers: UserAnswers = request.userAnswers
-      val nextIndex: Int = DiscrepancyReference.nextIndex(userAnswers)
+      val nextIndex: Int = DiscrepancyReference(transportEquipmentIndex).nextIndex(userAnswers)
 
       if (
-        DiscrepancyReference
+        DiscrepancyReference(transportEquipmentIndex)
           .exists(userAnswers, discrepancyReferenceIndex) || discrepancyReferenceIndex == nextIndex
       ) {
-        val preparedForm = request.userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)) match {
+        val preparedForm = request.userAnswers.get(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex)) match {
           case None        => form
           case Some(value) => form.fill(Some(value))
         }
 
-        Ok(view(preparedForm, discrepancyReferenceIndex, mode))
+        Ok(view(preparedForm, transportEquipmentIndex, discrepancyReferenceIndex, mode))
       } else {
         logger.warn(
           s"[DiscrepancyReferenceController] Invalid discrepancy reference index on page load. discrepancyReferenceIndex=$discrepancyReferenceIndex, nextIndex=$nextIndex"
         )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
-  }
+    }
 
-  def onSubmit(discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(transportEquipmentIndex: Int, discrepancyReferenceIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
       val userAnswers: UserAnswers = request.userAnswers
-      val nextIndex: Int = DiscrepancyReference.nextIndex(userAnswers)
+      val nextIndex: Int = DiscrepancyReference(transportEquipmentIndex).nextIndex(userAnswers)
 
       if (
-        DiscrepancyReference
+        DiscrepancyReference(transportEquipmentIndex)
           .exists(userAnswers, discrepancyReferenceIndex) || discrepancyReferenceIndex == nextIndex
       ) {
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, discrepancyReferenceIndex, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex, discrepancyReferenceIndex, mode))),
             {
               case Some(discrepancyReference) =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyReferencePage(discrepancyReferenceIndex), discrepancyReference))
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(createNavigator.nextPage(DiscrepancyReferencePage(discrepancyReferenceIndex), mode, updatedAnswers))
+                  updatedAnswers <- Future.fromTry(
+                    request.userAnswers.set(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex), discrepancyReference)
+                  )
+                  markedAnswers <- Future.fromTry(updatedAnswers.set(VisitedDiscrepancyReferencePage(transportEquipmentIndex), true))
+                  _ <- sessionRepository.set(markedAnswers)
+                } yield Redirect(
+                  createNavigator.nextPage(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex), mode, updatedAnswers)
+                )
               case None =>
                 for {
-                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(DiscrepancyReferencePage(discrepancyReferenceIndex)))
-                  _ <- sessionRepository.set(updatedAnswers)
-                } yield Redirect(nextPageAfterBlank(updatedAnswers, mode))
+                  updatedAnswers <- Future
+                    .fromTry(request.userAnswers.remove(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex)))
+                  markedAnswers <- Future.fromTry(updatedAnswers.set(VisitedDiscrepancyReferencePage(transportEquipmentIndex), true))
+                  _ <- sessionRepository.set(markedAnswers)
+                } yield Redirect(nextPageAfterBlank(transportEquipmentIndex, updatedAnswers, mode))
             }
           )
       } else {
@@ -107,14 +114,14 @@ class DiscrepancyReferenceController @Inject() (
         )
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
-  }
+    }
 
-  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
-    if (DiscrepancyReference.count(answers) > 0)
-      createRoute.AddAnotherGoodsReferenceController.onPageLoad(None, mode)
+  private def nextPageAfterBlank(transportEquipmentIndex: Int, answers: UserAnswers, mode: Mode): Call =
+    if (DiscrepancyReference(transportEquipmentIndex).count(answers) > 0)
+      createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancyTransportMeansController.onPageLoad(mode)
+        case NormalMode => createRoute.AddAnotherTransportController.onPageLoad(None, NormalMode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 }

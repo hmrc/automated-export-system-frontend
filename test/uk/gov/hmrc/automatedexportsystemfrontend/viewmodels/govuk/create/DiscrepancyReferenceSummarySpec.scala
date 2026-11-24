@@ -32,17 +32,17 @@ class DiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
   "row" - {
     "when answered, return the summary row in NormalMode" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyReferencePage(1), "12345")
+        .set(DiscrepancyReferencePage(1, 1), "12345")
         .get
 
-      DiscrepancyReferenceSummary.row(1, userAnswers, NormalMode) shouldBe Some(
+      DiscrepancyReferenceSummary.row(1, 1, userAnswers, NormalMode) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyReference.checkYourAnswersLabel",
           value = ValueViewModel("12345"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyReferenceController.onPageLoad(1, 1, NormalMode).url
             )
               .withVisuallyHiddenText(messages("discrepancyReference.change.hidden", "12345"))
           )
@@ -52,17 +52,17 @@ class DiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answered, return the summary row in CheckMode" in {
       val userAnswers = UserAnswers("id")
-        .set(DiscrepancyReferencePage(1), "declarationGoodsReference")
+        .set(DiscrepancyReferencePage(1, 1), "declarationGoodsReference")
         .get
 
-      DiscrepancyReferenceSummary.row(1, userAnswers, CheckMode) shouldBe Some(
+      DiscrepancyReferenceSummary.row(1, 1, userAnswers, CheckMode) shouldBe Some(
         SummaryListRowViewModel(
           key = "discrepancyReference.checkYourAnswersLabel",
           value = ValueViewModel("declarationGoodsReference"),
           actions = Seq(
             ActionItemViewModel(
               "site.change",
-              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyReferenceController.onPageLoad(1, CheckMode).url
+              uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancyReferenceController.onPageLoad(1, 1, CheckMode).url
             )
               .withVisuallyHiddenText(messages("discrepancyReference.change.hidden", "12345"))
           )
@@ -72,7 +72,7 @@ class DiscrepancyReferenceSummarySpec extends AnyFreeSpec with Matchers {
 
     "when answer unavailable, return empty" in {
       val userAnswers = UserAnswers("id")
-      DiscrepancyReferenceSummary.row(1, userAnswers, NormalMode) shouldBe None
+      DiscrepancyReferenceSummary.row(1, 1, userAnswers, NormalMode) shouldBe None
     }
   }
 }

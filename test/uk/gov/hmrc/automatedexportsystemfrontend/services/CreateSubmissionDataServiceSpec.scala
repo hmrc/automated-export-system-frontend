@@ -27,6 +27,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
   "buildStandardSubmission" - {
 
     val service = new CreateSubmissionDataService
+    val parentIndex: Int = 1
     val index = 1
 
     "must include a GoodsShipment for a split exit when AnyDiscrepanciesPage is not present" in {
@@ -38,12 +39,12 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(EnterDucrPage, "5GB000000000000-12345")
         userAnswers <- userAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("GB/000000000000-12345")))
         userAnswers <- userAnswers.set(DiscrepancyTransportPage(index), ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
-        userAnswers <- userAnswers.set(DiscrepancySealsPage(index), "sealId")
+        userAnswers <- userAnswers.set(DiscrepancySealsPage(parentIndex, index), "sealId")
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("locationId"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
-        userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
+        userAnswers <- userAnswers.set(DiscrepancyReferencePage(parentIndex, index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage(index), WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index, index), PackingDetails("PK", 1, "marks"))
       } yield userAnswers
@@ -102,12 +103,12 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(EnterDucrPage, "5GB000000000000-12345")
         userAnswers <- userAnswers.set(PartOfConsolidationPage, PartOfConsolidationAnswer(true, Some("GB/000000000000-12345")))
         userAnswers <- userAnswers.set(DiscrepancyTransportPage(index), ContainerDetails(Some("containerId"), numberOfSeals = Some(1)))
-        userAnswers <- userAnswers.set(DiscrepancySealsPage(index), "sealId")
+        userAnswers <- userAnswers.set(DiscrepancySealsPage(parentIndex, index), "sealId")
         userAnswers <- userAnswers.set(LocationTypePage, LocationType.AuthorisedPlace)
         userAnswers <- userAnswers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
-        userAnswers <- userAnswers.set(DiscrepancyReferencePage(index), "1")
+        userAnswers <- userAnswers.set(DiscrepancyReferencePage(parentIndex, index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage(index), WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
         userAnswers <- userAnswers.set(DiscrepancyPackingPage(index, index), PackingDetails("PK", 1, "marks"))
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage(2), WhatHasChangedDetails(Some(2), Some("5GB000000000000-123452"), "202", "102"))
@@ -306,7 +307,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value shouldNot include("<GoodsItem>")
     }
 
-    "must omit absent container fields and preserve entered values in XML" in {
+    "must omit absent container fields and preserve entered values across multiple equipments in XML" in {
       val baseAnswers = (for {
         answers <- emptyUserAnswers.set(EnterMrnPage, "MRN")
         answers <- answers.set(AnyDiscrepanciesPage, true)
@@ -315,41 +316,66 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         answers <- answers.set(EnterDucrPage, "5GB000000000000-12345")
         answers <- answers.set(LocationTypePage, LocationType.AuthorisedPlace)
         answers <- answers.set(LocationIdPage, LocationDetails(LocationQualifier.UnLocode, Some("GBBEL"), Some("1234"), Some("abc123")))
-        answers <- answers.set(DiscrepancySealsPage(index), "sealId")
+        answers <- answers.set(DiscrepancyTransportPage(parentIndex), ContainerDetails(None, None))
+        answers <- answers.set(DiscrepancySealsPage(parentIndex, index), "sealId1")
+        answers <- answers.set(DiscrepancyReferencePage(parentIndex, index), "12345")
+        answers <- answers.set(DiscrepancyTransportPage(2), ContainerDetails(Some("CONT123"), None))
+        answers <- answers.set(DiscrepancySealsPage(2, index), "sealId2")
+        answers <- answers.set(DiscrepancyReferencePage(2, index), "23456")
+        answers <- answers.set(DiscrepancyTransportPage(3), ContainerDetails(None, Some(0)))
+        answers <- answers.set(DiscrepancySealsPage(3, index), "sealId3")
+        answers <- answers.set(DiscrepancyReferencePage(3, index), "34567")
+        answers <- answers.set(DiscrepancyTransportPage(4), ContainerDetails(Some("CONT234"), Some(1)))
+        answers <- answers.set(DiscrepancySealsPage(4, index), "sealId4")
+        answers <- answers.set(DiscrepancySealsPage(4, 2), "sealId5")
+        answers <- answers.set(DiscrepancyReferencePage(4, index), "45678")
+        answers <- answers.set(DiscrepancyReferencePage(4, 2), "56789")
       } yield answers).get
 
-      val cases = Seq(
-        ContainerDetails(None, None),
-        ContainerDetails(Some("CONT123"), None),
-        ContainerDetails(None, Some(0)),
-        ContainerDetails(Some("CONT123"), Some(1))
-      )
+      val result = service.buildStandardSubmission(baseAnswers)
 
-      cases.foreach { details =>
-        val answers =
-          baseAnswers
-            .set(DiscrepancyTransportPage(index), details)
-            .get
+      result shouldBe defined
 
-        val result = service.buildStandardSubmission(answers)
+      val equipments =
+        scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
 
-        result shouldBe defined
+      equipments.size shouldBe 4
 
-        val equipment =
-          scala.xml.XML.loadString(result.value) \\ "TransportEquipment"
+      equipments.map { equipment =>
+        (equipment \ "sequenceNumber").text
+      } shouldBe Seq("1", "2", "3", "4")
 
-        equipment.size shouldBe 1
+      (equipments \ "containerIdentificationNumber")
+        .map(_.text)
+        .toList shouldBe List("CONT123", "CONT234")
 
-        (equipment \ "containerIdentificationNumber")
-          .map(_.text)
-          .toList shouldBe details.containerId.toList
+      (equipments \ "numberOfSeals")
+        .map(_.text)
+        .toList shouldBe List("0", "1")
 
-        (equipment \ "numberOfSeals")
-          .map(_.text)
-          .toList shouldBe details.numberOfSeals.map(_.toString).toList
-
-        (equipment \ "Seal" \ "identifier").text shouldBe "sealId"
+      equipments.take(3).foreach { equipment =>
+        (equipment \ "Seal").map { seal =>
+          (seal \ "sequenceNumber").text
+        } shouldBe Seq("1")
       }
+
+      (equipments(3) \ "Seal").map { seal =>
+        (seal \ "sequenceNumber").text
+      } shouldBe Seq("1", "2")
+
+      (equipments \ "Seal" \ "identifier").map(_.text).toList shouldBe List("sealId1", "sealId2", "sealId3", "sealId4", "sealId5")
+
+      equipments.take(3).foreach { equipment =>
+        (equipment \ "GoodsReference").map { reference =>
+          (reference \ "sequenceNumber").text
+        } shouldBe Seq("1")
+      }
+
+      (equipments(3) \ "GoodsReference").map { reference =>
+        (reference \ "sequenceNumber").text
+      } shouldBe Seq("1", "2")
+
+      (equipments \ "GoodsReference" \ "declarationGoodsItemNumber").map(_.text).toList shouldBe List("12345", "23456", "34567", "45678", "56789")
     }
 
     "must return a None when all required answers not present" in {

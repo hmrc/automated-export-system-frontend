@@ -22,10 +22,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 class DiscrepancySealsSpec extends SpecBase {
 
+  val transportEquipmentIndex: Int = 1
+
   private val userAnswers = emptyUserAnswers
-    .set(DiscrepancySealsPage(1), "Seal1")
-    .flatMap(_.set(DiscrepancySealsPage(2), "Seal2"))
-    .flatMap(_.set(DiscrepancySealsPage(3), "Seal3"))
+    .set(DiscrepancySealsPage(transportEquipmentIndex, 1), "Seal1")
+    .flatMap(_.set(DiscrepancySealsPage(transportEquipmentIndex, 2), "Seal2"))
+    .flatMap(_.set(DiscrepancySealsPage(transportEquipmentIndex, 3), "Seal3"))
     .success
     .value
 
@@ -34,59 +36,53 @@ class DiscrepancySealsSpec extends SpecBase {
       "must get all of the DiscrepancySeals data" in {
         val expected = List("Seal1", "Seal2", "Seal3")
 
-        DiscrepancySeals.getAll(userAnswers) mustBe expected
+        DiscrepancySeals(transportEquipmentIndex).getAll(userAnswers) mustBe expected
       }
     }
 
     ".count" - {
       "must return how many DiscrepancySeals data items have been added" in {
-        DiscrepancySeals.count(userAnswers) mustBe 3
+        DiscrepancySeals(transportEquipmentIndex).count(userAnswers) mustBe 3
       }
     }
 
     ".remaining" - {
       "must return how many remaining DiscrepancySeals data items can be added" in {
-        DiscrepancySeals.remaining(userAnswers) mustBe 96
+        DiscrepancySeals(transportEquipmentIndex).remaining(userAnswers) mustBe 96
       }
     }
 
     ".maxSeals" - {
       "must have a maximum of 99" in {
-        DiscrepancySeals.maxNumberOfSealsInList mustBe 99
+        DiscrepancySeals(transportEquipmentIndex).maxNumberOfSealsInList mustBe 99
       }
     }
 
     ".exists" - {
       "must return true if the index is defined" in {
-        DiscrepancySeals.exists(userAnswers, 3) mustBe true
+        DiscrepancySeals(transportEquipmentIndex).exists(userAnswers, 3) mustBe true
       }
 
       "must return false if the index is not defined" in {
-        DiscrepancySeals.exists(userAnswers, 4) mustBe false
+        DiscrepancySeals(transportEquipmentIndex).exists(userAnswers, 4) mustBe false
       }
     }
 
     ".nextIndex" - {
       "must return the next empty index positon" in {
-        DiscrepancySeals.nextIndex(userAnswers) mustBe 4
+        DiscrepancySeals(transportEquipmentIndex).nextIndex(userAnswers) mustBe 4
       }
     }
 
     ".removeOne" - {
       "must remove one DiscrepancySeals item at the correct index" in {
 
-        val updatedUserAnswers = DiscrepancySeals.removeOne(userAnswers, 2).success.value
+        val updatedUserAnswers = DiscrepancySeals(transportEquipmentIndex).removeOne(userAnswers, 2).success.value
 
         val expected = List("Seal1", "Seal3")
 
-        DiscrepancySeals.getAll(updatedUserAnswers) mustBe expected
+        DiscrepancySeals(transportEquipmentIndex).getAll(updatedUserAnswers) mustBe expected
       }
-    }
-
-    "must be able to remove all DiscrepancySeals data from user answers" in {
-      val updatedUserAnswers = userAnswers.remove(DiscrepancySeals).success.value
-
-      updatedUserAnswers.get(DiscrepancySeals) mustNot be(defined)
     }
 
   }

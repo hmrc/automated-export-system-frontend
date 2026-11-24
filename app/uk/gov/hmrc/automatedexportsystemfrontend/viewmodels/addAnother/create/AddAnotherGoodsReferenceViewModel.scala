@@ -43,11 +43,13 @@ case class AddAnotherGoodsReferenceViewModel(
 }
 
 object AddAnotherGoodsReferenceViewModel {
-  def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherGoodsReferenceViewModel = {
+  def apply(userAnswers: UserAnswers, transportEquipmentIndex: Int, page: Option[Int], mode: Mode)(
+    implicit messages: Messages
+  ): AddAnotherGoodsReferenceViewModel = {
 
-    val numberOfGoodsReferences: Int = DiscrepancyReference.count(userAnswers)
+    val numberOfGoodsReferences: Int = DiscrepancyReference(transportEquipmentIndex).count(userAnswers)
 
-    val remainingGoodsReferences: Int = DiscrepancyReference.remaining(userAnswers)
+    val remainingGoodsReferences: Int = DiscrepancyReference(transportEquipmentIndex).remaining(userAnswers)
 
     val currentPage: Int = page.getOrElse(1)
 
@@ -59,7 +61,7 @@ object AddAnotherGoodsReferenceViewModel {
       allowMore = remainingGoodsReferences > 0,
       addedSingularOrPlural = if (numberOfGoodsReferences == 1) "singular" else "plural",
       remainingSingularOrPlural = if (remainingGoodsReferences == 1) "singular" else "plural",
-      rows = rows(userAnswers, currentPage, mode),
+      rows = rows(userAnswers, transportEquipmentIndex, currentPage, mode),
       currentPage = currentPage,
       totalPages = totalPages,
       firstGoodsReference = PaginationBuilder.firstItem(currentPage),
@@ -67,37 +69,38 @@ object AddAnotherGoodsReferenceViewModel {
       pagination = PaginationBuilder.pagination(
         currentPage,
         totalPages,
-        index => createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(index), mode).url
+        index => createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(index), mode).url
       )
     )
   }
 
-  def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    PaginationBuilder.slice(DiscrepancyReference.getAll(userAnswers).zipWithIndex, currentPage).map { case (goodsReference, i) =>
-      val index = i + 1
+  def rows(userAnswers: UserAnswers, transportEquipmentIndex: Int, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
+    PaginationBuilder.slice(DiscrepancyReference(transportEquipmentIndex).getAll(userAnswers).zipWithIndex, currentPage).map {
+      case (goodsReference, i) =>
+        val index = i + 1
 
-      SummaryListRow(
-        key = Key(
-          content = Text(messages("addAnotherGoodsReference.key", goodsReference)),
-          classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
-        ),
-        value = Value(content = Empty, classes = "govuk-!-display-none"),
-        actions = Some(
-          Actions(items =
-            Seq(
-              ActionItem(
-                href = createRoute.DiscrepancyReferenceController.onPageLoad(index, mode).url,
-                content = Text(messages("site.change")),
-                visuallyHiddenText = Some(messages("addAnotherGoodsReference.change.hidden", goodsReference))
-              ),
-              ActionItem(
-                href = createRoute.RemoveGoodsReferenceController.onPageLoad(index, currentPage, mode).url,
-                content = Text(messages("site.remove")),
-                visuallyHiddenText = Some(messages("addAnotherGoodsReference.remove.hidden", goodsReference))
+        SummaryListRow(
+          key = Key(
+            content = Text(messages("addAnotherGoodsReference.key", goodsReference)),
+            classes = "govuk-!-font-weight-regular hmrc-summary-list__key"
+          ),
+          value = Value(content = Empty, classes = "govuk-!-display-none"),
+          actions = Some(
+            Actions(items =
+              Seq(
+                ActionItem(
+                  href = createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, index, mode).url,
+                  content = Text(messages("site.change")),
+                  visuallyHiddenText = Some(messages("addAnotherGoodsReference.change.hidden", goodsReference))
+                ),
+                ActionItem(
+                  href = createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, index, currentPage, mode).url,
+                  content = Text(messages("site.remove")),
+                  visuallyHiddenText = Some(messages("addAnotherGoodsReference.remove.hidden", goodsReference))
+                )
               )
             )
           )
         )
-      )
     }
 }

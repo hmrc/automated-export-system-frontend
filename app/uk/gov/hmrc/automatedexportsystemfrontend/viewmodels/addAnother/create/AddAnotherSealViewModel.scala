@@ -43,11 +43,13 @@ case class AddAnotherSealViewModel(
 }
 
 object AddAnotherSealViewModel {
-  def apply(userAnswers: UserAnswers, page: Option[Int], mode: Mode)(implicit messages: Messages): AddAnotherSealViewModel = {
+  def apply(userAnswers: UserAnswers, transportEquipmentIndex: Int, page: Option[Int], mode: Mode)(
+    implicit messages: Messages
+  ): AddAnotherSealViewModel = {
 
-    val numberOfSeals: Int = DiscrepancySeals.count(userAnswers)
+    val numberOfSeals: Int = DiscrepancySeals(transportEquipmentIndex).count(userAnswers)
 
-    val remainingSeals: Int = DiscrepancySeals.remaining(userAnswers)
+    val remainingSeals: Int = DiscrepancySeals(transportEquipmentIndex).remaining(userAnswers)
 
     val currentPage: Int = page.getOrElse(1)
 
@@ -59,19 +61,22 @@ object AddAnotherSealViewModel {
       allowMore = remainingSeals > 0,
       addedSingularOrPlural = if (numberOfSeals == 1) "singular" else "plural",
       remainingSingularOrPlural = if (remainingSeals == 1) "singular" else "plural",
-      rows = rows(userAnswers, mode, currentPage),
+      rows = rows(userAnswers, transportEquipmentIndex, mode, currentPage),
       currentPage = currentPage,
       totalPages = totalPages,
       firstSeal = PaginationBuilder.firstItem(currentPage),
       lastSeal = PaginationBuilder.lastItem(currentPage, numberOfSeals),
-      pagination =
-        PaginationBuilder.pagination(currentPage, totalPages, index => createRoute.AddAnotherSealController.onPageLoad(Some(index), mode).url)
+      pagination = PaginationBuilder.pagination(
+        currentPage,
+        totalPages,
+        index => createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(index), mode).url
+      )
     )
 
   }
 
-  def rows(userAnswers: UserAnswers, mode: Mode, currentPage: Int)(implicit messages: Messages): Seq[SummaryListRow] =
-    PaginationBuilder.slice(DiscrepancySeals.getAll(userAnswers).zipWithIndex, currentPage).map { case (sealIdentifier, i) =>
+  def rows(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode, currentPage: Int)(implicit messages: Messages): Seq[SummaryListRow] =
+    PaginationBuilder.slice(DiscrepancySeals(transportEquipmentIndex).getAll(userAnswers).zipWithIndex, currentPage).map { case (sealIdentifier, i) =>
       val index = i + 1
       SummaryListRow(
         key = Key(content = Text(sealIdentifier), classes = "govuk-!-font-weight-regular hmrc-summary-list__key"),
@@ -80,12 +85,12 @@ object AddAnotherSealViewModel {
           Actions(items =
             Seq(
               ActionItem(
-                href = createRoute.DiscrepancySealsController.onPageLoad(index, mode).url,
+                href = createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, index, mode).url,
                 content = Text(messages("site.change")),
                 visuallyHiddenText = Some(messages("addAnotherSeal.change.hidden", index))
               ),
               ActionItem(
-                href = createRoute.RemoveSealController.onPageLoad(index, currentPage, mode).url,
+                href = createRoute.RemoveSealController.onPageLoad(transportEquipmentIndex, index, currentPage, mode).url,
                 content = Text(messages("site.remove")),
                 visuallyHiddenText = Some(messages("addAnotherSeal.remove.hidden", index))
               )

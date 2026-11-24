@@ -16,10 +16,11 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.navigation
 
+import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.*
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.{Page, WhatDoYouWantToDoPage}
 
 class NavigatorSpec extends SpecBase {
 
@@ -28,6 +29,24 @@ class NavigatorSpec extends SpecBase {
   "Navigator" - {
 
     "in Normal mode" - {
+
+      "navigate from WhatDoYouWantToDoPage" - {
+        "to the start of the Create journey (EnterMrnPage) when submit new is selected" in {
+          val userAnswers = emptyUserAnswers.set(WhatDoYouWantToDoPage, WhatDoYouWantToDo.SubmitNew).success.value
+          navigator.nextPage(WhatDoYouWantToDoPage, NormalMode, userAnswers) shouldBe
+            createRoute.EnterMrnController.onPageLoad(NormalMode)
+        }
+        "to DiscrepancyConsignmentPage true" in {
+          val userAnswers = emptyUserAnswers.set(WhatDoYouWantToDoPage, WhatDoYouWantToDo.ViewOrCancel).success.value
+          navigator.nextPage(WhatDoYouWantToDoPage, NormalMode, userAnswers) shouldBe
+            uk.gov.hmrc.automatedexportsystemfrontend.controllers.submission.routes.ViewSubmissionsController.onPageLoad()
+        }
+        "to JourneyRecovery TEMPORARY when None" in {
+          val userAnswers = emptyUserAnswers
+          navigator.nextPage(WhatDoYouWantToDoPage, NormalMode, userAnswers) shouldBe
+            problemRoute.JourneyRecoveryController.onPageLoad()
+        }
+      }
 
       "must go from a page that doesn't exist in the normal route map to the journey recovery" in {
 

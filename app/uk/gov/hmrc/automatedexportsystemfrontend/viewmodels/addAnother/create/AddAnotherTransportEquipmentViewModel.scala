@@ -73,10 +73,10 @@ object AddAnotherTransportEquipmentViewModel {
   }
 
   private def rows(userAnswers: UserAnswers, currentPage: Int, mode: Mode)(implicit messages: Messages): Seq[SummaryListRow] =
-    PaginationBuilder.slice(DiscrepancyTransportEquipment.getAll(userAnswers).zipWithIndex, currentPage).map { case (containerDetails, i) =>
+    PaginationBuilder.slice(DiscrepancyTransportEquipment.getAll(userAnswers).zipWithIndex, currentPage).map { case (transport, i) =>
       val index = i + 1
 
-      val containerIdOrIndex = containerDetails.containerId.getOrElse(f"$index%,d")
+      val containerIdOrIndex = transport.containerDetails.flatMap(_.containerId).getOrElse(f"$index%,d")
 
       SummaryListRow(
         key = Key(

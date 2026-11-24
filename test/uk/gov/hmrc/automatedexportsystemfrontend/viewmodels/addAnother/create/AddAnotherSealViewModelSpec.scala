@@ -28,19 +28,18 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as cr
 class AddAnotherSealViewModelSpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
-
+  val transportEquipmentIndex: Int = 1
   val userAnswers = emptyUserAnswers
-    .set(DiscrepancySealsPage(1), "sealIdentifier")
+    .set(DiscrepancySealsPage(transportEquipmentIndex, 1), "sealIdentifier")
     .get
-
-  val maxSeals: Int = DiscrepancySeals.maxNumberOfSealsInList
+  val maxSeals: Int = DiscrepancySeals(transportEquipmentIndex).maxNumberOfSealsInList
 
   private def sealsList(n: Int): List[String] = (1 to n).map(i => s"seal$i").toList
 
   "AddAnotherSealViewModel" - {
     "rows" - {
       "should build a valid row with seal identifier, hidden value, change and remove actions" in {
-        val result = AddAnotherSealViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
         val rows = result.rows
         rows.size shouldBe 1
         val row = rows.head
@@ -52,13 +51,15 @@ class AddAnotherSealViewModelSpec extends SpecBase {
 
         val change = actions.items.head
         change.href shouldBe uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.DiscrepancySealsController
-          .onPageLoad(1, NormalMode)
+          .onPageLoad(transportEquipmentIndex, 1, NormalMode)
           .url
         change.content shouldBe Text(messages("site.change"))
         change.visuallyHiddenText shouldBe Some(messages("addAnotherSeal.change.hidden", 1))
 
         val remove = actions.items(1)
-        remove.href shouldBe uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.RemoveSealController.onPageLoad(1, 1, NormalMode).url
+        remove.href shouldBe uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes.RemoveSealController
+          .onPageLoad(transportEquipmentIndex, 1, 1, NormalMode)
+          .url
         remove.content shouldBe Text(messages("site.remove"))
         remove.visuallyHiddenText shouldBe Some(messages("addAnotherSeal.remove.hidden", 1))
         result.numberOfSeals shouldBe 1
@@ -70,7 +71,7 @@ class AddAnotherSealViewModelSpec extends SpecBase {
       }
 
       "should be empty when there are no seals" in {
-        AddAnotherSealViewModel(emptyUserAnswers, None, NormalMode).rows shouldBe Seq.empty
+        AddAnotherSealViewModel(emptyUserAnswers, transportEquipmentIndex, None, NormalMode).rows shouldBe Seq.empty
       }
 
     }
@@ -79,11 +80,11 @@ class AddAnotherSealViewModelSpec extends SpecBase {
       "should provide the correct model when one more item can be added" in {
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(98))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(98))
           .success
           .value
 
-        val result = AddAnotherSealViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
         result.numberOfSeals shouldBe 98
         result.remainingSeals shouldBe 1
@@ -98,11 +99,11 @@ class AddAnotherSealViewModelSpec extends SpecBase {
 
       "should provide the correct model when the maximum number of items has been reached" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(maxSeals))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(maxSeals))
           .success
           .value
 
-        val result = AddAnotherSealViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
         result.numberOfSeals shouldBe 99
         result.remainingSeals shouldBe 0
@@ -117,11 +118,11 @@ class AddAnotherSealViewModelSpec extends SpecBase {
 
       "should put 25 seals on a single page with no pagination" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(25))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(25))
           .success
           .value
 
-        val result = AddAnotherSealViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
         result.currentPage shouldBe 1
         result.totalPages shouldBe 1
@@ -134,11 +135,11 @@ class AddAnotherSealViewModelSpec extends SpecBase {
 
       "should start pagination at 26 seals, showing 25 rows on page 1" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(26))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(26))
           .success
           .value
 
-        val result = AddAnotherSealViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
         result.currentPage shouldBe 1
         result.totalPages shouldBe 2
@@ -150,49 +151,52 @@ class AddAnotherSealViewModelSpec extends SpecBase {
 
       "should omit Previous on the first page" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(26))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(26))
           .success
           .value
 
-        val pagination = AddAnotherSealViewModel(userAnswers, Some(1), NormalMode).pagination.value
+        val pagination =
+          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(1), NormalMode).pagination.value
 
         pagination.previous shouldBe None
-        pagination.next.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(2), NormalMode).url
+        pagination.next.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url
       }
 
       "should include both Previous and Next on a middle page" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(75))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(75))
           .success
           .value
 
-        val pagination = AddAnotherSealViewModel(userAnswers, Some(2), NormalMode).pagination.value
+        val pagination =
+          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode).pagination.value
 
-        pagination.previous.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url
+        pagination.previous.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url
         pagination.previous.value.text shouldBe Some(messages("site.pagination.previous"))
-        pagination.next.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(3), NormalMode).url
+        pagination.next.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(3), NormalMode).url
         pagination.next.value.text shouldBe Some(messages("site.pagination.next"))
       }
 
       "should omit Next on the last page" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(26))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(26))
           .success
           .value
 
-        val pagination = AddAnotherSealViewModel(userAnswers, Some(2), NormalMode).pagination.value
+        val pagination =
+          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode).pagination.value
 
         pagination.next shouldBe None
-        pagination.previous.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(Some(1), NormalMode).url
+        pagination.previous.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url
       }
 
       "should show only the remaining seal on a partial final page" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancySeals, sealsList(26))
+          .set(DiscrepancySeals(transportEquipmentIndex), sealsList(26))
           .success
           .value
 
-        val result = AddAnotherSealViewModel(userAnswers, Some(2), NormalMode)
+        val result = AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode)
 
         result.currentPage shouldBe 2
         result.rows.size shouldBe 1

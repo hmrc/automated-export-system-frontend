@@ -22,11 +22,11 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPa
 
 import scala.util.Try
 
-case object DiscrepancySeals extends Gettable[List[String]] with Settable[List[String]] {
+case class DiscrepancySeals(transportEquipmentIndex: Int) extends Gettable[List[String]] with Settable[List[String]] {
 
   val maxNumberOfSealsInList = 99
 
-  override def path: JsPath = JsPath \ "standard" \ "discrepancySeals"
+  override def path: JsPath = JsPath \ "standard" \ "discrepancyTransportEquipment" \ (transportEquipmentIndex - 1) \ "discrepancySeals"
 
   def getAll(userAnswers: UserAnswers): List[String] = userAnswers.get(this).getOrElse(Nil)
 
@@ -34,10 +34,10 @@ case object DiscrepancySeals extends Gettable[List[String]] with Settable[List[S
 
   def remaining(userAnswers: UserAnswers): Int = math.max(0, maxNumberOfSealsInList - count(userAnswers))
 
-  def exists(userAnswers: UserAnswers, sealIndex: Int): Boolean = userAnswers.get(DiscrepancySealsPage(sealIndex)).isDefined
+  def exists(userAnswers: UserAnswers, sealIndex: Int): Boolean = userAnswers.get(DiscrepancySealsPage(transportEquipmentIndex, sealIndex)).isDefined
 
   def nextIndex(userAnswers: UserAnswers): Int = count(userAnswers) + 1
 
   def removeOne(userAnswers: UserAnswers, sealIndex: Int): Try[UserAnswers] =
-    userAnswers.remove(DiscrepancySealsPage(sealIndex))
+    userAnswers.remove(DiscrepancySealsPage(transportEquipmentIndex, sealIndex))
 }

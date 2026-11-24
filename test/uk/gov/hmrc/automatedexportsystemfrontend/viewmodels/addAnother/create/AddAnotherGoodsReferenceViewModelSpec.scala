@@ -31,9 +31,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
   private implicit val messages: Messages = Helpers.stubMessages()
 
-  val userAnswers: UserAnswers = emptyUserAnswers.set(DiscrepancyReferencePage(1), "12345").get
+  val transportEquipmentIndex: Int = 1
 
-  val maxGoodsReferences: Int = DiscrepancyReference.maxDiscrepancyReferences
+  val userAnswers: UserAnswers = emptyUserAnswers.set(DiscrepancyReferencePage(transportEquipmentIndex, 1), "12345").get
+
+  val maxGoodsReferences: Int = DiscrepancyReference(transportEquipmentIndex).maxDiscrepancyReferences
 
   val goodsReferencesListMax: List[String] = (1 to maxGoodsReferences).map { number =>
     number.toString
@@ -43,7 +45,7 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
     ".rows" - {
       "must build a valid row with goods reference, hidden value, change and remove actions" in {
-        val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
         val rows = result.rows
         rows.size mustBe 1
         val row = rows.head
@@ -54,12 +56,12 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         actions.items.size mustBe 2
 
         val change = actions.items.head
-        change.href mustBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+        change.href mustBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
         change.content mustBe Text(messages("site.change"))
         change.visuallyHiddenText mustBe Some(messages("addAnotherGoodsReference.change.hidden", "12345"))
 
         val remove = actions.items(1)
-        remove.href mustBe createRoute.RemoveGoodsReferenceController.onPageLoad(1, 1, NormalMode).url
+        remove.href mustBe createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, 1, 1, NormalMode).url
         remove.content mustBe Text(messages("site.remove"))
         remove.visuallyHiddenText mustBe Some(messages("addAnotherGoodsReference.remove.hidden", "12345"))
 
@@ -76,7 +78,7 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       }
 
       "must build a valid row with goods reference, hidden value, change and remove actions in CheckMode" in {
-        val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, CheckMode)
+        val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, CheckMode)
         val rows = result.rows
         rows.size mustBe 1
         val row = rows.head
@@ -87,12 +89,12 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         actions.items.size mustBe 2
 
         val change = actions.items.head
-        change.href mustBe createRoute.DiscrepancyReferenceController.onPageLoad(1, CheckMode).url
+        change.href mustBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, CheckMode).url
         change.content mustBe Text(messages("site.change"))
         change.visuallyHiddenText mustBe Some(messages("addAnotherGoodsReference.change.hidden", "12345"))
 
         val remove = actions.items(1)
-        remove.href mustBe createRoute.RemoveGoodsReferenceController.onPageLoad(1, 1, CheckMode).url
+        remove.href mustBe createRoute.RemoveGoodsReferenceController.onPageLoad(transportEquipmentIndex, 1, 1, CheckMode).url
         remove.content mustBe Text(messages("site.remove"))
         remove.visuallyHiddenText mustBe Some(messages("addAnotherGoodsReference.remove.hidden", "12345"))
 
@@ -109,11 +111,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       }
 
       "must be empty there are no goods references" in {
-        AddAnotherGoodsReferenceViewModel(emptyUserAnswers, None, NormalMode).rows mustBe Seq.empty
+        AddAnotherGoodsReferenceViewModel(emptyUserAnswers, transportEquipmentIndex, None, NormalMode).rows mustBe Seq.empty
       }
 
       "must be empty when there are no goods references in CheckMode" in {
-        AddAnotherGoodsReferenceViewModel(emptyUserAnswers, None, CheckMode).rows mustBe Seq.empty
+        AddAnotherGoodsReferenceViewModel(emptyUserAnswers, transportEquipmentIndex, None, CheckMode).rows mustBe Seq.empty
       }
     }
 
@@ -124,11 +126,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
-        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, None, NormalMode).pagination
+        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, NormalMode).pagination
 
         pagination mustBe None
       }
@@ -139,11 +141,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
-        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, None, CheckMode).pagination
+        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, CheckMode).pagination
 
         pagination mustBe None
       }
@@ -154,29 +156,29 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
-        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(1), NormalMode).pagination.value
+        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(1), NormalMode).pagination.value
 
         pagination.items mustBe Some(
           Seq(
             PaginationItem(
-              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
               number = Some("1"),
               visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
             PaginationItem(
-              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url,
               visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               number = Some("2")
             )
           )
         )
         pagination.previous mustBe None
-        pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url
+        pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url
       }
 
       "must return Pagination for page 1 when there is 26 items in CheckMode" in {
@@ -185,29 +187,29 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
-        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(1), CheckMode).pagination.value
+        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(1), CheckMode).pagination.value
 
         pagination.items mustBe Some(
           Seq(
             PaginationItem(
-              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), CheckMode).url,
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), CheckMode).url,
               number = Some("1"),
               visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               current = Some(true)
             ),
             PaginationItem(
-              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), CheckMode).url,
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), CheckMode).url,
               visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               number = Some("2")
             )
           )
         )
         pagination.previous mustBe None
-        pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), CheckMode).url
+        pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), CheckMode).url
       }
 
       "must return Pagination for page 2 when there is 26 items" in {
@@ -216,293 +218,327 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
-        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(2), NormalMode).pagination.value
+        val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode).pagination.value
 
         pagination.items mustBe Some(
           Seq(
             PaginationItem(
-              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
               visuallyHiddenText = Some(messages("site.pagination.page", 1)),
               number = Some("1")
             ),
             PaginationItem(
-              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
+              href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url,
               number = Some("2"),
               visuallyHiddenText = Some(messages("site.pagination.page", 2)),
               current = Some(true)
             )
           )
         )
-        pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url
+        pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+          .onPageLoad(transportEquipmentIndex, Some(1), NormalMode)
+          .url
         pagination.next mustBe None
       }
 
       "must return Pagination when there is 999 items" - {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesListMax)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesListMax)
           .success
           .value
 
         "for page 1" in {
-          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(1), NormalMode).pagination.value
+          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(1), NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
                 number = Some("1"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 2)),
                 number = Some("2")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40")
               )
             )
           )
           pagination.previous mustBe None
-          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url
+          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(2), NormalMode)
+            .url
         }
 
         "for page 4" in {
-          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(4), NormalMode).pagination.value
+          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(4), NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(2), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 2)),
                 number = Some("2")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(3), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(3), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 3)),
                 number = Some("3")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(4), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(4), NormalMode).url,
                 number = Some("4"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(5), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(5), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 5)),
                 number = Some("5")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40")
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(3), NormalMode).url
-          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(5), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(3), NormalMode)
+            .url
+          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(5), NormalMode)
+            .url
         }
 
         "for page 5" in {
-          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(5), NormalMode).pagination.value
+          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(5), NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(4), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(4), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 4)),
                 number = Some("4")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(5), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(5), NormalMode).url,
                 number = Some("5"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 5)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(6), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(6), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 6)),
                 number = Some("6")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40")
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(4), NormalMode).url
-          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(6), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(4), NormalMode)
+            .url
+          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(6), NormalMode)
+            .url
         }
 
         "for page 20" in {
-          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(20), NormalMode).pagination.value
+          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(20), NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(19), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(19), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 19)),
                 number = Some("19")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(20), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(19), NormalMode).url,
+                number = Some("19")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(20), NormalMode).url,
                 number = Some("20"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 20)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(21), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(21), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 21)),
                 number = Some("21")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40")
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(19), NormalMode).url
-          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(21), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(19), NormalMode)
+            .url
+          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(21), NormalMode)
+            .url
         }
 
         "for page 36" in {
-          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(36), NormalMode).pagination.value
+          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(36), NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(35), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(35), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 35)),
                 number = Some("35")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(36), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(35), NormalMode).url,
+                number = Some("35")
+              ),
+              PaginationItem(
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(36), NormalMode).url,
                 number = Some("36"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 36)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(37), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(37), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 37)),
                 number = Some("37")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40")
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(35), NormalMode).url
-          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(37), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(35), NormalMode)
+            .url
+          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(37), NormalMode)
+            .url
         }
 
         "for page 37" in {
-          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(37), NormalMode).pagination.value
+          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(37), NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(36), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(36), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 36)),
                 number = Some("36")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(37), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(37), NormalMode).url,
                 number = Some("37"),
                 visuallyHiddenText = Some(messages("site.pagination.page", 37)),
                 current = Some(true)
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(38), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(38), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 38)),
                 number = Some("38")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(39), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 39)),
                 number = Some("39")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40")
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(36), NormalMode).url
-          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(38), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(36), NormalMode)
+            .url
+          pagination.next.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(38), NormalMode)
+            .url
         }
 
         "for page 40" in {
-          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, Some(40), NormalMode).pagination.value
+          val pagination = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(40), NormalMode).pagination.value
 
           pagination.items mustBe Some(
             Seq(
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(1), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 1)),
                 number = Some("1")
               ),
               PaginationItem(ellipsis = Some(true)),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(39), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 39)),
                 number = Some("39")
               ),
               PaginationItem(
-                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(40), NormalMode).url,
+                href = createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex, Some(40), NormalMode).url,
                 visuallyHiddenText = Some(messages("site.pagination.page", 40)),
                 number = Some("40"),
                 current = Some(true)
               )
             )
           )
-          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController.onPageLoad(Some(39), NormalMode).url
+          pagination.previous.value.href mustBe createRoute.AddAnotherGoodsReferenceController
+            .onPageLoad(transportEquipmentIndex, Some(39), NormalMode)
+            .url
           pagination.next mustBe None
         }
       }
@@ -510,7 +546,7 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
     "when determining if add another should be enabled" - {
       "must provide the correct model when 1 item has been added" in {
-        val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
         result.numberOfGoodsReferences mustBe 1
         result.remainingGoodsReferences mustBe 998
@@ -526,7 +562,7 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       }
 
       "must provide the correct model when 1 item has been added in CheckMode" in {
-        val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, CheckMode)
+        val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, CheckMode)
 
         result.numberOfGoodsReferences mustBe 1
         result.remainingGoodsReferences mustBe 998
@@ -547,11 +583,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesList)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
           .success
           .value
 
-        val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
         result.numberOfGoodsReferences mustBe 998
         result.remainingGoodsReferences mustBe 1
@@ -568,11 +604,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
 
       "must provide the correct model when the maximum number of items has been reached" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyReference, goodsReferencesListMax)
+          .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesListMax)
           .success
           .value
 
-        val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, NormalMode)
+        val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
         result.numberOfGoodsReferences mustBe 999
         result.remainingGoodsReferences mustBe 0
@@ -594,11 +630,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       }.toList
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyReference, goodsReferencesList)
+        .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
         .success
         .value
 
-      val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, NormalMode)
+      val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
       result.numberOfGoodsReferences mustBe 25
       result.remainingGoodsReferences mustBe 974
@@ -620,11 +656,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       }.toList
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyReference, goodsReferencesList)
+        .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
         .success
         .value
 
-      val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, CheckMode)
+      val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, CheckMode)
 
       result.numberOfGoodsReferences mustBe 25
       result.remainingGoodsReferences mustBe 974
@@ -646,11 +682,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       }.toList
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyReference, goodsReferencesList)
+        .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
         .success
         .value
 
-      val result = AddAnotherGoodsReferenceViewModel(userAnswers, None, NormalMode)
+      val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, None, NormalMode)
 
       result.numberOfGoodsReferences mustBe 26
       result.remainingGoodsReferences mustBe 973
@@ -672,11 +708,11 @@ class AddAnotherGoodsReferenceViewModelSpec extends SpecBase {
       }.toList
 
       val userAnswers = emptyUserAnswers
-        .set(DiscrepancyReference, goodsReferencesList)
+        .set(DiscrepancyReference(transportEquipmentIndex), goodsReferencesList)
         .success
         .value
 
-      val result = AddAnotherGoodsReferenceViewModel(userAnswers, Some(2), NormalMode)
+      val result = AddAnotherGoodsReferenceViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode)
 
       result.numberOfGoodsReferences mustBe 26
       result.remainingGoodsReferences mustBe 973
