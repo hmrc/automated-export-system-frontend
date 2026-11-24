@@ -95,7 +95,6 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
       result.totalPages shouldBe 4
       result.firstTransportDoc shouldBe 1
       result.lastTransportDoc shouldBe 25
-      result.pageNumbers shouldBe (1 to 2)
 
     }
 
@@ -116,7 +115,6 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
       result.totalPages shouldBe 4
       result.firstTransportDoc shouldBe 1
       result.lastTransportDoc shouldBe 25
-      result.pageNumbers shouldBe (1 to 2)
     }
 
     "should put 25 transport doucments on a single page with no pagination" in {
@@ -132,10 +130,8 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
       result.rows.size shouldBe 25
       result.firstTransportDoc shouldBe 1
       result.lastTransportDoc shouldBe 25
-      result.hasPreviousPage shouldBe false
-      result.hasNextPage shouldBe false
       result.pageParam shouldBe None
-      result.pagination(NormalMode) shouldBe None
+      result.pagination shouldBe None
     }
 
     "should start pagination at 26 transport documents, showing 25 rows on page 1" in {
@@ -151,10 +147,6 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
       result.rows.size shouldBe 25
       result.firstTransportDoc shouldBe 1
       result.lastTransportDoc shouldBe 25
-      result.pageNumbers shouldBe (1 to 2)
-      result.hasPreviousPage shouldBe false
-      result.hasNextPage shouldBe true
-      result.nextPage shouldBe 2
       result.pageParam shouldBe Some(1)
     }
 
@@ -164,7 +156,7 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
         .success
         .value
 
-      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(1), NormalMode).pagination(NormalMode).value
+      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(1), NormalMode).pagination.value
 
       pagination.previous shouldBe None
       pagination.next.value.href shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(2), NormalMode).url
@@ -176,7 +168,7 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
         .success
         .value
 
-      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination(NormalMode).value
+      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination.value
 
       pagination.previous.value.href shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
       pagination.previous.value.text shouldBe Some(messages("site.pagination.previous"))
@@ -190,7 +182,7 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
         .success
         .value
 
-      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination(NormalMode).value
+      val pagination = AddAnotherTransportDocViewModel(userAnswers, Some(2), NormalMode).pagination.value
 
       pagination.next shouldBe None
       pagination.previous.value.href shouldBe createRoute.AddAnotherTransportDocController.onPageLoad(Some(1), NormalMode).url
@@ -209,9 +201,6 @@ class AddAnotherTransportDocViewModelSpec extends SpecBase {
       result.rows.head.key.content shouldBe Text(messages("transportDocCYA.caption"))
       result.firstTransportDoc shouldBe 26
       result.lastTransportDoc shouldBe 26
-      result.hasPreviousPage shouldBe true
-      result.previousPage shouldBe 1
-      result.hasNextPage shouldBe false
       result.pageParam shouldBe Some(2)
     }
   }

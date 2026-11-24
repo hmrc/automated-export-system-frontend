@@ -65,7 +65,6 @@ class DiscrepancyPackingSpec extends SpecBase {
       }
 
       "must return false if the index is not defined" in {
-        goodsItemIndex
         DiscrepancyPacking(goodsItemIndex).exists(userAnswers, 4) mustBe false
       }
     }
