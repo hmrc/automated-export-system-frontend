@@ -92,7 +92,7 @@ trait ModelGenerators {
   given arbitraryDocumentDetails: Arbitrary[DocumentDetails] =
     Arbitrary {
       for {
-        documentType <- arbitrary[Option[Int]]
+        documentType <- arbitrary[Option[String]]
         referenceNumber <- arbitrary[Option[Int]]
       } yield DocumentDetails(documentType, referenceNumber)
     }

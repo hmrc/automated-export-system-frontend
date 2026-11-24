@@ -56,7 +56,7 @@ object Constants {
   lazy val additionalIdentifierRegex = "^\\P{Z}(.{0,2}\\P{Z})?$"
 
   // UK_NumericWithoutZero_4 pattern
-  lazy val transportDocumentTypeRegex = "^[1-9][0-9]{0,3}$"
+  lazy val transportDocumentTypeRegex = "^[A-Za-z0-9]{1,4}$"
   lazy val transportDocumentReferenceNumberRegex = "^[1-9][0-9]{0,3}$"
 
   lazy val unlocodeMaxLength = 17

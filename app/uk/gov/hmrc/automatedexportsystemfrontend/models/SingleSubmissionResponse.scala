@@ -70,7 +70,7 @@ case class SingleSubmissionActiveBorderTransportMeans(
   nationality: Option[String]
 )
 
-case class SingleSubmissionTransportDocument(sequenceNumber: Option[Int], `type`: Option[Int], referenceNumber: Option[String])
+case class SingleSubmissionTransportDocument(sequenceNumber: Option[Int], `type`: Option[String], referenceNumber: Option[String])
 
 case class SingleSubmissionGoodsItem(
   declarationGoodsItemNumber: Option[Int],
