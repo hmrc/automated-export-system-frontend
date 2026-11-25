@@ -41,15 +41,17 @@ class GoodsReferenceCYAController @Inject() (
 
   private val logger = Logger(classOf[GoodsReferenceCYAController])
 
-  def onPageLoad(goodsReferenceIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
+  def onPageLoad(transportEquipmentIndex: Int, goodsReferenceIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-    val goodsReferenceRow: Option[SummaryListRow] = DiscrepancyReferenceSummary.row(goodsReferenceIndex, request.userAnswers, mode)
+      val goodsReferenceRow: Option[SummaryListRow] =
+        DiscrepancyReferenceSummary.row(transportEquipmentIndex, goodsReferenceIndex, request.userAnswers, mode)
 
-    goodsReferenceRow match {
-      case None =>
-        logger.warn(s"GoodsReferenceCYAController Unable to build goods reference summary. goodsReferenceIndex=$goodsReferenceIndex")
-        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-      case Some(row) => Ok(view(goodsReferenceIndex, SummaryListViewModel(Seq(row)), mode))
+      goodsReferenceRow match {
+        case None =>
+          logger.warn(s"GoodsReferenceCYAController Unable to build goods reference summary. goodsReferenceIndex=$goodsReferenceIndex")
+          Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+        case Some(row) => Ok(view(transportEquipmentIndex, goodsReferenceIndex, SummaryListViewModel(Seq(row)), mode))
+      }
     }
-  }
 }

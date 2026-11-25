@@ -20,25 +20,8 @@ import com.google.inject.Inject
 import play.api.Logging
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.*
 import uk.gov.hmrc.automatedexportsystemfrontend.models.IE507a.ExportOperationType.Standard
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, ModeOfTransportAtBorder, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyTransportEquipment
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.{
-  AmendAnyDiscrepanciesPage,
-  AmendDiscrepancyConsignmentPage,
-  AmendDiscrepancyGoodsPage,
-  AmendDiscrepancyReferencePage,
-  AmendDiscrepancySealsPage,
-  AmendDiscrepancyTransportDocPage,
-  AmendDiscrepancyTransportMeansPage,
-  AmendDiscrepancyTransportPage,
-  AmendEnterDucrPage,
-  AmendEnterMrnPage,
-  AmendIsSplitExitPage,
-  AmendLocationIdPage,
-  AmendLocationTypePage,
-  AmendOfficeOfExitPage,
-  AmendPartOfConsolidationPage
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{LocationQualifier, UserAnswers}
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.amend.*
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.*
 import uk.gov.hmrc.automatedexportsystemfrontend.xml.XmlOps
@@ -59,15 +42,21 @@ class CreateSubmissionDataService @Inject() extends Logging {
       .get(AnyDiscrepanciesPage)
       .orElse(userAnswers.get(IsSplitExitPage))
 
-  private def collectTransportEquipment(
-    userAnswers: UserAnswers,
-    seals: List[Seal],
-    goodsReferences: List[GoodsReference]
-  ): List[TransportEquipment] = {
+  private def collectTransportEquipment(userAnswers: UserAnswers): List[TransportEquipment] = {
     val discrepancyTransport =
       DiscrepancyTransportEquipment.getAll(userAnswers)
-    discrepancyTransport.zipWithIndex.map { case (transport, transportIndex) =>
-      TransportEquipment(transportIndex + 1, transport.containerId, transport.numberOfSeals, seals, goodsReferences)
+
+    discrepancyTransport.zipWithIndex.map { case (transport, index) =>
+      val transportIndex = index + 1
+      val seals = collectSeals(transport.discrepancySeals)
+      val goodsReferences = collectGoodsReference(transport.discrepancyReference)
+      TransportEquipment(
+        transportIndex,
+        transport.containerDetails.flatMap(_.containerId),
+        transport.containerDetails.flatMap(_.numberOfSeals),
+        seals,
+        goodsReferences
+      )
     }
   }
 
@@ -83,13 +72,13 @@ class CreateSubmissionDataService @Inject() extends Logging {
     }
   }
 
-  private def collectSeals(userAnswers: UserAnswers): List[Seal] =
-    DiscrepancySeals.getAll(userAnswers).zipWithIndex.map { (sealIdentifier, index) =>
+  private def collectSeals(discrepancySeals: List[String]): List[Seal] =
+    discrepancySeals.zipWithIndex.map { (sealIdentifier, index) =>
       Seal(index + 1, sealIdentifier)
     }
 
-  private def collectGoodsReference(userAnswers: UserAnswers): List[GoodsReference] =
-    DiscrepancyReference.getAll(userAnswers).zipWithIndex.map { case (reference, index) =>
+  private def collectGoodsReference(discrepancyReference: List[String]): List[GoodsReference] =
+    discrepancyReference.zipWithIndex.map { case (reference, index) =>
       GoodsReference(index + 1, reference.toInt)
     }
 
@@ -155,10 +144,8 @@ class CreateSubmissionDataService @Inject() extends Logging {
 
       val mucr =
         userAnswers.get(PartOfConsolidationPage).flatMap(_.mucr)
-      val seals = collectSeals(userAnswers)
-      val goodsReference = collectGoodsReference(userAnswers)
       val transportEquipment =
-        collectTransportEquipment(userAnswers, seals, goodsReference)
+        collectTransportEquipment(userAnswers)
 
       val transport = collectActiveBorderTransportMeans(userAnswers)
       val transportDocument = collectTransportDocument(userAnswers)

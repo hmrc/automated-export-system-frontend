@@ -26,7 +26,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as p
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancySealsFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancySealsPage, VisitedDiscrepancySealsPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 import uk.gov.hmrc.automatedexportsystemfrontend.views.html.create.DiscrepancySealsView
@@ -52,57 +52,61 @@ class DiscrepancySealsController @Inject() (
 
   val form: Form[Option[String]] = formProvider()
 
-  def onPageLoad(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val userAnswers: UserAnswers = request.userAnswers
-    val nextIndex: Int = DiscrepancySeals.nextIndex(userAnswers)
-    if (DiscrepancySeals.exists(userAnswers, sealsIndex) || sealsIndex == nextIndex) {
-      val preparedForm = userAnswers.get(DiscrepancySealsPage(sealsIndex)) match {
-        case None        => form
-        case Some(value) => form.fill(Some(value))
+  def onPageLoad(transportEquipmentIndex: Int, sealsIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
+      val userAnswers: UserAnswers = request.userAnswers
+      val nextIndex: Int = DiscrepancySeals(transportEquipmentIndex).nextIndex(userAnswers)
+      if (DiscrepancySeals(transportEquipmentIndex).exists(userAnswers, sealsIndex) || sealsIndex == nextIndex) {
+        val preparedForm = userAnswers.get(DiscrepancySealsPage(transportEquipmentIndex, sealsIndex)) match {
+          case None        => form
+          case Some(value) => form.fill(Some(value))
+        }
+        Ok(view(preparedForm, transportEquipmentIndex: Int, sealsIndex, mode))
+      } else {
+        logger.warn(s"[DiscrepancySealsController] Invalid seal index on page load. sealsIndex=$sealsIndex, nextIndex=$nextIndex")
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
-      Ok(view(preparedForm, sealsIndex, mode))
-    } else {
-      logger.warn(s"[DiscrepancySealsController] Invalid seal index on page load. sealsIndex=$sealsIndex, nextIndex=$nextIndex")
-      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
     }
-  }
 
-  def onSubmit(sealsIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async { implicit request =>
-    val userAnswers: UserAnswers = request.userAnswers
-    val nextIndex: Int = DiscrepancySeals.nextIndex(userAnswers)
-    if (DiscrepancySeals.exists(userAnswers, sealsIndex) || sealsIndex == nextIndex) {
-      form
-        .bindFromRequest()
-        .fold(
-          formWithErrors => Future.successful(BadRequest(view(formWithErrors, sealsIndex, mode))),
-          {
-            case Some(sealIdentifier) =>
-              for {
-                updatedAnswers <- Future
-                  .fromTry(request.userAnswers.set(DiscrepancySealsPage(sealsIndex), sealIdentifier))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(createNavigator.nextPage(DiscrepancySealsPage(sealsIndex), mode, updatedAnswers))
+  def onSubmit(transportEquipmentIndex: Int, sealsIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
+      val userAnswers: UserAnswers = request.userAnswers
+      val nextIndex: Int = DiscrepancySeals(transportEquipmentIndex).nextIndex(userAnswers)
+      if (DiscrepancySeals(transportEquipmentIndex).exists(userAnswers, sealsIndex) || sealsIndex == nextIndex) {
+        form
+          .bindFromRequest()
+          .fold(
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, transportEquipmentIndex: Int, sealsIndex, mode))),
+            {
+              case Some(sealIdentifier) =>
+                for {
+                  updatedAnswers <- Future
+                    .fromTry(request.userAnswers.set(DiscrepancySealsPage(transportEquipmentIndex, sealsIndex), sealIdentifier))
+                  markedAnswers <- Future.fromTry(updatedAnswers.set(VisitedDiscrepancySealsPage(transportEquipmentIndex), true))
+                  _ <- sessionRepository.set(markedAnswers)
+                } yield Redirect(createNavigator.nextPage(DiscrepancySealsPage(transportEquipmentIndex, sealsIndex), mode, updatedAnswers))
 
-            case None =>
-              for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.remove(DiscrepancySealsPage(sealsIndex)))
-                _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(nextPageAfterBlank(updatedAnswers, mode))
-          }
-        )
+              case None =>
+                for {
+                  updatedAnswers <- Future.fromTry(request.userAnswers.remove(DiscrepancySealsPage(transportEquipmentIndex, sealsIndex)))
+                  markedAnswers <- Future.fromTry(updatedAnswers.set(VisitedDiscrepancySealsPage(transportEquipmentIndex), true))
+                  _ <- sessionRepository.set(markedAnswers)
+                } yield Redirect(nextPageAfterBlank(transportEquipmentIndex, updatedAnswers, mode))
+            }
+          )
 
-    } else {
-      logger.warn(s"[DiscrepancySealsController] Invalid seal index on submit. sealsIndex=$sealsIndex, nextIndex=$nextIndex")
-      Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      } else {
+        logger.warn(s"[DiscrepancySealsController] Invalid seal index on submit. sealsIndex=$sealsIndex, nextIndex=$nextIndex")
+        Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
+      }
     }
-  }
 
-  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
-    if (DiscrepancySeals.count(answers) > 0)
-      createRoute.AddAnotherSealController.onPageLoad(None, mode)
+  private def nextPageAfterBlank(transportEquipmentIndex: Int, answers: UserAnswers, mode: Mode): Call =
+    if (DiscrepancySeals(transportEquipmentIndex).count(answers) > 0)
+      createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancyReferenceController.onPageLoad(1, mode)
+        case NormalMode => createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, mode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 }

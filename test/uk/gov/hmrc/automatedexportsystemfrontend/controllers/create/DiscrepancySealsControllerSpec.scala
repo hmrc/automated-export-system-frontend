@@ -18,7 +18,7 @@ package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
 import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.any
-import org.mockito.Mockito.{verify, when}
+import org.mockito.Mockito.{never, verify, when}
 import org.scalatestplus.mockito.MockitoSugar
 import play.api.data.Form
 import play.api.inject.bind
@@ -31,7 +31,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancySealsFo
 import uk.gov.hmrc.automatedexportsystemfrontend.helpers.SpecBase
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.{CreateNavigator, FakeCreateNavigator}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancySealsPage
+import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.{DiscrepancySealsPage, VisitedDiscrepancySealsPage}
 import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancySeals
 import uk.gov.hmrc.automatedexportsystemfrontend.repositories.SessionRepository
 
@@ -44,11 +44,13 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
   val formProvider = new DiscrepancySealsFormProvider()
   val form: Form[Option[String]] = formProvider()
 
-  lazy val discrepancySealsRoute: String = createRoute.DiscrepancySealsController.onPageLoad(1, NormalMode).url
+  val transportEquipmentIndex: Int = 1
+
+  lazy val discrepancySealsRoute: String = createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
 
   val sealIdentifier = "testSealIdentifier"
 
-  val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage(1), sealIdentifier).success.value
+  val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySealsPage(transportEquipmentIndex, 1), sealIdentifier).success.value
 
   "DiscrepancySeals Controller" - {
 
@@ -120,10 +122,18 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe onwardRoute.url
+
+        val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
+        verify(mockSessionRepository).set(captor.capture())
+        captor.getValue.get(VisitedDiscrepancySealsPage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
 
     "must return a Bad Request and errors when invalid data is submitted" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
+
       val invalidSealId = " invalidSealId"
       val application = applicationBuilder(userAnswers = Some(emptyUserAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -134,14 +144,14 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
           FakeRequest(POST, discrepancySealsRoute)
             .withFormUrlEncodedBody(("value", invalidSealId))
 
-        val boundForm: Form[Option[String]] = form.bind(Map("value" -> invalidSealId))
-
         val result = route(application, request).value
 
         status(result) shouldBe BAD_REQUEST
 
         val body = contentAsString(result)
         body should include("There is a problem")
+
+        verify(mockSessionRepository, never()).set(any[UserAnswers])
       }
     }
 
@@ -168,7 +178,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.DiscrepancySealsController.onPageLoad(5, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 5, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -178,22 +188,30 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
     }
 
     "must redirect to Journey Recovery for a POST where the index doesn't exist and is not the next index" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = Some(userAnswers))
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.DiscrepancySealsController.onPageLoad(5, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 5, NormalMode).url)
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+
+        verify(mockSessionRepository, never()).set(any[UserAnswers])
       }
     }
 
     "must redirect to Journey Recovery for a POST if no existing data is found" in {
+      val mockSessionRepository = mock[SessionRepository]
+
+      when(mockSessionRepository.set(any())) thenReturn Future.successful(true)
 
       val application = applicationBuilder(userAnswers = None)
         .overrides(bind[uk.gov.hmrc.auth.core.AuthConnector].toInstance(mockAuthConnector))
@@ -208,11 +226,13 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
         status(result) shouldBe SEE_OTHER
         redirectLocation(result).value shouldBe problemRoute.JourneyRecoveryController.onPageLoad().url
+
+        verify(mockSessionRepository, never()).set(any[UserAnswers])
       }
     }
 
     "must remove the seal and redirect to the seals list when no data is entered and other seals remain" in {
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals, List("seal1", "seal2")).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals(transportEquipmentIndex), List("seal1", "seal2")).success.value
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -229,22 +249,23 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(1, NormalMode).url)
+          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(transportEquipmentIndex, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(None, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, None, NormalMode).url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancySeals.getAll(captor.getValue) shouldBe List("seal2")
+        DiscrepancySeals(transportEquipmentIndex).getAll(captor.getValue) shouldBe List("seal2")
+        captor.getValue.get(VisitedDiscrepancySealsPage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
 
     "must redirect to the DiscrepancyReference when no data is entered and no seals remain in NormalMode" in {
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals, List("seal1")).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals(transportEquipmentIndex), List("seal1")).success.value
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -261,22 +282,23 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(1, NormalMode).url)
+          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(transportEquipmentIndex, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, NormalMode).url
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancySeals.getAll(captor.getValue) shouldBe List.empty
+        DiscrepancySeals(transportEquipmentIndex).getAll(captor.getValue) shouldBe List.empty
+        captor.getValue.get(VisitedDiscrepancySealsPage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
 
     "must redirect to the CYASubmissionController when no data is entered and no seals remain in CheckMode" in {
-      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals, List("seal1")).success.value
+      val userAnswers = UserAnswers(userAnswersId).set(DiscrepancySeals(transportEquipmentIndex), List("seal1")).success.value
 
       val mockSessionRepository = mock[SessionRepository]
 
@@ -293,7 +315,7 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(1, CheckMode).url)
+          FakeRequest(POST, createRoute.DiscrepancySealsController.onSubmit(transportEquipmentIndex, 1, CheckMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
@@ -303,7 +325,8 @@ class DiscrepancySealsControllerSpec extends SpecBase with MockitoSugar {
 
         val captor = ArgumentCaptor.forClass(classOf[UserAnswers])
         verify(mockSessionRepository).set(captor.capture())
-        DiscrepancySeals.getAll(captor.getValue) shouldBe List.empty
+        DiscrepancySeals(transportEquipmentIndex).getAll(captor.getValue) shouldBe List.empty
+        captor.getValue.get(VisitedDiscrepancySealsPage(transportEquipmentIndex)) shouldBe Some(true)
       }
     }
   }

@@ -40,39 +40,42 @@ class AddAnotherGoodsReferenceController @Inject() (
   view: AddAnotherGoodsReferenceView
 ) extends FrontendBaseController with I18nSupport {
 
-  def onPageLoad(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, page, mode)
+  def onPageLoad(transportEquipmentIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
+      val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, transportEquipmentIndex, page, mode)
 
-    if (viewModel.numberOfGoodsReferences == 0) {
-      Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
-    } else if (!isValidPage(viewModel)) {
-      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-    } else if (page != viewModel.pageParam) {
-      Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(viewModel.pageParam, mode))
-    } else {
-      Ok(view(formProvider(viewModel.allowMore), viewModel, mode))
+      if (viewModel.numberOfGoodsReferences == 0) {
+        Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, mode))
+      } else if (!isValidPage(viewModel)) {
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      } else if (page != viewModel.pageParam) {
+        Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex: Int, viewModel.pageParam, mode))
+      } else {
+        Ok(view(formProvider(viewModel.allowMore), viewModel, transportEquipmentIndex: Int, mode))
+      }
     }
-  }
 
-  def onSubmit(page: Option[Int], mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) { implicit request =>
-    val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, page, mode)
+  def onSubmit(transportEquipmentIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
+      val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, transportEquipmentIndex, page, mode)
 
-    if (viewModel.numberOfGoodsReferences == 0) {
-      Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(1, mode))
-    } else if (!isValidPage(viewModel)) {
-      Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
-    } else {
-      formProvider(viewModel.allowMore)
-        .bindFromRequest()
-        .fold(
-          formWithErrors => BadRequest(view(formWithErrors, viewModel, mode)),
-          {
-            case true  => Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(viewModel.numberOfGoodsReferences + 1, mode))
-            case false => Redirect(createRoute.DiscrepancyTransportMeansController.onPageLoad(mode))
-          }
-        )
+      if (viewModel.numberOfGoodsReferences == 0) {
+        Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, 1, mode))
+      } else if (!isValidPage(viewModel)) {
+        Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
+      } else {
+        formProvider(viewModel.allowMore)
+          .bindFromRequest()
+          .fold(
+            formWithErrors => BadRequest(view(formWithErrors, viewModel, transportEquipmentIndex, mode)),
+            {
+              case true =>
+                Redirect(createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, viewModel.numberOfGoodsReferences + 1, mode))
+              case false => Redirect(createRoute.AddAnotherTransportController.onPageLoad(None, mode))
+            }
+          )
+      }
     }
-  }
 
   private def isValidPage(viewModel: AddAnotherGoodsReferenceViewModel): Boolean =
     viewModel.currentPage >= 1 && viewModel.currentPage <= viewModel.totalPages

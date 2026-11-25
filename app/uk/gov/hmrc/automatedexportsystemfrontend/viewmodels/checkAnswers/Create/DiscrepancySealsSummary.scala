@@ -28,13 +28,13 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancySealsSummary {
 
-  def row(sealsIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancySealsPage(sealsIndex)).map { answer =>
+  def row(transportEquipmentIndex: Int, sealsIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[SummaryListRow] =
+    answers.get(DiscrepancySealsPage(transportEquipmentIndex, sealsIndex)).map { answer =>
       SummaryListRowViewModel(
         key = "discrepancySeals.checkYourAnswersLabel",
         value = ValueViewModel(HtmlContent(HtmlFormat.escape(answer).toString)),
         actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancySealsController.onPageLoad(sealsIndex, mode).url)
+          ActionItemViewModel("site.change", createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, sealsIndex, mode).url)
             .withVisuallyHiddenText(messages("discrepancySeals.change.hidden"))
         )
       )

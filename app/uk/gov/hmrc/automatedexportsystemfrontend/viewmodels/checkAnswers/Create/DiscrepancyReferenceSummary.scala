@@ -27,13 +27,18 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyReferenceSummary {
 
-  def row(discrepancyReferenceIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[SummaryListRow] =
-    answers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)).map { answer =>
+  def row(transportEquipmentIndex: Int, discrepancyReferenceIndex: Int, answers: UserAnswers, mode: Mode)(
+    implicit messages: Messages
+  ): Option[SummaryListRow] =
+    answers.get(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex)).map { answer =>
       SummaryListRowViewModel(
         key = "discrepancyReference.checkYourAnswersLabel",
         value = ValueViewModel(HtmlFormat.escape(answer).toString),
         actions = Seq(
-          ActionItemViewModel("site.change", createRoute.DiscrepancyReferenceController.onPageLoad(discrepancyReferenceIndex, mode).url)
+          ActionItemViewModel(
+            "site.change",
+            createRoute.DiscrepancyReferenceController.onPageLoad(transportEquipmentIndex, discrepancyReferenceIndex, mode).url
+          )
             .withVisuallyHiddenText(messages("discrepancyReference.change.hidden", HtmlFormat.escape(answer).toString))
         )
       )

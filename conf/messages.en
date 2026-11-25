@@ -93,15 +93,14 @@ signedOut.guidance = We did not save your answers.
 unauthorised.title = You can’t access this service with this account
 unauthorised.heading = You can’t access this service with this account
 
-enterMrn.title = What is the Movement Reference Number (MRN)?
-enterMrn.heading = What is the Movement Reference Number (MRN)?
-enterMrn.hint = This is the 18-character reference from the EU export declaration. For example, 24AB123456789012A1.
+enterMrn.title = What is the EU Movement Reference Number (MRN)?
+enterMrn.heading = What is the EU Movement Reference Number (MRN)?
+enterMrn.hint = For example, 26IE0A1234567890A2
 enterMrn.checkYourAnswersLabel = MRN
-enterMrn.error.required = Enter `enterMrn`
-enterMrn.error.length = EnterMrn must be 18 characters
-enterMrn.error.invalid = EnterMrn must be in the correct format, for example 24AB123456789012A1
+enterMrn.error.required = Enter the Movement Reference number
+enterMrn.error.length = The Movement Reference Number must be 18 characters.
+enterMrn.error.invalid = Enter a Movement Reference Number in the correct format. This is the 18-character reference from the EU export declaration. For example, 24AB123456789012A1.
 enterMrn.change.hidden = MRN
-enterMrn.caption = Export operation
 
 enterDucr.title = What is the Declaration Unique Consignment Reference (DUCR)?
 enterDucr.heading = What is the Declaration Unique Consignment Reference (DUCR)?
@@ -238,6 +237,7 @@ discrepancyConsignment.placeholder = Select a mode of transport
 discrepancyConsignment.descriptionUnavailable = Transport mode description unavailable
 
 discrepancyTransport.title = Container details
+discrepancyTransport.caption = Transport equipment {0}
 discrepancyTransport.heading = Container details
 discrepancyTransport.hint = If the goods are being transported in a container, enter the details.
 discrepancyTransport.containerId = Container identification number
@@ -590,19 +590,19 @@ addAnotherTransportEquipment.error.max = You cannot add another Transport Equipm
 
 addAnotherTransportEquipment.yes.label = Yes
 addAnotherTransportEquipment.no.label = No
-transportEquipmentCYA.title=Check your answers
-transportEquipmentCYA.heading=Check your answers
-transportEquipmentCYA.caption=Transport Equipment {0}
 addAnotherTransportEquipment.singular.title=You have added 1 transport equipment
 addAnotherTransportEquipment.plural.title=You have added {0} transport equipment entries
 
 addAnotherTransportEquipment.singular.heading=You have added 1 transport equipment
 addAnotherTransportEquipment.plural.heading=You have added {0} transport equipment entries
 addAnotherTransportEquipment.key=Transport equipment {0}
+addAnotherTransportEquipmentContainer.key = Container {0}
 addAnotherTransportEquipment.singular.remaining=You can add up to 1 more transport equipment entry.
 addAnotherTransportEquipment.plural.remaining=You can add up to {0} more transport equipment entries.
 addAnotherTransportEquipment.addAnother=Do you want to add another transport equipment entry?
 addAnotherTransportEquipment.change.hidden=transport equipment {0}
+addAnotherTransportEquipmentContainer.change.hidden= container {0}
+addAnotherTransportEquipmentContainer.remove.hidden = container {0}
 addAnotherTransportEquipment.remove.hidden = transport equipment {0}
 addAnotherTransportEquipment.maxLimit = You cannot add any more transport equipment entries. To add another, you need to remove one first.
 addAnotherTransportEquipment.error.required = Select yes if you want to add another transport equipment
@@ -611,3 +611,11 @@ removeTransportEquipment.title = Are you sure you want to remove transport equip
 removeTransportEquipment.heading = Are you sure you want to remove transport equipment {0}?
 removeTransportEquipment.hint = This will also remove associated seals and goods references.
 removeTransportEquipment.error.required = Select yes if you want to remove transport equipment {0}
+
+whatDoYouWantToDo.title = What do you want to do?
+whatDoYouWantToDo.heading = What do you want to do?
+whatDoYouWantToDo.submitNew = Submit a new notification
+whatDoYouWantToDo.viewOrCancel = View or cancel an existing notification
+whatDoYouWantToDo.checkYourAnswersLabel = What do you want to do?
+whatDoYouWantToDo.error.required = Select whatDoYouWantToDo
+whatDoYouWantToDo.change.hidden = WhatDoYouWantToDo

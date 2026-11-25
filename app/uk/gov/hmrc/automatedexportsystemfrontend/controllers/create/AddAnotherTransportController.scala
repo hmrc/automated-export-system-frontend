@@ -100,8 +100,8 @@ class AddAnotherTransportController @Inject() (
 
               case false =>
                 Redirect(
-                  createRoute.DiscrepancySealsController
-                    .onPageLoad(1, mode)
+                  createRoute.DiscrepancyTransportMeansController
+                    .onPageLoad(mode)
                 )
             }
           )
