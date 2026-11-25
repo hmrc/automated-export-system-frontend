@@ -27,7 +27,7 @@
         govukPagination: GovukPagination
 )
 
-@(form: Form[_], viewModel: AddAnotherSealViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], viewModel: AddAnotherSealViewModel, transportEquipmentIndex: Int, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @baseTitle = @{
     messages(s"addAnotherSeal.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfSeals)
@@ -55,7 +55,7 @@
     @govukPagination(pagination)
   }
 
-  @formHelper(action = createRoute.AddAnotherSealController.onSubmit(viewModel.pageParam ,mode), Symbol("autoComplete") -> "off") {
+  @formHelper(action = createRoute.AddAnotherSealController.onSubmit(transportEquipmentIndex, viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

@@ -23,10 +23,12 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
 
 class DiscrepancyReferenceSpec extends SpecBase {
 
+  val transportEquipmentIndex: Int = 1
+
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyReferencePage(1), "12345")
-    .flatMap(_.set(DiscrepancyReferencePage(2), "23456"))
-    .flatMap(_.set(DiscrepancyReferencePage(3), "34567"))
+    .set(DiscrepancyReferencePage(transportEquipmentIndex, 1), "12345")
+    .flatMap(_.set(DiscrepancyReferencePage(transportEquipmentIndex, 2), "23456"))
+    .flatMap(_.set(DiscrepancyReferencePage(transportEquipmentIndex, 3), "34567"))
     .success
     .value
 
@@ -35,58 +37,52 @@ class DiscrepancyReferenceSpec extends SpecBase {
       "must get all of the DiscrepancyReference data" in {
         val expected = List("12345", "23456", "34567")
 
-        DiscrepancyReference.getAll(userAnswers) mustBe expected
+        DiscrepancyReference(transportEquipmentIndex).getAll(userAnswers) mustBe expected
       }
     }
 
     ".count" - {
       "must return how many DiscrepancyReference data items have been added" in {
-        DiscrepancyReference.count(userAnswers) mustBe 3
+        DiscrepancyReference(transportEquipmentIndex).count(userAnswers) mustBe 3
       }
     }
 
     ".remaining" - {
       "must return how many remaining DiscrepancyReference data items can be added" in {
-        DiscrepancyReference.remaining(userAnswers) mustBe 996
+        DiscrepancyReference(transportEquipmentIndex).remaining(userAnswers) mustBe 996
       }
     }
 
     ".maxDiscrepancyReferences" - {
       "must have a maximum of 999" in {
-        DiscrepancyReference.maxDiscrepancyReferences mustBe 999
+        DiscrepancyReference(transportEquipmentIndex).maxDiscrepancyReferences mustBe 999
       }
     }
 
     ".exists" - {
       "must return true if the index is defined" in {
-        DiscrepancyReference.exists(userAnswers, 3) mustBe true
+        DiscrepancyReference(transportEquipmentIndex).exists(userAnswers, 3) mustBe true
       }
 
       "must return false if the index is not defined" in {
-        DiscrepancyReference.exists(userAnswers, 4) mustBe false
+        DiscrepancyReference(transportEquipmentIndex).exists(userAnswers, 4) mustBe false
       }
     }
 
     ".nextIndex" - {
       "must return the next empty index positon" in {
-        DiscrepancyReference.nextIndex(userAnswers) mustBe 4
+        DiscrepancyReference(transportEquipmentIndex).nextIndex(userAnswers) mustBe 4
       }
     }
 
     ".removeOne" - {
       "must remove one DiscrepancyReference item at the correct index" in {
-        val updatedUserAnswers = DiscrepancyReference.removeOne(userAnswers, 2).success.value
+        val updatedUserAnswers = DiscrepancyReference(transportEquipmentIndex).removeOne(userAnswers, 2).success.value
 
         val expected = List("12345", "34567")
 
-        DiscrepancyReference.getAll(updatedUserAnswers) mustBe expected
+        DiscrepancyReference(transportEquipmentIndex).getAll(updatedUserAnswers) mustBe expected
       }
-    }
-
-    "must be able to remove all DiscrepancyReference data from user answers" in {
-      val updatedUserAnswers = userAnswers.remove(DiscrepancyReference).success.value
-
-      updatedUserAnswers.get(DiscrepancyReference) mustNot be(defined)
     }
 
   }

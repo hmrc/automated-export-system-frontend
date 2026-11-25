@@ -16,13 +16,13 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.controllers.create
 
+import play.api.Logger
 import play.api.data.Form
 import play.api.i18n.{I18nSupport, MessagesApi}
 import play.api.mvc.{Action, AnyContent, Call, MessagesControllerComponents}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.actions.{AesAuthRequestActionBuilder, AesDataRequiredAction, AesDataRetrievalAction}
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.problem.routes as problemRoute
-import play.api.Logger
 import uk.gov.hmrc.automatedexportsystemfrontend.forms.create.DiscrepancyTransportFormProvider
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, ContainerDetails, Mode, NormalMode, UserAnswers}
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.CreateNavigator
@@ -108,7 +108,7 @@ class DiscrepancyTransportController @Inject() (
               } yield Redirect(value match {
                 case equipment if equipment.containerId.isDefined || equipment.numberOfSeals.isDefined =>
                   createNavigator.nextPage(DiscrepancyTransportPage(transportEquipmentIndex), mode, updatedAnswers)
-                case _ => nextPageAfterBlank(updatedAnswers, mode)
+                case _ => nextPageAfterBlank(transportEquipmentIndex, updatedAnswers, mode)
               })
           )
       } else {
@@ -119,12 +119,12 @@ class DiscrepancyTransportController @Inject() (
       }
     }
 
-  private def nextPageAfterBlank(answers: UserAnswers, mode: Mode): Call =
-    if (DiscrepancyTransportEquipment.count(answers) > 0)
+  private def nextPageAfterBlank(transportEquipmentIndex: Int, answers: UserAnswers, mode: Mode): Call =
+    if (DiscrepancyTransportEquipment.countContainerDetails(answers) > 0)
       createRoute.AddAnotherTransportController.onPageLoad(None, mode)
     else
       mode match {
-        case NormalMode => createRoute.DiscrepancySealsController.onPageLoad(1, mode)
+        case NormalMode => createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, mode)
         case CheckMode  => createRoute.CYASubmissionController.onPageLoad()
       }
 

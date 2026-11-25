@@ -22,8 +22,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyReferen
 
 import scala.util.Try
 
-case object DiscrepancyReference extends Gettable[List[String]] with Settable[List[String]] {
-  override def path: JsPath = JsPath \ "standard" \ "discrepancyReference"
+case class DiscrepancyReference(transportEquipmentIndex: Int) extends Gettable[List[String]] with Settable[List[String]] {
+  override def path: JsPath = JsPath \ "standard" \ "discrepancyTransportEquipment" \ (transportEquipmentIndex - 1) \ "discrepancyReference"
 
   val maxDiscrepancyReferences: Int = 999
 
@@ -34,10 +34,10 @@ case object DiscrepancyReference extends Gettable[List[String]] with Settable[Li
   def remaining(userAnswers: UserAnswers): Int = math.max(0, maxDiscrepancyReferences - count(userAnswers))
 
   def exists(userAnswers: UserAnswers, discrepancyReferenceIndex: Int): Boolean =
-    userAnswers.get(DiscrepancyReferencePage(discrepancyReferenceIndex)).isDefined
+    userAnswers.get(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex)).isDefined
 
   def nextIndex(userAnswers: UserAnswers): Int = count(userAnswers) + 1
 
   def removeOne(userAnswers: UserAnswers, discrepancyReferenceIndex: Int): Try[UserAnswers] =
-    userAnswers.remove(DiscrepancyReferencePage(discrepancyReferenceIndex))
+    userAnswers.remove(DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex))
 }

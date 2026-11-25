@@ -23,8 +23,8 @@ import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 case class DiscrepancyTransportPage(transportEquipmentIndex: Int) extends QuestionPage[ContainerDetails] {
 
   override def path: JsPath =
-    JsPath \ "standard" \ toString \ (transportEquipmentIndex - 1)
+    JsPath \ "standard" \ "discrepancyTransportEquipment" \ (transportEquipmentIndex - 1) \ toString
 
   override def toString: String =
-    "discrepancyTransportEquipment"
+    "containerDetails"
 }

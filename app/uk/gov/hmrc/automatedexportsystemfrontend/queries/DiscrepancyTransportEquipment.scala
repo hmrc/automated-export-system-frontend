@@ -16,20 +16,19 @@
 
 package uk.gov.hmrc.automatedexportsystemfrontend.queries
 
-import play.api.libs.json.JsPath
-import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, UserAnswers}
-import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.DiscrepancyTransportPage
+import play.api.libs.json.{JsObject, JsPath}
+import uk.gov.hmrc.automatedexportsystemfrontend.models.{ContainerDetails, TransportEquipmentData, UserAnswers}
 
 import scala.util.Try
 
-case object DiscrepancyTransportEquipment extends Gettable[List[ContainerDetails]] with Settable[List[ContainerDetails]] {
+case object DiscrepancyTransportEquipment extends Gettable[List[TransportEquipmentData]] with Settable[List[TransportEquipmentData]] {
 
   override def path: JsPath =
     JsPath \ "standard" \ "discrepancyTransportEquipment"
 
   val maxTransportEquipment: Int = 9999
 
-  def getAll(userAnswers: UserAnswers): List[ContainerDetails] =
+  def getAll(userAnswers: UserAnswers): List[TransportEquipmentData] =
     userAnswers.get(this).getOrElse(Nil)
 
   def count(userAnswers: UserAnswers): Int =
@@ -39,13 +38,21 @@ case object DiscrepancyTransportEquipment extends Gettable[List[ContainerDetails
     math.max(0, maxTransportEquipment - count(userAnswers))
 
   def exists(userAnswers: UserAnswers, transportEquipmentIndex: Int): Boolean =
-    userAnswers
-      .get(DiscrepancyTransportPage(transportEquipmentIndex))
-      .isDefined
+    transportEquipmentIndex > 0 && transportEquipmentIndex <= getAll(userAnswers).size
 
   def nextIndex(userAnswers: UserAnswers): Int =
     count(userAnswers) + 1
 
-  def removeOne(userAnswers: UserAnswers, transportEquipmentIndex: Int): Try[UserAnswers] =
-    userAnswers.remove(DiscrepancyTransportPage(transportEquipmentIndex))
+  def removeOne(userAnswers: UserAnswers, transportEquipmentIndex: Int): Try[UserAnswers] = {
+    val transportEquipmentToRemove = new Settable[JsObject] {
+      override def path: JsPath = DiscrepancyTransportEquipment.path \ (transportEquipmentIndex - 1)
+    }
+    userAnswers.remove(transportEquipmentToRemove)
+  }
+
+  def getContainerDetails(userAnswers: UserAnswers): List[ContainerDetails] =
+    getAll(userAnswers).flatMap(_.containerDetails)
+
+  def countContainerDetails(userAnswers: UserAnswers): Int =
+    getContainerDetails(userAnswers).size
 }

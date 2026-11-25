@@ -20,7 +20,8 @@ Navigate to the [dashboard](http://localhost:5002/automated-export-system), whic
 The system will redirect to the stubs. See details on required enrolments [here](https://confluence.tools.tax.service.gov.uk/spaces/AES/pages/1344340004/Testing+using+the+auth+stubs).
 
 ### Test locally
-`sbt test it/it`
+To run all tests and generate a coverage report, use this command
+`sbt runAllChecks`
 
 ### License
 
