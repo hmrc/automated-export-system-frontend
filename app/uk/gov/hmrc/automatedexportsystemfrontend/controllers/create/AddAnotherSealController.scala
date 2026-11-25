@@ -57,11 +57,9 @@ class AddAnotherSealController @Inject() (
       } else if (page != viewModel.pageParam) {
         Redirect(createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, viewModel.pageParam, mode))
       } else {
-        Ok(view(form(viewModel.allowMore), viewModel, transportEquipmentIndex, mode))
+        Ok(view(formProvider(viewModel.allowMore), viewModel, transportEquipmentIndex, mode))
       }
     }
-
-  private def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
 
   def onSubmit(transportEquipmentIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>

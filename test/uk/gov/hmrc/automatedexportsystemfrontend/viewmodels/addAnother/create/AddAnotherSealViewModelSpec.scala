@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 
 class AddAnotherSealViewModelSpec extends SpecBase {
+
   private implicit val messages: Messages = Helpers.stubMessages()
   val transportEquipmentIndex: Int = 1
   val userAnswers = emptyUserAnswers

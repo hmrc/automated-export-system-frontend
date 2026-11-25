@@ -40,8 +40,6 @@ class AddAnotherGoodsReferenceController @Inject() (
   view: AddAnotherGoodsReferenceView
 ) extends FrontendBaseController with I18nSupport {
 
-  def form(allowMore: Boolean): Form[Boolean] = formProvider(allowMore)
-
   def onPageLoad(transportEquipmentIndex: Int, page: Option[Int], mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
       val viewModel = AddAnotherGoodsReferenceViewModel(request.userAnswers, transportEquipmentIndex, page, mode)
@@ -53,7 +51,7 @@ class AddAnotherGoodsReferenceController @Inject() (
       } else if (page != viewModel.pageParam) {
         Redirect(createRoute.AddAnotherGoodsReferenceController.onPageLoad(transportEquipmentIndex: Int, viewModel.pageParam, mode))
       } else {
-        Ok(view(form(viewModel.allowMore), viewModel, transportEquipmentIndex: Int, mode))
+        Ok(view(formProvider(viewModel.allowMore), viewModel, transportEquipmentIndex: Int, mode))
       }
     }
 
