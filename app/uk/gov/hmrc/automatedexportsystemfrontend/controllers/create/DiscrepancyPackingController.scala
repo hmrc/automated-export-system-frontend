@@ -89,7 +89,12 @@ class DiscrepancyPackingController @Inject() (
             formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, mode))),
             value =>
               for {
-                updatedAnswers <- Future.fromTry(request.userAnswers.set(DiscrepancyPackingPage(packagingDetailIndex), value))
+                updatedAnswers <-
+                  if (value.isEmpty) {
+                    Future.fromTry(request.userAnswers.remove(DiscrepancyPackingPage(packagingDetailIndex)))
+                  } else {
+                    Future.fromTry(request.userAnswers.set(DiscrepancyPackingPage(packagingDetailIndex), value))
+                  }
                 _ <- sessionRepository.set(updatedAnswers)
               } yield Redirect(createNavigator.nextPage(DiscrepancyPackingPage(packagingDetailIndex), mode, updatedAnswers))
           )

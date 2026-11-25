@@ -46,7 +46,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
     case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex, NormalMode)
     case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
-    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, NormalMode)
+    case DiscrepancyPackingPage(packagingDetailIndex) => userAnswers => discrepancyPackingRoute(userAnswers, packagingDetailIndex, NormalMode)
   }
 
   override val checkRoutes: Page => UserAnswers => Call = {
@@ -62,7 +62,7 @@ class CreateNavigator extends Navigator {
     case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
     case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex, CheckMode)
     case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
-    case DiscrepancyPackingPage(packagingDetailIndex) => _ => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, CheckMode)
+    case DiscrepancyPackingPage(packagingDetailIndex) => userAnswers => discrepancyPackingRoute(userAnswers, packagingDetailIndex, CheckMode)
     case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
   }
 
@@ -176,4 +176,12 @@ class CreateNavigator extends Navigator {
 
   private def hasExistingTransportDocs(userAnswers: UserAnswers): Boolean =
     DiscrepancyTransportDoc.count(userAnswers) > 0
+
+  private def discrepancyPackingRoute(userAnswers: UserAnswers, packagingDetailIndex: Int, mode: Mode): Call =
+    (userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)), mode) match {
+      case (Some(_), _)       => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, mode)
+      case (None, NormalMode) => createRoute.CYASubmissionController.onPageLoad()
+      case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
+    }
+
 }

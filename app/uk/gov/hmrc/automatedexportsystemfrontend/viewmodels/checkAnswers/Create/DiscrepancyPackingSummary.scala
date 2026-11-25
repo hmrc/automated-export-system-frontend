@@ -31,35 +31,55 @@ object DiscrepancyPackingSummary {
   def rows(packagingDetailIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
     answers.get(DiscrepancyPackingPage(packagingDetailIndex)).map { answer =>
 
-      val packagingCode = HtmlFormat.escape(answer.packagingCode)
-      val numberOfPackages = HtmlFormat.escape(answer.numberOfPackages.toString)
-      val shippingMarks = HtmlFormat.escape(answer.shippingMarks)
+      val packagingCodeRow: Option[SummaryListRow] =
+        answer.packagingCode.map { packagingCode =>
+          SummaryListRowViewModel(
+            key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(HtmlFormat.escape(packagingCode))),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                createRoute.DiscrepancyPackingController
+                  .onPageLoad(packagingDetailIndex, mode)
+                  .url
+              ).withVisuallyHiddenText(messages("discrepancyPacking.packagingCode.change.hidden"))
+            )
+          )
+        }
 
-      Seq(
-        SummaryListRowViewModel(
-          key = "discrepancyPacking.packagingCode.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(packagingCode)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, mode).url)
-              .withVisuallyHiddenText(messages("discrepancyPacking.packagingCode.change.hidden"))
+      val numberOfPackagesRow: Option[SummaryListRow] =
+        answer.numberOfPackages.map { numberOfPackages =>
+          SummaryListRowViewModel(
+            key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(HtmlFormat.escape(numberOfPackages.toString))),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                createRoute.DiscrepancyPackingController
+                  .onPageLoad(packagingDetailIndex, mode)
+                  .url
+              ).withVisuallyHiddenText(messages("discrepancyPacking.numberOfPackages.change.hidden"))
+            )
           )
-        ),
-        SummaryListRowViewModel(
-          key = "discrepancyPacking.numberOfPackages.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(numberOfPackages)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, mode).url)
-              .withVisuallyHiddenText(messages("discrepancyPacking.numberOfPackages.change.hidden"))
+        }
+
+      val shippingMarksRow: Option[SummaryListRow] =
+        answer.shippingMarks.map { shippingMarks =>
+          SummaryListRowViewModel(
+            key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
+            value = ValueViewModel(HtmlContent(HtmlFormat.escape(shippingMarks))),
+            actions = Seq(
+              ActionItemViewModel(
+                "site.change",
+                createRoute.DiscrepancyPackingController
+                  .onPageLoad(packagingDetailIndex, mode)
+                  .url
+              ).withVisuallyHiddenText(messages("discrepancyPacking.shippingMarks.change.hidden"))
+            )
           )
-        ),
-        SummaryListRowViewModel(
-          key = "discrepancyPacking.shippingMarks.checkYourAnswersLabel",
-          value = ValueViewModel(HtmlContent(shippingMarks)),
-          actions = Seq(
-            ActionItemViewModel("site.change", createRoute.DiscrepancyPackingController.onPageLoad(packagingDetailIndex, mode).url)
-              .withVisuallyHiddenText(messages("discrepancyPacking.shippingMarks.change.hidden"))
-          )
-        )
-      )
+        }
+
+      Seq(packagingCodeRow, numberOfPackagesRow, shippingMarksRow).flatten
     }
+
 }
