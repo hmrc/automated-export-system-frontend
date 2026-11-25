@@ -26,16 +26,20 @@ class DiscrepancyPackingSpec extends SpecBase {
   val goodsItemIndex = 1
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("BX", 1, "MARKS1"))
-    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 2), PackingDetails("CT", 2, "MARKS2")))
-    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 3), PackingDetails("PK", 3, "MARKS3")))
+    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
     .success
     .value
 
   "DiscrepancyPacking" - {
     ".getAll" - {
       "must get all of the DiscrepancyPacking data" in {
-        val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("CT", 2, "MARKS2"), PackingDetails("PK", 3, "MARKS3"))
+        val expected = List(
+          PackingDetails(Some("BX"), Some(1), Some("MARKS1")),
+          PackingDetails(Some("CT"), Some(2), Some("MARKS2")),
+          PackingDetails(Some("PK"), Some(3), Some("MARKS3"))
+        )
 
         DiscrepancyPacking(goodsItemIndex).getAll(userAnswers) mustBe expected
       }
@@ -79,7 +83,7 @@ class DiscrepancyPackingSpec extends SpecBase {
       "must remove one DiscrepancyPacking(goodsItemIndex) item at the correct index" in {
         val updatedUserAnswers = DiscrepancyPacking(goodsItemIndex).removeOne(userAnswers, 2).success.value
 
-        val expected = List(PackingDetails("BX", 1, "MARKS1"), PackingDetails("PK", 3, "MARKS3"))
+        val expected = List(PackingDetails(Some("BX"), Some(1), Some("MARKS1")), PackingDetails(Some("PK"), Some(3), Some("MARKS3")))
 
         DiscrepancyPacking(goodsItemIndex).getAll(updatedUserAnswers) mustBe expected
       }

@@ -47,7 +47,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
   lazy val discrepancyPackingRoute: String = createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, NormalMode).url
 
   val userAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("value 1", 123, "value 3"))
+    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails(Some("value 1"), Some(123), Some("value 3")))
     .success
     .value
 
@@ -147,7 +147,7 @@ class DiscrepancyPackingControllerSpec extends SpecBase with MockitoSugar {
       running(application) {
         val request =
           FakeRequest(POST, discrepancyPackingRoute)
-            .withFormUrlEncodedBody(("value", "invalid value"))
+            .withFormUrlEncodedBody(("numberOfPackages", "not-a-number"))
 
         val result = route(application, request).value
 

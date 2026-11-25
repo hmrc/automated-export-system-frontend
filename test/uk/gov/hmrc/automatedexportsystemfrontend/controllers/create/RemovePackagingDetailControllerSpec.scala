@@ -44,7 +44,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
   val goodsItemIndex = 1
 
   val packingDetailsList50: List[PackingDetails] = (1 to 50).map { number =>
-    PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+    PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
   }.toList
 
   "RemovePackagingDetail Controller" - {
@@ -174,7 +174,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to AddAnotherPackagingDetail at next valid page when true and last item is removed from the expected return page" in {
 
       val packingDetailsList: List[PackingDetails] = (1 to 51).map { number =>
-        PackingDetails(s"packagingCode$number", number, s"shippingMarks$number")
+        PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
       }.toList
 
       val userAnswers: UserAnswers = emptyUserAnswers
@@ -211,7 +211,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to DiscrepancyPacking when true and last item removed" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails("BX", 1, "MARKS1"))
+        .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
         .success
         .value
 

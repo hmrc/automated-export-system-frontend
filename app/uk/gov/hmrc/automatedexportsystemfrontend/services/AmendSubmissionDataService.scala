@@ -136,7 +136,7 @@ class AmendSubmissionDataService @Inject() extends Logging {
 
   private def collectAmendPackaging(userAnswers: UserAnswers, submissionId: String): List[Packaging] =
     userAnswers.get(AmendDiscrepancyPackingPage(submissionId)).toList.map { packing =>
-      Packaging(1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
+      Packaging(1, packing.packagingCode, packing.numberOfPackages.map(_.toString), packing.shippingMarks)
     }
 
   private def buildXmlWithDeclaration(submission: Submission): String =

@@ -46,7 +46,7 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage(parentIndex, index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage(index), WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index, index), PackingDetails("PK", 1, "marks"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(parentIndex, index), PackingDetails(Some("PK"), Some(1), Some("marks")))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)
@@ -110,10 +110,10 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage(parentIndex, index), "1")
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage(index), WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index, index), PackingDetails("PK", 1, "marks"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(parentIndex, index), PackingDetails(Some("PK"), Some(1), Some("marks")))
         userAnswers <- userAnswers.set(DiscrepancyGoodsPage(2), WhatHasChangedDetails(Some(2), Some("5GB000000000000-123452"), "202", "102"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage(2, 1), PackingDetails("PK1", 11, "marks1"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage(2, 2), PackingDetails("PK2", 22, "marks2"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(2, 1), PackingDetails(Some("PK1"), Some(11), Some("marks1")))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(2, 2), PackingDetails(Some("PK2"), Some(22), Some("marks2")))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)

@@ -121,7 +121,7 @@ class CreateSubmissionDataService @Inject() extends Logging {
 
   private def collectPackaging(userAnswers: UserAnswers, goodsItemIndex: Int): List[Packaging] =
     DiscrepancyPacking(goodsItemIndex).getAll(userAnswers).zipWithIndex.map { (packing, index) =>
-      Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.toString, packing.shippingMarks)
+      Packaging(index + 1, packing.packagingCode, packing.numberOfPackages.map(_.toString), packing.shippingMarks)
     }
 
   private def collectGoodsItem(userAnswers: UserAnswers): List[GoodsItem] =
