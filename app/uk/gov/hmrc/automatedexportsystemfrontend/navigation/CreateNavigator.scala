@@ -188,8 +188,8 @@ class CreateNavigator extends Navigator {
       case (Some(_), _) => createRoute.PackagingDetailsCYAController.onPageLoad(goodsItemIndex, packagingDetailIndex, mode)
       case (None, _) if hasExistingPacking(userAnswers, goodsItemIndex) =>
         createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, mode)
-      case (None, NormalMode) => createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
-      case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
+      case (None, NormalMode) if hasExistingGoodsItem(userAnswers) => createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
+      case (None, _)                                               => createRoute.CYASubmissionController.onPageLoad()
     }
 
   private def hasExistingPacking(userAnswers: UserAnswers, goodsItemIndex: Int): Boolean =
