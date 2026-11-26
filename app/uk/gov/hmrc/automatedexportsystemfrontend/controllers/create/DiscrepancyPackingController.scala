@@ -51,52 +51,49 @@ class DiscrepancyPackingController @Inject() (
 
   val form: Form[PackingDetails] = formProvider()
 
-  def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(goodsItemIndex: Int, packagingDetailIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
       val userAnswers: UserAnswers = request.userAnswers
-      val nextIndex: Int = DiscrepancyPacking.nextIndex(userAnswers)
+      val nextIndex: Int = DiscrepancyPacking(goodsItemIndex).nextIndex(userAnswers)
 
       if (
-        DiscrepancyPacking
+        DiscrepancyPacking(goodsItemIndex)
           .exists(userAnswers, packagingDetailIndex) || packagingDetailIndex == nextIndex
       ) {
-        val preparedForm = userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)) match {
+        val preparedForm = userAnswers.get(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex)) match {
           case None        => form
           case Some(value) => form.fill(value)
         }
 
-        Ok(view(preparedForm, packagingDetailIndex, mode))
+        Ok(view(preparedForm, goodsItemIndex, packagingDetailIndex, mode))
       } else {
         logger.warn(
           s"[DiscrepancyPackingController] Invalid packaging detail index on page load. packagingDetailIndex=$packagingDetailIndex, nextIndex=$nextIndex"
         )
         Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
       }
-  }
+    }
 
-  def onSubmit(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData).async {
-    implicit request =>
+  def onSubmit(goodsItemIndex: Int, packagingDetailIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData).async { implicit request =>
       val userAnswers: UserAnswers = request.userAnswers
-      val nextIndex: Int = DiscrepancyPacking.nextIndex(userAnswers)
+      val nextIndex: Int = DiscrepancyPacking(goodsItemIndex).nextIndex(userAnswers)
 
-      if (
-        DiscrepancyPacking
-          .exists(userAnswers, packagingDetailIndex) || packagingDetailIndex == nextIndex
-      ) {
+      if (DiscrepancyPacking(goodsItemIndex).exists(userAnswers, packagingDetailIndex) || packagingDetailIndex == nextIndex) {
         form
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, goodsItemIndex, packagingDetailIndex, mode))),
             value =>
               for {
                 updatedAnswers <-
                   if (value.isEmpty) {
-                    Future.fromTry(request.userAnswers.remove(DiscrepancyPackingPage(packagingDetailIndex)))
+                    Future.fromTry(request.userAnswers.remove(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex)))
                   } else {
-                    Future.fromTry(request.userAnswers.set(DiscrepancyPackingPage(packagingDetailIndex), value))
+                    Future.fromTry(request.userAnswers.set(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex), value))
                   }
                 _ <- sessionRepository.set(updatedAnswers)
-              } yield Redirect(createNavigator.nextPage(DiscrepancyPackingPage(packagingDetailIndex), mode, updatedAnswers))
+              } yield Redirect(createNavigator.nextPage(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex), mode, updatedAnswers))
           )
       } else {
         logger.warn(
@@ -104,5 +101,5 @@ class DiscrepancyPackingController @Inject() (
         )
         Future.successful(Redirect(problemRoute.JourneyRecoveryController.onPageLoad()))
       }
-  }
+    }
 }

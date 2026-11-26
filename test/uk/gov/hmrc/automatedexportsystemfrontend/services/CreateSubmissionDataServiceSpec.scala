@@ -45,8 +45,8 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage(parentIndex, index), "1")
-        userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails(Some("PK"), Some(1), Some("marks")))
+        userAnswers <- userAnswers.set(DiscrepancyGoodsPage(index), WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(parentIndex, index), PackingDetails(Some("PK"), Some(1), Some("marks")))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)
@@ -109,8 +109,11 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
         userAnswers <- userAnswers.set(DiscrepancyTransportMeansPage, TransportAcrossBorderDetails(Some("road"), Some("transportId"), Some("GB")))
         userAnswers <- userAnswers.set(DiscrepancyTransportDocPage(index), DocumentDetails(Some("1"), Some(1234)))
         userAnswers <- userAnswers.set(DiscrepancyReferencePage(parentIndex, index), "1")
-        userAnswers <- userAnswers.set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
-        userAnswers <- userAnswers.set(DiscrepancyPackingPage(index), PackingDetails(Some("PK"), Some(1), Some("marks")))
+        userAnswers <- userAnswers.set(DiscrepancyGoodsPage(index), WhatHasChangedDetails(Some(1), Some("5GB000000000000-12345"), "20", "10"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(parentIndex, index), PackingDetails(Some("PK"), Some(1), Some("marks")))
+        userAnswers <- userAnswers.set(DiscrepancyGoodsPage(2), WhatHasChangedDetails(Some(2), Some("5GB000000000000-123452"), "202", "102"))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(2, 1), PackingDetails(Some("PK1"), Some(11), Some("marks1")))
+        userAnswers <- userAnswers.set(DiscrepancyPackingPage(2, 2), PackingDetails(Some("PK2"), Some(22), Some("marks2")))
       } yield userAnswers
 
       val result = service.buildStandardSubmission(userAnswers.get)
@@ -170,6 +173,28 @@ class CreateSubmissionDataServiceSpec extends SpecBase {
       result.value should include("<typeOfPackages>PK</typeOfPackages>")
       result.value should include("<numberOfPackages>1</numberOfPackages>")
       result.value should include("<shippingMarks>marks</shippingMarks>")
+
+      result.value should include("<GoodsItem>")
+      result.value should include("<declarationGoodsItemNumber>2</declarationGoodsItemNumber>")
+      result.value should include("<referenceNumberUCR>5GB000000000000-123452</referenceNumberUCR>")
+
+      result.value should include("<Commodity>")
+      result.value should include("<GoodsMeasure>")
+      result.value should include("<grossMass>202</grossMass>")
+      result.value should include("<netMass>102</netMass>")
+
+      result.value should include("<Packaging>")
+      result.value should include("<sequenceNumber>1</sequenceNumber>")
+      result.value should include("<typeOfPackages>PK1</typeOfPackages>")
+      result.value should include("<numberOfPackages>11</numberOfPackages>")
+      result.value should include("<shippingMarks>marks1</shippingMarks>")
+
+      result.value should include("<Packaging>")
+      result.value should include("<sequenceNumber>2</sequenceNumber>")
+      result.value should include("<typeOfPackages>PK2</typeOfPackages>")
+      result.value should include("<numberOfPackages>22</numberOfPackages>")
+      result.value should include("<shippingMarks>marks2</shippingMarks>")
+
     }
 
     "must omit GoodsReference when the reference is absent" in {

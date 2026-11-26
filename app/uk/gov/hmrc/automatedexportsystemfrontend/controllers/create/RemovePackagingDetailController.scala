@@ -50,13 +50,16 @@ class RemovePackagingDetailController @Inject() (
 
   def form(packagingDetailIndex: Int): Form[Boolean] = formProvider(packagingDetailIndex)
 
-  def onPageLoad(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+  def onPageLoad(goodsItemIndex: Int, packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData) { implicit request =>
       val addAnotherPackagingDetailViewModel: AddAnotherPackagingDetailViewModel =
-        AddAnotherPackagingDetailViewModel(request.userAnswers, Some(returnPage), mode)
+        AddAnotherPackagingDetailViewModel(request.userAnswers, Some(returnPage), goodsItemIndex, mode)
 
-      if (DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(addAnotherPackagingDetailViewModel, returnPage)) {
-        Ok(view(form(packagingDetailIndex), packagingDetailIndex, returnPage, mode))
+      if (
+        DiscrepancyPacking(goodsItemIndex)
+          .exists(request.userAnswers, packagingDetailIndex) && validReturnPage(addAnotherPackagingDetailViewModel, returnPage)
+      ) {
+        Ok(view(form(packagingDetailIndex), goodsItemIndex, packagingDetailIndex, returnPage, mode))
       } else {
         logger.warn(
           s"[RemovePackagingDetailController] Invalid remove packaging detail request on page load. packagingDetailIndex=$packagingDetailIndex, returnPage=$returnPage"
@@ -65,13 +68,13 @@ class RemovePackagingDetailController @Inject() (
       }
     }
 
-  def onSubmit(packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
+  def onSubmit(goodsItemIndex: Int, packagingDetailIndex: Int, returnPage: Int, mode: Mode): Action[AnyContent] =
     (actionBuilder andThen getData andThen requireData).async { implicit request =>
       def addAnotherPackagingDetailViewModel(userAnswers: UserAnswers, returnPage: Int, mode: Mode): AddAnotherPackagingDetailViewModel =
-        AddAnotherPackagingDetailViewModel(userAnswers, Some(returnPage), mode)
+        AddAnotherPackagingDetailViewModel(userAnswers, Some(returnPage), goodsItemIndex, mode)
 
       if (
-        DiscrepancyPacking.exists(request.userAnswers, packagingDetailIndex) && validReturnPage(
+        DiscrepancyPacking(goodsItemIndex).exists(request.userAnswers, packagingDetailIndex) && validReturnPage(
           addAnotherPackagingDetailViewModel(request.userAnswers, returnPage, mode),
           returnPage
         )
@@ -79,24 +82,26 @@ class RemovePackagingDetailController @Inject() (
         form(packagingDetailIndex)
           .bindFromRequest()
           .fold(
-            formWithErrors => Future.successful(BadRequest(view(formWithErrors, packagingDetailIndex, returnPage, mode))),
+            formWithErrors => Future.successful(BadRequest(view(formWithErrors, goodsItemIndex, packagingDetailIndex, returnPage, mode))),
             {
               case true =>
                 for {
-                  updatedAnswers <- Future.fromTry(DiscrepancyPacking.removeOne(request.userAnswers, packagingDetailIndex))
+                  updatedAnswers <- Future.fromTry(DiscrepancyPacking(goodsItemIndex).removeOne(request.userAnswers, packagingDetailIndex))
                   _ <- sessionRepository.set(updatedAnswers)
                 } yield
-                  if (DiscrepancyPacking.count(updatedAnswers) == 0) {
-                    Redirect(createRoute.DiscrepancyPackingController.onPageLoad(1, mode))
+                  if (DiscrepancyPacking(goodsItemIndex).count(updatedAnswers) == 0) {
+                    Redirect(createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, mode))
                   } else {
                     Redirect(
                       createRoute.AddAnotherPackagingDetailController.onPageLoad(
+                        goodsItemIndex,
                         Some(returnPageAfterRemoval(addAnotherPackagingDetailViewModel(updatedAnswers, returnPage, mode), returnPage)),
                         mode
                       )
                     )
                   }
-              case false => Future.successful(Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(returnPage), mode)))
+              case false =>
+                Future.successful(Redirect(createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(returnPage), mode)))
             }
           )
       } else {

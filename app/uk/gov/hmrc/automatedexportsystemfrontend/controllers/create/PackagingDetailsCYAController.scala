@@ -41,10 +41,11 @@ class PackagingDetailsCYAController @Inject() (
 
   private val logger = Logger(classOf[PackagingDetailsCYAController])
 
-  def onPageLoad(packagingDetailIndex: Int, mode: Mode): Action[AnyContent] = (actionBuilder andThen getData andThen requireData) {
-    implicit request =>
+  def onPageLoad(goodsItemIndex: Int, packagingDetailIndex: Int, mode: Mode): Action[AnyContent] =
+    (actionBuilder andThen getData andThen requireData) { implicit request =>
 
-      val packagingDetailsRows: Option[Seq[SummaryListRow]] = DiscrepancyPackingSummary.rows(packagingDetailIndex, request.userAnswers, mode)
+      val packagingDetailsRows: Option[Seq[SummaryListRow]] =
+        DiscrepancyPackingSummary.rows(goodsItemIndex, packagingDetailIndex, request.userAnswers, mode)
 
       packagingDetailsRows match {
         case None =>
@@ -52,7 +53,7 @@ class PackagingDetailsCYAController @Inject() (
           Redirect(problemRoute.JourneyRecoveryController.onPageLoad())
 
         case Some(rows) =>
-          Ok(view(packagingDetailIndex, SummaryListViewModel(rows), mode))
+          Ok(view(goodsItemIndex, packagingDetailIndex, SummaryListViewModel(rows), mode))
       }
-  }
+    }
 }

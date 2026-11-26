@@ -28,8 +28,10 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.summarylist.SummaryListRow
 
 object DiscrepancyPackingSummary {
 
-  def rows(packagingDetailIndex: Int, answers: UserAnswers, mode: Mode)(implicit messages: Messages): Option[Seq[SummaryListRow]] =
-    answers.get(DiscrepancyPackingPage(packagingDetailIndex)).map { answer =>
+  def rows(goodsItemIndex: Int, packagingDetailIndex: Int, answers: UserAnswers, mode: Mode)(
+    implicit messages: Messages
+  ): Option[Seq[SummaryListRow]] =
+    answers.get(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex)).map { answer =>
 
       val packagingCodeRow: Option[SummaryListRow] =
         answer.packagingCode.map { packagingCode =>
@@ -40,7 +42,7 @@ object DiscrepancyPackingSummary {
               ActionItemViewModel(
                 "site.change",
                 createRoute.DiscrepancyPackingController
-                  .onPageLoad(packagingDetailIndex, mode)
+                  .onPageLoad(goodsItemIndex, packagingDetailIndex, mode)
                   .url
               ).withVisuallyHiddenText(messages("discrepancyPacking.packagingCode.change.hidden"))
             )
@@ -56,7 +58,7 @@ object DiscrepancyPackingSummary {
               ActionItemViewModel(
                 "site.change",
                 createRoute.DiscrepancyPackingController
-                  .onPageLoad(packagingDetailIndex, mode)
+                  .onPageLoad(goodsItemIndex, packagingDetailIndex, mode)
                   .url
               ).withVisuallyHiddenText(messages("discrepancyPacking.numberOfPackages.change.hidden"))
             )
@@ -72,7 +74,7 @@ object DiscrepancyPackingSummary {
               ActionItemViewModel(
                 "site.change",
                 createRoute.DiscrepancyPackingController
-                  .onPageLoad(packagingDetailIndex, mode)
+                  .onPageLoad(goodsItemIndex, packagingDetailIndex, mode)
                   .url
               ).withVisuallyHiddenText(messages("discrepancyPacking.shippingMarks.change.hidden"))
             )
@@ -81,5 +83,4 @@ object DiscrepancyPackingSummary {
 
       Seq(packagingCodeRow, numberOfPackagesRow, shippingMarksRow).flatten
     }
-
 }

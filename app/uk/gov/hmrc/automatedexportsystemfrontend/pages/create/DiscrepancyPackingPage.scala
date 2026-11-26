@@ -20,9 +20,9 @@ import play.api.libs.json.JsPath
 import uk.gov.hmrc.automatedexportsystemfrontend.models.PackingDetails
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.QuestionPage
 
-case class DiscrepancyPackingPage(packagingDetailIndex: Int) extends QuestionPage[PackingDetails] {
+case class DiscrepancyPackingPage(goodsItemIndex: Int, packagingDetailIndex: Int) extends QuestionPage[PackingDetails] {
 
-  override def path: JsPath = JsPath \ "standard" \ toString \ (packagingDetailIndex - 1)
+  override def path: JsPath = JsPath \ "standard" \ "discrepancyGoods" \ (goodsItemIndex - 1) \ toString \ (packagingDetailIndex - 1)
 
   override def toString: String = "discrepancyPacking"
 }

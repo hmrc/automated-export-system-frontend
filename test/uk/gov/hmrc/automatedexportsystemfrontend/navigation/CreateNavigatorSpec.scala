@@ -177,29 +177,64 @@ class CreateNavigatorSpec extends SpecBase {
         "to Discrepancy goods when empty" in {
           val userAnswers = emptyUserAnswers
           navigator.nextPage(DiscrepancyTransportDocPage(index), NormalMode, userAnswers) shouldBe
-            createRoute.DiscrepancyGoodsController.onPageLoad(NormalMode)
+            createRoute.DiscrepancyGoodsController.onPageLoad(1, NormalMode)
         }
       }
 
       "navigate from DiscrepancyGoodsPage" - {
-        "to DiscrepancyPackingPage" in {
+        "to DiscrepancyPacking when there is a good item" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyGoodsPage, WhatHasChangedDetails(Some(1), Some("declarationUniqueConsignmentReference"), "newGrossMass", "newNetMass"))
+            .set(DiscrepancyGoodsPage(1), WhatHasChangedDetails(Some(1), Some("declarationUniqueConsignmentReference"), "newGrossMass", "newNetMass"))
             .success
             .value
-          navigator.nextPage(DiscrepancyGoodsPage, NormalMode, userAnswers) shouldBe
-            createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
+          navigator.nextPage(DiscrepancyGoodsPage(1), NormalMode, userAnswers) shouldBe
+            createRoute.DiscrepancyPackingController.onPageLoad(1, 1, NormalMode)
+        }
+
+        "to Final CYA when there is no goods item" in {
+          navigator.nextPage(DiscrepancyGoodsPage(1), NormalMode, emptyUserAnswers) shouldBe
+            createRoute.CYASubmissionController.onPageLoad()
+        }
+
+        "to AddAnotherGoodsItem when DiscrepancyGoodsPage is not answered and there are existing good items" in {
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(DiscrepancyGoodsPage(1), WhatHasChangedDetails(Some(1), Some("5GB000000000000-123451"), "20", "10"))
+            .flatMap(_.set(DiscrepancyGoodsPage(2), WhatHasChangedDetails(Some(2), Some("5GB000000000000-123452"), "20", "10")))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyGoodsPage(3), NormalMode, userAnswers) shouldBe
+            createRoute.AddAnotherGoodsItemController.onPageLoad(None, NormalMode)
         }
       }
 
       "navigate from DiscrepancyPackingPage" - {
         "to PackagingDetailsCYA" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage(1), PackingDetails(Some("packagingCode"), Some(1), Some("shippingMarks")))
+            .set(DiscrepancyPackingPage(1, 1), PackingDetails(Some("packagingCode"), Some(1), Some("shippingMarks")))
             .success
             .value
-          navigator.nextPage(DiscrepancyPackingPage(1), NormalMode, userAnswers) shouldBe
-            createRoute.PackagingDetailsCYAController.onPageLoad(1, NormalMode)
+          navigator.nextPage(DiscrepancyPackingPage(1, 1), NormalMode, userAnswers) shouldBe
+            createRoute.PackagingDetailsCYAController.onPageLoad(1, 1, NormalMode)
+        }
+
+        "to AddAnotherGoodsItem when DiscrepancyPackingPage is not answered" in {
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(DiscrepancyGoodsPage(1), WhatHasChangedDetails(Some(1), Some("5GB000000000000-123451"), "20", "10"))
+            .flatMap(_.set(DiscrepancyGoodsPage(2), WhatHasChangedDetails(Some(2), Some("5GB000000000000-123452"), "20", "10")))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyPackingPage(2, 1), NormalMode, userAnswers) shouldBe
+            createRoute.AddAnotherGoodsItemController.onPageLoad(None, NormalMode)
+        }
+
+        "to AddAnotherPackaging when current DiscrepancyPackingPage is not answered and there are existing packing details" in {
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(DiscrepancyGoodsPage(1), WhatHasChangedDetails(Some(1), Some("5GB000000000000-123451"), "20", "10"))
+            .flatMap(_.set(DiscrepancyPackingPage(1, 1), PackingDetails(Some("packagingCode"), Some(1), Some("shippingMarks"))))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyPackingPage(1, 2), NormalMode, userAnswers) shouldBe
+            createRoute.AddAnotherPackagingDetailController.onPageLoad(1, None, NormalMode)
         }
       }
     }
@@ -440,17 +475,9 @@ class CreateNavigatorSpec extends SpecBase {
       }
 
       "navigate from DiscrepancyGoodsPage" - {
-        "to DiscrepancyPackingPage when DiscrepancyPackingPage is unanswered" in {
-          navigator.nextPage(DiscrepancyGoodsPage, CheckMode, emptyUserAnswers) shouldBe
-            createRoute.DiscrepancyPackingController.onPageLoad(1, CheckMode)
-        }
 
-        "to CYASubmissionPage when DiscrepancyPackingPage is answered" in {
-          val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage(1), PackingDetails(Some("packagingCode"), Some(2), Some("shippingMarks")))
-            .success
-            .value
-          navigator.nextPage(DiscrepancyGoodsPage, CheckMode, userAnswers) shouldBe
+        "to CYASubmissionPage when DiscrepancyGoodsPage is unanswered" in {
+          navigator.nextPage(DiscrepancyGoodsPage(1), CheckMode, emptyUserAnswers) shouldBe
             createRoute.CYASubmissionController.onPageLoad()
         }
       }
@@ -458,11 +485,16 @@ class CreateNavigatorSpec extends SpecBase {
       "navigate from DiscrepancyPackingPage" - {
         "to PackagingDetailsCYA" in {
           val userAnswers = emptyUserAnswers
-            .set(DiscrepancyPackingPage(1), PackingDetails(Some("packagingCode"), Some(2), Some("shippingMarks")))
+            .set(DiscrepancyPackingPage(1, 1), PackingDetails(Some("packagingCode"), Some(2), Some("shippingMarks")))
             .success
             .value
-          navigator.nextPage(DiscrepancyPackingPage(1), CheckMode, userAnswers) shouldBe
-            createRoute.PackagingDetailsCYAController.onPageLoad(1, CheckMode)
+          navigator.nextPage(DiscrepancyPackingPage(1, 1), CheckMode, userAnswers) shouldBe
+            createRoute.PackagingDetailsCYAController.onPageLoad(1, 1, CheckMode)
+        }
+
+        "to CYASubmissionPage when DiscrepancyPasckingPage is unanswered" in {
+          navigator.nextPage(DiscrepancyPackingPage(1, 1), CheckMode, emptyUserAnswers) shouldBe
+            createRoute.CYASubmissionController.onPageLoad()
         }
       }
 

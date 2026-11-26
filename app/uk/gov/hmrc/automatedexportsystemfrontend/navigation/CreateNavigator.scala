@@ -23,7 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, Normal
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{DiscrepancyReference, DiscrepancySeals, DiscrepancyTransportDoc}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.*
 
 class CreateNavigator extends Navigator {
 
@@ -43,10 +43,11 @@ class CreateNavigator extends Navigator {
       userAnswers => discrepancySealsRoute(userAnswers, transportEquipmentIndex, sealsIndex, NormalMode)
     case DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex) =>
       userAnswers => discrepancyReferenceRoute(userAnswers, transportEquipmentIndex, discrepancyReferenceIndex, NormalMode)
-    case DiscrepancyTransportMeansPage                => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
-    case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex, NormalMode)
-    case DiscrepancyGoodsPage                         => _ => createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode)
-    case DiscrepancyPackingPage(packagingDetailIndex) => userAnswers => discrepancyPackingRoute(userAnswers, packagingDetailIndex, NormalMode)
+    case DiscrepancyTransportMeansPage         => _ => createRoute.DiscrepancyTransportDocController.onPageLoad(1, NormalMode)
+    case DiscrepancyTransportDocPage(docIndex) => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex, NormalMode)
+    case DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex) =>
+      userAnswers => discrepancyPackingRoute(userAnswers, goodsItemIndex, packagingDetailIndex, NormalMode)
+    case DiscrepancyGoodsPage(goodsItemIndex) => userAnswers => discrepancyGoodsRoute(userAnswers, goodsItemIndex, NormalMode)
   }
 
   override val checkRoutes: Page => UserAnswers => Call = {
@@ -59,11 +60,12 @@ class CreateNavigator extends Navigator {
       userAnswers => discrepancySealsRoute(userAnswers, transportEquipmentIndex, sealsIndex, CheckMode)
     case DiscrepancyReferencePage(transportEquipmentIndex, discrepancyReferenceIndex) =>
       userAnswers => discrepancyReferenceRoute(userAnswers, transportEquipmentIndex, discrepancyReferenceIndex, CheckMode)
-    case DiscrepancyTransportMeansPage                => discrepancyTransportMeansCheckRoute
-    case DiscrepancyTransportDocPage(docIndex)        => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex, CheckMode)
-    case DiscrepancyGoodsPage                         => discrepancyGoodsCheckRoute
-    case DiscrepancyPackingPage(packagingDetailIndex) => userAnswers => discrepancyPackingRoute(userAnswers, packagingDetailIndex, CheckMode)
-    case _                                            => _ => createRoute.CYASubmissionController.onPageLoad()
+    case DiscrepancyTransportMeansPage         => discrepancyTransportMeansCheckRoute
+    case DiscrepancyTransportDocPage(docIndex) => userAnswers => discrepancyTransportDocRoute(userAnswers, docIndex, CheckMode)
+    case DiscrepancyGoodsPage(goodsItemIndex)  => userAnswers => discrepancyGoodsRoute(userAnswers, goodsItemIndex, CheckMode)
+    case DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex) =>
+      userAnswers => discrepancyPackingRoute(userAnswers, goodsItemIndex, packagingDetailIndex, CheckMode)
+    case _ => _ => createRoute.CYASubmissionController.onPageLoad()
   }
 
   private def partOfConsolidationRoute(answers: UserAnswers): Call =
@@ -139,15 +141,12 @@ class CreateNavigator extends Navigator {
       case (Some(_), _) => createRoute.TransportDocCYAController.onPageLoad(docIndex, mode)
       case (None, _) if hasExistingTransportDocs(answers) =>
         createRoute.AddAnotherTransportDocController.onPageLoad(None, mode)
-      case (None, NormalMode) => createRoute.DiscrepancyGoodsController.onPageLoad(mode)
+      case (None, NormalMode) => createRoute.DiscrepancyGoodsController.onPageLoad(1, mode)
       case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
     }
 
-  private def discrepancyGoodsCheckRoute(answers: UserAnswers): Call =
-    answers.get(DiscrepancyPackingPage(1)) match {
-      case None => createRoute.DiscrepancyPackingController.onPageLoad(1, CheckMode)
-      case _    => createRoute.CYASubmissionController.onPageLoad()
-    }
+  private def hasExistingTransportDocs(userAnswers: UserAnswers): Boolean =
+    DiscrepancyTransportDoc.count(userAnswers) > 0
 
   private def discrepancyTransportEquipmentRoute(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode): Call =
     if (!userAnswers.get(VisitedDiscrepancySealsPage(transportEquipmentIndex)).contains(true)) {
@@ -174,14 +173,26 @@ class CreateNavigator extends Navigator {
   private def hasExistingSeals(userAnswers: UserAnswers, transportEquipmentIndex: Int): Boolean =
     DiscrepancySeals(transportEquipmentIndex).count(userAnswers) > 0
 
-  private def hasExistingTransportDocs(userAnswers: UserAnswers): Boolean =
-    DiscrepancyTransportDoc.count(userAnswers) > 0
-
-  private def discrepancyPackingRoute(userAnswers: UserAnswers, packagingDetailIndex: Int, mode: Mode): Call =
-    (userAnswers.get(DiscrepancyPackingPage(packagingDetailIndex)), mode) match {
-      case (Some(_), _)       => createRoute.PackagingDetailsCYAController.onPageLoad(packagingDetailIndex, mode)
-      case (None, NormalMode) => createRoute.CYASubmissionController.onPageLoad()
-      case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
+  private def discrepancyGoodsRoute(userAnswers: UserAnswers, goodsItemIndex: Int, mode: Mode): Call =
+    (userAnswers.get(DiscrepancyGoodsPage(goodsItemIndex))) match {
+      case Some(_)                                   => createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, mode)
+      case None if hasExistingGoodsItem(userAnswers) => createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
+      case None                                      => createRoute.CYASubmissionController.onPageLoad()
     }
+
+  private def hasExistingGoodsItem(userAnswers: UserAnswers): Boolean =
+    DiscrepancyGoods.count(userAnswers) > 0
+
+  private def discrepancyPackingRoute(userAnswers: UserAnswers, goodsItemIndex: Int, packagingDetailIndex: Int, mode: Mode): Call =
+    (userAnswers.get(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex)), mode) match {
+      case (Some(_), _) => createRoute.PackagingDetailsCYAController.onPageLoad(goodsItemIndex, packagingDetailIndex, mode)
+      case (None, _) if hasExistingPacking(userAnswers, goodsItemIndex) =>
+        createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, mode)
+      case (None, NormalMode) if hasExistingGoodsItem(userAnswers) => createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
+      case (None, _)                                               => createRoute.CYASubmissionController.onPageLoad()
+    }
+
+  private def hasExistingPacking(userAnswers: UserAnswers, goodsItemIndex: Int): Boolean =
+    DiscrepancyPacking(goodsItemIndex).count(userAnswers) > 0
 
 }

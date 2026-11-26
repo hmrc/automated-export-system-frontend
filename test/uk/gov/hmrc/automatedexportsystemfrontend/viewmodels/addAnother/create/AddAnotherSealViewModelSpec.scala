@@ -26,6 +26,7 @@ import uk.gov.hmrc.govukfrontend.views.viewmodels.content.Text
 import uk.gov.hmrc.automatedexportsystemfrontend.controllers.create.routes as createRoute
 
 class AddAnotherSealViewModelSpec extends SpecBase {
+
   private implicit val messages: Messages = Helpers.stubMessages()
   val transportEquipmentIndex: Int = 1
   val userAnswers = emptyUserAnswers
@@ -94,8 +95,6 @@ class AddAnotherSealViewModelSpec extends SpecBase {
         result.totalPages shouldBe 4
         result.firstSeal shouldBe 1
         result.lastSeal shouldBe 25
-        result.pageNumbers shouldBe (1 to 4)
-
       }
 
       "should provide the correct model when the maximum number of items has been reached" in {
@@ -115,7 +114,6 @@ class AddAnotherSealViewModelSpec extends SpecBase {
         result.totalPages shouldBe 4
         result.firstSeal shouldBe 1
         result.lastSeal shouldBe 25
-        result.pageNumbers shouldBe (1 to 4)
       }
 
       "should put 25 seals on a single page with no pagination" in {
@@ -131,10 +129,8 @@ class AddAnotherSealViewModelSpec extends SpecBase {
         result.rows.size shouldBe 25
         result.firstSeal shouldBe 1
         result.lastSeal shouldBe 25
-        result.hasPreviousPage shouldBe false
-        result.hasNextPage shouldBe false
         result.pageParam shouldBe None
-        result.pagination(transportEquipmentIndex, NormalMode) shouldBe None
+        result.pagination shouldBe None
       }
 
       "should start pagination at 26 seals, showing 25 rows on page 1" in {
@@ -150,10 +146,6 @@ class AddAnotherSealViewModelSpec extends SpecBase {
         result.rows.size shouldBe 25
         result.firstSeal shouldBe 1
         result.lastSeal shouldBe 25
-        result.pageNumbers shouldBe (1 to 2)
-        result.hasPreviousPage shouldBe false
-        result.hasNextPage shouldBe true
-        result.nextPage shouldBe 2
         result.pageParam shouldBe Some(1)
       }
 
@@ -164,7 +156,7 @@ class AddAnotherSealViewModelSpec extends SpecBase {
           .value
 
         val pagination =
-          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(1), NormalMode).pagination(transportEquipmentIndex, NormalMode).value
+          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(1), NormalMode).pagination.value
 
         pagination.previous shouldBe None
         pagination.next.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(2), NormalMode).url
@@ -177,7 +169,7 @@ class AddAnotherSealViewModelSpec extends SpecBase {
           .value
 
         val pagination =
-          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode).pagination(transportEquipmentIndex, NormalMode).value
+          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode).pagination.value
 
         pagination.previous.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url
         pagination.previous.value.text shouldBe Some(messages("site.pagination.previous"))
@@ -192,7 +184,7 @@ class AddAnotherSealViewModelSpec extends SpecBase {
           .value
 
         val pagination =
-          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode).pagination(transportEquipmentIndex, NormalMode).value
+          AddAnotherSealViewModel(userAnswers, transportEquipmentIndex, Some(2), NormalMode).pagination.value
 
         pagination.next shouldBe None
         pagination.previous.value.href shouldBe createRoute.AddAnotherSealController.onPageLoad(transportEquipmentIndex, Some(1), NormalMode).url
@@ -211,9 +203,6 @@ class AddAnotherSealViewModelSpec extends SpecBase {
         result.rows.head.key.content shouldBe Text("seal26")
         result.firstSeal shouldBe 26
         result.lastSeal shouldBe 26
-        result.hasPreviousPage shouldBe true
-        result.previousPage shouldBe 1
-        result.hasNextPage shouldBe false
         result.pageParam shouldBe Some(2)
       }
     }

@@ -27,7 +27,7 @@
         govukPagination: GovukPagination
 )
 
-@(form: Form[_], viewModel: AddAnotherPackagingDetailViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
+@(form: Form[_], goodsItemIndex: Int, viewModel: AddAnotherPackagingDetailViewModel, mode: Mode)(implicit request: Request[_], messages: Messages)
 
 @baseTitle = @{
     messages(s"addAnotherPackagingDetail.${viewModel.addedSingularOrPlural}.title", viewModel.numberOfPackagingDetails)
@@ -55,7 +55,7 @@
     @govukPagination(pagination)
   }
 
-  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
+  @formHelper(action = createRoute.AddAnotherPackagingDetailController.onSubmit(goodsItemIndex, viewModel.pageParam, mode), Symbol("autoComplete") -> "off") {
 
     @if(viewModel.allowMore) {
       <p class="govuk-body">

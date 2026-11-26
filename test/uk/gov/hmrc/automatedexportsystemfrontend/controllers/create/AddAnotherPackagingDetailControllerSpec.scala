@@ -30,12 +30,14 @@ import uk.gov.hmrc.automatedexportsystemfrontend.queries.DiscrepancyPacking
 
 class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
-  val maxPackagingDetails: Int = DiscrepancyPacking.maxPackagingDetails
+  val goodsItemIndex = 1
+
+  val maxPackagingDetails: Int = DiscrepancyPacking(goodsItemIndex).maxPackagingDetails
 
   val userAnswers: UserAnswers = emptyUserAnswers
-    .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
-    .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
-    .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
+    .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
+    .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
     .success
     .value
 
@@ -49,7 +51,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -80,7 +82,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
@@ -89,7 +91,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -103,8 +105,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           }
           body should not include "Showing 1-25 of 25 items"
           body should not include "Previous"
-          body should not include s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}""""
-          body should not include s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}""""
+          body should not include s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url}""""
+          body should not include s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url}""""
           body should not include "Next"
           body should include("You can add up to <strong>74</strong> more packaging details.")
           body should include("<strong>Do you need to add another packaging detail?</strong>")
@@ -121,7 +123,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
@@ -130,7 +132,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -147,8 +149,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           body should not include "Remove packaging detail 26"
           body should include("Showing 1-25 of 26 items")
           body should not include "Previous"
-          body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}"""")
-          body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
+          body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url}"""")
+          body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url}"""")
           body should include("Next")
           body should include("You can add up to <strong>73</strong> more packaging details.")
           body should include("<strong>Do you need to add another packaging detail?</strong>")
@@ -165,7 +167,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
@@ -176,7 +178,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -193,8 +195,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             body should not include "Remove packaging detail 26"
             body should include("Showing 1-25 of 99 items")
             body should not include "Previous"
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url}"""")
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another packaging detail?</strong>"
@@ -212,7 +214,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -229,9 +231,9 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             body should not include "Remove packaging detail 51"
             body should include("Showing 26-50 of 99 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url}"""")
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another packaging detail?</strong>"
@@ -249,7 +251,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -266,9 +268,9 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             body should not include "Remove packaging detail 76"
             body should include("Showing 51-75 of 99 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url}"""")
             body should include("Next")
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another packaging detail?</strong>"
@@ -286,7 +288,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             .build()
 
           running(application) {
-            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url)
+            val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url)
 
             val result = route(application, request).value
 
@@ -303,8 +305,8 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
             body should not include "Remove packaging detail 100"
             body should include("Showing 76-99 of 99 items")
             body should include("Previous")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(3), NormalMode).url}"""")
-            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(4), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(3), NormalMode).url}"""")
+            body should include(s"""href="${createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(4), NormalMode).url}"""")
             body should not include "Next"
             body should not include "You can add up to"
             body should not include "<strong>Do you need to add another packaging detail?</strong>"
@@ -323,12 +325,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, NormalMode).url
         }
       }
 
@@ -339,7 +341,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(0), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(0), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -355,7 +357,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
@@ -364,12 +366,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url
         }
       }
 
@@ -380,7 +382,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
@@ -389,12 +391,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(1), NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(1), NormalMode).url
         }
       }
 
@@ -405,7 +407,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(GET, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
@@ -424,13 +426,13 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
+            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(goodsItemIndex, None, NormalMode).url)
               .withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(4, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 4, NormalMode).url
         }
       }
 
@@ -442,20 +444,21 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, CheckMode).url).withFormUrlEncodedBody("value" -> "true")
+            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(goodsItemIndex, None, CheckMode).url)
+              .withFormUrlEncodedBody("value" -> "true")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(4, CheckMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 4, CheckMode).url
         }
       }
 
-      "must redirect to CYASubmission when No is selected" in {
+      "must redirect to Add another goods item when No is selected" in {
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
-          .flatMap(_.set(DiscrepancyPackingPage(2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
-          .flatMap(_.set(DiscrepancyPackingPage(3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
+          .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+          .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 2), PackingDetails(Some("CT"), Some(2), Some("MARKS2"))))
+          .flatMap(_.set(DiscrepancyPackingPage(goodsItemIndex, 3), PackingDetails(Some("PK"), Some(3), Some("MARKS3"))))
           .success
           .value
 
@@ -465,13 +468,13 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
 
         running(application) {
           val request =
-            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
+            FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(goodsItemIndex, None, NormalMode).url)
               .withFormUrlEncodedBody("value" -> "false")
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsItemController.onPageLoad(None, NormalMode).url
         }
       }
 
@@ -482,7 +485,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
@@ -491,7 +494,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(Some(2), NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(goodsItemIndex, Some(2), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -505,14 +508,14 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
         }
       }
 
-      "must redirect to CYASubmission when maximum items reached" in {
+      "must redirect to Add another goods item when maximum items reached" in {
 
         val packingDetailsList = (1 to maxPackagingDetails).map { number =>
           PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
         }.toList
 
         val userAnswers = emptyUserAnswers
-          .set(DiscrepancyPacking, packingDetailsList)
+          .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
           .success
           .value
 
@@ -521,12 +524,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.CYASubmissionController.onPageLoad().url
+          redirectLocation(result).value shouldBe createRoute.AddAnotherGoodsItemController.onPageLoad(None, NormalMode).url
         }
       }
 
@@ -537,12 +540,12 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onPageLoad(None, NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 
           status(result) shouldBe SEE_OTHER
-          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+          redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, NormalMode).url
         }
       }
 
@@ -553,7 +556,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url)
 
           val result = route(application, request).value
 
@@ -569,7 +572,7 @@ class AddAnotherPackagingDetailControllerSpec extends SpecBase with MockitoSugar
           .build()
 
         running(application) {
-          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(None, NormalMode).url)
+          val request = FakeRequest(POST, createRoute.AddAnotherPackagingDetailController.onSubmit(goodsItemIndex, None, NormalMode).url)
 
           val result = route(application, request).value
 

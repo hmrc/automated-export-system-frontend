@@ -41,6 +41,8 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
   val packagingDetailIndex = 30
 
+  val goodsItemIndex = 1
+
   val packingDetailsList50: List[PackingDetails] = (1 to 50).map { number =>
     PackingDetails(Some(s"packagingCode$number"), Some(number), Some(s"shippingMarks$number"))
   }.toList
@@ -50,7 +52,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must return OK and the correct view for a GET" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -59,7 +61,8 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailIndex, 2, NormalMode).url)
+        val request =
+          FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailIndex, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -74,7 +77,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to AddAnotherPackagingDetail while preserving the return page and update user answers when true" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -93,13 +96,13 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailIndex, 2, NormalMode).url)
+          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -107,7 +110,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to AddAnotherPackagingDetail while preserving return page and CheckMode and update user answers when true" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -126,13 +129,13 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailIndex, 2, CheckMode).url)
+          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailIndex, 2, CheckMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), CheckMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), CheckMode).url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -140,7 +143,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to AddAnotherPackagingDetail while preserving the return page and not update user answers when false" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -157,13 +160,13 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailIndex, 2, NormalMode).url)
+          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", "false"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url
         verify(mockSessionRepository, never()).set(any())
       }
     }
@@ -175,7 +178,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
       }.toList
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList)
         .success
         .value
 
@@ -194,13 +197,13 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(51, 3, NormalMode).url)
+          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, 51, 3, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(Some(2), NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, Some(2), NormalMode).url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -208,7 +211,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to DiscrepancyPacking when true and last item removed" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPackingPage(1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
+        .set(DiscrepancyPackingPage(goodsItemIndex, 1), PackingDetails(Some("BX"), Some(1), Some("MARKS1")))
         .success
         .value
 
@@ -227,13 +230,13 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(1, 1, NormalMode).url)
+          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, 1, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
 
         status(result) shouldBe SEE_OTHER
-        redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(1, NormalMode).url
+        redirectLocation(result).value shouldBe createRoute.DiscrepancyPackingController.onPageLoad(goodsItemIndex, 1, NormalMode).url
         verify(mockSessionRepository).set(any())
       }
     }
@@ -241,7 +244,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must return a Bad Request and errors when invalid data is submitted" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -251,7 +254,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailIndex, 2, NormalMode).url)
+          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailIndex, 2, NormalMode).url)
             .withFormUrlEncodedBody(("value", ""))
 
         val result = route(application, request).value
@@ -265,7 +268,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a GET if index isn't defined" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -274,7 +277,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(51, 2, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, 51, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -286,7 +289,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a GET if return page isn't valid" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -295,7 +298,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(50, 3, NormalMode).url)
+        val request = FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, 50, 3, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -307,7 +310,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
     "must redirect to Journey Recovery for a POST if index isn't defined" in {
 
       val userAnswers: UserAnswers = emptyUserAnswers
-        .set(DiscrepancyPacking, packingDetailsList50)
+        .set(DiscrepancyPacking(goodsItemIndex), packingDetailsList50)
         .success
         .value
 
@@ -316,7 +319,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(51, 2, NormalMode).url)
+        val request = FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, 51, 2, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -332,7 +335,8 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
         .build()
 
       running(application) {
-        val request = FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailIndex, 1, NormalMode).url)
+        val request =
+          FakeRequest(GET, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailIndex, 1, NormalMode).url)
 
         val result = route(application, request).value
 
@@ -349,7 +353,7 @@ class RemovePackagingDetailControllerSpec extends SpecBase with MockitoSugar {
 
       running(application) {
         val request =
-          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(packagingDetailIndex, 1, NormalMode).url)
+          FakeRequest(POST, createRoute.RemovePackagingDetailController.onPageLoad(goodsItemIndex, packagingDetailIndex, 1, NormalMode).url)
             .withFormUrlEncodedBody(("value", "true"))
 
         val result = route(application, request).value
