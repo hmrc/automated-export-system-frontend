@@ -23,13 +23,7 @@ import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, Mode, Normal
 import uk.gov.hmrc.automatedexportsystemfrontend.navigation.Navigator
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.Page
 import uk.gov.hmrc.automatedexportsystemfrontend.pages.create.*
-import uk.gov.hmrc.automatedexportsystemfrontend.queries.{
-  DiscrepancyGoods,
-  DiscrepancyPacking,
-  DiscrepancyReference,
-  DiscrepancySeals,
-  DiscrepancyTransportDoc
-}
+import uk.gov.hmrc.automatedexportsystemfrontend.queries.*
 
 class CreateNavigator extends Navigator {
 
@@ -151,6 +145,9 @@ class CreateNavigator extends Navigator {
       case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
     }
 
+  private def hasExistingTransportDocs(userAnswers: UserAnswers): Boolean =
+    DiscrepancyTransportDoc.count(userAnswers) > 0
+
   private def discrepancyTransportEquipmentRoute(userAnswers: UserAnswers, transportEquipmentIndex: Int, mode: Mode): Call =
     if (!userAnswers.get(VisitedDiscrepancySealsPage(transportEquipmentIndex)).contains(true)) {
       createRoute.DiscrepancySealsController.onPageLoad(transportEquipmentIndex, 1, mode)
@@ -186,16 +183,13 @@ class CreateNavigator extends Navigator {
   private def hasExistingGoodsItem(userAnswers: UserAnswers): Boolean =
     DiscrepancyGoods.count(userAnswers) > 0
 
-  private def hasExistingTransportDocs(userAnswers: UserAnswers): Boolean =
-    DiscrepancyTransportDoc.count(userAnswers) > 0
-
   private def discrepancyPackingRoute(userAnswers: UserAnswers, goodsItemIndex: Int, packagingDetailIndex: Int, mode: Mode): Call =
     (userAnswers.get(DiscrepancyPackingPage(goodsItemIndex, packagingDetailIndex)), mode) match {
       case (Some(_), _) => createRoute.PackagingDetailsCYAController.onPageLoad(goodsItemIndex, packagingDetailIndex, mode)
       case (None, _) if hasExistingPacking(userAnswers, goodsItemIndex) =>
         createRoute.AddAnotherPackagingDetailController.onPageLoad(goodsItemIndex, None, mode)
-      case (None, NormalMode) if hasExistingGoodsItem(userAnswers) => createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
-      case (None, _)                                               => createRoute.CYASubmissionController.onPageLoad()
+      case (None, NormalMode) => createRoute.AddAnotherGoodsItemController.onPageLoad(None, mode)
+      case (None, CheckMode)  => createRoute.CYASubmissionController.onPageLoad()
     }
 
   private def hasExistingPacking(userAnswers: UserAnswers, goodsItemIndex: Int): Boolean =

@@ -216,6 +216,26 @@ class CreateNavigatorSpec extends SpecBase {
           navigator.nextPage(DiscrepancyPackingPage(1, 1), NormalMode, userAnswers) shouldBe
             createRoute.PackagingDetailsCYAController.onPageLoad(1, 1, NormalMode)
         }
+
+        "to AddAnotherGoodsItem when DiscrepancyPackingPage is not answered" in {
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(DiscrepancyGoodsPage(1), WhatHasChangedDetails(Some(1), Some("5GB000000000000-123451"), "20", "10"))
+            .flatMap(_.set(DiscrepancyGoodsPage(2), WhatHasChangedDetails(Some(2), Some("5GB000000000000-123452"), "20", "10")))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyPackingPage(2, 1), NormalMode, userAnswers) shouldBe
+            createRoute.AddAnotherGoodsItemController.onPageLoad(None, NormalMode)
+        }
+
+        "to AddAnotherPackaging when current DiscrepancyPackingPage is not answered and there are existing packing details" in {
+          val userAnswers: UserAnswers = emptyUserAnswers
+            .set(DiscrepancyGoodsPage(1), WhatHasChangedDetails(Some(1), Some("5GB000000000000-123451"), "20", "10"))
+            .flatMap(_.set(DiscrepancyPackingPage(1, 1), PackingDetails(Some("packagingCode"), Some(1), Some("shippingMarks"))))
+            .success
+            .value
+          navigator.nextPage(DiscrepancyPackingPage(1, 2), NormalMode, userAnswers) shouldBe
+            createRoute.AddAnotherPackagingDetailController.onPageLoad(1, None, NormalMode)
+        }
       }
     }
 
@@ -470,6 +490,11 @@ class CreateNavigatorSpec extends SpecBase {
             .value
           navigator.nextPage(DiscrepancyPackingPage(1, 1), CheckMode, userAnswers) shouldBe
             createRoute.PackagingDetailsCYAController.onPageLoad(1, 1, CheckMode)
+        }
+
+        "to CYASubmissionPage when DiscrepancyPasckingPage is unanswered" in {
+          navigator.nextPage(DiscrepancyPackingPage(1, 1), CheckMode, emptyUserAnswers) shouldBe
+            createRoute.CYASubmissionController.onPageLoad()
         }
       }
 
