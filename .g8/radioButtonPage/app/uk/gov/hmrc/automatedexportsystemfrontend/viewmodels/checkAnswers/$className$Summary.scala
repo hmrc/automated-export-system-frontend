@@ -1,8 +1,8 @@
-package viewmodels.checkAnswers
+package uk.gov.hmrc.govukfrontend.viewmodels.checkAnswers
 
-import controllers.routes
+import uk.gov.hmrc.govukfrontend.controllers.routes
 import uk.gov.hmrc.automatedexportsystemfrontend.models.{CheckMode, UserAnswers}
-import pages.$className$Page
+import uk.gov.hmrc.govukfrontend.pages.$className$Page
 import play.api.i18n.Messages
 import play.twirl.api.HtmlFormat
 import uk.gov.hmrc.govukfrontend.views.viewmodels.content.HtmlContent
